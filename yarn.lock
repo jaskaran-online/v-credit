@@ -7868,6 +7868,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-hook-form@npm:^7.43.9":
+  version: 7.43.9
+  resolution: "react-hook-form@npm:7.43.9"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+  checksum: 9aa66b9eac80bcf365a15d70ee8a36204ce4398f1cbd6e15fdd2e79eb2bc8931bfd648a82b2eeb4fc5e31b41654a1624424597b422769c6f72885408f85375ba
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.12.0 || ^17.0.0 || ^18.0.0, react-is@npm:^17.0.1":
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
@@ -9652,6 +9661,7 @@ __metadata:
     nativewind: "npm:^2.0.11"
     react: "npm:18.0.0"
     react-dom: "npm:18.0.0"
+    react-hook-form: "npm:^7.43.9"
     react-native: "npm:0.69.9"
     react-native-gesture-handler: "npm:~2.5.0"
     react-native-mmkv: "npm:^2.8.0"
@@ -9661,6 +9671,7 @@ __metadata:
     react-native-screens: "npm:~3.15.0"
     react-native-web: "npm:~0.18.7"
     tailwindcss: "npm:^3.3.2"
+    zod: "npm:^3.21.4"
   languageName: unknown
   linkType: soft
 
@@ -9972,5 +9983,12 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 63eceacd482622afd71290541a9823a0e5eed88a6b58a5d136a5fb8151ed4d1549c80f28d74d4ad351582f9890635d49e6cf70f8d3cc64948640f839f6a37c70
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.21.4":
+  version: 3.21.4
+  resolution: "zod@npm:3.21.4"
+  checksum: f25f384f380c49d05a11541093a8d26f07688aa39f6a8adbd6dc338b43f63617bf138734fb1b79800ba374523f6a1bb561f7d401b3cc051fed2715eae5577d0a
   languageName: node
   linkType: hard
