@@ -9826,7 +9826,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.0.0, use-sync-external-store@npm:^1.1.0, use-sync-external-store@npm:^1.2.0":
+"use-sync-external-store@npm:1.2.0, use-sync-external-store@npm:^1.0.0, use-sync-external-store@npm:^1.1.0, use-sync-external-store@npm:^1.2.0":
   version: 1.2.0
   resolution: "use-sync-external-store@npm:1.2.0"
   peerDependencies:
@@ -9924,6 +9924,7 @@ __metadata:
     react-native-web: "npm:~0.18.7"
     tailwindcss: "npm:^3.3.2"
     zod: "npm:^3.21.4"
+    zustand: "npm:^4.3.7"
   languageName: unknown
   linkType: soft
 
@@ -10242,5 +10243,22 @@ __metadata:
   version: 3.21.4
   resolution: "zod@npm:3.21.4"
   checksum: f25f384f380c49d05a11541093a8d26f07688aa39f6a8adbd6dc338b43f63617bf138734fb1b79800ba374523f6a1bb561f7d401b3cc051fed2715eae5577d0a
+  languageName: node
+  linkType: hard
+
+"zustand@npm:^4.3.7":
+  version: 4.3.7
+  resolution: "zustand@npm:4.3.7"
+  dependencies:
+    use-sync-external-store: "npm:1.2.0"
+  peerDependencies:
+    immer: ">=9.0"
+    react: ">=16.8"
+  peerDependenciesMeta:
+    immer:
+      optional: true
+    react:
+      optional: true
+  checksum: ffccb08367cbb795a7795076333de3b474bccd952e2f0dadd4e1131098f4333e674a5fd6a1aaf14c7eff9fa4c7bd4d9bbea7bcf7b76029c5f0982d8131f57436
   languageName: node
   linkType: hard
