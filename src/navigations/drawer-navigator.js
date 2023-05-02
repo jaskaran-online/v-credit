@@ -10,14 +10,14 @@ import {
     Image,
     Linking,
     StyleSheet,
-    Text,
     useWindowDimensions,
     View,
-    Pressable, Button
+    Pressable
 } from 'react-native';
 
 import {Reports, HomePage} from '../screens'
 import {COLORS} from '../core';
+import { Button, Text, Avatar } from "react-native-paper";
 
 const PROFILE_PIC =
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJxA5cTf-5dh5Eusm0puHbvAhOrCRPtckzjA&usqp=CAU';
@@ -29,37 +29,32 @@ function CustomDrawerContent(props) {
                 <View style={styles.drawerHeaderContainer}>
                     <View style={styles.drawerHeaderInnerContainer}>
                         <View>
-                            <Text style={{color: 'dodgerblue'}}>Login Name</Text>
-                            <Text style={{color: 'dodgerblue'}}>Description</Text>
+                            <Text variant={"titleMedium"}>Jaskaran Singh</Text>
+                            <Text variant={"bodySmall"} className={"text-slate-600"}>Webcooks.in</Text>
                         </View>
-                        <Image
-                            source={{
-                                uri: PROFILE_PIC,
-                            }}
-                            style={{width: 60, height: 60, borderRadius: 30}}
-                        />
+                        <Avatar.Text size={50} color="white" className="p-1" label="JS" />
                     </View>
                 </View>
                 <DrawerItemList {...props} />
 
                 <DrawerItem
-                    label={'RATE_APP_NOW'}
+                    label="App rating"
                     labelStyle={styles.drawerItemLabel}
-                    onPress={() => Linking.openURL('market://details?id=com.ycw')}
+                    onPress={() => Linking.openURL('market://details?id=com.v-credit')}
                     icon={({focused, size, color}) => (
-                        <Icon name="star" size={size} color={COLORS.orange} />
+                        <Icon name="star" size={size - 5} color={COLORS.primary} />
                     )}
                 />
 
                 <DrawerItem
-                    label={'INVITE_FRIENDS'}
+                    label="Invite Friends"
                     labelStyle={styles.drawerItemLabel}
-                    onPress={() => Linking.openURL('https://play.google.com/store/apps/details?id=com.ycw&hl=en_IN&gl=US')}
+                    onPress={() => Linking.openURL('https://play.google.com/store/apps/details?id=com.v-credit&hl=en_IN&gl=US')}
                     icon={({focused, size, color}) => (
                         <Icon
                             name="share"
-                            size={size}
-                            color={COLORS.deeppink}
+                            size={size - 5}
+                            color={COLORS.primary}
                         />
                     )}
                 />
@@ -67,15 +62,13 @@ function CustomDrawerContent(props) {
 
             <View style={styles.footerButtonContainer}>
                 <Button
-                    title={'LOGOUT_BUTTON'}
-                    buttonStyle={styles.languageSwitcherButton}
-                    onPress={() => console.log('Logout')}
-                />
-
+                    mode="contained"
+                    compact={true}
+                    onPress={() => console.log('Logout')}>
+                    Logout
+                </Button>
                 <View style={styles.footerVersionTextContainer}>
-                    <Pressable onPress={() => Linking.openURL('https://jaskaran.com/')}>
-                        <Text style={{color: "dodgerblue"}}>jaskaran.com</Text>
-                    </Pressable>
+                    <Text className={"text-slate-500"} variant="bodySmall">Version : 00.1</Text>
                 </View>
             </View>
         </View>
@@ -94,7 +87,7 @@ export function DrawerNavigator() {
             initialRouteName="HomePage"
             allowFontScaling={false}
             animationEnabled
-            drawerActiveBackgroundColor={"dodgerblue"}
+            drawerActiveBackgroundColor={"black"}
             screenOptions={({navigation, route}) => ({
                 drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
                 headerShown: true,
@@ -102,9 +95,9 @@ export function DrawerNavigator() {
                     backgroundColor: COLORS.white,
                 },
                 headerTitleStyle: {
-                    color: "dodgerblue",
+                    color: COLORS.darkTransparent,
                 },
-                headerTintColor: "dodgerblue",
+                headerTintColor: COLORS.darkTransparent,
             })}>
 
             <Drawer.Screen
@@ -113,10 +106,10 @@ export function DrawerNavigator() {
                 options={{
                     headerShown: true,
                     drawerActiveTintColor: COLORS.white,
-                    drawerActiveBackgroundColor: "dodgerblue",
-                    title: ({focused}) => (<Text style={{color: focused ? COLORS.white : "dodgerblue"}}>HOME</Text>),
+                    drawerActiveBackgroundColor: COLORS.darkTransparent,
+                    title: ({focused}) => (<Text style={{color: focused ? COLORS.white : COLORS.darkTransparent}}>HOME</Text>),
                     drawerIcon: ({focused, size, color}) => (
-                        <Icon name="home" size={size} color={focused ? COLORS.white : "dodgerblue"} />
+                        <Icon name="home" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
                     ),
                 }}
             />
@@ -126,11 +119,11 @@ export function DrawerNavigator() {
                 component={Reports}
                 options={{
                     headerShown: true,
-                    title: ({focused}) =>(<Text style={{color: focused ? COLORS.white : "dodgerblue"}}>Reports</Text>),
+                    title: ({focused}) =>(<Text style={{color: focused ? COLORS.white : COLORS.darkTransparent}}>Reports</Text>),
                     drawerActiveTintColor: COLORS.white,
-                    drawerActiveBackgroundColor: "dodgerblue",
+                    drawerActiveBackgroundColor: COLORS.darkTransparent,
                     drawerIcon: ({focused, size}) => (
-                        <Icon name="plus" size={size} color={focused ? COLORS.white : "dodgerblue"} />
+                        <Icon name="plus" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
                     ),
                 }}
             />
@@ -150,7 +143,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: 20,
+        paddingTop: 10,
     },
     footerButtonContainer: {
         position: 'absolute',
@@ -186,7 +179,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     drawerItemLabel: {
-        color: "dodgerblue",
-        fontSize: 16,
+        color: COLORS.darkTransparent,
+        fontSize: 13,
     },
 });

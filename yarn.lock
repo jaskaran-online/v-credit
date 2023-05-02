@@ -1529,6 +1529,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@callstack/react-theme-provider@npm:^3.0.8":
+  version: 3.0.8
+  resolution: "@callstack/react-theme-provider@npm:3.0.8"
+  dependencies:
+    deepmerge: "npm:^3.2.0"
+    hoist-non-react-statics: "npm:^3.3.0"
+  peerDependencies:
+    react: ">=16.3.0"
+  checksum: a5027ce49a3700e3dabf082de0c9c0c5e91d0b3e15c7088ca3c0dfee67e18dc61805dd52585f077a68a3ef99250c52c09bef43be06f44d547f26517df2b05691
+  languageName: node
+  linkType: hard
+
 "@egjs/hammerjs@npm:^2.0.17":
   version: 2.0.17
   resolution: "@egjs/hammerjs@npm:2.0.17"
@@ -3663,7 +3675,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-convert@npm:^1.9.0":
+"color-convert@npm:^1.9.0, color-convert@npm:^1.9.3":
   version: 1.9.3
   resolution: "color-convert@npm:1.9.3"
   dependencies:
@@ -3695,7 +3707,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-string@npm:^1.5.3, color-string@npm:^1.9.0":
+"color-string@npm:^1.5.3, color-string@npm:^1.6.0, color-string@npm:^1.9.0":
   version: 1.9.1
   resolution: "color-string@npm:1.9.1"
   dependencies:
@@ -3711,6 +3723,16 @@ __metadata:
   bin:
     color-support: bin.js
   checksum: 8dc879a976be92306773276728e0bbb0925478b2373f133a98e563c497ccd58f220b9c30cea37c72678fe071627d7391b3751a1b92aaa5e872cd278b00b96b74
+  languageName: node
+  linkType: hard
+
+"color@npm:^3.1.2":
+  version: 3.2.1
+  resolution: "color@npm:3.2.1"
+  dependencies:
+    color-convert: "npm:^1.9.3"
+    color-string: "npm:^1.6.0"
+  checksum: 480f06a09a02d40fba097b8a88616f449929e8ba33efbfba2838805e8742effcc0b89c7d223fcf2a2964961ac782d7ea6edc3a26adddc564a3ae768edc48b77c
   languageName: node
   linkType: hard
 
@@ -8337,6 +8359,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-paper@npm:^5.7.0":
+  version: 5.7.0
+  resolution: "react-native-paper@npm:5.7.0"
+  dependencies:
+    "@callstack/react-theme-provider": "npm:^3.0.8"
+    color: "npm:^3.1.2"
+    use-latest-callback: "npm:^0.1.5"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-safe-area-context: "*"
+    react-native-vector-icons: "*"
+  checksum: 58e82bddff5bd47ea387cef3e7abec1c7b26e86e6881145e0a9981c49570a77d066105b9d6414fcd3d4a8676e17827d3c7feae93728d2b8a8407121e4c3c1ccd
+  languageName: node
+  linkType: hard
+
 "react-native-reanimated@npm:~2.9.1":
   version: 2.9.1
   resolution: "react-native-reanimated@npm:2.9.1"
@@ -10157,6 +10195,7 @@ __metadata:
     react-native-gesture-handler: "npm:~2.5.0"
     react-native-mmkv: "npm:^2.8.0"
     react-native-pager-view: "npm:5.4.24"
+    react-native-paper: "npm:^5.7.0"
     react-native-reanimated: "npm:~2.9.1"
     react-native-safe-area-context: "npm:4.3.1"
     react-native-screens: "npm:~3.15.0"
