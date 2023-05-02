@@ -5,7 +5,7 @@ import {
     DrawerItemList,
 } from '@react-navigation/drawer';
 import React, {useContext, useState} from 'react';
-import { SimpleLineIcons as Icon } from '@expo/vector-icons';
+import { Fontisto as Icon } from '@expo/vector-icons';
 import {
     Image,
     Linking,
@@ -123,7 +123,7 @@ export function DrawerNavigator() {
                     drawerActiveTintColor: COLORS.white,
                     drawerActiveBackgroundColor: COLORS.darkTransparent,
                     drawerIcon: ({focused, size}) => (
-                        <Icon name="plus" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
+                        <Icon name="nav-icon-list-a" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
                     ),
                 }}
             />
