@@ -2450,6 +2450,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-navigation/material-top-tabs@npm:^6.6.2":
+  version: 6.6.2
+  resolution: "@react-navigation/material-top-tabs@npm:6.6.2"
+  dependencies:
+    color: "npm:^4.2.3"
+    warn-once: "npm:^0.1.0"
+  peerDependencies:
+    "@react-navigation/native": ^6.0.0
+    react: "*"
+    react-native: "*"
+    react-native-pager-view: ">= 4.0.0"
+    react-native-tab-view: ">= 3.0.0"
+  checksum: 72366a7ee31d312d3210a75338097bdffc598bf37cca7cd8546a4ac31b68ac551efd6afa26d5ce6b8105381c86e0a2d0152b00d6fe958f4c7bbb29caf862f74b
+  languageName: node
+  linkType: hard
+
 "@react-navigation/native-stack@npm:^6.9.12":
   version: 6.9.12
   resolution: "@react-navigation/native-stack@npm:6.9.12"
@@ -2510,17 +2526,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/flash-list@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "@shopify/flash-list@npm:1.4.3"
+"@shopify/flash-list@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@shopify/flash-list@npm:1.1.0"
   dependencies:
-    recyclerlistview: "npm:4.2.0"
+    recyclerlistview: "npm:4.0.1"
     tslib: "npm:2.4.0"
   peerDependencies:
     "@babel/runtime": "*"
     react: "*"
     react-native: "*"
-  checksum: 75c5284338b6f4f44fa1d4a1002fa10536b45867b7267f149142526e57b641315affee11127d9daab0b97ddbb8bc2aea5a9f1fe031fddf0f47e25426ff82b339
+  checksum: 6a103b1ee187dc77c5d2febc81bcc95a0e1cd6d608841e4e75e84e6866205a1591719f090732249e004a5dd6db85b5ed842d85bcbe60827838b40528b9242748
   languageName: node
   linkType: hard
 
@@ -3912,6 +3928,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"core-js@npm:^1.0.0":
+  version: 1.2.7
+  resolution: "core-js@npm:1.2.7"
+  checksum: 133c98831bc453c141faba43aa31b5d39af32512ff347cc3c8e03e67994269da80766e22b9a91df46f29ee933603889dc1d16e13f014f8c7d6ea9ede73c2892e
+  languageName: node
+  linkType: hard
+
 "core-util-is@npm:~1.0.0":
   version: 1.0.3
   resolution: "core-util-is@npm:1.0.3"
@@ -4337,7 +4360,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"encoding@npm:^0.1.13":
+"encoding@npm:^0.1.11, encoding@npm:^0.1.13":
   version: 0.1.13
   resolution: "encoding@npm:0.1.13"
   dependencies:
@@ -4834,6 +4857,21 @@ __metadata:
   version: 1.0.2
   resolution: "fbjs-css-vars@npm:1.0.2"
   checksum: 1f765b6fd83859cafb3b8e8a06a3a68a9ec028b2e299f64b7f1ae8e74287be0f29ee9e10571147aa27a76f65da261edafbf144752de324cdf9eb4c13f49add49
+  languageName: node
+  linkType: hard
+
+"fbjs@npm:^0.8.9":
+  version: 0.8.18
+  resolution: "fbjs@npm:0.8.18"
+  dependencies:
+    core-js: "npm:^1.0.0"
+    isomorphic-fetch: "npm:^2.1.1"
+    loose-envify: "npm:^1.0.0"
+    object-assign: "npm:^4.1.0"
+    promise: "npm:^7.1.1"
+    setimmediate: "npm:^1.0.5"
+    ua-parser-js: "npm:^0.7.30"
+  checksum: 5c47995975b920ccef44be8616ca4af71acfd14707b740e346645f09970109da18df82c96598714e70f237d7416aa49099cb1c0111591afcdee878f24136044a
   languageName: node
   linkType: hard
 
@@ -5896,7 +5934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-stream@npm:^1.1.0":
+"is-stream@npm:^1.0.1, is-stream@npm:^1.1.0":
   version: 1.1.0
   resolution: "is-stream@npm:1.1.0"
   checksum: e04ef26bd08243470b82d5e2dd923663b24bd48313e662c678f9623e67174a19e2cb957bb895f1d1ecbe8b2157946c512b1cf64817da8bdc85a981ed3b51eab3
@@ -5983,6 +6021,16 @@ __metadata:
   version: 3.0.1
   resolution: "isobject@npm:3.0.1"
   checksum: 63ee4c1b8002898c138728082399ad3f3f77f6e2f1ee8cc286bb4641aebcaaecb0931c608a64525471a95356daf42ea35b2f2610e15ea2c9ba6a6b4ab7b909fc
+  languageName: node
+  linkType: hard
+
+"isomorphic-fetch@npm:^2.1.1":
+  version: 2.2.1
+  resolution: "isomorphic-fetch@npm:2.2.1"
+  dependencies:
+    node-fetch: "npm:^1.0.1"
+    whatwg-fetch: "npm:>=0.10.0"
+  checksum: be884d501ff03c1d216dfbb1145e444e72e62d06ad150ed396eddb521d42d23de68ae6af0d9cdbe30aa643a0702fe81c0b3f11e5c40f3cecebda844a4459b8ea
   languageName: node
   linkType: hard
 
@@ -7356,6 +7404,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-fetch@npm:^1.0.1":
+  version: 1.7.3
+  resolution: "node-fetch@npm:1.7.3"
+  dependencies:
+    encoding: "npm:^0.1.11"
+    is-stream: "npm:^1.0.1"
+  checksum: 9933c0b89424e6d0a4897401fdff1b65b7efc1d60ed6e60a75b4951a5db6785841a8e295578787d0b21eb1692f4d37163d22c96963e91f518da813b0f46b36b7
+  languageName: node
+  linkType: hard
+
 "node-fetch@npm:^2.2.0, node-fetch@npm:^2.6.0, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.7":
   version: 2.6.9
   resolution: "node-fetch@npm:2.6.9"
@@ -8128,7 +8186,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:15.8.1, prop-types@npm:^15.7.2":
+"prop-types@npm:15.5.8":
+  version: 15.5.8
+  resolution: "prop-types@npm:15.5.8"
+  dependencies:
+    fbjs: "npm:^0.8.9"
+  checksum: 9f70ba588bf875ce289395b8272d607d3ed6eca71c9d90bb1328def535ee401304663c9ebb39bbb06cf88f4b622408f1651ab6496036da3cfa6eac8a3d94f411
+  languageName: node
+  linkType: hard
+
+"prop-types@npm:^15.7.2":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -8443,6 +8510,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-tab-view@npm:^3.5.1":
+  version: 3.5.1
+  resolution: "react-native-tab-view@npm:3.5.1"
+  dependencies:
+    use-latest-callback: "npm:^0.1.5"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-pager-view: "*"
+  checksum: 964529ab46f4a20e563527750164021cac2fcb235501801dde47221c1d6a810a41950daefc72df01926743ba29f11a876db645a314e8bc549e79d24fa4f0b357
+  languageName: node
+  linkType: hard
+
 "react-native-web@npm:~0.18.7":
   version: 0.18.12
   resolution: "react-native-web@npm:0.18.12"
@@ -8610,17 +8690,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recyclerlistview@npm:4.2.0":
-  version: 4.2.0
-  resolution: "recyclerlistview@npm:4.2.0"
+"recyclerlistview@npm:4.0.1":
+  version: 4.0.1
+  resolution: "recyclerlistview@npm:4.0.1"
   dependencies:
     lodash.debounce: "npm:4.0.8"
-    prop-types: "npm:15.8.1"
+    prop-types: "npm:15.5.8"
     ts-object-utils: "npm:0.0.5"
   peerDependencies:
     react: ">= 15.2.1"
     react-native: ">= 0.30.0"
-  checksum: df2720cfe0857c8e060518c915b68f7358c14b2b98735834b4b32fd09be3ab0140550693131c701ca92b2c57e8d11a4b88041fd868e78710958dc0765ab1f6bb
+  checksum: c3e2429dd15487d489645a5a721325ddbbbcb96b6ebef2dbd4d5defd051a723e4046018234ab83b8b9e152346b997c78bab2b3d00868464dd9fc73d32a79ac4f
   languageName: node
   linkType: hard
 
@@ -10175,9 +10255,10 @@ __metadata:
     "@react-native-community/datetimepicker": "npm:6.2.0"
     "@react-native-masked-view/masked-view": "npm:0.2.7"
     "@react-navigation/drawer": "npm:^6.6.2"
+    "@react-navigation/material-top-tabs": "npm:^6.6.2"
     "@react-navigation/native": "npm:^6.1.6"
     "@react-navigation/native-stack": "npm:^6.9.12"
-    "@shopify/flash-list": "npm:^1.4.3"
+    "@shopify/flash-list": "npm:1.1.0"
     "@tanstack/react-query": "npm:^4.29.5"
     axios: "npm:^1.4.0"
     expo: "npm:~46.0.21"
@@ -10200,6 +10281,7 @@ __metadata:
     react-native-safe-area-context: "npm:4.3.1"
     react-native-screens: "npm:~3.15.0"
     react-native-svg: "npm:12.3.0"
+    react-native-tab-view: "npm:^3.5.1"
     react-native-web: "npm:~0.18.7"
     react-navigation: "npm:^4.4.4"
     tailwindcss: "npm:^3.3.2"
@@ -10270,7 +10352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"whatwg-fetch@npm:^3.0.0":
+"whatwg-fetch@npm:>=0.10.0, whatwg-fetch@npm:^3.0.0":
   version: 3.6.2
   resolution: "whatwg-fetch@npm:3.6.2"
   checksum: 2752427eba29acff1469071044c3006d2a8800f45a2290a451b6c9dab762bd36767a571f15bfddcd1d6f86f27f7fd87364ed8dea7785cbf4782b70e263590cb9

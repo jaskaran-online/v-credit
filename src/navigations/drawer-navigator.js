@@ -32,7 +32,7 @@ function CustomDrawerContent(props) {
                             <Text variant={"titleMedium"}>Jaskaran Singh</Text>
                             <Text variant={"bodySmall"} className={"text-slate-600"}>Webcooks.in</Text>
                         </View>
-                        <Avatar.Text size={50} color="white" className="p-1" label="JS" />
+                        <Avatar.Text size={50} color="white" labelStyle={{ fontSize :20 }} label="JS" />
                     </View>
                 </View>
                 <DrawerItemList {...props} />
@@ -40,7 +40,7 @@ function CustomDrawerContent(props) {
                 <DrawerItem
                     label="App rating"
                     labelStyle={styles.drawerItemLabel}
-                    onPress={() => Linking.openURL('market://details?id=com.v-credit')}
+                    onPress={() => alert('In Progress')}
                     icon={({focused, size, color}) => (
                         <Icon name="star" size={size - 5} color={COLORS.primary} />
                     )}
@@ -49,7 +49,7 @@ function CustomDrawerContent(props) {
                 <DrawerItem
                     label="Invite Friends"
                     labelStyle={styles.drawerItemLabel}
-                    onPress={() => Linking.openURL('https://play.google.com/store/apps/details?id=com.v-credit&hl=en_IN&gl=US')}
+                    onPress={() => alert('In Progress')}
                     icon={({focused, size, color}) => (
                         <Icon
                             name="share"
@@ -107,6 +107,7 @@ export function DrawerNavigator() {
                     headerShown: true,
                     drawerActiveTintColor: COLORS.white,
                     drawerActiveBackgroundColor: COLORS.darkTransparent,
+                    headerStyle : { backgroundColor : '#dbeafe'},
                     title: ({focused}) => (<Text style={{color: focused ? COLORS.white : COLORS.darkTransparent}}>HOME</Text>),
                     drawerIcon: ({focused, size, color}) => (
                         <Icon name="home" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
