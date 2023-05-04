@@ -15,14 +15,28 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSContactsUsageDescription": "Allow $(PRODUCT_NAME) to access your contacts."
+      },
+      "bundleIdentifier": "com.devjaskaransingh.vcredit",
+      "runtimeVersion": {
+        "policy": "sdkVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.devjaskaransingh.vcredit"
+      "package": "com.devjaskaransingh.vcredit",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS"
+      ],
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -46,6 +60,14 @@
           "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d0c8e75a-be14-42b6-a9ee-72aece5dff4b"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d0c8e75a-be14-42b6-a9ee-72aece5dff4b"
+    }
   }
 }
