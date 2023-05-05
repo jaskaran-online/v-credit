@@ -9423,16 +9423,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-mmkv@npm:^2.8.0":
-  version: 2.8.0
-  resolution: "react-native-mmkv@npm:2.8.0"
-  peerDependencies:
-    react: "*"
-    react-native: ">=0.71.0"
-  checksum: 6652eb11835e586174827f26e745d121f1d6f3c2cb25f985f6ca6374ed50aea8b4932c6a026a4ef5db9c42261bc2d91312f845c59388e05c490fab55f5776302
-  languageName: node
-  linkType: hard
-
 "react-native-pager-view@npm:5.4.24":
   version: 5.4.24
   resolution: "react-native-pager-view@npm:5.4.24"
@@ -11421,7 +11411,6 @@ __metadata:
     react-hook-form: "npm:^7.43.9"
     react-native: "npm:0.69.9"
     react-native-gesture-handler: "npm:~2.5.0"
-    react-native-mmkv: "npm:^2.8.0"
     react-native-pager-view: "npm:5.4.24"
     react-native-paper: "npm:^5.7.0"
     react-native-reanimated: "npm:~2.9.1"
