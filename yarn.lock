@@ -5316,28 +5316,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-image-loader@npm:~3.2.0":
-  version: 3.2.0
-  resolution: "expo-image-loader@npm:3.2.0"
-  peerDependencies:
-    expo: "*"
-  checksum: 218404238d21809ea951d5455fd964d995de1bc6a10dddc2e2fe6a97699f0e2b981301004596e786f81a3a3649aab11ab4f9d8c796f6b2eeca41d29ea4b158a2
-  languageName: node
-  linkType: hard
-
-"expo-image-picker@npm:~13.3.1":
-  version: 13.3.1
-  resolution: "expo-image-picker@npm:13.3.1"
-  dependencies:
-    "@expo/config-plugins": "npm:~5.0.0"
-    expo-image-loader: "npm:~3.2.0"
-    uuid: "npm:7.0.2"
-  peerDependencies:
-    expo: "*"
-  checksum: 5b6124f82cdee204f8c177ea216be8e2b5b078458799a9c2202775a340f2eee69a5890db76f7827ebd4cb812e44fac215af03dc2e967b351d92286bf2d05a7ef
-  languageName: node
-  linkType: hard
-
 "expo-image@npm:1.2.1":
   version: 1.2.1
   resolution: "expo-image@npm:1.2.1"
@@ -11392,15 +11370,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:7.0.2":
-  version: 7.0.2
-  resolution: "uuid@npm:7.0.2"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: 255a5f4e2ce7ce52fa5bd794b0bdf77815964f6005c6592ae2ca6b1c81950dfbf537b8129e647a387e2e8c94640c69241d162025025a7ad804b02be16a5a0a98
-  languageName: node
-  linkType: hard
-
 "uuid@npm:9.0.0, uuid@npm:^9.0.0":
   version: 9.0.0
   resolution: "uuid@npm:9.0.0"
@@ -11458,7 +11427,6 @@ __metadata:
     expo-contacts: "npm:~10.3.0"
     expo-doctor: "npm:^1.0.6"
     expo-image: "npm:1.2.1"
-    expo-image-picker: "npm:~13.3.1"
     expo-splash-screen: "npm:~0.16.2"
     expo-status-bar: "npm:~1.4.4"
     expo-updates: "npm:~0.14.7"
