@@ -1877,9 +1877,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/eas-json@npm:3.10.2":
-  version: 3.10.2
-  resolution: "@expo/eas-json@npm:3.10.2"
+"@expo/eas-json@npm:3.11.0":
+  version: 3.11.0
+  resolution: "@expo/eas-json@npm:3.11.0"
   dependencies:
     "@babel/code-frame": "npm:7.18.6"
     "@expo/eas-build-job": "npm:1.0.10"
@@ -1892,7 +1892,7 @@ __metadata:
     semver: "npm:7.3.8"
     terminal-link: "npm:2.1.1"
     tslib: "npm:2.4.1"
-  checksum: 3c4c26567c65fb93e37fd3d04f1c17e8c6bd7ac7d063f167e7c2c3ae2cf33642f9f2a97d248da82cf0249cab9d21fd36cd0bcadb418f03e2e0acc47affe311f6
+  checksum: 88fbcb59fa95ddaf87b668aab1ae7b10f0a9bab84a8bf57839d8254d3e7c667b91a8889ea43a174a5ce414b56dbeec96b33017ace536d23ff75b2966abe9e17d
   languageName: node
   linkType: hard
 
@@ -3104,6 +3104,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@yarnpkg/lockfile@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@yarnpkg/lockfile@npm:1.1.0"
+  checksum: 99b0cf35618e556472c7d12dc81b50da38414961a673670f14196583407a0ec2fa83c7fae2514ab1f2c3981eca39673cae37310e67d6a49c9d8a3c0afcad1454
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:^1.0.0":
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
@@ -4057,7 +4064,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ci-info@npm:^3.2.0, ci-info@npm:^3.3.0":
+"ci-info@npm:^3.2.0, ci-info@npm:^3.3.0, ci-info@npm:^3.7.0":
   version: 3.8.0
   resolution: "ci-info@npm:3.8.0"
   checksum: cbde5915261038659da39e508b688acd0baa981a73dc34357865957403383e0475b050c2f44971a3b37523849973af345724feb8f2e4a8eddd6db41be708f4ba
@@ -4870,9 +4877,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eas-cli@npm:^3.10.2":
-  version: 3.10.2
-  resolution: "eas-cli@npm:3.10.2"
+"eas-cli@npm:^3.11.0":
+  version: 3.11.0
+  resolution: "eas-cli@npm:3.11.0"
   dependencies:
     "@expo/apple-utils": "npm:1.2.0"
     "@expo/code-signing-certificates": "npm:0.0.5"
@@ -4880,7 +4887,7 @@ __metadata:
     "@expo/config-plugins": "npm:5.0.4"
     "@expo/config-types": "npm:47.0.0"
     "@expo/eas-build-job": "npm:1.0.10"
-    "@expo/eas-json": "npm:3.10.2"
+    "@expo/eas-json": "npm:3.11.0"
     "@expo/json-file": "npm:8.2.37"
     "@expo/multipart-body-parser": "npm:1.1.0"
     "@expo/osascript": "npm:2.0.33"
@@ -4950,7 +4957,7 @@ __metadata:
     wrap-ansi: "npm:7.0.0"
   bin:
     eas: bin/run
-  checksum: 741685b2d20293b32774fa297fa38443e1d9cbd2f79e49c21407a561e9b4d51286a8bf8b88b7ac4cf8aec0c9bb016794bce12413bd98373e4122b41d75c056f9
+  checksum: b7539e5333f8b551de3d8b279d3df77f9a4286bb69b7fd35f87749f01eb1b5c5d8a13f774c98206287b77ca829c2684b01f3732baf4dcc6ebbca51239809832d
   languageName: node
   linkType: hard
 
@@ -5734,7 +5741,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-yarn-workspace-root@npm:~2.0.0":
+"find-yarn-workspace-root@npm:^2.0.0, find-yarn-workspace-root@npm:~2.0.0":
   version: 2.0.0
   resolution: "find-yarn-workspace-root@npm:2.0.0"
   dependencies:
@@ -6793,7 +6800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-wsl@npm:^2.2.0":
+"is-wsl@npm:^2.1.1, is-wsl@npm:^2.2.0":
   version: 2.2.0
   resolution: "is-wsl@npm:2.2.0"
   dependencies:
@@ -7239,6 +7246,15 @@ __metadata:
   version: 6.0.3
   resolution: "kind-of@npm:6.0.3"
   checksum: 4adceee06111de8a2d02e7b542c957caad38f2d54c522da0387f4735804bf1819b2ccd918c8d1c8a73276caf9d728fc8276b53e142d23879c4728a6edcbdf722
+  languageName: node
+  linkType: hard
+
+"klaw-sync@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "klaw-sync@npm:6.0.0"
+  dependencies:
+    graceful-fs: "npm:^4.1.11"
+  checksum: 039ecfdc7f5fb10f7c2bfa372ce89f3553e481cb8791939a6f8a92afd3dcb5050120b70a667725a1e966f0dd83d17f7cc9069b8c6e16685767e112fb78ac4373
   languageName: node
   linkType: hard
 
@@ -8605,6 +8621,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"open@npm:^7.4.2":
+  version: 7.4.2
+  resolution: "open@npm:7.4.2"
+  dependencies:
+    is-docker: "npm:^2.0.0"
+    is-wsl: "npm:^2.1.1"
+  checksum: b3619842c6ecee8dd4d6010066757e968223678f39cfbaa57c06aa1cb133383f86238b4d3071e5bb693f2526cb67e89eef0e9e6e355964ddbbcf78404853f888
+  languageName: node
+  linkType: hard
+
 "open@npm:^8.0.4, open@npm:^8.3.0":
   version: 8.4.2
   resolution: "open@npm:8.4.2"
@@ -8795,6 +8821,30 @@ __metadata:
     ansi-escapes: "npm:^3.1.0"
     cross-spawn: "npm:^6.0.5"
   checksum: e1f500e11f2c6ff197669ef0b510d6d1cc8b9b69bb04b1d99fe105ff5b9f237ae532f7ad4fa42b4f3f53c6036200491896655e776bbc8ca67c2cc7c4aa043d75
+  languageName: node
+  linkType: hard
+
+"patch-package@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "patch-package@npm:7.0.0"
+  dependencies:
+    "@yarnpkg/lockfile": "npm:^1.1.0"
+    chalk: "npm:^4.1.2"
+    ci-info: "npm:^3.7.0"
+    cross-spawn: "npm:^7.0.3"
+    find-yarn-workspace-root: "npm:^2.0.0"
+    fs-extra: "npm:^9.0.0"
+    klaw-sync: "npm:^6.0.0"
+    minimist: "npm:^1.2.6"
+    open: "npm:^7.4.2"
+    rimraf: "npm:^2.6.3"
+    semver: "npm:^5.6.0"
+    slash: "npm:^2.0.0"
+    tmp: "npm:^0.0.33"
+    yaml: "npm:^2.2.2"
+  bin:
+    patch-package: index.js
+  checksum: ee49e22164c737504781e22fcfa17743573198899f880f7bb63c19c73c5452ad6f1fc7a3c652bedd08da8fac4c55111dd18d6abe183b5fded47d23a009977286
   languageName: node
   linkType: hard
 
@@ -9970,7 +10020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^2.5.4, rimraf@npm:^2.6.2":
+"rimraf@npm:^2.5.4, rimraf@npm:^2.6.2, rimraf@npm:^2.6.3":
   version: 2.7.1
   resolution: "rimraf@npm:2.7.1"
   dependencies:
@@ -10309,6 +10359,13 @@ __metadata:
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
   checksum: b88a0f1086e3cd20c8b61f50d8afff5fba83f95167a86432f54387565c9424e5d1970612371f768c128ed4b5b1c427120382bafc8c9edf0b3737eb226b733687
+  languageName: node
+  linkType: hard
+
+"slash@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "slash@npm:2.0.0"
+  checksum: e53840c4398131459758dcad3ed7f44346198f432f7c7ed96d75b750d3e1814a02368e10252bb3ee312bc87379359887ce0783a91a2a391121c52cef93411ac8
   languageName: node
   linkType: hard
 
@@ -11395,7 +11452,7 @@ __metadata:
     "@shopify/flash-list": "npm:1.1.0"
     "@tanstack/react-query": "npm:^4.29.5"
     axios: "npm:^1.4.0"
-    eas-cli: "npm:^3.10.2"
+    eas-cli: "npm:^3.11.0"
     expo: "npm:~46.0.21"
     expo-camera: "npm:~12.5.0"
     expo-contacts: "npm:~10.3.0"
@@ -11406,6 +11463,7 @@ __metadata:
     expo-status-bar: "npm:~1.4.4"
     expo-updates: "npm:~0.14.7"
     nativewind: "npm:^2.0.11"
+    patch-package: "npm:^7.0.0"
     react: "npm:18.0.0"
     react-dom: "npm:18.0.0"
     react-hook-form: "npm:^7.43.9"
@@ -11721,7 +11779,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.1.1, yaml@npm:^2.2.1":
+"yaml@npm:^2.1.1, yaml@npm:^2.2.1, yaml@npm:^2.2.2":
   version: 2.2.2
   resolution: "yaml@npm:2.2.2"
   checksum: afa383e3cb2fcd195f99eab4942c08aaa6fbb87a2cced34a5bd0c850224d4b98684706a7564455aedf2dfce0accd7e45417d9f2942e01eba2cfb83f689b8ceff
