@@ -11,10 +11,10 @@ import {styled} from 'nativewind';
 import {COLORS} from "../../core";
 import {StatusBar} from "expo-status-bar";
 
-const StyledView = styled(TouchableOpacity)
+import { useTheme } from 'react-native-paper';
 const StyledText = styled(Text)
-
-
+import { withTheme } from 'react-native-paper';
+const StyledView = styled(TouchableOpacity)
 const Box = ({className, children, ...props}) => (
     <StyledView className={`flex text-center h-20 rounded ${className}`} {...props}>
         {children}
@@ -23,7 +23,9 @@ const Box = ({className, children, ...props}) => (
 
 
 const Tab = createMaterialTopTabNavigator();
-export default function Index() {
+function Index() {
+    const { colors } = useTheme();
+    console.log(colors)
     return (
         <View className="flex-1 bg-white">
             <StatusBar animated={true}/>
@@ -90,3 +92,5 @@ export default function Index() {
         </View>
     );
 }
+
+export default withTheme(Index);

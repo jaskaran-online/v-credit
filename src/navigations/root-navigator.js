@@ -40,11 +40,11 @@ export const Root = () => {
                         <Stack.Screen options={{headerShown: false}} name="App" component={DrawerNavigator}/>
 
                         <Stack.Screen options={{headerStyle: {backgroundColor: '#eff6ff'}, headerTitle: "Day Book"}}
-                                      name="DayBook" component={AllParties}/>
+                                      name="DayBook" component={DayBook}/>
 
                         <Stack.Screen
                             options={{headerStyle: {backgroundColor: '#eff6ff'}, headerTitle: "Party Statement"}}
-                            name="Party" component={DayBook}/>
+                            name="Party" component={AllParties}/>
 
                         <Stack.Screen options={{headerStyle: {backgroundColor: '#eff6ff'}, headerTitle: "All Parties"}}
                                       name="AllParty" component={AllTransactions}/>
