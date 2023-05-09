@@ -65,8 +65,8 @@ export const Root = () => {
     );
 };
 
-export const RootNavigator = () => (
-    <NavigationContainer>
+export const RootNavigator = ({theme}) => (
+    <NavigationContainer theme={theme}>
         <Root/>
     </NavigationContainer>
 );
