@@ -27,7 +27,7 @@ export default function Index() {
     return (
         <View className="flex-1 bg-white">
             <StatusBar animated={true}/>
-            <StyledView className="flex flex-row h-1/8 items-center space-x-2 p-2 bg-blue-100">
+            <StyledView className="flex flex-row h-1/8 items-center space-x-2 p-2 bg-blue-50">
                 <Box className="flex-1 bg-white shadow-md flex-row justify-evenly items-center">
                     <View className="bg-emerald-600 p-2 rounded-full h-[45px] w-[45px] justify-center items-center">
                         <MaterialCommunityIcons name="call-received" size={24} color="white"/>

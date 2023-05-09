@@ -32,7 +32,7 @@ export function responsiveWidth(w) {
 
 export const COLORS = {
   // base colors
-  primary: 'tomato', // green
+  primary: 'dodgerblue', // green
   secondary: '#ed3237', // dark green
   darkTransparent: '#000000d6',
   primaryFont: '#ffff',

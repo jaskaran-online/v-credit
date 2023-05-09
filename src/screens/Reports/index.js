@@ -4,7 +4,7 @@ import AllTransactions from './AllTransactions'
 import PartyStatement from './PartyStatement'
 import AllReports from './reports'
 
-export default {
+export {
     AllParties,
     AllReports,
     AllTransactions,

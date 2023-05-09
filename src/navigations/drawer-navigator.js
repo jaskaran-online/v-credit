@@ -12,7 +12,7 @@ import {
     StyleSheet,
     useWindowDimensions,
     View,
-    Pressable
+    Pressable, TouchableOpacity
 } from 'react-native';
 
 import {Reports, HomePage} from '../screens'
@@ -106,8 +106,8 @@ export function DrawerNavigator() {
                 options={{
                     headerShown: true,
                     drawerActiveTintColor: COLORS.white,
-                    drawerActiveBackgroundColor: COLORS.darkTransparent,
-                    headerStyle : { backgroundColor : '#dbeafe'},
+                    drawerActiveBackgroundColor: COLORS.primary,
+                    headerStyle : { backgroundColor : '#eff6ff'},
                     title: ({focused}) => (<Text style={{color: focused ? COLORS.white : COLORS.darkTransparent}}>HOME</Text>),
                     drawerIcon: ({focused, size, color}) => (
                         <Icon name="home" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
@@ -120,6 +120,8 @@ export function DrawerNavigator() {
                 component={Reports}
                 options={{
                     headerShown: true,
+                    headerTitle : "Reports",
+                    headerStyle : { backgroundColor : '#eff6ff'},
                     title: ({focused}) =>(<Text style={{color: focused ? COLORS.white : COLORS.darkTransparent}}>Reports</Text>),
                     drawerActiveTintColor: COLORS.white,
                     drawerActiveBackgroundColor: COLORS.darkTransparent,
