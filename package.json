@@ -9,8 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/config-plugins": "~6.0.0",
-    "@react-native-community/datetimepicker": "^6.7.3",
+    "@expo/config-plugins": "^6.0.1",
     "@react-native-masked-view/masked-view": "0.2.8",
     "@react-navigation/drawer": "^6.6.2",
     "@react-navigation/material-top-tabs": "^6.6.2",
@@ -24,9 +23,9 @@
     "expo": "^48.0.16",
     "expo-camera": "^13.2.1",
     "expo-contacts": "^12.0.1",
-    "expo-doctor": "^0.0.0",
+    "expo-doctor": "^1.0.6",
     "expo-image-picker": "^14.1.1",
-    "expo-splash-screen": "~0.18.2",
+    "expo-splash-screen": "^0.18.2",
     "expo-status-bar": "~1.4.4",
     "expo-updates": "^0.16.4",
     "nativewind": "^2.0.11",
@@ -46,6 +45,7 @@
     "react-native-tab-view": "^3.5.1",
     "react-native-web": "~0.18.7",
     "react-navigation": "^4.4.4",
+    "uuid": "^9.0.0",
     "zod": "^3.21.4",
     "zustand": "^4.3.7"
   },
