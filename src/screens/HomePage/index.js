@@ -61,7 +61,7 @@ function Index() {
                                 },
                                 shadowOpacity: 0.18,
                                 shadowRadius: 10.0,
-                                elevation: 2
+                                elevation: 1
                             },
                             tabBarActiveTintColor: COLORS.primary,
                             tabBarInactiveTintColor: COLORS.darkgray,
