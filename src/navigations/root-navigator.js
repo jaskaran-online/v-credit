@@ -13,10 +13,12 @@ const Stack = createNativeStackNavigator();
 
 export const Root = () => {
     // const status = useAuth.use.status();
-    const status = true;
+    const status = 'signOut';
+
     const hideSplash = React.useCallback(async () => {
         await SplashScreen.hideAsync();
     }, []);
+
     useEffect(() => {
         if (status !== 'idle') {
             hideSplash();
@@ -26,7 +28,7 @@ export const Root = () => {
     return (
         <Stack.Navigator
             screenOptions={{
-                headerShown: true,
+                headerShown: false,
                 gestureEnabled: false,
                 animation: 'none',
             }}
