@@ -157,8 +157,8 @@ export default function Index() {
                     }}
                     arrayList={[...colors.list]}
                     selectedArrayList={colors.selectedList}
-                    multiEnable={true}
                     textInputMode="outlined"
+                    hideSearchBox={true}
                 />
             </View>
         </StyledView>

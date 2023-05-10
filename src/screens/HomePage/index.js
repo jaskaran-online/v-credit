@@ -79,12 +79,12 @@ function Index() {
             </View>
             <View className={"absolute bottom-10 flex w-full flex-row justify-evenly space-x-2 px-4 "}>
                 <View className={"flex-1"}>
-                    <Button mode={"contained"} className={"bg-sky-500 shadow shadow-slate-300"}>
+                    <Button mode={"contained"} onPress={() => console.log('Take Payment')} className={"bg-sky-500 shadow shadow-slate-300"}>
                         Take Payment
                     </Button>
                 </View>
                 <View className={"flex-1"}>
-                    <Button mode={"contained"} className={"bg-amber-500 shadow shadow-slate-300"}>
+                    <Button mode={"contained"} onPress={() => console.log('Give Create')} className={"bg-amber-500 shadow shadow-slate-300"}>
                         Give Create
                     </Button>
                 </View>
