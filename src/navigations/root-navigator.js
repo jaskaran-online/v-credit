@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator();
 
 export const Root = () => {
     // const status = useAuth.use.status();
-    const status = 'signOut';
+    const status = 'login';
 
     const hideSplash = React.useCallback(async () => {
         await SplashScreen.hideAsync();
@@ -28,14 +28,16 @@ export const Root = () => {
     return (
         <Stack.Navigator
             screenOptions={{
-                headerShown: false,
-                gestureEnabled: false,
-                animation: 'none',
+                headerShown: true,
+                gestureEnabled: true,
+                animation: 'flip',
             }}
         >
             <Stack.Group>
                 {status === 'signOut' ? (
-                    <Stack.Screen name="Auth" component={AuthNavigator}/>
+                    <Stack.Screen screenOptions={{
+                        headerShown: false,
+                    }} name="Auth" component={AuthNavigator}/>
                 ) : (
                     <Stack.Group>
 
@@ -46,14 +48,14 @@ export const Root = () => {
 
                         <Stack.Screen
                             options={{headerStyle: {backgroundColor: '#eff6ff'}, headerTitle: "Party Statement"}}
-                            name="Party" component={AllParties}/>
+                            name="Party" component={PartyStatement}/>
 
                         <Stack.Screen options={{headerStyle: {backgroundColor: '#eff6ff'}, headerTitle: "All Parties"}}
-                                      name="AllParty" component={AllTransactions}/>
+                                      name="AllParty" component={AllParties}/>
 
                         <Stack.Screen
                             options={{headerStyle: {backgroundColor: '#eff6ff'}, headerTitle: "All Transactions"}}
-                            name="AllTransactions" component={PartyStatement}/>
+                            name="AllTransactions" component={AllTransactions}/>
 
                         <Stack.Screen options={{
                             headerStyle: {backgroundColor: '#eff6ff'},
