@@ -1,76 +1,118 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import * as SplashScreen from 'expo-splash-screen';
-import React, {useEffect} from 'react';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import * as SplashScreen from "expo-splash-screen";
+import React, { useEffect } from "react";
 
 // import { useAuth } from './../core';
 
-import {AuthNavigator} from './auth-navigator';
-import {NavigationContainer} from './navigation-container';
-import {DrawerNavigator} from './drawer-navigator';
-import {AllParties, AllReports, AllTransactions, DayBook, PartyStatement} from "../screens/Reports";
+import { AuthNavigator } from "./auth-navigator";
+import { NavigationContainer } from "./navigation-container";
+import { DrawerNavigator } from "./drawer-navigator";
+import {
+  AllParties,
+  AllReports,
+  AllTransactions,
+  DayBook,
+  PartyStatement,
+} from "../screens/Reports";
 
 const Stack = createNativeStackNavigator();
 
 export const Root = () => {
-    // const status = useAuth.use.status();
-    const status = 'login';
+  // const status = useAuth.use.status();
+  const status = "login";
 
-    const hideSplash = React.useCallback(async () => {
-        await SplashScreen.hideAsync();
-    }, []);
+  const hideSplash = React.useCallback(async () => {
+    await SplashScreen.hideAsync();
+  }, []);
 
-    useEffect(() => {
-        if (status !== 'idle') {
-            hideSplash();
-        }
-    }, [hideSplash, status]);
+  useEffect(() => {
+    if (status !== "idle") {
+      hideSplash();
+    }
+  }, [hideSplash, status]);
 
-    return (
-        <Stack.Navigator
+  const headerBackgroundColor = { backgroundColor: "#eff6ff" };
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        gestureEnabled: true,
+        animation: "flip",
+      }}
+    >
+      <Stack.Group>
+        {status === "signOut" ? (
+          <Stack.Screen
             screenOptions={{
-                headerShown: true,
-                gestureEnabled: true,
-                animation: 'flip',
+              headerShown: false,
             }}
-        >
-            <Stack.Group>
-                {status === 'signOut' ? (
-                    <Stack.Screen screenOptions={{
-                        headerShown: false,
-                    }} name="Auth" component={AuthNavigator}/>
-                ) : (
-                    <Stack.Group>
+            name="Auth"
+            component={AuthNavigator}
+          />
+        ) : (
+          <Stack.Group>
+            {/* App Drawer Route Navigator */}
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="App"
+              component={DrawerNavigator}
+            />
 
-                        <Stack.Screen options={{headerShown: false}} name="App" component={DrawerNavigator}/>
+            {/* Report Screens */}
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerTitle: "Day Book",
+              }}
+              name="DayBook"
+              component={DayBook}
+            />
 
-                        <Stack.Screen options={{headerStyle: {backgroundColor: '#eff6ff'}, headerTitle: "Day Book"}}
-                                      name="DayBook" component={DayBook}/>
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerTitle: "Party Statement",
+              }}
+              name="Party"
+              component={PartyStatement}
+            />
 
-                        <Stack.Screen
-                            options={{headerStyle: {backgroundColor: '#eff6ff'}, headerTitle: "Party Statement"}}
-                            name="Party" component={PartyStatement}/>
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerTitle: "All Parties",
+              }}
+              name="AllParty"
+              component={AllParties}
+            />
 
-                        <Stack.Screen options={{headerStyle: {backgroundColor: '#eff6ff'}, headerTitle: "All Parties"}}
-                                      name="AllParty" component={AllParties}/>
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerTitle: "All Transactions",
+              }}
+              name="AllTransactions"
+              component={AllTransactions}
+            />
 
-                        <Stack.Screen
-                            options={{headerStyle: {backgroundColor: '#eff6ff'}, headerTitle: "All Transactions"}}
-                            name="AllTransactions" component={AllTransactions}/>
-
-                        <Stack.Screen options={{
-                            headerStyle: {backgroundColor: '#eff6ff'},
-                            headerTitle: "Cost Centre Wise Profit"
-                        }} name="CostCenter" component={AllReports}/>
-
-                    </Stack.Group>
-                )}
-            </Stack.Group>
-        </Stack.Navigator>
-    );
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerTitle: "Cost Centre Wise Profit",
+              }}
+              name="CostCenter"
+              component={AllReports}
+            />
+          </Stack.Group>
+        )}
+      </Stack.Group>
+    </Stack.Navigator>
+  );
 };
 
-export const RootNavigator = ({theme}) => (
-    <NavigationContainer theme={theme}>
-        <Root/>
-    </NavigationContainer>
+export const RootNavigator = ({ theme }) => (
+  <NavigationContainer theme={theme}>
+    <Root />
+  </NavigationContainer>
 );
