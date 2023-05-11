@@ -1,11 +1,13 @@
-import {View, TouchableOpacity} from 'react-native';
-import {FlashList} from "@shopify/flash-list";
-import {List, Text, Divider, TextInput, Menu, Searchbar} from 'react-native-paper'
-import {useState} from "react";
-import {Feather, MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
-import {StatusBar} from "expo-status-bar";
-import {styled} from "nativewind";
-import {DatePickerInput} from 'react-native-paper-dates';
+import { Feather, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { FlashList } from "@shopify/flash-list";
+import { StatusBar } from "expo-status-bar";
+import { styled } from "nativewind";
+import { useState } from "react";
+import { TouchableOpacity, View } from 'react-native';
+import { Searchbar, Text } from 'react-native-paper';
+import { DatePickerInput } from 'react-native-paper-dates';
+
+import {TwoCards} from '../../Components/TwoCards'
 
 const renderHeader = () => <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
     <View className="flex-1 border-b-2 border-slate-300 w-1/3">
@@ -118,26 +120,7 @@ export default function Index() {
                 mode={"outlined"}
                 className={"bg-blue-50 mx-1"}
             />
-            <View className={"flex flex-row space-x-2 mt-1"}>
-                <Box className="flex-1 bg-white shadow-sm flex-row justify-evenly items-center">
-                    <View className="bg-emerald-600 p-1 rounded-full h-[40px] w-[40px] justify-center items-center">
-                        <MaterialCommunityIcons name="call-received" size={20} color="white"/>
-                    </View>
-                    <View>
-                        <Text variant={"bodyMedium"}>To Receive</Text>
-                        <Text variant={"titleMedium"} className="font-bold text-slate-700">$100</Text>
-                    </View>
-                </Box>
-                <Box className="flex-1 bg-white shadow-sm flex-row justify-evenly items-center">
-                    <View className="bg-red-500 p-1 rounded-full h-[40px] w-[40px] justify-center items-center">
-                        <MaterialIcons name="call-made" size={20} color="white"/>
-                    </View>
-                    <View>
-                        <Text variant={"bodyMedium"}>To Pay</Text>
-                        <Text variant={"titleMedium"} className="font-bold text-slate-700">$140</Text>
-                    </View>
-                </Box>
-            </View>
+            <TwoCards />
         </StyledView>
 
         <View className={"flex flex-row justify-between w-full px-3 items-center py-4"}>

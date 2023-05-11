@@ -7,8 +7,8 @@ import Transactions from "./../HomePage/Transactions";
 import { StatusBar } from "expo-status-bar";
 
 import { withTheme } from "react-native-paper";
-import { TabNavigator } from "./Components/TabNavigator";
-import { TwoCards } from "./Components/TwoCards";
+import { TabNavigator } from "../Components/TabNavigator";
+import { TwoCards } from "../Components/TwoCards";
 
 function Index() {
   return (

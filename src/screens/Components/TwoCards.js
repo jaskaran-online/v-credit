@@ -1,8 +1,7 @@
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { styled } from "nativewind";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
-import { StyledView } from "..";
 
 const StyledView = styled(TouchableOpacity);
 
