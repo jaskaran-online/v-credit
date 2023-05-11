@@ -14,10 +14,10 @@ export function TabNavigator({ Customers, Transactions }) {
       backgroundColor: "white",
       shadowOffset: {
         width: 0,
-        height: 4,
+        height: 1,
       },
       shadowOpacity: 0.18,
-      shadowRadius: 10.0,
+      shadowRadius: 5.0,
       elevation: 1,
     },
     tabBarActiveTintColor: COLORS.primary,
