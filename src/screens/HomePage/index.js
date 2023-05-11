@@ -1,4 +1,3 @@
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { View } from "react-native";
 import { Button } from "react-native-paper";
 
@@ -8,10 +7,8 @@ import Transactions from "./../HomePage/Transactions";
 import { StatusBar } from "expo-status-bar";
 
 import { withTheme } from "react-native-paper";
-import { TabNavigator } from "./TabNavigator";
-import { TwoCards } from "./TwoCards";
-
-export const Tab = createMaterialTopTabNavigator();
+import { TabNavigator } from "./Components/TabNavigator";
+import { TwoCards } from "./Components/TwoCards";
 
 function Index() {
   return (
@@ -21,32 +18,38 @@ function Index() {
       <View className={"flex-1"}>
         <TabNavigator Customers={Customers} Transactions={Transactions} />
       </View>
-      <View
-        className={
-          "absolute bottom-10 flex w-full flex-row justify-evenly space-x-2 px-4 "
-        }
-      >
-        <View className={"flex-1"}>
-          <Button
-            mode={"contained"}
-            onPress={() => console.log("Take Payment")}
-            className={"bg-sky-500 shadow shadow-slate-300"}
-          >
-            Take Payment
-          </Button>
-        </View>
-        <View className={"flex-1"}>
-          <Button
-            mode={"contained"}
-            onPress={() => console.log("Give Create")}
-            className={"bg-amber-500 shadow shadow-slate-300"}
-          >
-            Give Create
-          </Button>
-        </View>
-      </View>
+      <FloatingButtons />
     </View>
   );
 }
 
 export default withTheme(Index);
+
+function FloatingButtons({}) {
+  return (
+    <View
+      className={
+        "absolute bottom-10 flex w-full flex-row justify-evenly space-x-2 px-4 "
+      }
+    >
+      <View className={"flex-1"}>
+        <Button
+          mode={"contained"}
+          onPress={() => console.log("Take Payment")}
+          className={"bg-sky-500 shadow shadow-slate-300"}
+        >
+          Take Payment
+        </Button>
+      </View>
+      <View className={"flex-1"}>
+        <Button
+          mode={"contained"}
+          onPress={() => console.log("Give Create")}
+          className={"bg-amber-500 shadow shadow-slate-300"}
+        >
+          Give Create
+        </Button>
+      </View>
+    </View>
+  );
+}
