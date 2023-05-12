@@ -33,7 +33,7 @@ function CustomDrawerContent(props) {
                 <DrawerItemList {...props} />
 
                 <DrawerItem
-                    label="App rating"
+                    label="App Rating"
                     labelStyle={styles.drawerItemLabel}
                     onPress={() => alert('Will be available soon!')}
                     icon={({size}) => (
@@ -103,7 +103,7 @@ export function DrawerNavigator() {
                     drawerActiveTintColor: COLORS.white,
                     drawerActiveBackgroundColor: COLORS.primary,
                     headerStyle : { backgroundColor : '#eff6ff'},
-                    title: ({focused}) => (<Text style={{color: focused ? COLORS.white : COLORS.darkTransparent}}>HOME</Text>),
+                    title: ({focused}) => (<Text style={{color: focused ? COLORS.white : COLORS.darkTransparent}}>Home</Text>),
                     drawerIcon: ({focused, size}) => (
                         <Icon name="home" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
                     ),
