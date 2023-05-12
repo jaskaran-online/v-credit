@@ -2,11 +2,13 @@ import {View, TouchableOpacity} from 'react-native';
 import {FlashList} from "@shopify/flash-list";
 import {List, Text, Divider} from 'react-native-paper'
 
+import navigation from '../../../navigations/root-navigator'
+
 const renderItem = ({item, index}) => <View className={"flex flex-row justify-between px-4 py-2 border-b-2 border-slate-200"}>
-    <View>
+    <TouchableOpacity onPress={() => navigation.navigate('CustomerTransactionDetails')}>
         <Text variant="titleSmall" class={"text-slate-800"}>{item.title}</Text>
         <Text variant={"labelSmall"} className="text-slate-400">{item.date}</Text>
-    </View>
+    </TouchableOpacity>
     <TouchableOpacity className={"flex flex-row justify-center items-center"}>
         <Text variant={"titleSmall"}
               className={(index % 2 === 0) ? "text-red-600" : "text-green-600"}>200</Text>

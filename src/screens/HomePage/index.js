@@ -1,11 +1,6 @@
 import { View } from "react-native";
 import { Button } from "react-native-paper";
-
-import Customers from "./../HomePage/Customers";
-import Transactions from "./../HomePage/Transactions";
-
 import { StatusBar } from "expo-status-bar";
-
 import { withTheme } from "react-native-paper";
 import { TabNavigator } from "../Components/TabNavigator";
 import { TwoCards } from "../Components/TwoCards";
@@ -16,7 +11,7 @@ function Index() {
       <StatusBar animated={true} />
       <TwoCards />
       <View className={"flex-1"}>
-        <TabNavigator Customers={Customers} Transactions={Transactions} />
+        <TabNavigator/>
       </View>
       <FloatingButtons />
     </View>

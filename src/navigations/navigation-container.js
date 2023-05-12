@@ -2,10 +2,11 @@ import { NavigationContainer as RNNavigationContainer } from '@react-navigation/
 import * as React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-export const NavigationContainer = ({ children }) => {
+
+export const NavigationContainer = ({ theme, navigationRef,  children }) => {
     return (
-        <SafeAreaProvider>
-            <RNNavigationContainer>{children}</RNNavigationContainer>
+        <SafeAreaProvider className="bg-white flex-1">
+            <RNNavigationContainer theme={theme} ref={navigationRef}>{children}</RNNavigationContainer>
         </SafeAreaProvider>
     );
 };

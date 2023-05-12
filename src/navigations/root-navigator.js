@@ -16,6 +16,8 @@ import {
   CostCenter
 } from "../screens/Reports";
 
+import CustomerTransactionDetails from "../screens/HomePage/Customers/details";
+
 const Stack = createNativeStackNavigator();
 
 export const Root = () => {
@@ -106,6 +108,15 @@ export const Root = () => {
               name="CostCenter"
               component={CostCenter}
             />
+
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerTitle: "Jaskaran",
+              }}
+              name="CustomerTransactionDetails"
+              component={CustomerTransactionDetails}
+            />
           </Stack.Group>
         )}
       </Stack.Group>
@@ -114,7 +125,22 @@ export const Root = () => {
 };
 
 export const RootNavigator = ({ theme }) => (
-  <NavigationContainer theme={theme}>
+  <NavigationContainer theme={theme} navigationRef={navigationRef}>
     <Root />
   </NavigationContainer>
 );
+
+
+export const navigationRef = React.createRef();
+const navigate = (name, params) => {
+  navigationRef.current?.navigate(name, params);
+};
+
+const replace = (name, params) => {
+  navigationRef.current?.navigate(name, params);
+};
+
+export default {
+  navigate,
+  replace,
+};
