@@ -13,6 +13,7 @@ import {
   AllTransactions,
   DayBook,
   PartyStatement,
+  CostCenter
 } from "../screens/Reports";
 
 const Stack = createNativeStackNavigator();
@@ -39,6 +40,7 @@ export const Root = () => {
         headerShown: true,
         gestureEnabled: true,
         animation: "flip",
+        headerShadowVisible: false, // applied here
       }}
     >
       <Stack.Group>
@@ -102,7 +104,7 @@ export const Root = () => {
                 headerTitle: "Cost Centre Wise Profit",
               }}
               name="CostCenter"
-              component={AllReports}
+              component={CostCenter}
             />
           </Stack.Group>
         )}
