@@ -1,26 +1,21 @@
+import { Fontisto as Icon } from '@expo/vector-icons';
 import {
     createDrawerNavigator,
     DrawerContentScrollView,
     DrawerItem,
     DrawerItemList,
 } from '@react-navigation/drawer';
-import React, {useContext, useState} from 'react';
-import { Fontisto as Icon } from '@expo/vector-icons';
+import React from 'react';
 import {
-    Image,
-    Linking,
     StyleSheet,
     useWindowDimensions,
-    View,
-    Pressable, TouchableOpacity
+    View
 } from 'react-native';
 
-import {Reports, HomePage} from '../screens'
-import {COLORS} from '../core';
-import { Button, Text, Avatar } from "react-native-paper";
+import { Avatar, Button, Text } from "react-native-paper";
+import { COLORS } from '../core';
+import { HomePage, Reports } from '../screens';
 
-const PROFILE_PIC =
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJxA5cTf-5dh5Eusm0puHbvAhOrCRPtckzjA&usqp=CAU';
 
 function CustomDrawerContent(props) {
     return (
@@ -40,8 +35,8 @@ function CustomDrawerContent(props) {
                 <DrawerItem
                     label="App rating"
                     labelStyle={styles.drawerItemLabel}
-                    onPress={() => alert('In Progress')}
-                    icon={({focused, size, color}) => (
+                    onPress={() => alert('Will be available soon!')}
+                    icon={({size}) => (
                         <Icon name="star" size={size - 5} color={COLORS.primary} />
                     )}
                 />
@@ -49,8 +44,8 @@ function CustomDrawerContent(props) {
                 <DrawerItem
                     label="Invite Friends"
                     labelStyle={styles.drawerItemLabel}
-                    onPress={() => alert('In Progress')}
-                    icon={({focused, size, color}) => (
+                    onPress={() => alert('Will be available soon!')}
+                    icon={({size}) => (
                         <Icon
                             name="share"
                             size={size - 5}
@@ -88,7 +83,7 @@ export function DrawerNavigator() {
             allowFontScaling={false}
             animationEnabled
             drawerActiveBackgroundColor={"black"}
-            screenOptions={({navigation, route}) => ({
+            screenOptions={() => ({
                 drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
                 headerShown: true,
                 headerTitleAlign: 'center', headerStyle: {
@@ -109,7 +104,7 @@ export function DrawerNavigator() {
                     drawerActiveBackgroundColor: COLORS.primary,
                     headerStyle : { backgroundColor : '#eff6ff'},
                     title: ({focused}) => (<Text style={{color: focused ? COLORS.white : COLORS.darkTransparent}}>HOME</Text>),
-                    drawerIcon: ({focused, size, color}) => (
+                    drawerIcon: ({focused, size}) => (
                         <Icon name="home" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
                     ),
                 }}
@@ -124,7 +119,7 @@ export function DrawerNavigator() {
                     headerStyle : { backgroundColor : '#eff6ff'},
                     title: ({focused}) =>(<Text style={{color: focused ? COLORS.white : COLORS.darkTransparent}}>Reports</Text>),
                     drawerActiveTintColor: COLORS.white,
-                    drawerActiveBackgroundColor: COLORS.darkTransparent,
+                    drawerActiveBackgroundColor: COLORS.primary,
                     drawerIcon: ({focused, size}) => (
                         <Icon name="nav-icon-list-a" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
                     ),
