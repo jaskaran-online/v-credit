@@ -15,6 +15,8 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 
+import {FloatingButtons} from "./../index"
+
 const renderHeader = () => (
   <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
     <View className="flex-1 border-b-2 border-slate-300 w-1/3">
@@ -264,6 +266,7 @@ export default function Index() {
         options={options}
         onOptionSelect={handleOptionSelect}
       />
+      <FloatingButtons/>
     </View>
   );
 }

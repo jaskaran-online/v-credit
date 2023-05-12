@@ -16,12 +16,12 @@ const renderHeader = () => (
       </Text>
     </View>
     <View className="flex-1 border-b-2 border-amber-400">
-      <Text variant={"bodyMedium"} className="text-right text-slate-800 mr-2">
+      <Text variant={"bodyMedium"} className="text-center text-slate-800 mr-2">
         Given
       </Text>
     </View>
     <View className="flex-1 border-b-2 border-blue-500">
-      <Text variant={"bodyMedium"} className="text-right text-slate-800">
+      <Text variant={"bodyMedium"} className="text-center text-slate-800">
         Received
       </Text>
     </View>

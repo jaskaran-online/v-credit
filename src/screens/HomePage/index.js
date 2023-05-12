@@ -20,7 +20,7 @@ function Index() {
 
 export default withTheme(Index);
 
-function FloatingButtons({}) {
+export function FloatingButtons({}) {
   return (
     <View
       className={
