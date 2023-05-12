@@ -139,7 +139,7 @@ export default function Index() {
   const [filteredList, setFilteredList] = useState(data);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
-  const [query, setQuery] = useState(false);
+  const [query, setQuery] = useState("");
   const handleSearch = (text) => {
     setQuery(text);
     const filtered = data.filter((item) =>
@@ -227,20 +227,21 @@ export default function Index() {
           "flex flex-row justify-between w-full px-3 items-center py-4"
         }
       >
-        <Searchbar
-          onChangeText={handleSearch}
-          value={query}
-          style={{
-            width: "100%",
-          }}
-          inputStyle={{
-            fontSize: 12,
-            padding: 0,
-            margin: 0,
-          }}
-          placeholder="Search Name, Amount or Txn Note"
-          className={"bg-white border-2 border-slate-200 h-12 p-0 m-0"}
-        />
+          <Searchbar
+            onChangeText={handleSearch}
+            value={query.toString()}
+            style={{
+              width: "100%",
+              backgroundColor : "transparent"
+            }}
+            inputStyle={{
+              fontSize: 12,
+              lineHeight : "unset",
+              paddingBottom: 20
+            }}
+            placeholder="Search Name, Amount or Txn Note"
+            className={"bg-white border-2 border-slate-200 h-10"}
+          />
       </View>
       <FlashList
         data={filteredList}

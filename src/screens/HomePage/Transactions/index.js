@@ -123,7 +123,7 @@ export default function Index() {
   const [filteredList, setFilteredList] = useState(data);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
-  const [query, setQuery] = useState(false);
+  const [query, setQuery] = useState("");
   const handleSearch = (text) => {
     setQuery(text);
     const filtered = data.filter((item) =>
@@ -166,15 +166,18 @@ export default function Index() {
         <View className={"flex flex-row relative"} style={{ width: "80%" }}>
           <Searchbar
             onChangeText={handleSearch}
-            value={query}
+            value={query.toString()}
             style={{
               width: "100%",
+              backgroundColor : "transparent"
             }}
             inputStyle={{
               fontSize: 12,
+              lineHeight : "unset",
+              paddingBottom: 20
             }}
             placeholder="Search Name, Amount or Txn Note"
-            className={"bg-white border-2 border-slate-200 h-12"}
+            className={"bg-white border-2 border-slate-200 h-10"}
           />
         </View>
         <View className={"flex"} style={{ width: "15%" }}>

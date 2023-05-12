@@ -141,7 +141,7 @@ export default function Index() {
   const [filteredList, setFilteredList] = useState(data);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
-  const [query, setQuery] = useState(false);
+  const [query, setQuery] = useState("");
 
   const handleSearch = (text) => {
     setQuery(text);
@@ -206,22 +206,21 @@ export default function Index() {
             <View className={"flex gap-0"}>
               <PaperSelect
                   textInputStyle={{
-                  backgroundColor: "transparent"
+                    backgroundColor: "transparent"
                   }}
                   label="Select Cost Center"
                   value={costCenter.value}
                   onSelection={(value) => {
-                  setCostCenter({
-                      ...costCenter,
-                      value: value.text,
-                      selectedList: value.selectedList,
-                      error: "",
-                  });
+                    setCostCenter({
+                        ...costCenter,
+                        value: value.text,
+                        selectedList: value.selectedList,
+                        error: "",
+                    });
                   }}
                   arrayList={[...costCenter.list]}
                   selectedArrayList={costCenter.selectedList}
                   textInputMode="outlined"
-                  hideSearchBox={true}
               />
             </View>
             <TwoCards />
@@ -231,21 +230,21 @@ export default function Index() {
             "flex flex-row justify-between w-full px-4 items-center py-2"
             }
         >
-            <Searchbar
+          <Searchbar
             onChangeText={handleSearch}
-            value={query}
+            value={query.toString()}
             style={{
-                width: "100%",
+              width: "100%",
+              backgroundColor : "transparent"
             }}
             inputStyle={{
-                fontSize: 12,
-                padding: 0,
-                margin: 0,
+              fontSize: 12,
+              lineHeight : "unset",
+              paddingBottom: 20
             }}
-            mode="bar"
             placeholder="Search Name, Amount or Txn Note"
-            className={"bg-white border-2 border-slate-200 p-0 m-0"}
-            />
+            className={"bg-white border-2 border-slate-200 h-10"}
+          />
         </View>
        <FlashList
         data={filteredList}

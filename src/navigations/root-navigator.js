@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
-
+import { navigationRef } from "./index"
 // import { useAuth } from './../core';
 
 import { AuthNavigator } from "./auth-navigator";
@@ -9,7 +9,6 @@ import { NavigationContainer } from "./navigation-container";
 import { DrawerNavigator } from "./drawer-navigator";
 import {
   AllParties,
-  AllReports,
   AllTransactions,
   DayBook,
   PartyStatement,
@@ -40,7 +39,7 @@ export const Root = () => {
     <Stack.Navigator
       screenOptions={{
         headerShown: true,
-        gestureEnabled: true,
+        gestureEnabled: false,
         animation: "flip",
         headerShadowVisible: false, // applied here
       }}
@@ -129,18 +128,3 @@ export const RootNavigator = ({ theme }) => (
     <Root />
   </NavigationContainer>
 );
-
-
-export const navigationRef = React.createRef();
-const navigate = (name, params) => {
-  navigationRef.current?.navigate(name, params);
-};
-
-const replace = (name, params) => {
-  navigationRef.current?.navigate(name, params);
-};
-
-export default {
-  navigate,
-  replace,
-};

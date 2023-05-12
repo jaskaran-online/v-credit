@@ -147,7 +147,7 @@ export default function Index() {
   const [filteredList, setFilteredList] = useState(data);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
-  const [query, setQuery] = useState(false);
+  const [query, setQuery] = useState("");
 
   const handleSearch = (text) => {
     setQuery(text);
@@ -195,8 +195,7 @@ export default function Index() {
   return (
     <View className={"bg-white flex-1"}>
       <StatusBar animated={true} />
-      <ScrollView className="flex-1">
-        <StyledView className="flex h-15 p-2 bg-blue-50">
+      <StyledView className="flex h-15 p-2 bg-blue-50">
             <View className={"flex flex-row mb-2"}>
             <DatePickerInput
                 locale="en"
@@ -263,27 +262,26 @@ export default function Index() {
             </View>
             <TwoCards />
         </StyledView>
-    </ScrollView>
         <View
             className={
-            "flex flex-row justify-between w-full px-4 items-center pb-2"
+            "flex flex-row justify-between w-full px-4 items-center pb-2 mt-4"
             }
         >
-            <Searchbar
+          <Searchbar
             onChangeText={handleSearch}
-            value={query}
+            value={query.toString()}
             style={{
-                width: "100%",
+              width: "100%",
+              backgroundColor : "transparent"
             }}
             inputStyle={{
-                fontSize: 12,
-                padding: 0,
-                margin: 0,
+              fontSize: 12,
+              lineHeight : "unset",
+              paddingBottom: 20
             }}
-            mode="bar"
             placeholder="Search Name, Amount or Txn Note"
-            className={"bg-white border-2 border-slate-200 p-0 m-0"}
-            />
+            className={"bg-white border-2 border-slate-200 h-10"}
+          />
         </View>
        <FlashList
         data={filteredList}

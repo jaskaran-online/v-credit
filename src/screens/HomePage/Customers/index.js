@@ -2,7 +2,7 @@ import {View, TouchableOpacity} from 'react-native';
 import {FlashList} from "@shopify/flash-list";
 import {List, Text, Divider} from 'react-native-paper'
 
-import navigation from '../../../navigations/root-navigator'
+import navigation from '../../../navigations/index'
 
 const renderItem = ({item, index}) => <View className={"flex flex-row justify-between px-4 py-2 border-b-2 border-slate-200"}>
     <TouchableOpacity onPress={() => navigation.navigate('CustomerTransactionDetails')}>
