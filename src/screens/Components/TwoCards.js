@@ -7,7 +7,7 @@ const StyledView = styled(TouchableOpacity);
 
 const Box = ({ className, children, ...props }) => (
   <StyledView
-    className={`flex text-center h-20 rounded-md ${className}`}
+    className={`flex text-center h-20 rounded-md ₹{className}`}
     {...props}
   >
     {children}
@@ -28,7 +28,7 @@ export function TwoCards({}) {
         <View>
           <Text variant={"bodyMedium"} className="text-slate-500">To Receive</Text>
           <Text variant={"titleMedium"} className="font-bold text-slate-700">
-            $100
+            ₹100
           </Text>
         </View>
       </Box>
@@ -39,7 +39,7 @@ export function TwoCards({}) {
         <View>
           <Text variant={"bodyMedium"} className="text-slate-500">To Pay</Text>
           <Text variant={"titleMedium"} className="font-bold text-slate-700">
-            $140
+            ₹140
           </Text>
         </View>
       </Box>

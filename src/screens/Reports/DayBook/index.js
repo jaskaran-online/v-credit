@@ -163,7 +163,7 @@ export default function DayBook() {
   const StyledView = styled(TouchableOpacity);
   const Box = ({ className, children, ...props }) => (
     <StyledView
-      className={`flex text-center h-20 rounded ${className}`}
+      className={`flex text-center h-20 rounded ₹{className}`}
       {...props}
     >
       {children}

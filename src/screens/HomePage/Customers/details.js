@@ -178,7 +178,7 @@ export default function Index() {
                 To Pay
               </Text>
               <Text variant="titleLarge" className="text-slate-900 font-bold">
-                $ 100
+                ₹ 100
               </Text>
             </View>
           </View>

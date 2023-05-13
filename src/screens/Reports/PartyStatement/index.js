@@ -100,7 +100,7 @@ export default function Index() {
 
     const StyledView = styled(TouchableOpacity)
     const Box = ({className, children, ...props}) => (
-        <StyledView className={`flex text-center h-20 rounded ${className}`} {...props}>
+        <StyledView className={`flex text-center h-20 rounded ₹{className}`} {...props}>
             {children}
         </StyledView>
     )
