@@ -203,7 +203,7 @@ export default function DayBook() {
             }}
             inputStyle={{
               fontSize: 12,
-              lineHeight : "unset",
+              lineHeight :0,
               paddingBottom: 20
             }}
             placeholder="Search Name, Amount or Txn Note"
