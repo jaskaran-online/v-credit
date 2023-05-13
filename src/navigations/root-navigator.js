@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { navigationRef } from "./index"
-// import { useAuth } from './../core';
+import {useAuth} from '../hooks';
 
 import { AuthNavigator } from "./auth-navigator";
 import { NavigationContainer } from "./navigation-container";
@@ -20,9 +20,9 @@ import CustomerTransactionDetails from "../screens/HomePage/Customers/details";
 const Stack = createNativeStackNavigator();
 
 export const Root = () => {
-  // const status = useAuth.use.status();
-  const status = "login";
 
+  const status = useAuth.use.status();
+  
   const hideSplash = React.useCallback(async () => {
     await SplashScreen.hideAsync();
   }, []);

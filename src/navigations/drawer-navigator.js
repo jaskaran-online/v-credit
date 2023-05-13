@@ -16,8 +16,12 @@ import { Avatar, Button, Text } from "react-native-paper";
 import { COLORS } from '../core';
 import { HomePage, Reports } from '../screens';
 
+import { useAuth } from "../hooks";
 
 function CustomDrawerContent(props) {
+
+    const signOut = useAuth.use.signOut();
+    
     return (
         <View style={{flex: 1, backgroundColor: COLORS.white}}>
             <DrawerContentScrollView {...props}>
@@ -59,7 +63,7 @@ function CustomDrawerContent(props) {
                 <Button
                     mode="contained"
                     compact={true}
-                    onPress={() => console.log('Logout')}>
+                    onPress={() => signOut()}>
                     Logout
                 </Button>
                 <View style={styles.footerVersionTextContainer}>
