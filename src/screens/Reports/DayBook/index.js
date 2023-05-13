@@ -235,7 +235,6 @@ export default function DayBook() {
         >
           {options.map((value, index, array) => {
             return (
-              <>
                 <TouchableOpacity
                   key={index}
                   onPress={value.onPress}
@@ -247,7 +246,6 @@ export default function DayBook() {
                     {value.label}
                   </Text>
                 </TouchableOpacity>
-              </>
             );
           })}
         </View>

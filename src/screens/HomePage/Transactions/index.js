@@ -205,7 +205,6 @@ export default function Index() {
         >
           {options.map((value, index, array) => {
             return (
-              <>
                 <TouchableOpacity
                   key={index}
                   onPress={value.onPress}
@@ -217,7 +216,6 @@ export default function Index() {
                     {value.label}
                   </Text>
                 </TouchableOpacity>
-              </>
             );
           })}
         </View>
