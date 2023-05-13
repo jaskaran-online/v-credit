@@ -38,7 +38,7 @@ export const Root = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         gestureEnabled: false,
         animation: "flip",
         headerShadowVisible: false, // applied here
@@ -66,6 +66,7 @@ export const Root = () => {
             <Stack.Screen
               options={{
                 headerStyle: headerBackgroundColor,
+                headerShown: true,
                 headerTitle: "Day Book",
               }}
               name="DayBook"
@@ -75,6 +76,7 @@ export const Root = () => {
             <Stack.Screen
               options={{
                 headerStyle: headerBackgroundColor,
+                headerShown: true,
                 headerTitle: "Party Statement",
               }}
               name="Party"
@@ -84,6 +86,7 @@ export const Root = () => {
             <Stack.Screen
               options={{
                 headerStyle: headerBackgroundColor,
+                headerShown: true,
                 headerTitle: "All Parties",
               }}
               name="AllParty"
@@ -93,6 +96,7 @@ export const Root = () => {
             <Stack.Screen
               options={{
                 headerStyle: headerBackgroundColor,
+                headerShown: true,
                 headerTitle: "All Transactions",
               }}
               name="AllTransactions"
@@ -102,6 +106,7 @@ export const Root = () => {
             <Stack.Screen
               options={{
                 headerStyle: headerBackgroundColor,
+                headerShown: true,
                 headerTitle: "Cost Centre Wise Profit",
               }}
               name="CostCenter"
@@ -111,6 +116,7 @@ export const Root = () => {
             <Stack.Screen
               options={{
                 headerStyle: headerBackgroundColor,
+                headerShown: true,
                 headerTitle: "Jaskaran",
               }}
               name="CustomerTransactionDetails"

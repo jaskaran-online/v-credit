@@ -97,6 +97,7 @@ export function DrawerNavigator() {
                     color: COLORS.darkTransparent,
                 },
                 headerTintColor: COLORS.darkTransparent,
+                headerShadowVisible: false,
             })}>
 
             <Drawer.Screen
