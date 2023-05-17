@@ -1,136 +1,159 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
-import { navigationRef } from "./index"
+import React, {useEffect} from "react";
+import {navigationRef} from "./index"
 import {useAuth} from '../hooks';
 
-import { AuthNavigator } from "./auth-navigator";
-import { NavigationContainer } from "./navigation-container";
-import { DrawerNavigator } from "./drawer-navigator";
+import {AuthNavigator} from "./auth-navigator";
+import {NavigationContainer} from "./navigation-container";
+import {DrawerNavigator} from "./drawer-navigator";
 import {
-  AllParties,
-  AllTransactions,
-  DayBook,
-  PartyStatement,
-  CostCenter
+    AllParties,
+    AllTransactions,
+    DayBook,
+    PartyStatement,
+    CostCenter
 } from "../screens/Reports";
 
 import CustomerTransactionDetails from "../screens/HomePage/Customers/details";
+
+import TakePayment from "../screens/HomePage/TakePayment";
+import GiveMoney from "../screens/HomePage/GiveMoney";
 
 const Stack = createNativeStackNavigator();
 
 export const Root = () => {
 
-  const status = useAuth.use.status();
-  
-  const hideSplash = React.useCallback(async () => {
-    await SplashScreen.hideAsync();
-  }, []);
+    const status = useAuth.use.status();
 
-  useEffect(() => {
-    if (status !== "idle") {
-      hideSplash();
-    }
-  }, [hideSplash, status]);
+    const hideSplash = React.useCallback(async () => {
+        await SplashScreen.hideAsync();
+    }, []);
 
-  const headerBackgroundColor = { backgroundColor: "#eff6ff" };
+    useEffect(() => {
+        if (status !== "idle") {
+            hideSplash();
+        }
+    }, [hideSplash, status]);
 
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: false,
-        animation: "flip",
-        headerShadowVisible: false, // applied here
-      }}
-    >
-      <Stack.Group>
-        {status === "signOut" ? (
-          <Stack.Screen
+    const headerBackgroundColor = {backgroundColor: "#eff6ff"};
+
+    return (
+        <Stack.Navigator
             screenOptions={{
-              headerShown: false,
+                headerShown: false,
+                gestureEnabled: false,
+                animation: "flip",
+                headerShadowVisible: false, // applied here
             }}
-            name="Auth"
-            component={AuthNavigator}
-          />
-        ) : (
-          <Stack.Group>
-            {/* App Drawer Route Navigator */}
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="App"
-              component={DrawerNavigator}
-            />
+        >
+            <Stack.Group>
+                {status === "signOut" ? (
+                    <Stack.Screen
+                        screenOptions={{
+                            headerShown: false,
+                        }}
+                        name="Auth"
+                        component={AuthNavigator}
+                    />
+                ) : (
+                    <Stack.Group>
+                        {/* App Drawer Route Navigator */}
+                        <Stack.Screen
+                            options={{headerShown: false}}
+                            name="App"
+                            component={DrawerNavigator}
+                        />
 
-            {/* Report Screens */}
-            <Stack.Screen
-              options={{
-                headerStyle: headerBackgroundColor,
-                headerShown: true,
-                headerTitle: "Day Book",
-              }}
-              name="DayBook"
-              component={DayBook}
-            />
+                        {/* Report Screens */}
+                        <Stack.Screen
+                            options={{
+                                headerStyle: headerBackgroundColor,
+                                headerShown: true,
+                                headerTitle: "Day Book",
+                            }}
+                            name="DayBook"
+                            component={DayBook}
+                        />
 
-            <Stack.Screen
-              options={{
-                headerStyle: headerBackgroundColor,
-                headerShown: true,
-                headerTitle: "Party Statement",
-              }}
-              name="Party"
-              component={PartyStatement}
-            />
+                        <Stack.Screen
+                            options={{
+                                headerStyle: headerBackgroundColor,
+                                headerShown: true,
+                                headerTitle: "Party Statement",
+                            }}
+                            name="Party"
+                            component={PartyStatement}
+                        />
 
-            <Stack.Screen
-              options={{
-                headerStyle: headerBackgroundColor,
-                headerShown: true,
-                headerTitle: "All Parties",
-              }}
-              name="AllParty"
-              component={AllParties}
-            />
+                        <Stack.Screen
+                            options={{
+                                headerStyle: headerBackgroundColor,
+                                headerShown: true,
+                                headerTitle: "All Parties",
+                            }}
+                            name="AllParty"
+                            component={AllParties}
+                        />
 
-            <Stack.Screen
-              options={{
-                headerStyle: headerBackgroundColor,
-                headerShown: true,
-                headerTitle: "All Transactions",
-              }}
-              name="AllTransactions"
-              component={AllTransactions}
-            />
+                        <Stack.Screen
+                            options={{
+                                headerStyle: headerBackgroundColor,
+                                headerShown: true,
+                                headerTitle: "All Transactions",
+                            }}
+                            name="AllTransactions"
+                            component={AllTransactions}
+                        />
 
-            <Stack.Screen
-              options={{
-                headerStyle: headerBackgroundColor,
-                headerShown: true,
-                headerTitle: "Cost Centre Wise Profit",
-              }}
-              name="CostCenter"
-              component={CostCenter}
-            />
+                        <Stack.Screen
+                            options={{
+                                headerStyle: headerBackgroundColor,
+                                headerShown: true,
+                                headerTitle: "Cost Centre Wise Profit",
+                            }}
+                            name="CostCenter"
+                            component={CostCenter}
+                        />
 
-            <Stack.Screen
-              options={{
-                headerStyle: headerBackgroundColor,
-                headerShown: true,
-                headerTitle: "Jaskaran",
-              }}
-              name="CustomerTransactionDetails"
-              component={CustomerTransactionDetails}
-            />
-          </Stack.Group>
-        )}
-      </Stack.Group>
-    </Stack.Navigator>
-  );
+                        <Stack.Screen
+                            options={{
+                                headerStyle: headerBackgroundColor,
+                                headerShown: true,
+                                headerTitle: "Jaskaran",
+                            }}
+                            name="CustomerTransactionDetails"
+                            component={CustomerTransactionDetails}
+                        />
+
+                        <Stack.Screen
+                            options={{
+                                headerStyle: headerBackgroundColor,
+                                headerShown: true,
+                                headerTitle: "Take Money",
+                            }}
+                            name="TakeMoney"
+                            component={TakePayment}
+                        />
+
+                        <Stack.Screen
+                            options={{
+                                headerStyle: headerBackgroundColor,
+                                headerShown: true,
+                                headerTitle: "Give Money",
+                            }}
+                            name="GiveMoney"
+                            component={GiveMoney}
+                        />
+                    </Stack.Group>
+                )}
+            </Stack.Group>
+        </Stack.Navigator>
+    );
 };
 
-export const RootNavigator = ({ theme }) => (
-  <NavigationContainer theme={theme} navigationRef={navigationRef}>
-    <Root />
-  </NavigationContainer>
+export const RootNavigator = ({theme}) => (
+    <NavigationContainer theme={theme} navigationRef={navigationRef}>
+        <Root/>
+    </NavigationContainer>
 );

@@ -5,7 +5,7 @@ import { withTheme } from "react-native-paper";
 import { TabNavigator } from "../Components/TabNavigator";
 import { TwoCards } from "../Components/TwoCards";
 
-function Index() {
+function Index({navigation}) {
   return (
     <View className="flex-1 bg-white">
       <StatusBar animated={true} />
@@ -13,14 +13,14 @@ function Index() {
       <View className={"flex-1"}>
         <TabNavigator/>
       </View>
-      <FloatingButtons />
+      <FloatingButtons navigation={navigation}/>
     </View>
   );
 }
 
 export default withTheme(Index);
 
-export function FloatingButtons({}) {
+export function FloatingButtons({navigation}) {
   return (
     <View
       className={
@@ -30,7 +30,7 @@ export function FloatingButtons({}) {
       <View className={"flex-1"}>
         <Button
           mode={"contained"}
-          onPress={() => console.log("Take Payment")}
+          onPress={() => navigation.navigate("TakeMoney")}
           className={"bg-sky-500 shadow shadow-slate-300"}
         >
           Take Payment
@@ -39,7 +39,7 @@ export function FloatingButtons({}) {
       <View className={"flex-1"}>
         <Button
           mode={"contained"}
-          onPress={() => console.log("Give Create")}
+          onPress={() => navigation.navigate("GiveMoney")}
           className={"bg-amber-500 shadow shadow-slate-300"}
         >
           Give Create
