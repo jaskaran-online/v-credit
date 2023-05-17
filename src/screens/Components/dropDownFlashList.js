@@ -1,4 +1,4 @@
-import {TouchableOpacity, View} from "react-native";
+import {FlatList, TouchableOpacity, View} from "react-native";
 import {Text, TextInput} from "react-native-paper";
 import {FlashList} from "@shopify/flash-list";
 import React, {useEffect, useState} from "react";
@@ -84,9 +84,10 @@ export function DropDownFlashList({data = [], onSelect = () => null, onChangeInp
             value={value}
             mode={"outlined"}
             label={inputLabel}
+            right={<TextInput.Icon icon="chevron-down" size={28} color={'red'} onPress={() => setInputFocused((value) => !value)}/>}
             // onBlur={() => setInputFocused(false)}
         />
-        {inputFocused && (<View style={{flex: 1, width: "100%", height: 500}}
+        {inputFocused && (<View style={{flex: 1, width: "100%", height: "auto"}}
           className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl absolute top-14 z-50 h-full"}>
             <FlashList
                 data={filteredContacts}
