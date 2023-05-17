@@ -22,7 +22,7 @@ export function DropDownFlashList({data = [], onSelect = () => null, onChangeInp
 
     const searchItems = (text) => {
         const newData = data?.filter((item) => {
-            const itemData = `${item?.firstName?.toUpperCase()}`;
+            const itemData = `${item?.name?.toUpperCase()}`;
             const textData = text.toUpperCase();
             return itemData.indexOf(textData) > -1;
         });
@@ -86,7 +86,7 @@ export function DropDownFlashList({data = [], onSelect = () => null, onChangeInp
             label={inputLabel}
             // onBlur={() => setInputFocused(false)}
         />
-        {inputFocused && (<View style={{flex: 1, width: "100%", height: "auto"}}
+        {inputFocused && (<View style={{flex: 1, width: "100%", height: 500}}
           className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl absolute top-14 z-50 h-full"}>
             <FlashList
                 data={filteredContacts}
@@ -96,7 +96,7 @@ export function DropDownFlashList({data = [], onSelect = () => null, onChangeInp
                 ItemSeparatorComponent={renderSeparator}
                 ListHeaderComponent={renderHeader}
                 ListFooterComponent={renderFooter}
-                className={"w-full h-full"}
+                // className={"w-full h-full"}
             />
         </View>)}
     </View>;
