@@ -208,7 +208,7 @@ export default function Index({navigation}) {
                         }}
                         inputStyle={{
                             fontSize: 12,
-                            lineHeight: 0,
+                            lineHeight : Platform.OS === "android" ? 16 :  0,
                             paddingBottom: 20
                         }}
                         placeholder="Search Name, Amount or Txn Note"
