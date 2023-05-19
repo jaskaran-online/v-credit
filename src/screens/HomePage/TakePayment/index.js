@@ -9,6 +9,7 @@ import {DatePickerInput} from "react-native-paper-dates";
 import {MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
 import {Camera} from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
+import {getItem,setItem} from "../../../core/utils";
 
 const FlatListDropDown = () => {
 
@@ -20,15 +21,7 @@ const FlatListDropDown = () => {
     const [note, setNote] = useState("");
     const [qty, setQty] = useState(1);
     const [price, setPrice] = useState(1);
-    console.log({
-        amount,
-        inputDate,
-        visible,
-        image,
-        note,
-        qty,
-        price
-    });
+
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
 
@@ -62,13 +55,19 @@ const FlatListDropDown = () => {
         (async () => {
             const {status} = await Contacts.requestPermissionsAsync();
             if (status === 'granted') {
-                const {data} = await Contacts.getContactsAsync({
-                    fields: [Contacts.Fields.Emails],
-                });
-                if (data.length > 0) {
-                    setContacts(data);
-                    const contact = data[0];
-                    console.log(contact);
+                const localContacts = await getItem('contacts')
+                if(localContacts){
+                    console.log("local available");
+                    setContacts(localContacts);
+                }else{
+                    console.log("fetching available");
+                    const {data} = await Contacts.getContactsAsync({
+                        fields: [Contacts.Fields.Emails],
+                    });
+                    if (data.length > 0) {
+                        setContacts(data);
+                        setItem('contacts', data).then(r => console.log(r))
+                    }
                 }
             }
         })();

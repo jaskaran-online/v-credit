@@ -87,12 +87,12 @@ export function DropDownFlashList({data = [], onSelect = () => null, onChangeInp
             right={<TextInput.Icon icon="chevron-down" size={28} color={'red'} onPress={() => setInputFocused((value) => !value)}/>}
             // onBlur={() => setInputFocused(false)}
         />
-        {inputFocused && (<View style={{flex: 1, width: "100%", height: "auto"}}
+        {inputFocused && (<View style={{flex: 1, width: "100%", height: 500}}
           className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl absolute top-14 z-50 h-full"}>
             <FlashList
                 data={filteredContacts}
                 renderItem={renderItem}
-                estimatedItemSize={200}
+                estimatedItemSize={100}
                 keyExtractor={(value, index) => index}
                 ItemSeparatorComponent={renderSeparator}
                 ListHeaderComponent={renderHeader}
