@@ -4,7 +4,7 @@ import React, {useEffect, useState} from "react";
 import {KeyboardAvoidingView, TouchableOpacity, View, Image} from "react-native";
 import {Dialog, Text, TextInput} from "react-native-paper"
 import * as Contacts from 'expo-contacts';
-import {DropDownFlashList} from "../../Components/dropDownFlashList";
+import DropDownFlashList from "../../Components/dropDownFlashList";
 import {DatePickerInput} from "react-native-paper-dates";
 import {MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
 import {Camera} from 'expo-camera';
@@ -55,12 +55,21 @@ const FlatListDropDown = () => {
         (async () => {
             const {status} = await Contacts.requestPermissionsAsync();
             if (status === 'granted') {
-                const localContacts = await getItem('contacts')
-                if(localContacts){
-                    console.log("local available");
-                    setContacts(localContacts);
-                }else{
-                    console.log("fetching available");
+                try {
+                    const localContacts = await getItem('contacts')
+                    if(localContacts){
+                        setContacts(localContacts);
+                    }else{
+                        const {data} = await Contacts.getContactsAsync({
+                            fields: [Contacts.Fields.Emails],
+                        });
+                        if (data.length > 0) {
+                            setContacts(data);
+                            setItem('contacts', data).then(r => console.log(r))
+                        }
+                    }
+
+                }catch (e) {
                     const {data} = await Contacts.getContactsAsync({
                         fields: [Contacts.Fields.Emails],
                     });
@@ -104,25 +113,25 @@ const FlatListDropDown = () => {
                     <TextInput
                         className={"bg-white flex-1 mt-2 -z-30"}
                         onChangeText={(text) => setQty(text)}
-                        value={qty}
+                        value={qty.toString()}
                         mode={"outlined"}
                         label={"Qty"}
-                        inputMode={"numeric"}
+                        keyboardType={"numeric"}
                     />
                     <TextInput
                         className={"bg-white flex-1 mt-2 -z-30"}
                         onChangeText={(text) => setPrice(text)}
-                        value={price}
-                        defaultValue={price}
+                        value={price.toString()}
                         mode={"outlined"}
                         label={"Price"}
-                        inputMode={"numeric"}
+                        keyboardType={"numeric"}
                     />
                 </View>
                 <TextInput
                     className={"bg-white mt-2 -z-30"}
                     value={amount}
                     mode={"outlined"}
+                    onChangeText={(value) => setAmount(value)}
                     label={"Amount"}
                     inputMode={"numeric"}
                 />

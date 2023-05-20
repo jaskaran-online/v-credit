@@ -1,17 +1,19 @@
 import { Linking } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
+// import * as SecureStore from 'expo-secure-store';
+import createSecureStore from '@neverdull-agency/expo-unlimited-secure-store';
+const SecureStore = createSecureStore();
 
 export async function getItem(key) {
-  const value = await SecureStore.getItemAsync(key);
+  const value = await SecureStore.getItem(key);
   return value ? JSON.parse(value) : null;
 }
 
 export async function setItem(key, value) {
-  await SecureStore.setItemAsync(key, JSON.stringify(value));
+  await SecureStore.setItem(key, JSON.stringify(value));
 }
 
 export async function removeItem(key) {
-  await SecureStore.deleteItemAsync(key);
+  await SecureStore.removeItem(key);
 }
 
 export function openLinkInBrowser(url) {

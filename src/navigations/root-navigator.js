@@ -48,7 +48,7 @@ export const Root = () => {
             }}
         >
             <Stack.Group>
-                {status === "signIn" ? (
+                {status === "signOut" ? (
                     <Stack.Screen
                         screenOptions={{
                             headerShown: false,

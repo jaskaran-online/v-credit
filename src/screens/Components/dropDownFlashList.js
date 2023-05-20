@@ -1,9 +1,9 @@
 import {FlatList, TouchableOpacity, View} from "react-native";
 import {Text, TextInput} from "react-native-paper";
 import {FlashList} from "@shopify/flash-list";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, memo} from "react";
 
-export function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = () => null, inputLabel = "label", headerTitle = "headerTitle"}) {
+function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = () => null, inputLabel = "label", headerTitle = "headerTitle"}) {
 
     const [inputFocused, setInputFocused] = useState(false);
     const [filteredContacts, setFilteredContacts] = useState(data);
@@ -87,18 +87,20 @@ export function DropDownFlashList({data = [], onSelect = () => null, onChangeInp
             right={<TextInput.Icon icon="chevron-down" size={28} color={'red'} onPress={() => setInputFocused((value) => !value)}/>}
             // onBlur={() => setInputFocused(false)}
         />
-        {inputFocused && (<View style={{flex: 1, width: "100%", height: 500}}
-          className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl absolute top-14 z-50 h-full"}>
+        {inputFocused && (<View style={{flex: 1, width: "100%", height: 400, position: "absolute", top:55}}
+          className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl z-50"}>
             <FlashList
                 data={filteredContacts}
                 renderItem={renderItem}
-                estimatedItemSize={100}
+                estimatedItemSize={200}
                 keyExtractor={(value, index) => index}
                 ItemSeparatorComponent={renderSeparator}
                 ListHeaderComponent={renderHeader}
                 ListFooterComponent={renderFooter}
-                // className={"w-full h-full"}
+                                // className={"w-full h-full"}
             />
         </View>)}
     </View>;
 }
+
+export default memo(DropDownFlashList);

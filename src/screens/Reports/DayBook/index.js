@@ -6,13 +6,15 @@ import {
 import { FlashList } from "@shopify/flash-list";
 import { StatusBar } from "expo-status-bar";
 import { styled } from "nativewind";
-import { useState } from "react";
+import {memo, useState} from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Searchbar, Text } from "react-native-paper";
 import { DatePickerInput } from "react-native-paper-dates";
 
 import { TwoCards } from "../../Components/TwoCards";
+import * as PropTypes from "prop-types";
 
+const StyledView = styled(TouchableOpacity);
 const renderHeader = () => (
   <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
     <View className="flex-1 border-b-2 border-slate-300 w-1/3">
@@ -99,7 +101,29 @@ const renderItem = ({ item, index }) => (
   </TouchableOpacity>
 );
 
-export default function DayBook() {
+function Header(props) {
+  return <View className="bg-blue-50 h-40">
+    <StyledView className="flex h-1/4 p-2 bg-blue-50">
+      <DatePickerInput
+          locale="en"
+          label="Date"
+          value={props.value}
+          onChange={props.onChange}
+          inputMode="start"
+          mode={"outlined"}
+          className={"bg-blue-50 mx-1"}
+      />
+      <TwoCards/>
+    </StyledView>
+  </View>;
+}
+
+Header.propTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.func
+};
+
+function DayBook() {
   const data = [
     { id: "1", title: "Item 1", description: "This is item 1" },
     {
@@ -128,7 +152,7 @@ export default function DayBook() {
   const [filteredList, setFilteredList] = useState(data);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showOptions, setShowOptions] = useState("");
-  const [query, setQuery] = useState(false);
+  const [query, setQuery] = useState("");
   const handleSearch = (text) => {
     setQuery(text);
     const filtered = data.filter((item) =>
@@ -160,7 +184,6 @@ export default function DayBook() {
     setSelectedItem(null);
   };
 
-  const StyledView = styled(TouchableOpacity);
   const Box = ({ className, children, ...props }) => (
     <StyledView
       className={`flex text-center h-20 rounded ₹{className}`}
@@ -174,95 +197,84 @@ export default function DayBook() {
 
   return (
     <View className={"bg-white flex-1"}>
-      <StatusBar animated={true} />
-      <StyledView className="flex h-1/4 p-2 bg-blue-50">
-        <DatePickerInput
-          locale="en"
-          label="Date"
-          value={inputDate}
-          onChange={(d) => setInputDate(d)}
-          inputMode="start"
-          mode={"outlined"}
-          className={"bg-blue-50 mx-1"}
-        />
-        <TwoCards />
-      </StyledView>
-
+      <Header value={inputDate} onChange={(d) => setInputDate(d)}/>
       <View
-        className={
-          "flex flex-row justify-between w-full px-3 items-center py-4"
-        }
+          className={
+            "flex flex-row justify-between w-full px-3 items-center py-4"
+          }
       >
-        <View className={"flex flex-row relative"} style={{ width: "80%" }}>
-        <Searchbar
-            onChangeText={handleSearch}
-            value={query.toString()}
-            style={{
-              width: "100%",
-              backgroundColor : "transparent"
-            }}
-            inputStyle={{
-              fontSize: 12,
-              lineHeight :0,
-              paddingBottom: 20
-            }}
-            placeholder="Search Name, Amount or Txn Note"
-            className={"bg-white border-2 border-slate-200 h-10"}
+        <View className={"flex flex-row relative"} style={{width: "80%"}}>
+          <Searchbar
+              onChangeText={handleSearch}
+              value={query.toString()}
+              style={{
+                width: "100%",
+                backgroundColor: "transparent"
+              }}
+              inputStyle={{
+                fontSize: 12,
+                lineHeight: Platform.OS === "android" ? 16 : 0,
+                paddingBottom: 20
+              }}
+              placeholder="Search Name, Amount or Txn Note"
+              className={"bg-white border-2 border-slate-200 h-10"}
           />
         </View>
-        <View className={"flex"} style={{ width: "15%" }}>
+        <View className={"flex"} style={{width: "15%"}}>
           {options && (
-            <TouchableOpacity
-              className="p-2 bg-white border-slate-900 shadow shadow-slate-300 rounded-xl w-[48] mt-1 h-[40] justify-center items-center"
-              onPress={() => handleOptionSelect(true)}
-            >
-              <Feather name="filter" size={20} color="black" />
-            </TouchableOpacity>
+              <TouchableOpacity
+                  className="p-2 bg-white border-slate-900 shadow shadow-slate-300 rounded-xl w-[48] mt-1 h-[40] justify-center items-center"
+                  onPress={() => handleOptionSelect(true)}
+              >
+                <Feather name="filter" size={20} color="black"/>
+              </TouchableOpacity>
           )}
         </View>
       </View>
       {showOptions && (
-        <View
-          style={{
-            flex: 1,
-            position: "absolute",
-            zIndex: 9999999,
-            backgroundColor: "white",
-          }}
-          className={
-            "border-2 border-slate-100 shadow-black shadow-lg right-10 top-14"
-          }
-        >
-          {options.map((value, index, array) => {
-            return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={value.onPress}
-                  className={
-                    value.label === "Clear" ? "bg-slate-200" : "bg-white"
-                  }
-                >
-                  <Text variant={"labelLarge"} className={"pl-2 pr-4 py-2"}>
-                    {value.label}
-                  </Text>
-                </TouchableOpacity>
-            );
-          })}
-        </View>
+          <View
+              style={{
+                flex: 1,
+                position: "absolute",
+                zIndex: 9999999,
+                backgroundColor: "white",
+              }}
+              className={
+                "border-2 border-slate-100 shadow-black shadow-lg right-10 top-14"
+              }
+          >
+            {options.map((value, index, array) => {
+              return (
+                  <TouchableOpacity
+                      key={index}
+                      onPress={value.onPress}
+                      className={
+                        value.label === "Clear" ? "bg-slate-200" : "bg-white"
+                      }
+                  >
+                    <Text variant={"labelLarge"} className={"pl-2 pr-4 py-2"}>
+                      {value.label}
+                    </Text>
+                  </TouchableOpacity>
+              );
+            })}
+          </View>
       )}
 
       <FlashList
-        data={filteredList}
-        renderItem={renderItem}
-        ListHeaderComponent={renderHeader}
-        estimatedItemSize={200}
-        onSearch={handleSearch}
-        onSelect={handleSelect}
-        selected={selectedItem}
-        showOptions={showOptions}
-        options={options}
-        onOptionSelect={handleOptionSelect}
+          data={filteredList}
+          renderItem={renderItem}
+          ListHeaderComponent={renderHeader}
+          estimatedItemSize={200}
+          onSearch={handleSearch}
+          onSelect={handleSelect}
+          selected={selectedItem}
+          showOptions={showOptions}
+          options={options}
+          onOptionSelect={handleOptionSelect}
       />
     </View>
   );
 }
+
+export default  memo(DayBook);

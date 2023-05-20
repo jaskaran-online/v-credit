@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/config-plugins": "^6.0.1",
+    "@neverdull-agency/expo-unlimited-secure-store": "^1.0.10",
     "@react-native-masked-view/masked-view": "0.2.8",
     "@react-navigation/drawer": "^6.6.2",
     "@react-navigation/material-top-tabs": "^6.6.2",
@@ -24,10 +25,13 @@
     "expo-camera": "~13.2.1",
     "expo-contacts": "^12.0.1",
     "expo-doctor": "^1.0.6",
+    "expo-file-system": "~15.2.2",
     "expo-image-picker": "~14.1.1",
     "expo-localization": "~14.1.1",
+    "expo-secure-store": "~12.1.1",
     "expo-splash-screen": "^0.18.2",
     "expo-status-bar": "~1.4.4",
+    "expo-updates": "~0.16.4",
     "nativewind": "^2.0.11",
     "patch-package": "^7.0.0",
     "react": "18.2.0",
@@ -47,9 +51,7 @@
     "react-navigation": "^4.4.4",
     "uuid": "^9.0.0",
     "zod": "^3.21.4",
-    "zustand": "^4.3.7",
-    "expo-updates": "~0.16.4",
-    "expo-secure-store": "~12.1.1"
+    "zustand": "^4.3.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
