@@ -108,7 +108,7 @@ export function DrawerNavigator() {
                     drawerActiveTintColor: COLORS.white,
                     drawerActiveBackgroundColor: COLORS.primary,
                     headerStyle : { backgroundColor : '#eff6ff'},
-                    title: ({focused}) => (<Text style={{color: focused ? COLORS.white : COLORS.darkTransparent}}>Home</Text>),
+                    title: "",
                     drawerIcon: ({focused, size}) => (
                         <Icon name="home" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
                     ),

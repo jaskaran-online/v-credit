@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from "react";
 import {KeyboardAvoidingView, TouchableOpacity, View, Image} from "react-native";
-import {Dialog, Text, TextInput} from "react-native-paper"
+import {Button, Dialog, Text, TextInput} from "react-native-paper"
 import * as Contacts from 'expo-contacts';
 import DropDownFlashList from "../../Components/dropDownFlashList";
 import {DatePickerInput} from "react-native-paper-dates";
@@ -129,7 +129,7 @@ const FlatListDropDown = () => {
                 </View>
                 <TextInput
                     className={"bg-white mt-2 -z-30"}
-                    value={amount}
+                    value={amount.toString()}
                     mode={"outlined"}
                     onChangeText={(value) => setAmount(value)}
                     label={"Amount"}
@@ -163,7 +163,7 @@ const FlatListDropDown = () => {
 
                 {image &&
                     <Image source={{uri: image, width: 150, height: 150}} resizeMethod={"auto"} className={"mt-4"}/>}
-
+                <Button mode={"contained"} className={"mt-4 py-1"} onPress={() => alert("Work in Progress!")}>Submit</Button>
             </KeyboardAvoidingView>
 
 

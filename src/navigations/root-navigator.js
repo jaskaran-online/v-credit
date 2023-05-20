@@ -19,6 +19,9 @@ import CustomerTransactionDetails from "../screens/HomePage/Customers/details";
 
 import TakePayment from "../screens/HomePage/TakePayment";
 import GiveMoney from "../screens/HomePage/GiveMoney";
+import {View} from "react-native";
+import {Button} from "react-native-paper";
+import {ErrorBoundary} from "react-error-boundary";
 
 const Stack = createNativeStackNavigator();
 
@@ -152,8 +155,19 @@ export const Root = () => {
     );
 };
 
+
+function ErrorFallback({ error, resetErrorBoundary }) {
+    return (
+        <View>
+            <Text>An error occurred: {error.message}</Text>
+            <Button title="Try Again" onPress={resetErrorBoundary} />
+        </View>
+    );
+}
 export const RootNavigator = ({theme}) => (
     <NavigationContainer theme={theme} navigationRef={navigationRef}>
-        <Root/>
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Root/>
+        </ErrorBoundary>
     </NavigationContainer>
 );

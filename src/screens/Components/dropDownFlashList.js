@@ -3,9 +3,9 @@ import {Text, TextInput} from "react-native-paper";
 import {FlashList} from "@shopify/flash-list";
 import React, {useEffect, useState, memo} from "react";
 
-function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = () => null, inputLabel = "label", headerTitle = "headerTitle"}) {
+function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = () => null, inputLabel = "label", headerTitle = "headerTitle", closeDropDown = false}) {
 
-    const [inputFocused, setInputFocused] = useState(false);
+    const [isDropDownOpen, setIsDropDownOpen] = useState(closeDropDown);
     const [filteredContacts, setFilteredContacts] = useState(data);
 
     useEffect(() => {
@@ -60,7 +60,7 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
             <TouchableOpacity className={"w-full"} onPress={() => {
                 setValue(item.name);
                 onSelect(item);
-                setInputFocused(false);
+                setIsDropDownOpen(false);
             }} style={{padding: 10}}>
                 <Text>
                     {start}
@@ -73,21 +73,21 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
         )
     }
 
-    return <View className={"relative"}>
+    return (<View className={"relative"}>
         <TextInput
             className={"bg-white"}
             onChangeText={(text) => {
                 searchItems(text);
                 onChangeInput(text);
             }}
-            onFocus={() => setInputFocused(true)}
+            onFocus={() => setIsDropDownOpen(true)}
             value={value}
             mode={"outlined"}
             label={inputLabel}
-            right={<TextInput.Icon icon="chevron-down" size={28} color={'red'} onPress={() => setInputFocused((value) => !value)}/>}
-            // onBlur={() => setInputFocused(false)}
+            right={<TextInput.Icon icon={isDropDownOpen  ? "close" : "chevron-down"} size={28} color={'red'} onPress={() => setIsDropDownOpen((value) => !value)}/>}
+            onEndEditing={() => setIsDropDownOpen(false)}
         />
-        {inputFocused && (<View style={{flex: 1, width: "100%", height: 400, position: "absolute", top:55}}
+        {isDropDownOpen && (<View style={{flex: 1, width: "100%", height: 400, position: "absolute", top:55}}
           className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl z-50"}>
             <FlashList
                 data={filteredContacts}
@@ -100,7 +100,7 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
                                 // className={"w-full h-full"}
             />
         </View>)}
-    </View>;
+    </View>);
 }
 
 export default memo(DropDownFlashList);
