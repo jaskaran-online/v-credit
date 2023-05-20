@@ -73,7 +73,7 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
         )
     }
 
-    return (<View className={"relative"}>
+    return (<View className={"relative z-50"}>
         <TextInput
             className={"bg-white"}
             onChangeText={(text) => {
