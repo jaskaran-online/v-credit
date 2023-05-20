@@ -166,21 +166,24 @@ const FlatListDropDown = () => {
                 <Button mode={"contained"} className={"mt-4 py-1"} onPress={() => alert("Work in Progress!")}>Submit</Button>
             </KeyboardAvoidingView>
 
-
-            <Dialog visible={visible} onDismiss={hideDialog} dismissable={true} style={{backgroundColor: "white"}}>
+            <Dialog visible={visible} onDismiss={hideDialog} dismissable={true} style={{backgroundColor: "white"}} dismissableBackButton={true}>
                 <Dialog.Title style={{fontSize: 18}}>Select</Dialog.Title>
                 <Dialog.Content>
                     <View className={"flex flex-row justify-evenly mb-10 mt-5"}>
-                        <TouchableOpacity onPress={handleCameraCapture}
-                                          className={"flex justify-center items-center shadow-md gap-y-3 bg-blue-50 px-5 py-2 rounded-lg"}>
-                            <MaterialCommunityIcons name={"camera"} size={30} color={"black"}/>
-                            <Text>Camera</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={pickImage}
-                                          className={"flex justify-center items-center shadow-md gap-y-3 bg-blue-50 px-5 py-2 rounded-lg"}>
-                            <MaterialIcons name={"photo"} size={30} color={"black"}/>
-                            <Text>Gallery</Text>
-                        </TouchableOpacity>
+                        <View className={"flex gap-2 items-center"}>
+                            <TouchableOpacity onPress={handleCameraCapture}
+                                              className={"flex justify-center items-center shadow-md bg-blue-500 p-4 rounded-3xl"}>
+                                <MaterialCommunityIcons name={"camera"} size={30} color={"white"}/>
+                            </TouchableOpacity>
+                            <Text variant={"titleMedium"} className={"text-stone-600"}>Camera</Text>
+                        </View>
+                        <View className={"flex gap-2 items-center"}>
+                            <TouchableOpacity onPress={pickImage}
+                                              className={"flex justify-center items-center shadow-md bg-green-600 p-4 rounded-3xl"}>
+                                <MaterialIcons name={"photo"} size={30} color={"white"}/>
+                            </TouchableOpacity>
+                            <Text variant={"titleMedium"} className={"text-stone-600"}>Gallery</Text>
+                        </View>
                     </View>
                 </Dialog.Content>
             </Dialog>
