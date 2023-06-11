@@ -120,11 +120,11 @@ export const Root = () => {
                         />
 
                         <Stack.Screen
-                            options={{
+                            options={({ route }) => ({
+                                title: (route?.params?.name) ? route?.params?.name : 'Details',
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
-                                headerTitle: "Jaskaran",
-                            }}
+                            })}
                             name="CustomerTransactionDetails"
                             component={CustomerTransactionDetails}
                         />

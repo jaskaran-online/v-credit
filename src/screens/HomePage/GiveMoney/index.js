@@ -1,7 +1,6 @@
 // noinspection JSValidateTypes
-
 import React, {useEffect, useState} from "react";
-import {KeyboardAvoidingView, TouchableOpacity, View, Image} from "react-native";
+import {KeyboardAvoidingView, TouchableOpacity, View, Image, Keyboard} from "react-native";
 import {Button, Dialog, Text, TextInput} from "react-native-paper"
 import * as Contacts from 'expo-contacts';
 import DropDownFlashList from "../../Components/dropDownFlashList";
@@ -9,29 +8,68 @@ import {DatePickerInput} from "react-native-paper-dates";
 import {MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
 import {Camera} from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import {getItem, setItem} from "../../../core/utils";
+import {getItem, removeItem, setItem} from "../../../core/utils";
+import {useCompanyProductsData, usePaymentApi} from "../../../apis/useApi";
+import {useAuth} from "../../../hooks";
+import Toast from "react-native-toast-message";
+import { QueryClient } from '@tanstack/react-query';
 
-const FlatListDropDown = () => {
+const queryClient = new QueryClient();
+
+const showToast = (message, type) => {
+    Toast.show({
+        type: type,
+        text1: type === 'success' ? 'Success' : 'Error',
+        text2: message,
+        position : "bottom"
+    });
+}
+
+const FlatListDropDown = ({navigation}) => {
+    const auth = useAuth.use?.token();
+    const {mutate: request, data: paymentApiResponse, isSuccess: isPaymentSuccess, error : paymentError, isError} = usePaymentApi();
+    const {data: products, isLoading} = useCompanyProductsData('api/v1/products');
+
+    if(isError){
+        showToast(paymentError.message, 'error');
+    }
+
+    if(isPaymentSuccess){
+        showToast(paymentApiResponse.data.message, 'success');
+        setTimeout(() => navigation.navigate('HomePage'), 1000);
+    }
+
+    console.log({
+        request,
+        paymentApiResponse,
+        isPaymentSuccess
+    }, paymentError?.response);
 
     const [contacts, setContacts] = useState([]);
-    const [amount, setAmount] = useState(0);
-    const [inputDate, setInputDate] = useState(new Date());
     const [visible, setVisible] = useState(false);
-    const [image, setImage] = useState(null);
-    const [note, setNote] = useState("");
+
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [qty, setQty] = useState(1);
     const [price, setPrice] = useState(1);
+    const [amount, setAmount] = useState(0);
+    const [inputDate, setInputDate] = useState(new Date());
+    const [imageUri, setImageUri] = useState(null);
+    const [note, setNote] = useState(note);
 
-    const showDialog = () => setVisible(true);
+    const showDialog = () => {
+        setVisible(true);
+        Keyboard.dismiss();
+    };
+
     const hideDialog = () => setVisible(false);
 
-    // Function to handle the camera capture
     const handleCameraCapture = async () => {
-        const {status} = await Camera.requestPermissionsAsync();
-        if (status === 'granted') {
+        const {status: cameraStatus} = await Camera.requestPermissionsAsync();
+        if (cameraStatus === 'granted') {
             const photo = await ImagePicker.launchCameraAsync();
-            if (!photo.cancelled) {
-                setImage(photo.uri);
+            if (!photo?.cancelled) {
+                setImageUri(photo?.uri);
                 hideDialog();
             }
         }
@@ -45,42 +83,74 @@ const FlatListDropDown = () => {
             quality: 1,
         });
 
-        if (!result.cancelled) {
-            setImage(result.uri);
+        if (!result.canceled) {
+            setImageUri(result.uri);
             hideDialog();
         }
     };
 
     useEffect(() => {
         (async () => {
-            const {status} = await Contacts.requestPermissionsAsync();
-            if (status === 'granted') {
+            const {status: contactStatus} = await Contacts.requestPermissionsAsync();
+            if (contactStatus === 'granted') {
                 try {
                     const localContacts = await getItem('contacts')
-                    if(localContacts){
+                    if (localContacts) {
                         setContacts(localContacts);
-                    }else{
-                        const {data} = await Contacts.getContactsAsync({
-                            fields: [Contacts.Fields.Emails],
+                    } else {
+                        const {data : contactsArray} = await Contacts.getContactsAsync({
+                            fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
                         });
-                        if (data.length > 0) {
-                            setContacts(data);
-                            setItem('contacts', data).then(r => console.log(r))
+                        if (contactsArray.length > 0) {
+                            setContacts(contactsArray);
+                            setItem('contacts', contactsArray).then(r => console.log(r))
                         }
                     }
-
-                }catch (e) {
-                    const {data} = await Contacts.getContactsAsync({
-                        fields: [Contacts.Fields.Emails],
+                } catch (error) {
+                    const {data: contactsArray} = await Contacts.getContactsAsync({
+                        fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
                     });
-                    if (data.length > 0) {
-                        setContacts(data);
-                        setItem('contacts', data).then(r => console.log(r))
+                    if (contactsArray.length > 0) {
+                        setContacts(contactsArray);
+                        setItem('contacts', contactsArray).then(r => console.log(r))
                     }
                 }
             }
         })();
     }, []);
+
+    const onFormSubmit = () => {
+
+        if(selectedProduct === null || selectedCustomer == null){
+            showToast("Please Select Customer and Product", 'error');
+            return false;
+        }
+
+        const formData = new FormData();
+        if(imageUri){
+            formData.append('image', {
+                uri: imageUri,
+                type: 'image/jpeg', // Modify the type based on your image type
+                name: 'image.jpg', // Modify the name based on your image name
+            });
+        }
+        formData.append('company_id', auth.user?.company_id);
+        formData.append('cost_center_id', auth.user?.cost_center_id);
+        formData.append('user_id', auth?.user?.id);
+        formData.append('phone', selectedCustomer?.phoneNumbers[0]?.digits || null);
+        formData.append('transaction_type_id', 1);
+        formData.append('product_id', selectedProduct?.id);
+        formData.append('price', price);
+        formData.append('qty', qty);
+        formData.append('from_date', inputDate?.toString());
+        formData.append('phone_id', selectedCustomer?.id);
+        formData.append('customer_name', selectedCustomer?.name);
+        formData.append('notes', note);
+        request(formData);
+    }
+
+    // console.log(contacts);
+
     return (
         <View className={"flex-1 bg-white"}>
             <KeyboardAvoidingView
@@ -89,28 +159,30 @@ const FlatListDropDown = () => {
                     data={contacts}
                     inputLabel="Customer Name"
                     headerTitle="Showing contact from Phonebook"
-                    onSelect={(value) => console.log(value)}
-                    onChangeInput={(value) => console.log(value)}
+                    onSelect={(contactObj) => {
+                        setSelectedCustomer(contactObj);
+                    }}
                     filterEnabled={true}
                 />
-                <View className={"mt-2 -z-20"}>
+                {!isLoading && <View className={"mt-2 -z-10"}>
                     <DropDownFlashList
-                        data={[{id: 1, name: "Item1", price: 2}, {id: 2, name: "Item2", price: 4}, {
-                            id: 3,
-                            name: "Item3",
-                            price: 6
-                        }]}
+                        data={products}
                         inputLabel="Items"
                         headerTitle="List of items"
                         onSelect={(value) => {
+                            setSelectedProduct(value)
+                            setAmount(parseFloat(value.price) * parseFloat(qty));
                             setPrice(value.price)
                         }}
                     />
-                </View>
+                </View>}
                 <View className={"flex flex-row gap-2 mt-0 -z-30"}>
                     <TextInput
                         className={"bg-white flex-1 mt-2 -z-30"}
-                        onChangeText={(text) => setQty(text)}
+                        onChangeText={(inputQty) => {
+                            setQty(inputQty)
+                            setAmount(parseFloat(price) * parseFloat(inputQty));
+                        }}
                         value={qty.toString()}
                         mode={"outlined"}
                         label={"Qty"}
@@ -118,7 +190,10 @@ const FlatListDropDown = () => {
                     />
                     <TextInput
                         className={"bg-white flex-1 mt-2 -z-30"}
-                        onChangeText={(text) => setPrice(text)}
+                        onChangeText={(inputPrice) => {
+                            setPrice(inputPrice)
+                            setAmount(parseFloat(inputPrice) * parseFloat(qty));
+                        }}
                         value={price.toString()}
                         mode={"outlined"}
                         label={"Price"}
@@ -129,9 +204,10 @@ const FlatListDropDown = () => {
                     className={"bg-white mt-2 -z-30"}
                     value={amount.toString()}
                     mode={"outlined"}
-                    label={"Amount"}
                     onChangeText={(value) => setAmount(value)}
+                    label={"Amount"}
                     inputMode={"numeric"}
+                    editable={false}
                 />
                 <View className={"flex flex-row w-full mt-2 -z-30"}>
                     <DatePickerInput
@@ -155,18 +231,16 @@ const FlatListDropDown = () => {
                     mode={"outlined"}
                     label={"Notes (Optional)"}
                     inputMode={"text"}
-                    multiline={true}
-                    numberOfLines={5}
                 />
-
-                {image &&
-                    <Image source={{uri: image, width: 150, height: 150}} resizeMethod={"auto"} className={"mt-4"}/>}
-
-                <Button mode={"contained"} className={"mt-4 py-1"} onPress={() => alert("Work in Progress!")}>Submit</Button>
+                <>
+                    {imageUri && <Image source={{uri: imageUri, width: 150, height: 150}} resizeMethod={"auto"} className={"mt-4"}/>}
+                </>
+                <Button mode={"contained"} className={"mt-4 py-1 -z-50"}
+                        onPress={() => onFormSubmit()}>Submit</Button>
             </KeyboardAvoidingView>
 
-
-            <Dialog visible={visible} onDismiss={hideDialog} dismissable={true} style={{backgroundColor: "white"}}>
+            <Dialog visible={visible} onDismiss={hideDialog} dismissable={true} style={{backgroundColor: "white"}}
+                    dismissableBackButton={true}>
                 <Dialog.Title style={{fontSize: 18}}>Select</Dialog.Title>
                 <Dialog.Content>
                     <View className={"flex flex-row justify-evenly mb-10 mt-5"}>
@@ -191,4 +265,4 @@ const FlatListDropDown = () => {
     );
 };
 
-export default FlatListDropDown;
+export default React.memo(FlatListDropDown);

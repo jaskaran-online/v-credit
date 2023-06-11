@@ -16,7 +16,9 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "jsEngine": "jsc"
+      "jsEngine": "jsc",
+      "bundleIdentifier": "com.webcooks.caspro",
+      "flipper": true
     },
     "android": {
       "jsEngine": "hermes",
@@ -36,7 +38,7 @@
     "plugins": [
       [
         "expo-localization"
-     ],
+      ],
       [
         "expo-contacts",
         {

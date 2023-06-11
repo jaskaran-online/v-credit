@@ -36,7 +36,9 @@ export function TabNavigator({}) {
   return (
       <Tab.Navigator screenOptions={screenOptions}>
         <Tab.Screen name="Customers" component={Customers} />
-        <Tab.Screen name="Credit / Udhaar" component={Transactions} />
+        <Tab.Screen name="Transactions" options={{
+          title : "Credit / Udhaar"
+        }} component={Transactions} />
       </Tab.Navigator>
   );
 }

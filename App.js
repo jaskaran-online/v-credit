@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { MD3DarkTheme as DarkTheme, MD3LightTheme as LightTheme, Provider as PaperProvider } from 'react-native-paper';
 import { RootNavigator } from "./src/navigations/root-navigator";
+import Toast from 'react-native-toast-message';
 
 // Create a client
 const queryClient = new QueryClient()
@@ -36,6 +37,7 @@ export default function App() {
         <QueryClientProvider client={queryClient}>
             <PaperProvider theme={theme}>
                 <RootNavigator theme={theme}/>
+                <Toast />
             </PaperProvider>
         </QueryClientProvider>
     );

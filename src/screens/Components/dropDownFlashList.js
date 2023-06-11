@@ -57,7 +57,7 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
         const end = name?.slice(index + searchTerm.length);
 
         return (
-            <TouchableOpacity className={"w-full"} onPress={() => {
+            <TouchableOpacity className={"w-full z-50"} onPress={() => {
                 setValue(item.name);
                 onSelect(item);
                 setIsDropDownOpen(false);
@@ -85,7 +85,7 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
             mode={"outlined"}
             label={inputLabel}
             right={<TextInput.Icon icon={isDropDownOpen  ? "close" : "chevron-down"} size={28} color={'red'} onPress={() => setIsDropDownOpen((value) => !value)}/>}
-            onEndEditing={() => setIsDropDownOpen(false)}
+            // onEndEditing={() => setIsDropDownOpen(false)}
         />
         {isDropDownOpen && (<View style={{flex: 1, width: "100%", height: 400, position: "absolute", top:55}}
           className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl z-50"}>
@@ -97,7 +97,7 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
                 ItemSeparatorComponent={renderSeparator}
                 ListHeaderComponent={renderHeader}
                 ListFooterComponent={renderFooter}
-                                // className={"w-full h-full"}
+                className={"w-full h-full"}
             />
         </View>)}
     </View>);

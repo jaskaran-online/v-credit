@@ -1,14 +1,7 @@
-import {View, TouchableOpacity} from "react-native";
+import {View, TouchableOpacity, Linking, Platform} from "react-native";
 import {FlashList} from "@shopify/flash-list";
-import {
-    List,
-    Text,
-    Divider,
-    TextInput,
-    Menu,
-    Searchbar,
-} from "react-native-paper";
-import {useState} from "react";
+import {Text, Searchbar} from "react-native-paper";
+import {useEffect, useState} from "react";
 import {
     Feather,
     MaterialCommunityIcons,
@@ -16,6 +9,44 @@ import {
 } from "@expo/vector-icons";
 
 import {FloatingButtons} from "./../index"
+import {useCustomerTransactionData} from "../../../apis/useApi";
+import {useAuth} from "../../../hooks";
+
+const makePhoneCall = (phoneNumber) => {
+    const url = `tel:${phoneNumber}`;
+    Linking.canOpenURL(url)
+        .then((supported) => {
+            if (supported) {
+                return Linking.openURL(url);
+            } else {
+                alert("Phone call not supported");
+            }
+        })
+        .catch((error) => console.log(error));
+};
+
+const sendWhatsApp = (phoneWithCountryCode) => {
+    let msg = "Hi..";
+
+    let mobile =
+        Platform.OS !== "ios" ? "+" + phoneWithCountryCode : phoneWithCountryCode;
+    if (mobile) {
+        if (msg) {
+            let url = "whatsapp://send?text=" + msg + "&phone=" + mobile;
+            Linking.openURL(url)
+                .then(data => {
+                    console.log("WhatsApp Opened");
+                })
+                .catch(() => {
+                    alert("Make sure WhatsApp installed on your device");
+                });
+        } else {
+            alert("Please insert message to send");
+        }
+    } else {
+        alert("Please insert mobile no");
+    }
+};
 
 const renderHeader = () => (
     <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
@@ -45,7 +76,7 @@ const renderItem = ({item, index}) => (
     >
         <View className="flex flex-row items-center w-1/4">
             <View className="mr-1">
-                {index % 2 === 0 ? (
+                {item?.transaction_type_id === 2 ? (
                     <MaterialCommunityIcons
                         name="call-received"
                         size={14}
@@ -57,18 +88,18 @@ const renderItem = ({item, index}) => (
             </View>
             <View>
                 <Text variant={"titleSmall"} className="text-slate-800">
-                    {index % 2 === 0 ? "Payment" : "Credit"}
+                    {item?.transaction_type_id === 2 ? "Payment" : "Credit"}
                 </Text>
                 <Text variant={"labelSmall"} className="text-slate-400">
-                    5 May 2023
+                    {item?.created_at}
                 </Text>
             </View>
         </View>
         <View>
-            {index % 2 !== 0 ? (
+            {item?.transaction_type_id === 1 ? (
                 <View className={"mr-2"}>
                     <Text variant={"bodyMedium"} className="text-slate-800 mr-2">
-                        100
+                        {item?.amount}₹
                     </Text>
                     <Text variant={"labelSmall"} className="text-slate-400 mr-2">
                         (Udhaar)
@@ -83,10 +114,10 @@ const renderItem = ({item, index}) => (
         </View>
         <View className={"flex flex-row items-right"}>
             <View>
-                {index % 2 === 0 ? (
+                {item?.transaction_type_id === 2 ? (
                     <View>
                         <Text variant={"bodyMedium"} className="text-slate-800">
-                            200
+                            {item?.amount}₹
                         </Text>
                         <Text variant={"labelSmall"} className="text-slate-400">
                             (Payment)
@@ -103,22 +134,18 @@ const renderItem = ({item, index}) => (
     </TouchableOpacity>
 );
 
-export default function Index({navigation}) {
-    const data = [
-        {id: "1", title: "Item 1", description: "This is item 1"},
-        {
-            id: "2",
-            title: "Item 2",
-            description: "This is item 2",
-        },
-        {id: "3", title: "Item 3", description: "This is item 3"},
-        {
-            id: "4",
-            title: "Item 4",
-            description: "This is item 4",
-        },
-        {id: "5", title: "Item 5", description: "This is item 5"},
-    ];
+export default function Index({navigation, route}) {
+    const auth = useAuth.use?.token();
+    const {mutate, data, isLoading} = useCustomerTransactionData();
+
+    useEffect(() => {
+        loadCustomerData();
+    }, []);
+
+    useEffect(() => {
+        setFilteredList(data?.data?.transactions);
+    }, [data]);
+
 
     const options = [
         {label: "Credit Given", onPress: handleClearSelection},
@@ -129,18 +156,30 @@ export default function Index({navigation}) {
         {label: "Clear", onPress: handleEditSelectedItem},
     ];
 
-    const [filteredList, setFilteredList] = useState(data);
+    const [filteredList, setFilteredList] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [showOptions, setShowOptions] = useState(false);
     const [query, setQuery] = useState("");
-    const handleSearch = (text) => {
-        setQuery(text);
-        const filtered = data.filter((item) =>
-            item.title.toLowerCase().includes(text.toLowerCase())
+    const [reload, setReload] = useState(false);
+
+    const handleSearch = (inputValue) => {
+        setQuery(inputValue);
+        const filteredList = (data?.data?.transactions).filter(item =>
+            String(item.amount).includes(inputValue) || String(item.id).includes(inputValue)
         );
-        setFilteredList(filtered);
-        console.log(filtered);
+        setFilteredList(filteredList);
     };
+
+    function loadCustomerData(){
+        setReload(true);
+        const formData = new FormData();
+        formData.append('company_id', auth.user.company_id);
+        formData.append('cost_center_id', auth.user.cost_center_id);
+        formData.append('customer_id', route.params.id);
+        formData.append('user_id', auth.user.id);
+        mutate(formData);
+        setReload(false);
+    }
 
     const handleSelect = (item) => {
         setSelectedItem(item);
@@ -165,6 +204,8 @@ export default function Index({navigation}) {
         setSelectedItem(null);
     };
 
+    const toReceive =  data?.data?.sumAmountByType.toReceive || 0;
+    const toPay = data?.data?.sumAmountByType.toPay || 0;
     return (
         <View className={"bg-white flex-1"}>
             <View className="bg-blue-50 h-28">
@@ -176,18 +217,19 @@ export default function Index({navigation}) {
                         </View>
                         <View className="ml-2">
                             <Text variant="bodyMedium" className="text-slate-600">
-                                To Pay
+                                Total Balance
                             </Text>
                             <Text variant="titleLarge" className="text-slate-900 font-bold">
-                                ₹ 100
+                                { toReceive > 0 ?  toReceive - toPay   : toPay > 0 ?   toPay - toReceive :   toReceive - toPay }₹
                             </Text>
                         </View>
                     </View>
+
                     <View className="flex flex-row space-x-6 pr-2">
-                        <TouchableOpacity className="bg-blue-50 p-2 rounded-full  flex items-center">
+                        <TouchableOpacity className="bg-blue-50 p-2 rounded-full  flex items-center" onPress={() => makePhoneCall(data?.data?.phone)}>
                             <MaterialIcons name="call" size={24} color="dodgerblue"/>
                         </TouchableOpacity>
-                        <TouchableOpacity className="bg-blue-50 p-2 rounded-full ">
+                        <TouchableOpacity className="bg-blue-50 p-2 rounded-full" onPress={() => sendWhatsApp(data?.data?.phone)}>
                             <MaterialCommunityIcons name="whatsapp" size={26} color="green"/>
                         </TouchableOpacity>
                     </View>
@@ -200,7 +242,7 @@ export default function Index({navigation}) {
             >
                 <View className={"flex flex-row relative"} style={{width: "80%"}}>
                     <Searchbar
-                        onChangeText={handleSearch}
+                        onChangeText={(text) => handleSearch(text)}
                         value={query.toString()}
                         style={{
                             width: "100%",
@@ -211,7 +253,7 @@ export default function Index({navigation}) {
                             lineHeight : Platform.OS === "android" ? 16 :  0,
                             paddingBottom: 20
                         }}
-                        placeholder="Search Name, Amount or Txn Note"
+                        placeholder="Search Amount or Txn Note"
                         className={"bg-white border-2 border-slate-200 h-10"}
                     />
                 </View>
@@ -266,6 +308,8 @@ export default function Index({navigation}) {
                 selected={selectedItem}
                 showOptions={showOptions}
                 options={options}
+                refreshing={reload}
+                onRefresh={loadCustomerData}
                 onOptionSelect={handleOptionSelect}
             />
             <FloatingButtons navigation={navigation}/>

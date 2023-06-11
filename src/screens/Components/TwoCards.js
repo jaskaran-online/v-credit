@@ -14,7 +14,7 @@ const Box = ({ className, children, ...props }) => (
   </StyledView>
 );
 
-export function TwoCards({}) {
+export function TwoCards({toReceive = 0, toPay = 0}) {
   return (
     <StyledView className="flex flex-row items-center p-2 space-x-2 h-1/8 bg-blue-50">
       <Box className="flex-row items-center flex-1 bg-white shadow-sm shadow-slate-200 justify-evenly">
@@ -28,7 +28,7 @@ export function TwoCards({}) {
         <View>
           <Text variant={"bodyMedium"} className="text-slate-500">To Receive</Text>
           <Text variant={"titleMedium"} className="font-bold text-slate-700">
-            ₹100
+            ₹{toReceive}
           </Text>
         </View>
       </Box>
@@ -39,7 +39,7 @@ export function TwoCards({}) {
         <View>
           <Text variant={"bodyMedium"} className="text-slate-500">To Pay</Text>
           <Text variant={"titleMedium"} className="font-bold text-slate-700">
-            ₹140
+            ₹{toPay}
           </Text>
         </View>
       </Box>

@@ -4,9 +4,11 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Searchbar, Text } from "react-native-paper";
+import {useCustomersData, useTransactionsData} from "../../../apis/useApi";
+import {useAuth} from "../../../hooks";
 
 const renderHeader = () => (
   <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
@@ -36,7 +38,7 @@ const renderItem = ({ item, index }) => (
   >
     <View className="flex flex-row items-center w-1/4">
       <View className="mr-1">
-        {index % 2 === 0 ? (
+        {item?.transaction_type_id === 2 ? (
           <MaterialCommunityIcons
             name="call-received"
             size={14}
@@ -48,19 +50,17 @@ const renderItem = ({ item, index }) => (
       </View>
       <View>
         <Text variant={"titleSmall"} className="text-slate-800">
-          Jaskaran
+          {item?.customer?.name}
         </Text>
         <Text variant={"labelSmall"} className="text-slate-400">
-          5 May 2023
+          {item?.created_at}
         </Text>
       </View>
     </View>
     <View>
-      {index % 2 !== 0 ? (
+      {item?.transaction_type_id === 1 ? (
         <View className={"mr-2"}>
-          <Text variant={"bodyMedium"} className="text-slate-800 mr-2">
-            100
-          </Text>
+          <Text variant={"bodyMedium"} className="text-slate-800 mr-2">{item?.amount}</Text>
           <Text variant={"labelSmall"} className="text-slate-400 mr-2">
             (Udhaar)
           </Text>
@@ -74,10 +74,10 @@ const renderItem = ({ item, index }) => (
     </View>
     <View className={"flex flex-row items-right"}>
       <View>
-        {index % 2 === 0 ? (
+        {item?.transaction_type_id === 2 ? (
           <View>
             <Text variant={"bodyMedium"} className="text-slate-800">
-              200
+              {item?.amount}
             </Text>
             <Text variant={"labelSmall"} className="text-slate-400">
               (Payment)
@@ -95,21 +95,28 @@ const renderItem = ({ item, index }) => (
 );
 
 export default function Index() {
-  const data = [
-    { id: "1", title: "Item 1", description: "This is item 1" },
-    {
-      id: "2",
-      title: "Item 2",
-      description: "This is item 2",
-    },
-    { id: "3", title: "Item 3", description: "This is item 3" },
-    {
-      id: "4",
-      title: "Item 4",
-      description: "This is item 4",
-    },
-    { id: "5", title: "Item 5", description: "This is item 5" },
-  ];
+
+  const auth = useAuth.use?.token();
+  const {mutate, data, isLoading} = useTransactionsData();
+  const [reload, setReload] = useState(false);
+
+  useEffect(() => {
+    setFilteredList(data?.data);
+  }, [data]);
+
+  function loadCustomerData(){
+    setReload(true)
+    const formData = new FormData();
+    formData.append('company_id', auth.user.company_id);
+    formData.append('cost_center_id', auth.user.cost_center_id);
+    formData.append('user_id', auth.user.id);
+    mutate(formData);
+    setReload(false)
+  }
+
+  useEffect(() => {
+    loadCustomerData();
+  }, []);
 
   const options = [
     { label: "Credit Given", onPress: handleClearSelection },
@@ -120,17 +127,16 @@ export default function Index() {
     { label: "Clear", onPress: handleEditSelectedItem },
   ];
 
-  const [filteredList, setFilteredList] = useState(data);
+  const [filteredList, setFilteredList] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [query, setQuery] = useState("");
   const handleSearch = (text) => {
     setQuery(text);
-    const filtered = data.filter((item) =>
-      item.title.toLowerCase().includes(text.toLowerCase())
+    const filtered = (data?.data).filter((item) =>
+      item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredList(filtered);
-    console.log(filtered);
   };
 
   const handleSelect = (item) => {
@@ -152,10 +158,10 @@ export default function Index() {
   };
 
   const handleEditSelectedItem = () => {
-    console.log("Edit selected item:", selectedItem);
     setSelectedItem(null);
   };
 
+  
   return (
     <View className={"bg-white flex-1"}>
       <View
@@ -220,12 +226,17 @@ export default function Index() {
           })}
         </View>
       )}
+      {isLoading ?
+          <Text>Loading</Text>
+          :
 
       <FlashList
         data={filteredList}
         renderItem={renderItem}
         ListHeaderComponent={renderHeader}
         estimatedItemSize={200}
+        refreshing={reload}
+        onRefresh={loadCustomerData}
         onSearch={handleSearch}
         onSelect={handleSelect}
         selected={selectedItem}
@@ -233,6 +244,7 @@ export default function Index() {
         options={options}
         onOptionSelect={handleOptionSelect}
       />
+      }
     </View>
   );
 }

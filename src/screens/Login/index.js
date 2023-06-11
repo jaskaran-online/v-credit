@@ -5,16 +5,37 @@ import { Image, KeyboardAvoidingView, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { COLORS } from "../../core";
 import {useAuth} from "../../hooks";
+import { useForm, Controller } from 'react-hook-form';
+import {useAuthLogin, useTransactionsData} from "../../apis/useApi";
+import Toast from "react-native-toast-message";
+const showToast = (error) => {
+    Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error.message,
+    });
+}
 
 export default function Index() {
+    const {mutate,  data : response, isLoading, error, isError, isSuccess} = useAuthLogin();
 
-  const keyboardVerticalOffset = Platform.OS === "ios" ? 40 : 0;
+    if(isError){
+        showToast(error);
+    }
+    const { control, handleSubmit, formState : {errors} } = useForm();
+    const keyboardVerticalOffset = Platform.OS === "ios" ? 40 : 0;
+    const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+    const signIn = useAuth.use.signIn();
+    const onSubmit = (data) => {
+        const formData = new FormData();
+        formData.append('email', data.email);
+        formData.append('password', data.password);
+        mutate(formData);
+        if(isSuccess){
+            signIn({ access: response?.data?.accessToken, refresh: response?.data?.accessToken, user : response?.data?.user }, )
+        }
+    };
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
-
-  const signIn = useAuth.use.signIn();
 
   return (
     <View className={"flex-1"}>
@@ -58,71 +79,118 @@ export default function Index() {
           </Text>
           <View className={"w-full flex-1"}>
             <>
-              <TextInput
-                label="Email"
-                value={email}
-                onChangeText={(text) => setEmail(text)}
-                className={"mb-4 bg-white"}
-                mode={"outlined"}
-                placeholder={"Enter Email"}
-                placeholderTextColor={COLORS.darkGray}
-                activeOutlineColor={"darkgreen"}
-                left={
-                  <TextInput.Icon
-                    onPress={() => {
-                      isPasswordSecure
-                        ? setIsPasswordSecure(false)
-                        : setIsPasswordSecure(true);
+                <Controller
+                    control={control}
+                    rules={{
+                        required: 'Email is required',
+                        pattern: {
+                            value: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
+                            message: 'Invalid email address',
+                        },
+                        minLength: {
+                            value: 6,
+                            message: 'Minimum length is 6 characters',
+                        }
                     }}
-                    icon={() => (
-                      <MaterialCommunityIcons name={"email"} size={20} />
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            onBlur={onBlur}
+                            onChangeText={(text) => onChange(text)}
+                            value={value}
+                            label="Email"
+                            className={"bg-white"}
+                            mode={"outlined"}
+                            placeholder={"Enter Email"}
+                            placeholderTextColor={COLORS.darkGray}
+                            activeOutlineColor={"darkgreen"}
+                            left={
+                                <TextInput.Icon
+                                    onPress={() => {
+                                        isPasswordSecure
+                                            ? setIsPasswordSecure(false)
+                                            : setIsPasswordSecure(true);
+                                    }}
+                                    icon={() => (
+                                        <MaterialCommunityIcons name={"email"} size={20} />
+                                    )}
+                                />
+                            }
+                        />
                     )}
-                  />
-                }
-              />
-              <TextInput
-                label="Password"
-                placeholder={"Enter Password"}
-                value={password}
-                mode={"outlined"}
-                className={"bg-white"}
-                secureTextEntry={isPasswordSecure}
-                placeholderTextColor={COLORS.darkGray}
-                activeOutlineColor={"darkgreen"}
-                right={
-                  <TextInput.Icon
-                    onPress={() => {
-                      isPasswordSecure
-                        ? setIsPasswordSecure(false)
-                        : setIsPasswordSecure(true);
+                    name="email"
+                    defaultValue="user@user.com"
+                />
+                {errors?.email && <Text variant={"bodySmall"} className={"text-amber-700 font-bold mt-1"}>*{errors?.email?.message}</Text>}
+                <View className={"mb-4 "} />
+                <Controller
+                    control={control}
+                    rules={{
+                        required: 'Password is required',
+                        minLength: {
+                            value: 6,
+                            message: 'Minimum length is 6 characters',
+                        },
+                        maxLength: {
+                            value: 12,
+                            message: 'Maximum length is 12 characters',
+                        },
+                        pattern: {
+                            value: /^[A-Za-z]+$/i,
+                            message: 'Invalid characters',
+                        },
                     }}
-                    icon={() => (
-                      <MaterialCommunityIcons
-                        name={isPasswordSecure ? "eye-off" : "eye"}
-                        size={24}
-                      />
+                    render={({ field: { onChange, onBlur, value } }) => (
+
+                        <TextInput
+                            onBlur={onBlur}
+                            onChangeText={(text) => onChange(text)}
+                            value={value}
+                            label="Password"
+                            placeholder={"Enter Password"}
+                            mode={"outlined"}
+                            className={"bg-white"}
+                            secureTextEntry={isPasswordSecure}
+                            placeholderTextColor={COLORS.darkGray}
+                            activeOutlineColor={"darkgreen"}
+                            right={
+                                <TextInput.Icon
+                                    onPress={() => {
+                                        isPasswordSecure
+                                            ? setIsPasswordSecure(false)
+                                            : setIsPasswordSecure(true);
+                                    }}
+                                    icon={() => (
+                                        <MaterialCommunityIcons
+                                            name={isPasswordSecure ? "eye-off" : "eye"}
+                                            size={24}
+                                        />
+                                    )}
+                                />
+                            }
+                            left={
+                                <TextInput.Icon
+                                    onPress={() => {
+                                        isPasswordSecure
+                                            ? setIsPasswordSecure(false)
+                                            : setIsPasswordSecure(true);
+                                    }}
+                                    icon={() => (
+                                        <MaterialCommunityIcons name={"key"} size={20} />
+                                    )}
+                                />
+                            }
+                        />
                     )}
-                  />
-                }
-                left={
-                  <TextInput.Icon
-                    onPress={() => {
-                      isPasswordSecure
-                        ? setIsPasswordSecure(false)
-                        : setIsPasswordSecure(true);
-                    }}
-                    icon={() => (
-                      <MaterialCommunityIcons name={"key"} size={20} />
-                    )}
-                  />
-                }
-                onChangeText={(text) => setPassword(text)}
-              />
+                    name="password"
+                    defaultValue="password"
+                />
+                {errors?.password && <Text variant={"bodySmall"} className={"text-amber-700 font-bold mt-1"}>*{errors?.password?.message}</Text>}
+
             </>
             <Button
               mode={"contained"}
               className={"bg-emerald-900 rounded-md mt-4 h-12 justify-center"}
-              onPress={() =>  signIn({ access: 'access-token', refresh: 'refresh-token' })}
+              onPress={handleSubmit(onSubmit)}
             >
               Login
             </Button>

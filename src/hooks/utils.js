@@ -6,4 +6,5 @@ export const getToken = () => getItem(TOKEN);
 export const removeToken = () => removeItem(TOKEN);
 export const setToken = (value) => setItem(TOKEN, value);
 
+export const setUser = (value) => setItem('user', value);
 
