@@ -22,9 +22,7 @@ export const get = async (url) => {
 export const post = async (url, data, headers) => {
 
     try {
-
         const response = await instance.post(url, data, headers);
-        console.log(response);
         return response.data;
     } catch (error) {
         console.error(error)

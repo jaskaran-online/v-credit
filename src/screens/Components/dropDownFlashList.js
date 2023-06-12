@@ -87,12 +87,11 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
             right={<TextInput.Icon icon={isDropDownOpen  ? "close" : "chevron-down"} size={28} color={'red'} onPress={() => setIsDropDownOpen((value) => !value)}/>}
             // onEndEditing={() => setIsDropDownOpen(false)}
         />
-        {isDropDownOpen && (<View style={{flex: 1, width: "100%", height: 400, position: "absolute", top:55}}
+        {isDropDownOpen && (<View
           className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl z-50"}>
-            <FlashList
+            <FlatList
                 data={filteredContacts}
                 renderItem={renderItem}
-                estimatedItemSize={200}
                 keyExtractor={(value, index) => index}
                 ItemSeparatorComponent={renderSeparator}
                 ListHeaderComponent={renderHeader}

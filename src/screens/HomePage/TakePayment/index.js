@@ -9,7 +9,7 @@ import {MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
 import {Camera} from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import {getItem, removeItem, setItem} from "../../../core/utils";
-import {useCompanyProductsData, usePaymentApi} from "../../../apis/useApi";
+import {useCompanyProductsData, usePaymentApi, useProductsApi} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
 import Toast from "react-native-toast-message";
 import { QueryClient } from '@tanstack/react-query';
@@ -28,7 +28,14 @@ const showToast = (message, type) => {
 const FlatListDropDown = ({navigation}) => {
     const auth = useAuth.use?.token();
     const {mutate: request, data: paymentApiResponse, isSuccess: isPaymentSuccess, error : paymentError, isError} = usePaymentApi();
-    const {data: products, isLoading} = useCompanyProductsData('api/v1/products');
+    const {mutate: productRequest, isLoading ,data: products, isSuccess: isProductsSuccess, error : productsError, isErrorProduct} = useProductsApi();
+
+    useEffect(() => {
+        const formData = new FormData();
+        formData.append('company_id', auth?.user?.company_id);
+        productRequest(formData)
+    }, []);
+
 
     if(isError){
         showToast(paymentError.message, 'error');
@@ -39,11 +46,6 @@ const FlatListDropDown = ({navigation}) => {
         setTimeout(() => navigation.navigate('HomePage'), 1000);
     }
 
-    console.log({
-        request,
-        paymentApiResponse,
-        isPaymentSuccess
-    }, paymentError?.response);
 
     const [contacts, setContacts] = useState([]);
     const [visible, setVisible] = useState(false);
@@ -147,10 +149,8 @@ const FlatListDropDown = ({navigation}) => {
         formData.append('customer_name', selectedCustomer?.name);
         formData.append('notes', note);
         request(formData);
-        console.log(formData);
     }
 
-    // console.log(contacts);
 
     return (
         <View className={"flex-1 bg-white"}>
@@ -168,8 +168,8 @@ const FlatListDropDown = ({navigation}) => {
                 {!isLoading && <View className={"mt-2 -z-10"}>
                     <DropDownFlashList
                         data={products}
-                        inputLabel="Items"
-                        headerTitle="List of items"
+                        inputLabel="Products"
+                        headerTitle="List of products"
                         onSelect={(value) => {
                             setSelectedProduct(value)
                             setAmount(parseFloat(value.price) * parseFloat(qty));

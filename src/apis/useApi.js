@@ -82,6 +82,15 @@ export const useCostCenterProfitReport = () => {
     });
 };
 
+
+export const useProductsApi = () => {
+    return useMutation({
+        mutationKey:  "productsApi",
+        mutationFn: (data) => post('api/v1/products', data),
+        cacheTime : 500,
+    });
+};
+
 export const usePaymentApi = () => {
     return useMutation((data) => post('api/v1/transactions', data, {
         headers: {
