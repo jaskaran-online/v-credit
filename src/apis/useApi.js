@@ -42,6 +42,46 @@ export const useTotalTransactionData = () => {
     });
 };
 
+export const useDailyBook = () => {
+    return useMutation({
+        mutationKey:  "dailyBook",
+        mutationFn: (data) => post('api/v1/daily-book', data),
+        cacheTime : 500,
+    });
+};
+
+export const usePartyStatement = () => {
+    return useMutation({
+        mutationKey:  "partyStatement",
+        mutationFn: (data) => post('api/v1/party-statement', data),
+        cacheTime : 500,
+    });
+};
+
+export const useAllParties = () => {
+    return useMutation({
+        mutationKey:  "allParties",
+        mutationFn: (data) => post('api/v1/all-parties', data),
+        cacheTime : 500,
+    });
+};
+
+export const useAllTransactions = () => {
+    return useMutation({
+        mutationKey:  "allTransactionsReport",
+        mutationFn: (data) => post('api/v1/all-transactions', data),
+        cacheTime : 500,
+    });
+};
+
+export const useCostCenterProfitReport = () => {
+    return useMutation({
+        mutationKey:  "costCenterProfitReport",
+        mutationFn: (data) => post('api/v1/cost-center-profit', data),
+        cacheTime : 500,
+    });
+};
+
 export const usePaymentApi = () => {
     return useMutation((data) => post('api/v1/transactions', data, {
         headers: {

@@ -118,7 +118,7 @@ export default function Index() {
                         />
                     )}
                     name="email"
-                    defaultValue="user@user.com"
+                    defaultValue=""
                 />
                 {errors?.email && <Text variant={"bodySmall"} className={"text-amber-700 font-bold mt-1"}>*{errors?.email?.message}</Text>}
                 <View className={"mb-4 "} />
@@ -182,7 +182,7 @@ export default function Index() {
                         />
                     )}
                     name="password"
-                    defaultValue="password"
+                    defaultValue=""
                 />
                 {errors?.password && <Text variant={"bodySmall"} className={"text-amber-700 font-bold mt-1"}>*{errors?.password?.message}</Text>}
 

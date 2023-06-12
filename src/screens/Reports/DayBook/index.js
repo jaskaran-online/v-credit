@@ -6,13 +6,15 @@ import {
 import { FlashList } from "@shopify/flash-list";
 import { StatusBar } from "expo-status-bar";
 import { styled } from "nativewind";
-import {memo, useState} from "react";
+import {memo, useEffect, useState} from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Searchbar, Text } from "react-native-paper";
 import { DatePickerInput } from "react-native-paper-dates";
 
 import { TwoCards } from "../../Components/TwoCards";
 import * as PropTypes from "prop-types";
+import {useDailyBook, useTransactionsData} from "../../../apis/useApi";
+import {useAuth} from "../../../hooks";
 
 const StyledView = styled(TouchableOpacity);
 const renderHeader = () => (
@@ -36,109 +38,118 @@ const renderHeader = () => (
 );
 
 const renderItem = ({ item, index }) => (
-  <TouchableOpacity
-    className={
-      "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
-    }
-  >
-    <View className="flex flex-row items-center w-1/4">
-      <View className="mr-1">
-        {index % 2 === 0 ? (
-          <MaterialCommunityIcons
-            name="call-received"
-            size={14}
-            color="green"
-          />
-        ) : (
-          <MaterialIcons name="call-made" size={14} color="red" />
-        )}
-      </View>
-      <View>
-        <Text variant={"titleSmall"} className="text-slate-800">
-          Jaskaran
-        </Text>
-        <Text variant={"labelSmall"} className="text-slate-400">
-          5 May 2023
-        </Text>
-      </View>
-    </View>
-    <View>
-      {index % 2 !== 0 ? (
-        <View className={"mr-2"}>
-          <Text variant={"bodyMedium"} className="text-slate-800 mr-2">
-            100
+    <TouchableOpacity
+        className={
+          "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
+        }
+    >
+      <View className="flex flex-row items-center w-1/4">
+        <View className="mr-1">
+          {item?.transaction_type_id === 2 ? (
+              <MaterialCommunityIcons
+                  name="call-received"
+                  size={14}
+                  color="green"
+              />
+          ) : (
+              <MaterialIcons name="call-made" size={14} color="red" />
+          )}
+        </View>
+        <View>
+          <Text variant={"titleSmall"} className="text-slate-800">
+            {item?.customer?.name}
           </Text>
-          <Text variant={"labelSmall"} className="text-slate-400 mr-2">
-            (Udhaar)
+          <Text variant={"labelSmall"} className="text-slate-400">
+            {item?.created_at}
           </Text>
         </View>
-      ) : (
-        <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-          {" "}
-          -{" "}
-        </Text>
-      )}
-    </View>
-    <View className={"flex flex-row items-right"}>
+      </View>
       <View>
-        {index % 2 === 0 ? (
-          <View>
-            <Text variant={"bodyMedium"} className="text-slate-800">
-              200
-            </Text>
-            <Text variant={"labelSmall"} className="text-slate-400">
-              (Payment)
-            </Text>
-          </View>
+        {item?.transaction_type_id === 1 ? (
+            <View className={"mr-2"}>
+              <Text variant={"bodyMedium"} className="text-slate-800 mr-2">{item?.amount}</Text>
+              <Text variant={"labelSmall"} className="text-slate-400 mr-2">
+                (Udhaar)
+              </Text>
+            </View>
         ) : (
-          <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-            {" "}
-            -{" "}
-          </Text>
+            <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
+              {" "}
+              -{" "}
+            </Text>
         )}
       </View>
-    </View>
-  </TouchableOpacity>
+      <View className={"flex flex-row items-right"}>
+        <View>
+          {item?.transaction_type_id === 2 ? (
+              <View>
+                <Text variant={"bodyMedium"} className="text-slate-800">
+                  {item?.amount}
+                </Text>
+                <Text variant={"labelSmall"} className="text-slate-400">
+                  (Payment)
+                </Text>
+              </View>
+          ) : (
+              <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
+                {" "}
+                -{" "}
+              </Text>
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
 );
 
-function Header(props) {
-  return <View className="bg-blue-50 h-40">
-    <StyledView className="flex h-1/4 p-2 bg-blue-50">
-      <DatePickerInput
-          locale="en"
-          label="Date"
-          value={props.value}
-          onChange={props.onChange}
-          inputMode="start"
-          mode={"outlined"}
-          className={"bg-blue-50 mx-1"}
-      />
-      <TwoCards/>
-    </StyledView>
-  </View>;
-}
-
-Header.propTypes = {
-  value: PropTypes.any,
-  onChange: PropTypes.func
-};
-
 function DayBook() {
-  const data = [
-    { id: "1", title: "Item 1", description: "This is item 1" },
-    {
-      id: "2",
-      title: "Item 2",
-      description: "This is item 2",
-    },
-    { id: "3", title: "Item 3", description: "This is item 3" },
-    {
-      id: "4",
-      title: "Item 4",
-      description: "This is item 4",
-    },
-    { id: "5", title: "Item 5", description: "This is item 5" },
-  ];
+
+  const auth = useAuth.use?.token();
+  const {mutate, data : dailyBookData, isLoading} = useDailyBook();
+  const [reload, setReload] = useState(false);
+
+  const [filteredList, setFilteredList] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showOptions, setShowOptions] = useState("");
+  const [query, setQuery] = useState("");
+
+  function Header() {
+    return <View className="bg-blue-50 h-40">
+      <StyledView className="flex h-1/4 p-2 bg-blue-50">
+        <DatePickerInput
+            locale="en"
+            label="Date"
+            value={inputDate}
+            onChange={(d) => setInputDate(d)}
+            inputMode="start"
+            mode={"outlined"}
+            className={"bg-blue-50 mx-1"}
+        />
+        <TwoCards toReceive={dailyBookData?.data?.totalOfTransactions?.toReceive} toPay={dailyBookData?.data?.totalOfTransactions?.toPay} />
+      </StyledView>
+    </View>;
+  }
+  function loadCustomerData(){
+    setReload(true)
+    const formData = new FormData();
+    formData.append('company_id', auth.user.company_id);
+    formData.append('cost_center_id', auth.user.cost_center_id);
+    formData.append('date', "2023-06-11");
+    formData.append('user_id', auth.user.id);
+    mutate(formData);
+    setReload(false)
+  }
+
+  useEffect(() => {
+    loadCustomerData();
+  }, []);
+
+  const handleSearch = (text) => {
+    setQuery(text);
+    const filtered = (dailyBookData?.data?.transactions).filter((item) =>
+        item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredList(filtered);
+  };
 
   const options = [
     { label: "Credit Given", onPress: handleClearSelection },
@@ -149,17 +160,9 @@ function DayBook() {
     { label: "Clear", onPress: handleEditSelectedItem },
   ];
 
-  const [filteredList, setFilteredList] = useState(data);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [showOptions, setShowOptions] = useState("");
-  const [query, setQuery] = useState("");
-  const handleSearch = (text) => {
-    setQuery(text);
-    const filtered = data.filter((item) =>
-      item.title.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilteredList(filtered);
-  };
+  useEffect(() => {
+    setFilteredList(dailyBookData?.data?.transactions);
+  }, [dailyBookData]);
 
   const handleSelect = (item) => {
     setSelectedItem(item);
@@ -193,11 +196,11 @@ function DayBook() {
     </StyledView>
   );
 
-  const [inputDate, setInputDate] = useState(undefined);
+  const [inputDate, setInputDate] = useState(new Date('2023-06-11'));
 
   return (
     <View className={"bg-white flex-1"}>
-      <Header value={inputDate} onChange={(d) => setInputDate(d)}/>
+      <Header/>
       <View
           className={
             "flex flex-row justify-between w-full px-3 items-center py-4"
@@ -260,8 +263,7 @@ function DayBook() {
             })}
           </View>
       )}
-
-      <FlashList
+      {!isLoading ? <FlashList
           data={filteredList}
           renderItem={renderItem}
           ListHeaderComponent={renderHeader}
@@ -272,7 +274,7 @@ function DayBook() {
           showOptions={showOptions}
           options={options}
           onOptionSelect={handleOptionSelect}
-      />
+      /> : <Text>Loading</Text> }
     </View>
   );
 }
