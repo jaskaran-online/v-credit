@@ -18,13 +18,18 @@ export const get = async (url) => {
 };
 
 // Function to make POST requests
-export const post = async (url, data, headers = {}) => {
+export const post = async (url, data, headers = {
+    headers : {
+        'x-api-key' : '231231231231232'
+    }
+}) => {
 
     try {
         const response = await instance.post(url, data, headers);
+        console.log(response);
         return response.data;
     } catch (error) {
-        console.error(error.response)
+        console.error(error)
         if (error.response && error.response.data && error.response.data.message) {
             throw new Error(error.response.data.message);
         } else {

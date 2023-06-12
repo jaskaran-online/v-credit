@@ -12,7 +12,7 @@ const showToast = (error) => {
     Toast.show({
         type: 'error',
         text1: 'Error',
-        text2: error.message,
+        text2: error?.message || "Something went wrong!",
     });
 }
 
@@ -63,8 +63,8 @@ export default function Index() {
       />
 
       <KeyboardAvoidingView
-        behavior="padding"
-        className="flex-1 items-center justify-evenly bg-white w-full"
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          className="flex-1 items-center justify-evenly bg-white w-full z-50"
       >
         <View className={"h-1/2 w-full px-6 flex"}>
           <Image

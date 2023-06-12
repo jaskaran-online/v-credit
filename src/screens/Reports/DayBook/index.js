@@ -119,7 +119,10 @@ function DayBook() {
             locale="en"
             label="Date"
             value={inputDate}
-            onChange={(d) => setInputDate(d)}
+            onChange={(d) => {
+              setInputDate(d);
+              setTimeout(() => loadCustomerData(), 1500)
+            }}
             inputMode="start"
             mode={"outlined"}
             className={"bg-blue-50 mx-1"}
@@ -130,10 +133,17 @@ function DayBook() {
   }
   function loadCustomerData(){
     setReload(true)
+
+    const currentDate = inputDate;
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+
     const formData = new FormData();
     formData.append('company_id', auth.user.company_id);
     formData.append('cost_center_id', auth.user.cost_center_id);
-    formData.append('date', "2023-06-11");
+    formData.append('date', dateString);
     formData.append('user_id', auth.user.id);
     mutate(formData);
     setReload(false)
