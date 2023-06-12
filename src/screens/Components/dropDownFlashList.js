@@ -88,15 +88,21 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
             // onEndEditing={() => setIsDropDownOpen(false)}
         />
         {isDropDownOpen && (<View
+            style={{
+                height: "100%"
+            }}
           className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl z-50"}>
-            <FlatList
+            <FlashList
                 data={filteredContacts}
+                estimatedItemSize={200}
+                contentContainerStyle={{
+                    height: "100%"
+                }}
                 renderItem={renderItem}
                 keyExtractor={(value, index) => index}
                 ItemSeparatorComponent={renderSeparator}
                 ListHeaderComponent={renderHeader}
                 ListFooterComponent={renderFooter}
-                className={"w-full h-full"}
             />
         </View>)}
     </View>);

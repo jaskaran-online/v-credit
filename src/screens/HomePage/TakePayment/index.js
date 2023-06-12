@@ -12,23 +12,33 @@ import {getItem, removeItem, setItem} from "../../../core/utils";
 import {useCompanyProductsData, usePaymentApi, useProductsApi} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
 import Toast from "react-native-toast-message";
-import { QueryClient } from '@tanstack/react-query';
-
-const queryClient = new QueryClient();
 
 const showToast = (message, type) => {
     Toast.show({
         type: type,
         text1: type === 'success' ? 'Success' : 'Error',
         text2: message,
-        position : "bottom"
+        position: "bottom"
     });
 }
 
 const FlatListDropDown = ({navigation}) => {
     const auth = useAuth.use?.token();
-    const {mutate: request, data: paymentApiResponse, isSuccess: isPaymentSuccess, error : paymentError, isError} = usePaymentApi();
-    const {mutate: productRequest, isLoading ,data: products, isSuccess: isProductsSuccess, error : productsError, isErrorProduct} = useProductsApi();
+    const {
+        mutate: request,
+        data: paymentApiResponse,
+        isSuccess: isPaymentSuccess,
+        error: paymentError,
+        isError
+    } = usePaymentApi();
+    const {
+        mutate: productRequest,
+        isLoading,
+        data: products,
+        isSuccess: isProductsSuccess,
+        error: productsError,
+        isErrorProduct
+    } = useProductsApi();
 
     useEffect(() => {
         const formData = new FormData();
@@ -37,11 +47,11 @@ const FlatListDropDown = ({navigation}) => {
     }, []);
 
 
-    if(isError){
+    if (isError) {
         showToast(paymentError.message, 'error');
     }
 
-    if(isPaymentSuccess){
+    if (isPaymentSuccess) {
         showToast(paymentApiResponse.data.message, 'success');
         setTimeout(() => navigation.navigate('HomePage'), 1000);
     }
@@ -100,7 +110,7 @@ const FlatListDropDown = ({navigation}) => {
                     if (localContacts) {
                         setContacts(localContacts);
                     } else {
-                        const {data : contactsArray} = await Contacts.getContactsAsync({
+                        const {data: contactsArray} = await Contacts.getContactsAsync({
                             fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
                         });
                         if (contactsArray.length > 0) {
@@ -123,13 +133,13 @@ const FlatListDropDown = ({navigation}) => {
 
     const onFormSubmit = () => {
 
-        if(selectedProduct === null || selectedCustomer == null){
+        if (selectedProduct === null || selectedCustomer == null) {
             showToast("Please Select Customer and Product", 'error');
             return false;
         }
 
         const formData = new FormData();
-        if(imageUri){
+        if (imageUri) {
             formData.append('image', {
                 uri: imageUri,
                 type: 'image/jpeg', // Modify the type based on your image type
@@ -221,7 +231,7 @@ const FlatListDropDown = ({navigation}) => {
                         className={"bg-blue-50 mx-1"}
                     />
                     <TouchableOpacity onPress={showDialog}
-                          className={"flex items-center justify-center px-4 bg-blue-50 shadow-sm border border-blue-100 rounded-lg my-[4px] mx-3"}>
+                                      className={"flex items-center justify-center px-4 bg-blue-50 shadow-sm border border-blue-100 rounded-lg my-[4px] mx-3"}>
                         <MaterialCommunityIcons name={"camera"} size={30} color={"black"}/>
                     </TouchableOpacity>
                 </View>
@@ -234,7 +244,8 @@ const FlatListDropDown = ({navigation}) => {
                     inputMode={"text"}
                 />
                 <>
-                    {imageUri && <Image source={{uri: imageUri, width: 150, height: 150}} resizeMethod={"auto"} className={"mt-4"}/>}
+                    {imageUri && <Image source={{uri: imageUri, width: 150, height: 150}} resizeMethod={"auto"}
+                                        className={"mt-4"}/>}
                 </>
                 <Button mode={"contained"} className={"mt-4 py-1 -z-50"}
                         onPress={() => onFormSubmit()}>Submit</Button>

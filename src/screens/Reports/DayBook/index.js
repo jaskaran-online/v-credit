@@ -12,8 +12,7 @@ import { Searchbar, Text } from "react-native-paper";
 import { DatePickerInput } from "react-native-paper-dates";
 
 import { TwoCards } from "../../Components/TwoCards";
-import * as PropTypes from "prop-types";
-import {useDailyBook, useTransactionsData} from "../../../apis/useApi";
+import {useDailyBook} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
 
 const StyledView = styled(TouchableOpacity);
@@ -197,15 +196,6 @@ function DayBook() {
     setSelectedItem(null);
   };
 
-  const Box = ({ className, children, ...props }) => (
-    <StyledView
-      className={`flex text-center h-20 rounded ₹{className}`}
-      {...props}
-    >
-      {children}
-    </StyledView>
-  );
-
   const [inputDate, setInputDate] = useState(new Date('2023-06-11'));
 
   return (
@@ -284,6 +274,7 @@ function DayBook() {
           showOptions={showOptions}
           options={options}
           onOptionSelect={handleOptionSelect}
+          ListFooterComponent={<View style={{height: 100}}/>}
       /> : <Text>Loading</Text> }
     </View>
   );

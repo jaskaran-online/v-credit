@@ -243,6 +243,7 @@ export default function Index() {
         showOptions={showOptions}
         options={options}
         onOptionSelect={handleOptionSelect}
+        ListFooterComponent={<View style={{height: 100}}/>}
       />
       }
     </View>

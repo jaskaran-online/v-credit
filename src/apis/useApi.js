@@ -92,11 +92,10 @@ export const useProductsApi = () => {
 };
 
 export const usePaymentApi = () => {
-    return useMutation((data) => post('api/v1/transactions', data, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    }));
+    return useMutation({
+        mutationKey : "payment",
+        mutationFn : (data) => post('api/v1/transactions', data)
+    });
 };
 
 

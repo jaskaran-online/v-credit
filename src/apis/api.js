@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const instance = axios.create({
+const axiosInstance = axios.create({
     baseURL: 'http://mycreditbook.com/',
     headers: {
         'Accept': 'application/json',
@@ -11,7 +11,7 @@ const instance = axios.create({
 // Function to make GET requests
 export const get = async (url) => {
     try {
-        const response = await instance.get(url);
+        const response = await axiosInstance.get(url);
         return response.data;
     } catch (error) {
         throw new Error(error);
@@ -19,10 +19,9 @@ export const get = async (url) => {
 };
 
 // Function to make POST requests
-export const post = async (url, data, headers) => {
-
+export const post = async (url, data) => {
     try {
-        const response = await instance.post(url, data, headers);
+        const response = await axiosInstance.post(url, data);
         return response.data;
     } catch (error) {
         console.error(error)
@@ -37,7 +36,7 @@ export const post = async (url, data, headers) => {
 // Function to make PUT requests
 export const put = async (url, data) => {
     try {
-        const response = await instance.put(url, data);
+        const response = await axiosInstance.put(url, data);
         return response.data;
     } catch (error) {
         throw new Error('Network response was not ok');
@@ -47,7 +46,7 @@ export const put = async (url, data) => {
 // Function to make PATCH requests
 export const patch = async (url, data) => {
     try {
-        const response = await instance.patch(url, data);
+        const response = await axiosInstance.patch(url, data);
         return response.data;
     } catch (error) {
         throw new Error('Network response was not ok');
@@ -57,7 +56,7 @@ export const patch = async (url, data) => {
 // Function to make DELETE requests
 export const del = async (url) => {
     try {
-        await instance.delete(url);
+        await axiosInstance.delete(url);
     } catch (error) {
         throw new Error('Network response was not ok');
     }

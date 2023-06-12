@@ -3,10 +3,11 @@ import {
     DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { MD3DarkTheme as DarkTheme, MD3LightTheme as LightTheme, Provider as PaperProvider } from 'react-native-paper';
 import { RootNavigator } from "./src/navigations/root-navigator";
 import Toast from 'react-native-toast-message';
+import {useAuth} from "./src/hooks";
 
 // Create a client
 const queryClient = new QueryClient()
@@ -29,6 +30,12 @@ const darkTheme = {
     },
 };
 export default function App() {
+
+    const authHydrate = useAuth.use.hydrate();
+
+    useEffect(function(){
+        authHydrate();
+    },[]);
 
     const [isDarkTheme, setIsDarkTheme] = useState(false);
     const theme = isDarkTheme ? darkTheme : lightTheme;

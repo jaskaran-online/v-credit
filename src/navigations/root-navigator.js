@@ -120,7 +120,7 @@ export const Root = () => {
                         />
 
                         <Stack.Screen
-                            options={({ route }) => ({
+                            options={({route}) => ({
                                 title: (route?.params?.name) ? route?.params?.name : 'Details',
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
@@ -156,14 +156,15 @@ export const Root = () => {
 };
 
 
-function ErrorFallback({ error, resetErrorBoundary }) {
+function ErrorFallback({error, resetErrorBoundary}) {
     return (
         <View>
             <Text>An error occurred: {error.message}</Text>
-            <Button title="Try Again" onPress={resetErrorBoundary} />
+            <Button title="Try Again" onPress={resetErrorBoundary}/>
         </View>
     );
 }
+
 export const RootNavigator = ({theme}) => (
     <NavigationContainer theme={theme} navigationRef={navigationRef}>
         <ErrorBoundary FallbackComponent={ErrorFallback}>

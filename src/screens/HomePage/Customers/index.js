@@ -78,6 +78,7 @@ export default function Index() {
                 estimatedItemSize={200}
                 refreshing={reload}
                 onRefresh={loadCustomerData}
+                ListFooterComponent={<View style={{height: 100}}/>}
             />}
         </View>
     );

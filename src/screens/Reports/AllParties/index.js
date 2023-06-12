@@ -2,11 +2,13 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { StatusBar } from "expo-status-bar";
 import { styled } from "nativewind";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Searchbar, Text } from "react-native-paper";
 import { DatePickerInput } from "react-native-paper-dates";
 import { PaperSelect } from "react-native-paper-select";
+import {useAuth} from "../../../hooks";
+import {useDailyBook} from "../../../apis/useApi";
 
 const renderHeader = () => (
   <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
@@ -29,72 +31,102 @@ const renderHeader = () => (
 );
 
 const renderItem = ({ item, index }) => (
-  <TouchableOpacity
-    className={
-      "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
-    }
-  >
-    <View className="flex flex-row items-center w-1/4">
-      <View className="mr-1">
-        {index % 2 === 0 ? (
-          <MaterialCommunityIcons
-            name="call-received"
-            size={14}
-            color="green"
-          />
-        ) : (
-          <MaterialIcons name="call-made" size={14} color="red" />
-        )}
-      </View>
-      <View>
-        <Text variant={"titleSmall"} className="text-slate-800">
-          Jaskaran
-        </Text>
-        <Text variant={"labelSmall"} className="text-slate-400">
-          5 May 2023
-        </Text>
-      </View>
-    </View>
-    <View>
-      {index % 2 !== 0 ? (
-        <View className={"mr-2"}>
-          <Text variant={"bodyMedium"} className="text-slate-800 mr-2">
-            100
+    <TouchableOpacity
+        className={
+          "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
+        }
+    >
+      <View className="flex flex-row items-center w-1/4">
+        <View className="mr-1">
+          {item?.transaction_type_id === 2 ? (
+              <MaterialCommunityIcons
+                  name="call-received"
+                  size={14}
+                  color="green"
+              />
+          ) : (
+              <MaterialIcons name="call-made" size={14} color="red" />
+          )}
+        </View>
+        <View>
+          <Text variant={"titleSmall"} className="text-slate-800">
+            {item?.customer?.name}
           </Text>
-          <Text variant={"labelSmall"} className="text-slate-400 mr-2">
-            (Udhaar)
+          <Text variant={"labelSmall"} className="text-slate-400">
+            {item?.created_at}
           </Text>
         </View>
-      ) : (
-        <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-          {" "}
-          -{" "}
-        </Text>
-      )}
-    </View>
-    <View className={"flex flex-row items-right"}>
+      </View>
       <View>
-        {index % 2 === 0 ? (
-          <View>
-            <Text variant={"bodyMedium"} className="text-slate-800">
-              200
-            </Text>
-            <Text variant={"labelSmall"} className="text-slate-400">
-              (Payment)
-            </Text>
-          </View>
+        {item?.transaction_type_id === 1 ? (
+            <View className={"mr-2"}>
+              <Text variant={"bodyMedium"} className="text-slate-800 mr-2">{item?.amount}</Text>
+              <Text variant={"labelSmall"} className="text-slate-400 mr-2">
+                (Udhaar)
+              </Text>
+            </View>
         ) : (
-          <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-            {" "}
-            -{" "}
-          </Text>
+            <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
+              {" "}
+              -{" "}
+            </Text>
         )}
       </View>
-    </View>
-  </TouchableOpacity>
+      <View className={"flex flex-row items-right"}>
+        <View>
+          {item?.transaction_type_id === 2 ? (
+              <View>
+                <Text variant={"bodyMedium"} className="text-slate-800">
+                  {item?.amount}
+                </Text>
+                <Text variant={"labelSmall"} className="text-slate-400">
+                  (Payment)
+                </Text>
+              </View>
+          ) : (
+              <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
+                {" "}
+                -{" "}
+              </Text>
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
 );
 
 export default function Index() {
+
+  const auth = useAuth.use?.token();
+  const {mutate, data : dailyBookData, isLoading} = useDailyBook();
+  const [reload, setReload] = useState(false);
+
+  const [filteredList, setFilteredList] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showOptions, setShowOptions] = useState("");
+  const [query, setQuery] = useState("");
+
+  function loadCustomerData(){
+    setReload(true)
+
+    const currentDate = inputDate;
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+
+    const formData = new FormData();
+    formData.append('company_id', auth.user.company_id);
+    formData.append('cost_center_id', auth.user.cost_center_id);
+    formData.append('date', dateString);
+    formData.append('user_id', auth.user.id);
+    mutate(formData);
+    setReload(false)
+  }
+
+  useEffect(() => {
+    loadCustomerData();
+  }, []);
+
   const [colors, setColors] = useState({
     value: "",
     list: [
@@ -136,24 +168,24 @@ export default function Index() {
     { label: "Clear", onPress: handleEditSelectedItem },
   ];
 
-  const [filteredList, setFilteredList] = useState(data);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [showOptions, setShowOptions] = useState(false);
-  const [query, setQuery] = useState("");
-  const handleSearch = (text) => {
-    setQuery(text);
-    const filtered = data.filter((item) =>
-      item.title.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilteredList(filtered);
-  };
-
   const handleSelect = (item) => {
     setSelectedItem(item);
   };
 
   const handleOptionSelect = (show) => {
     setShowOptions((show) => !show);
+  };
+
+  useEffect(() => {
+    setFilteredList(dailyBookData?.data?.transactions);
+  }, [dailyBookData]);
+
+  const handleSearch = (text) => {
+    setQuery(text);
+    const filtered = (dailyBookData?.data?.transactions).filter((item) =>
+        item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredList(filtered);
   };
 
   const handleClearSelection = () => {
@@ -254,6 +286,7 @@ export default function Index() {
         showOptions={showOptions}
         options={options}
         onOptionSelect={handleOptionSelect}
+        ListFooterComponent={<View style={{height: 100}}/>}
       />
     </View>
   );
