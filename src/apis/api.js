@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: 'http://143.110.241.104/',
-    headers : {
-        'x-company-id' : 1
+    baseURL: 'http://mycreditbook.com/',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'multipart/form-data'
     }
 });
 
@@ -18,13 +19,10 @@ export const get = async (url) => {
 };
 
 // Function to make POST requests
-export const post = async (url, data, headers = {
-    headers : {
-        'x-api-key' : '231231231231232'
-    }
-}) => {
+export const post = async (url, data, headers) => {
 
     try {
+
         const response = await instance.post(url, data, headers);
         console.log(response);
         return response.data;

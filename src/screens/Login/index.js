@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { Image, KeyboardAvoidingView, View } from "react-native";
+import {Image, KeyboardAvoidingView, Platform, View} from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { COLORS } from "../../core";
 import {useAuth} from "../../hooks";

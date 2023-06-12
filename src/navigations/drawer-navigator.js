@@ -78,8 +78,8 @@ const Drawer = createDrawerNavigator();
 
 export function DrawerNavigator() {
 
+    const auth = useAuth.use?.token();
     const dimensions = useWindowDimensions();
-
     return (
         <Drawer.Navigator
             drawerContent={CustomDrawerContent}
@@ -108,7 +108,7 @@ export function DrawerNavigator() {
                     drawerActiveTintColor: COLORS.white,
                     drawerActiveBackgroundColor: COLORS.primary,
                     headerStyle : { backgroundColor : '#eff6ff'},
-                    title: "",
+                    title: auth?.user?.company?.name || "Home",
                     drawerIcon: ({focused, size}) => (
                         <Icon name="home" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
                     ),
