@@ -25,6 +25,7 @@ export const post = async (url, data) => {
         return response.data;
     } catch (error) {
         console.error(error)
+        console.log(error.response.data.message)
         if (error.response && error.response.data && error.response.data.message) {
             throw new Error(error.response.data.message);
         } else {

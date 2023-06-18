@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "CASPRO",
-    "slug": "CASPRO",
+    "name": "MyCreditBook",
+    "slug": "my-credit-book",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "jsEngine": "jsc",
-      "bundleIdentifier": "com.webcooks.caspro",
+      "bundleIdentifier": "com.webcooks.mycreditbook",
       "flipper": true
     },
     "android": {

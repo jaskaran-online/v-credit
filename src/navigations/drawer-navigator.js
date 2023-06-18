@@ -21,17 +21,18 @@ import { useAuth } from "../hooks";
 function CustomDrawerContent(props) {
 
     const signOut = useAuth.use.signOut();
-    
+    const auth = useAuth.use?.token();
+    console.log(auth?.user?.name)
     return (
         <View style={{flex: 1, backgroundColor: COLORS.white}}>
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerHeaderContainer}>
                     <View style={styles.drawerHeaderInnerContainer}>
                         <View>
-                            <Text variant={"titleMedium"}>Jaskaran Singh</Text>
-                            <Text variant={"bodySmall"} className={"text-slate-600"}>Webcooks.in</Text>
+                            <Text variant={"titleMedium"}>{auth?.user?.name || "User Name"}</Text>
+                            <Text variant={"bodySmall"} className={"text-slate-600"}>{auth?.user?.email}</Text>
                         </View>
-                        <Avatar.Text size={50} color="white" labelStyle={{ fontSize :20 }} label="JS" />
+                        <Avatar.Text size={50} color="white" labelStyle={{ fontSize :20 }} label="US" />
                     </View>
                 </View>
                 <DrawerItemList {...props} />

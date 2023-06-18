@@ -7,6 +7,7 @@ import {useCustomersData} from "../../../apis/useApi";
 import {useCallback, useEffect, useState} from "react";
 import {useAuth} from "../../../hooks";
 import { useFocusEffect } from "@react-navigation/native";
+import {useQueryClient} from "@tanstack/react-query";
 const renderItem = ({item, index}) => {
 
     const  toPay = item?.sumAmountByType?.toPay || 0;
@@ -40,9 +41,11 @@ const renderItem = ({item, index}) => {
 
 export default function Index() {
 
+    const queryClient = useQueryClient();
     useFocusEffect(
         useCallback(() => {
-            loadCustomerData();
+            queryClient.invalidateQueries(['getData'])
+            // loadCustomerData();
             return () => {
                 // Useful for cleanup functions
                 console.log("Screen was unfocused");
