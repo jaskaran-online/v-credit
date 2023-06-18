@@ -18,7 +18,7 @@ Trace:
 
 npm manifest: 
   {
-    "name": "CASPRO",
+    "name": "MyCreditBook",
     "version": "1.0.0",
     "scripts": {
       "start": "expo start --dev-client",
