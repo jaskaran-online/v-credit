@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MyCreditBook",
-    "slug": "my-credit-book",
+    "slug": "mycreditbook",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
