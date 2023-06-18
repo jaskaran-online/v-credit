@@ -26,7 +26,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.webcooks.caspro",
+      "package": "com.webcooks.mycreditbook",
       "permissions": [
         "READ_CONTACTS",
         "WRITE_CONTACTS"
