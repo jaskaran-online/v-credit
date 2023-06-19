@@ -215,8 +215,6 @@ export default function Index() {
         setSelectedItem(null);
     };
 
-    console.log(transactionsLoading)
-
     return (
         <View className={"bg-white flex-1"}>
             <StatusBar animated={true} />

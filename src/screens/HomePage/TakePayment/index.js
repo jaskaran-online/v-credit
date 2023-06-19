@@ -168,7 +168,7 @@ const FlatListDropDown = ({navigation}) => {
                 behavior="padding" className={"bg-white flex-1 px-4 pt-2"}>
                 <DropDownFlashList
                     data={contacts}
-                    inputLabel="Customer Name"
+                    inputLabel="Select Customer"
                     headerTitle="Showing contact from Phonebook"
                     onSelect={(contactObj) => {
                         setSelectedCustomer(contactObj);
@@ -178,7 +178,7 @@ const FlatListDropDown = ({navigation}) => {
                 {!isLoading && <View className={"mt-2 -z-10"}>
                     <DropDownFlashList
                         data={products}
-                        inputLabel="Products"
+                        inputLabel="Select Product"
                         headerTitle="List of products"
                         onSelect={(value) => {
                             setSelectedProduct(value)

@@ -16,7 +16,7 @@ function Index({navigation}) {
             loadCustomerData();
             return () => {
                 // Useful for cleanup functions
-                console.log("Screen was unfocused");
+                // console.log("Screen was unfocused");
             };
         }, [])
     );
@@ -71,7 +71,7 @@ export function FloatingButtons({navigation}) {
           onPress={() => navigation.navigate("GiveMoney")}
           className={"bg-amber-500 shadow shadow-slate-300"}
         >
-          Give Payment
+          Give Credit
         </Button>
       </View>
     </View>

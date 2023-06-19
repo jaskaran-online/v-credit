@@ -27,8 +27,8 @@ const showToast = (message, type) => {
 
 const FlatListDropDown = ({navigation}) => {
     const auth = useAuth.use?.token();
-    const {mutate: request, data: paymentApiResponse, isSuccess: isPaymentSuccess, error : paymentError, isError} = usePaymentApi();
     const {mutate: productRequest, isLoading ,data: products, isSuccess: isProductsSuccess, error : productsError, isErrorProduct} = useProductsApi();
+    const {mutate: request, data: paymentApiResponse, isSuccess: isPaymentSuccess, error : paymentError, isError} = usePaymentApi();
 
     useEffect(() => {
         const formData = new FormData();
@@ -123,7 +123,7 @@ const FlatListDropDown = ({navigation}) => {
 
     const onFormSubmit = () => {
 
-        if(selectedProduct === null || selectedCustomer == null){
+        if(selectedCustomer == null){
             showToast("Please Select Customer and Product", 'error');
             return false;
         }
@@ -141,7 +141,9 @@ const FlatListDropDown = ({navigation}) => {
         formData.append('user_id', auth?.user?.id);
         formData.append('phone', selectedCustomer?.phoneNumbers[0]?.digits || null);
         formData.append('transaction_type_id', 1);
-        formData.append('product_id', selectedProduct?.id);
+        if(selectedProduct){
+            formData.append('product_id', selectedProduct?.id);
+        }
         formData.append('price', price);
         formData.append('qty', qty);
         formData.append('from_date', inputDate?.toString());
@@ -158,7 +160,7 @@ const FlatListDropDown = ({navigation}) => {
                 behavior="padding" className={"bg-white flex-1 px-4 pt-2"}>
                 <DropDownFlashList
                     data={contacts}
-                    inputLabel="Customer Name"
+                    inputLabel="Select Customer"
                     headerTitle="Showing contact from Phonebook"
                     onSelect={(contactObj) => {
                         setSelectedCustomer(contactObj);
@@ -168,7 +170,7 @@ const FlatListDropDown = ({navigation}) => {
                 {!isLoading && <View className={"mt-2 -z-10"}>
                     <DropDownFlashList
                         data={products}
-                        inputLabel="Products"
+                        inputLabel="Select Product (Optional)"
                         headerTitle="List of products"
                         onSelect={(value) => {
                             setSelectedProduct(value)

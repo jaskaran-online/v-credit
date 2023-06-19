@@ -4,11 +4,12 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import {useEffect, useState} from "react";
-import { TouchableOpacity, View } from "react-native";
+import {useCallback, useEffect, useState} from "react";
+import {ActivityIndicator, TouchableOpacity, View} from "react-native";
 import { Searchbar, Text } from "react-native-paper";
 import {useCustomersData, useTransactionsData} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
+import {useFocusEffect} from "@react-navigation/native";
 
 const renderHeader = () => (
   <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
@@ -117,6 +118,16 @@ export default function Index() {
   useEffect(() => {
     loadCustomerData();
   }, []);
+
+  useFocusEffect(
+      useCallback(() => {
+        loadCustomerData();
+        return () => {
+          // Useful for cleanup functions
+          console.log("Screen was unfocused");
+        };
+      }, [])
+  );
 
   const options = [
     { label: "Credit Given", onPress: handleClearSelection },
@@ -227,7 +238,7 @@ export default function Index() {
         </View>
       )}
       {isLoading ?
-          <Text>Loading</Text>
+          <ActivityIndicator className={"mt-16"}/>
           :
 
       <FlashList
