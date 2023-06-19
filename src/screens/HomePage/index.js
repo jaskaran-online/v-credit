@@ -71,7 +71,7 @@ export function FloatingButtons({navigation}) {
           onPress={() => navigation.navigate("GiveMoney")}
           className={"bg-amber-500 shadow shadow-slate-300"}
         >
-          Give Create
+          Give Payment
         </Button>
       </View>
     </View>
