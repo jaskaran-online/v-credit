@@ -244,6 +244,7 @@ export default function Index() {
         options={options}
         onOptionSelect={handleOptionSelect}
         ListFooterComponent={<View style={{height: 100}}/>}
+        ListEmptyComponent={<View className={"flex-1 d-flex justify-center items-center h-16"}><Text variant={"bodyMedium"}>No Records Available!</Text></View>}
       />
       }
     </View>

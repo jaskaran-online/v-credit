@@ -26,4 +26,4 @@ Text.defaultProps.allowFontScaling = false;
 TextInput.defaultProps.allowFontScaling = false;
 
 LogBox.ignoreLogs(['Reanimated 2']);
-LogBox.ignoreLogs(['Require cycle: node_modules/']);
+// LogBox.ignoreLogs(['Require cycle: node_modules/']);

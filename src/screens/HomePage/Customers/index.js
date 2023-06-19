@@ -22,19 +22,22 @@ const renderItem = ({item, index}) => {
             <Text variant="titleSmall" class={"text-slate-800"}>{item?.name}</Text>
             <Text variant={"labelSmall"} className="text-slate-400">{item?.created_at}</Text>
         </TouchableOpacity>
-        <TouchableOpacity className={"flex flex-row justify-center items-center"}>
+        <TouchableOpacity className={"flex flex-row justify-center items-center"}  onPress={() => navigation.navigate('CustomerTransactionDetails', {
+            id: item?.id,
+            name: item?.name
+        })}>
             <Text variant={"titleSmall"}
                   className={(toPay > toReceive) ? "text-red-600" : "text-green-600"}>
                 {
                     toReceive > 0 ?  toReceive - toPay   : toPay > 0 ?   toPay - toReceive :   toReceive - toPay
                 }
             </Text>
-            <List.Icon icon="share" color={(index % 2 === 0) ? "gray" : "dodgerblue"} style={{
-                backgroundColor: (index % 2 === 0) ? 'whitesmoke' : '#dbeafe',
-                borderRadius: 100,
-                padding: 3,
-                marginLeft: 10
-            }}/>
+            {/*<List.Icon icon="share" color={(index % 2 === 0) ? "gray" : "dodgerblue"} style={{*/}
+            {/*    backgroundColor: (index % 2 === 0) ? 'whitesmoke' : '#dbeafe',*/}
+            {/*    borderRadius: 100,*/}
+            {/*    padding: 3,*/}
+            {/*    marginLeft: 10*/}
+            {/*}}/>*/}
         </TouchableOpacity>
     </View>);
 };
@@ -44,8 +47,7 @@ export default function Index() {
     const queryClient = useQueryClient();
     useFocusEffect(
         useCallback(() => {
-            queryClient.invalidateQueries(['getData'])
-            // loadCustomerData();
+            loadCustomerData();
             return () => {
                 // Useful for cleanup functions
                 console.log("Screen was unfocused");
@@ -74,7 +76,7 @@ export default function Index() {
     return (
         <View className={"bg-white flex-1"}>
             {isLoading && !data ? <View className={"flex-1 justify-center"}>
-                <ActivityIndicator color={"blue"}/>
+                <ActivityIndicator/>
             </View> : <FlashList
                 data={data?.data}
                 renderItem={renderItem}
@@ -82,6 +84,7 @@ export default function Index() {
                 refreshing={reload}
                 onRefresh={loadCustomerData}
                 ListFooterComponent={<View style={{height: 100}}/>}
+                ListEmptyComponent={<View className={"flex-1 d-flex justify-center items-center h-16"}><Text variant={"bodyMedium"}>No Records Available!</Text></View>}
             />}
         </View>
     );

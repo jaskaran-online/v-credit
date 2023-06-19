@@ -7,13 +7,14 @@ import { FlashList } from "@shopify/flash-list";
 import { StatusBar } from "expo-status-bar";
 import { styled } from "nativewind";
 import {memo, useEffect, useState} from "react";
-import { TouchableOpacity, View } from "react-native";
+import {ActivityIndicator, TouchableOpacity, View} from "react-native";
 import { Searchbar, Text } from "react-native-paper";
 import { DatePickerInput } from "react-native-paper-dates";
 
 import { TwoCards } from "../../Components/TwoCards";
 import {useDailyBook} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
+import navigation from "../../../navigations";
 
 const StyledView = styled(TouchableOpacity);
 const renderHeader = () => (
@@ -41,6 +42,10 @@ const renderItem = ({ item, index }) => (
         className={
           "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
         }
+        onPress={() => navigation.navigate('CustomerTransactionDetails', {
+          id: item?.customer_id,
+          name: item?.name
+        })}
     >
       <View className="flex flex-row items-center w-1/4">
         <View className="mr-1">
@@ -275,7 +280,9 @@ function DayBook() {
           options={options}
           onOptionSelect={handleOptionSelect}
           ListFooterComponent={<View style={{height: 100}}/>}
-      /> : <Text>Loading</Text> }
+          ListEmptyComponent={<View className={"flex-1 d-flex justify-center items-center h-16"}><Text
+              variant={"bodyMedium"}>No Records Available!</Text></View>}
+      /> : <ActivityIndicator className={"mt-24"}/> }
     </View>
   );
 }

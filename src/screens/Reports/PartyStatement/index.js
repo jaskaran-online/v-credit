@@ -1,4 +1,4 @@
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, ActivityIndicator} from 'react-native';
 import {FlashList} from "@shopify/flash-list";
 import {List, Text, Divider, TextInput, Menu, Searchbar} from 'react-native-paper'
 import {useEffect, useState} from "react";
@@ -97,14 +97,29 @@ export default function Index() {
     const [selectedItem, setSelectedItem] = useState(null);
     const [showOptions, setShowOptions] = useState("");
     const [query, setQuery] = useState("");
+    const [fromDate, setFromDate] = useState(new Date(new Date().setMonth(new Date().getMonth() - 1)));
+    const [toDate, setToDate] = useState(new Date());
 
+    function dateFormat(date){
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
     function loadCustomerData(){
+
+
+        const fromDateStr = dateFormat(fromDate);
+        const toDateStr = dateFormat(toDate);
+
+
         setReload(true)
         const formData = new FormData();
         formData.append('company_id', auth.user.company_id);
         formData.append('cost_center_id', auth.user.cost_center_id);
-        formData.append('fromDate', "2023-06-01");
-        formData.append('toDate', "2023-06-11");
+        formData.append('toDate', toDateStr);
+        formData.append('fromDate', fromDateStr);
+
         formData.append('user_id', auth.user.id);
         mutate(formData);
         setReload(false)
@@ -113,6 +128,10 @@ export default function Index() {
     useEffect(() => {
         loadCustomerData();
     }, []);
+
+    useEffect(() => {
+        loadCustomerData();
+    }, [toDate,fromDate]);
 
     const handleSearch = (text) => {
         setQuery(text);
@@ -171,8 +190,8 @@ export default function Index() {
                 <DatePickerInput
                     locale="en"
                     label="From"
-                    value={inputDate}
-                    onChange={(d) => setInputDate(d)}
+                    value={fromDate}
+                    onChange={(d) => setFromDate(d)}
                     inputMode="start"
                     mode={"outlined"}
                     className={"bg-blue-50 mx-1"}
@@ -181,8 +200,8 @@ export default function Index() {
                 <DatePickerInput
                     locale="en"
                     label="To"
-                    value={fromInputDate}
-                    onChange={(d) => setFromInputDate(d)}
+                    value={toDate}
+                    onChange={(d) => setToDate(d)}
                     inputMode="start"
                     mode={"outlined"}
                     className={"bg-blue-50 mx-1"}
@@ -221,6 +240,8 @@ export default function Index() {
             refreshing={reload}
             onRefresh={() => loadCustomerData()}
             onOptionSelect={handleOptionSelect}
-        /> : <Text>Loading..</Text> }
+            ListEmptyComponent={<View className={"flex-1 d-flex justify-center items-center h-16"}><Text
+                variant={"bodyMedium"}>No Records Available!</Text></View>}
+        /> : <ActivityIndicator className={"mt-24"}/> }
     </View>);
 }

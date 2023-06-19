@@ -1,9 +1,9 @@
-import {FlatList, TouchableOpacity, View} from "react-native";
+import {Dimensions, FlatList, TouchableOpacity, View} from "react-native";
 import {Text, TextInput} from "react-native-paper";
 import {FlashList} from "@shopify/flash-list";
 import React, {useEffect, useState, memo} from "react";
 
-function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = () => null, inputLabel = "label", headerTitle = "headerTitle", closeDropDown = false}) {
+function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = () => null, inputLabel = "label", headerTitle = "headerTitle", closeDropDown = false, isTransparent = false, isLoading = false, selectedItemName = "", enableSearch = true}) {
 
     const [isDropDownOpen, setIsDropDownOpen] = useState(closeDropDown);
     const [filteredContacts, setFilteredContacts] = useState(data);
@@ -12,7 +12,7 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
         setFilteredContacts(data);
     }, [data]);
 
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState(selectedItemName);
 
     const renderSeparator = () => {
         return (
@@ -38,18 +38,12 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
         );
     };
 
-    const renderFooter = () => {
-        return (
-            <View className={"bg-slate-100 p-2 rounded-b"}/>
-        );
-    };
-
     const renderItem = ({item}) => {
 
         const name = item.name;
         const searchTerm = value?.toUpperCase();
         const index = name?.toUpperCase().indexOf(searchTerm);
-        if (index === -1) {
+        if ((index === -1) && enableSearch) {
             return null;
         }
         const start = name?.slice(0, index);
@@ -62,22 +56,31 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
                 onSelect(item);
                 setIsDropDownOpen(false);
             }} style={{padding: 10}}>
-                <Text>
+                {enableSearch ? <Text>
                     {start}
-                    <Text style={{color: 'dodgerblue'}}>
+                    <Text style={{color: enableSearch ? 'dodgerblue' : 'black'}}>
                         {highlight}
                     </Text>
                     {end}
-                </Text>
+                </Text> : <Text>
+                    {item.name}
+                </Text>}
+
             </TouchableOpacity>
         )
     }
 
+    let flashListHeight = filteredContacts?.length === 1 ? 100 : filteredContacts?.length  * 70;
+    if(flashListHeight > Dimensions.get("screen").height){
+        flashListHeight = Dimensions.get("screen").height - 400;
+    }
     return (<View className={"relative z-50"}>
         <TextInput
-            className={"bg-white"}
+            className={isTransparent ? "bg-blue-50" : "bg-white"}
             onChangeText={(text) => {
-                searchItems(text);
+                if(enableSearch) {
+                    searchItems(text);
+                }
                 onChangeInput(text);
             }}
             onFocus={() => setIsDropDownOpen(true)}
@@ -89,7 +92,7 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
         />
         {isDropDownOpen && (<View
             style={{
-                height: "100%"
+                height: flashListHeight
             }}
           className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl z-50"}>
             <FlashList
@@ -102,7 +105,8 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
                 keyExtractor={(value, index) => index}
                 ItemSeparatorComponent={renderSeparator}
                 ListHeaderComponent={renderHeader}
-                ListFooterComponent={renderFooter}
+
+                ListEmptyComponent={<View className={"flex-1 d-flex justify-center items-center h-16"}><Text variant={"bodyMedium"}>No Records Available!</Text></View>}
             />
         </View>)}
     </View>);

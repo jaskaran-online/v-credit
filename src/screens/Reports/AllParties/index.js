@@ -1,293 +1,272 @@
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { FlashList } from "@shopify/flash-list";
-import { StatusBar } from "expo-status-bar";
-import { styled } from "nativewind";
+import {MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
+import {FlashList} from "@shopify/flash-list";
+import {StatusBar} from "expo-status-bar";
+import {styled} from "nativewind";
 import {useEffect, useState} from "react";
-import { TouchableOpacity, View } from "react-native";
-import { Searchbar, Text } from "react-native-paper";
-import { DatePickerInput } from "react-native-paper-dates";
-import { PaperSelect } from "react-native-paper-select";
+import {ActivityIndicator, TouchableOpacity, View} from "react-native";
+import {Searchbar, Text} from "react-native-paper";
+import {DatePickerInput} from "react-native-paper-dates";
+import {PaperSelect} from "react-native-paper-select";
 import {useAuth} from "../../../hooks";
-import {useDailyBook} from "../../../apis/useApi";
+import {useAllParties, useCustomersData, useDailyBook} from "../../../apis/useApi";
+import DropDownFlashList from "../../Components/dropDownFlashList";
+import navigation from "../../../navigations";
 
 const renderHeader = () => (
-  <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
-    <View className="flex-1 border-b-2 border-slate-300 w-1/3">
-      <Text variant={"bodyMedium"} className="text-left text-slate-800">
-        Customer
-      </Text>
+    <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
+        <View className="flex-1 border-b-2 border-slate-300 w-1/3">
+            <Text variant={"bodyMedium"} className="text-left text-slate-800">
+                Customer
+            </Text>
+        </View>
+        <View className="flex-1 border-b-2 border-amber-400">
+            <Text variant={"bodyMedium"} className="text-right text-slate-800 mr-2">
+                Given
+            </Text>
+        </View>
+        <View className="flex-1 border-b-2 border-blue-500">
+            <Text variant={"bodyMedium"} className="text-right text-slate-800">
+                Received
+            </Text>
+        </View>
     </View>
-    <View className="flex-1 border-b-2 border-amber-400">
-      <Text variant={"bodyMedium"} className="text-right text-slate-800 mr-2">
-        Given
-      </Text>
-    </View>
-    <View className="flex-1 border-b-2 border-blue-500">
-      <Text variant={"bodyMedium"} className="text-right text-slate-800">
-        Received
-      </Text>
-    </View>
-  </View>
 );
 
-const renderItem = ({ item, index }) => (
+const renderItem = ({item, index}) => (
     <TouchableOpacity
         className={
-          "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
+            "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
         }
+        onPress={() => navigation.navigate('CustomerTransactionDetails', {
+            id: item?.customer_id,
+            name: item?.name
+        })}
     >
-      <View className="flex flex-row items-center w-1/4">
-        <View className="mr-1">
-          {item?.transaction_type_id === 2 ? (
-              <MaterialCommunityIcons
-                  name="call-received"
-                  size={14}
-                  color="green"
-              />
-          ) : (
-              <MaterialIcons name="call-made" size={14} color="red" />
-          )}
-        </View>
-        <View>
-          <Text variant={"titleSmall"} className="text-slate-800">
-            {item?.customer?.name}
-          </Text>
-          <Text variant={"labelSmall"} className="text-slate-400">
-            {item?.created_at}
-          </Text>
-        </View>
-      </View>
-      <View>
-        {item?.transaction_type_id === 1 ? (
-            <View className={"mr-2"}>
-              <Text variant={"bodyMedium"} className="text-slate-800 mr-2">{item?.amount}</Text>
-              <Text variant={"labelSmall"} className="text-slate-400 mr-2">
-                (Udhaar)
-              </Text>
+        <View className="flex flex-row items-center w-1/4">
+            <View className="mr-1">
+                {item?.transaction_type_id === 2 ? (
+                    <MaterialCommunityIcons
+                        name="call-received"
+                        size={14}
+                        color="green"
+                    />
+                ) : (
+                    <MaterialIcons name="call-made" size={14} color="red"/>
+                )}
             </View>
-        ) : (
-            <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-              {" "}
-              -{" "}
-            </Text>
-        )}
-      </View>
-      <View className={"flex flex-row items-right"}>
-        <View>
-          {item?.transaction_type_id === 2 ? (
-              <View>
-                <Text variant={"bodyMedium"} className="text-slate-800">
-                  {item?.amount}
+            <View>
+                <Text variant={"titleSmall"} className="text-slate-800">
+                    {item?.customer?.name}
                 </Text>
                 <Text variant={"labelSmall"} className="text-slate-400">
-                  (Payment)
+                    {item?.created_at}
                 </Text>
-              </View>
-          ) : (
-              <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-                {" "}
-                -{" "}
-              </Text>
-          )}
+            </View>
         </View>
-      </View>
+        <View>
+            {item?.transaction_type_id === 1 ? (
+                <View className={"mr-2"}>
+                    <Text variant={"bodyMedium"} className="text-slate-800 mr-2">{item?.amount}</Text>
+                    <Text variant={"labelSmall"} className="text-slate-400 mr-2">
+                        (Udhaar)
+                    </Text>
+                </View>
+            ) : (
+                <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
+                    {" "}
+                    -{" "}
+                </Text>
+            )}
+        </View>
+        <View className={"flex flex-row items-right"}>
+            <View>
+                {item?.transaction_type_id === 2 ? (
+                    <View>
+                        <Text variant={"bodyMedium"} className="text-slate-800">
+                            {item?.amount}
+                        </Text>
+                        <Text variant={"labelSmall"} className="text-slate-400">
+                            (Payment)
+                        </Text>
+                    </View>
+                ) : (
+                    <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
+                        {" "}
+                        -{" "}
+                    </Text>
+                )}
+            </View>
+        </View>
     </TouchableOpacity>
 );
 
 export default function Index() {
 
-  const auth = useAuth.use?.token();
-  const {mutate, data : dailyBookData, isLoading} = useDailyBook();
-  const [reload, setReload] = useState(false);
+    const auth = useAuth.use?.token();
 
-  const [filteredList, setFilteredList] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [showOptions, setShowOptions] = useState("");
-  const [query, setQuery] = useState("");
+    const {mutate: allPartiesMutate, data: allPartiesData, isLoading: allPartiesLoading} = useAllParties();
+    const {mutate: customerMutate, data: customersData, isLoading: isCustomerLoading, error} = useCustomersData();
 
-  function loadCustomerData(){
-    setReload(true)
+    const [reload, setPartyReload] = useState(false);
 
-    const currentDate = inputDate;
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    const dateString = `${year}-${month}-${day}`;
+    const [filteredList, setFilteredList] = useState([]);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [showOptions, setShowOptions] = useState("");
+    const [query, setQuery] = useState("");
+    const [customer, setCustomer] = useState("");
+    const [inputDate, setInputDate] = useState(new Date());
 
-    const formData = new FormData();
-    formData.append('company_id', auth.user.company_id);
-    formData.append('cost_center_id', auth.user.cost_center_id);
-    formData.append('date', dateString);
-    formData.append('user_id', auth.user.id);
-    mutate(formData);
-    setReload(false)
-  }
+    function fetchCustomers() {
+        const formData = new FormData();
+        formData.append('cost_center_id', auth?.user.cost_center_id);
+        formData.append('company_id', auth?.user.company_id);
+        formData.append('user_id', auth?.user.id);
+        customerMutate(formData);
+    }
 
-  useEffect(() => {
-    loadCustomerData();
-  }, []);
+    useEffect(() => {
+        fetchCustomers();
+    }, []);
 
-  const [colors, setColors] = useState({
-    value: "",
-    list: [
-      { _id: "1", value: "BLUE" },
-      { _id: "2", value: "RED" },
-      { _id: "3", value: "GREEN" },
-      { _id: "4", value: "YELLOW" },
-      { _id: "5", value: "BROWN" },
-      { _id: "6", value: "BLACK" },
-      { _id: "7", value: "WHITE" },
-      { _id: "8", value: "CYAN" },
-    ],
-    selectedList: [],
-    error: "",
-  });
+    function loadPartyData() {
+        setPartyReload(true)
 
-  const data = [
-    { id: "1", title: "Item 1", description: "This is item 1" },
-    {
-      id: "2",
-      title: "Item 2",
-      description: "This is item 2",
-    },
-    { id: "3", title: "Item 3", description: "This is item 3" },
-    {
-      id: "4",
-      title: "Item 4",
-      description: "This is item 4",
-    },
-    { id: "5", title: "Item 5", description: "This is item 5" },
-  ];
+        const currentDate = inputDate;
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const dateString = `${year}-${month}-${day}`;
 
-  const options = [
-    { label: "Credit Given", onPress: handleClearSelection },
-    {
-      label: "Payment Received",
-      onPress: handleDeleteSelectedItem,
-    },
-    { label: "Clear", onPress: handleEditSelectedItem },
-  ];
+        const formData = new FormData();
+        formData.append('company_id', auth.user.company_id);
+        formData.append('cost_center_id', auth.user.cost_center_id);
+        formData.append('customer_id', customer?.id);
+        formData.append('date', dateString);
+        allPartiesMutate(formData);
+        console.log(formData);
+        setPartyReload(false)
+    }
 
-  const handleSelect = (item) => {
-    setSelectedItem(item);
-  };
+    useEffect(() => {
+        loadPartyData();
+    }, [customer, inputDate]);
 
-  const handleOptionSelect = (show) => {
-    setShowOptions((show) => !show);
-  };
 
-  useEffect(() => {
-    setFilteredList(dailyBookData?.data?.transactions);
-  }, [dailyBookData]);
+    useEffect(() => {
+        loadPartyData();
+    }, []);
 
-  const handleSearch = (text) => {
-    setQuery(text);
-    const filtered = (dailyBookData?.data?.transactions).filter((item) =>
-        item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilteredList(filtered);
-  };
+    const options = [
+        {label: "Credit Given", onPress: handleClearSelection},
+        {
+            label: "Payment Received",
+            onPress: handleDeleteSelectedItem,
+        },
+        {label: "Clear", onPress: handleEditSelectedItem},
+    ];
 
-  const handleClearSelection = () => {
-    setSelectedItem(null);
-  };
+    const handleSelect = (item) => {
+        setSelectedItem(item);
+    };
 
-  const handleDeleteSelectedItem = () => {
-    const filtered = filteredList.filter((item) => item.id !== selectedItem.id);
-    setFilteredList(filtered);
-    setSelectedItem(null);
-  };
+    const handleOptionSelect = (show) => {
+        setShowOptions((show) => !show);
+    };
 
-  const handleEditSelectedItem = () => {
-    console.log("Edit selected item:", selectedItem);
-    setSelectedItem(null);
-  };
+    useEffect(() => {
+        setFilteredList(allPartiesData?.data?.transactions);
+    }, [allPartiesData]);
 
-  const StyledView = styled(TouchableOpacity);
-  const Box = ({ className, children, ...props }) => (
-    <StyledView
-      className={`flex text-center h-20 rounded ₹{className}`}
-      {...props}
-    >
-      {children}
-    </StyledView>
-  );
+    const handleSearch = (text) => {
+        setQuery(text);
+        const filtered = (allPartiesData?.data?.transactions).filter((item) =>
+            item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
+        );
+        setFilteredList(filtered);
+    };
 
-  const [inputDate, setInputDate] = useState(new Date());
+    const handleClearSelection = () => {
+        setSelectedItem(null);
+    };
 
-  return (
-    <View className={"bg-white flex-1"}>
-      <StatusBar animated={true} />
-      <StyledView className="flex h-15 p-2 bg-blue-50">
-        <View className={"flex flex-row my-2"}>
-          <DatePickerInput
-            locale="en"
-            label="From"
-            value={inputDate}
-            onChange={(d) => setInputDate(d)}
-            inputMode="start"
-            mode={"outlined"}
-            className={"bg-blue-50 mx-1 w-44"}
-          />
-          <PaperSelect
-            textInputStyle={{
-              backgroundColor: "transparent",
-              width: "50%",
-              marginTop: 8,
-            }}
-            className={"bg-blue-50"}
-            label="All Parties"
-            value={colors.value}
-            onSelection={(value) => {
-              setColors({
-                ...colors,
-                value: value.text,
-                selectedList: value.selectedList,
-                error: "",
-              });
-            }}
-            arrayList={[...colors.list]}
-            selectedArrayList={colors.selectedList}
-            textInputMode="outlined"
-            hideSearchBox={true}
-          />
+    const handleDeleteSelectedItem = () => {
+        const filtered = filteredList.filter((item) => item.id !== selectedItem.id);
+        setFilteredList(filtered);
+        setSelectedItem(null);
+    };
+
+    const handleEditSelectedItem = () => {
+        console.log("Edit selected item:", selectedItem);
+        setSelectedItem(null);
+    };
+
+    return (
+        <View className={"bg-white flex-1"}>
+            <StatusBar animated={true}/>
+            <View className="flex h-15 p-2 bg-blue-50">
+                <View className={"flex flex-row my-2"}>
+                    <DatePickerInput
+                        locale="en"
+                        label="From"
+                        value={inputDate}
+                        onChange={(d) => setInputDate(d)}
+                        inputMode="start"
+                        mode={"outlined"}
+                        className={"bg-blue-50 mx-1 w-44"}
+                    />
+                </View>
+                {!isCustomerLoading && <DropDownFlashList
+                    data={customersData?.data}
+                    inputLabel="Parties"
+                    headerTitle="Showing contact from Phonebook"
+                    onSelect={(contactObj) => {
+                        setCustomer(contactObj);
+                    }}
+                    isTransparent={true}
+                    filterEnabled={true}
+                    selectedItemName={customer?.name || ""}
+                />}
+            </View>
+                <View
+                    className={
+                        "flex flex-row justify-between w-full px-3 items-center py-4"
+                    }
+                >
+                    <Searchbar
+                        onChangeText={handleSearch}
+                        value={query.toString()}
+                        style={{
+                            width: "100%",
+                            backgroundColor: "transparent"
+                        }}
+                        inputStyle={{
+                            fontSize: 12,
+                            lineHeight: Platform.OS === "android" ? 16 : 0,
+                            paddingBottom: 20
+                        }}
+                        placeholder="Search Name, Amount or Txn Note"
+                        className={"bg-white border-2 border-slate-200 h-10"}
+                    />
+                </View>
+                <View style={{flex: 1, height: '100%'}}>
+                    {allPartiesLoading
+                        ? <ActivityIndicator/>
+                        : <FlashList
+                            data={filteredList}
+                            renderItem={renderItem}
+                            ListHeaderComponent={renderHeader}
+                            estimatedItemSize={200}
+                            onSearch={handleSearch}
+                            onSelect={handleSelect}
+                            selected={selectedItem}
+                            showOptions={showOptions}
+                            options={options}
+                            onOptionSelect={handleOptionSelect}
+                            ListFooterComponent={<View style={{height: 100}}/>}
+                            ListEmptyComponent={<View className={"flex-1 d-flex justify-center items-center h-16"}><Text
+                                variant={"bodyMedium"}>No Records Available!</Text></View>}
+                        />}
+                </View>
         </View>
-      </StyledView>
-
-      <View
-        className={
-          "flex flex-row justify-between w-full px-3 items-center py-4"
-        }
-      >
-          <Searchbar
-            onChangeText={handleSearch}
-            value={query.toString()}
-            style={{
-              width: "100%",
-              backgroundColor : "transparent"
-            }}
-            inputStyle={{
-              fontSize: 12,
-              lineHeight : Platform.OS === "android" ? 16 :  0,
-              paddingBottom: 20
-            }}
-            placeholder="Search Name, Amount or Txn Note"
-            className={"bg-white border-2 border-slate-200 h-10"}
-          />
-      </View>
-      <FlashList
-        data={filteredList}
-        renderItem={renderItem}
-        ListHeaderComponent={renderHeader}
-        estimatedItemSize={200}
-        onSearch={handleSearch}
-        onSelect={handleSelect}
-        selected={selectedItem}
-        showOptions={showOptions}
-        options={options}
-        onOptionSelect={handleOptionSelect}
-        ListFooterComponent={<View style={{height: 100}}/>}
-      />
-    </View>
-  );
+    );
 }
