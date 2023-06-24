@@ -66,10 +66,6 @@ export default function Index() {
                                     pattern: {
                                         value: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
                                         message: 'Invalid email address',
-                                    },
-                                    minLength: {
-                                        value: 6,
-                                        message: 'Minimum length is 6 characters',
                                     }
                                 }}
                                 render={({field: {onChange, onBlur, value}}) => (
@@ -106,19 +102,7 @@ export default function Index() {
                             <Controller
                                 control={control}
                                 rules={{
-                                    required: 'Password is required',
-                                    minLength: {
-                                        value: 6,
-                                        message: 'Minimum length is 6 characters',
-                                    },
-                                    maxLength: {
-                                        value: 12,
-                                        message: 'Maximum length is 12 characters',
-                                    },
-                                    pattern: {
-                                        value: /^[A-Za-z]+$/i,
-                                        message: 'Invalid characters',
-                                    },
+                                    required: 'Password is required'
                                 }}
                                 render={({field: {onChange, onBlur, value}}) => (
 

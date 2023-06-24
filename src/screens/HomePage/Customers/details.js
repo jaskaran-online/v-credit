@@ -91,7 +91,7 @@ const renderItem = ({item, index}) => (
                     {item?.transaction_type_id === 2 ? "Payment" : "Credit"}
                 </Text>
                 <Text variant={"labelSmall"} className="text-slate-400">
-                    {item?.created_at}
+                    {item?.date}
                 </Text>
             </View>
         </View>
@@ -99,7 +99,7 @@ const renderItem = ({item, index}) => (
             {item?.transaction_type_id === 1 ? (
                 <View className={"mr-2"}>
                     <Text variant={"bodyMedium"} className="text-slate-800 mr-2">
-                        {item?.amount}₹
+                        { parseFloat(item?.amount).toFixed(2) }₹
                     </Text>
                     <Text variant={"labelSmall"} className="text-slate-400 mr-2">
                         (Udhaar)
@@ -117,7 +117,7 @@ const renderItem = ({item, index}) => (
                 {item?.transaction_type_id === 2 ? (
                     <View>
                         <Text variant={"bodyMedium"} className="text-slate-800">
-                            {item?.amount}₹
+                            { parseFloat(item?.amount).toFixed(2) }₹
                         </Text>
                         <Text variant={"labelSmall"} className="text-slate-400">
                             (Payment)
@@ -220,7 +220,7 @@ export default function Index({navigation, route}) {
                                 Total Balance
                             </Text>
                             <Text variant="titleLarge" className="text-slate-900 font-bold">
-                                { toReceive > 0 ?  toReceive - toPay   : toPay > 0 ?   toPay - toReceive :   toReceive - toPay }₹
+                                { toReceive > 0 ?  parseFloat(toReceive - toPay).toFixed(2)   : toPay > 0 ?   parseFloat(toPay - toReceive).toFixed(2) : parseFloat(toReceive - toPay).toFixed(2) }₹
                             </Text>
                         </View>
                     </View>

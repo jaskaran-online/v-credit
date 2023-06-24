@@ -8,8 +8,8 @@ import {DatePickerInput} from "react-native-paper-dates";
 import {MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
 import {Camera} from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import {getItem, removeItem, setItem} from "../../../core/utils";
-import {useCompanyProductsData, usePaymentApi, useProductsApi} from "../../../apis/useApi";
+import {getItem, setItem} from "../../../core/utils";
+import {usePaymentApi, useProductsApi} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
 import Toast from "react-native-toast-message";
 
@@ -40,66 +40,28 @@ const FlatListDropDown = ({navigation}) => {
         isErrorProduct
     } = useProductsApi();
 
+    const [amount, setAmount] = useState(0);
+    const [contacts, setContacts] = useState([]);
+    const [imageUri, setImageUri] = useState(null);
+    const [inputDate, setInputDate] = useState(new Date());
+    const [note, setNote] = useState(note);
+    const [price, setPrice] = useState(1);
+    const [qty, setQty] = useState(1);
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [visible, setVisible] = useState(false);
+
     useEffect(() => {
         const formData = new FormData();
         formData.append('company_id', auth?.user?.company_id);
         productRequest(formData)
     }, []);
 
-
-    if (isError) {
-        showToast(paymentError.message, 'error');
-    }
-
-    if (isPaymentSuccess) {
-        showToast(paymentApiResponse.data.message, 'success');
-        setTimeout(() => navigation.navigate('HomePage'), 1000);
-    }
-
-
-    const [contacts, setContacts] = useState([]);
-    const [visible, setVisible] = useState(false);
-
-    const [selectedCustomer, setSelectedCustomer] = useState(null);
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [qty, setQty] = useState(1);
-    const [price, setPrice] = useState(1);
-    const [amount, setAmount] = useState(0);
-    const [inputDate, setInputDate] = useState(new Date());
-    const [imageUri, setImageUri] = useState(null);
-    const [note, setNote] = useState(note);
-
-    const showDialog = () => {
-        setVisible(true);
-        Keyboard.dismiss();
-    };
-
-    const hideDialog = () => setVisible(false);
-
-    const handleCameraCapture = async () => {
-        const {status: cameraStatus} = await Camera.requestPermissionsAsync();
-        if (cameraStatus === 'granted') {
-            const photo = await ImagePicker.launchCameraAsync();
-            if (!photo?.cancelled) {
-                setImageUri(photo?.uri);
-                hideDialog();
-            }
+    useEffect(() => {
+        if (isError) {
+            showToast(paymentError.message, 'error');
         }
-    };
-
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setImageUri(result.uri);
-            hideDialog();
-        }
-    };
+    }, [isError]);
 
     useEffect(() => {
         (async () => {
@@ -131,37 +93,96 @@ const FlatListDropDown = ({navigation}) => {
         })();
     }, []);
 
-    const onFormSubmit = () => {
 
-        if (selectedProduct === null || selectedCustomer == null) {
-            showToast("Please Select Customer and Product", 'error');
-            return false;
-        }
-
-        const formData = new FormData();
-        if (imageUri) {
-            formData.append('image', {
-                uri: imageUri,
-                type: 'image/jpeg', // Modify the type based on your image type
-                name: 'image.jpg', // Modify the name based on your image name
-            });
-        }
-        formData.append('company_id', auth.user?.company_id);
-        formData.append('cost_center_id', auth.user?.cost_center_id);
-        formData.append('user_id', auth?.user?.id);
-        formData.append('phone', selectedCustomer?.phoneNumbers[0]?.digits || null);
-        formData.append('transaction_type_id', 2);
-        formData.append('product_id', selectedProduct?.id);
-        formData.append('price', price);
-        formData.append('qty', qty);
-        formData.append('from_date', inputDate?.toString());
-        formData.append('phone_id', selectedCustomer?.id);
-        formData.append('customer_name', selectedCustomer?.name);
-        formData.append('notes', note);
-        request(formData);
+    if (isPaymentSuccess) {
+        showToast(paymentApiResponse.data.message, 'success');
+        setTimeout(() => navigation.navigate('HomePage'), 1000);
     }
 
+    const showDialog = () => {
+        setVisible(true);
+        Keyboard.dismiss();
+    };
 
+    const hideDialog = () => setVisible(false);
+
+    const handleCameraCapture = async () => {
+        const {status: cameraStatus} = await Camera.requestCameraPermissionsAsync();
+        console.log({cameraStatus});
+        if (cameraStatus === 'granted') {
+            const photo = await ImagePicker.launchCameraAsync();
+            if (!photo?.cancelled) {
+                setImageUri(photo?.uri);
+                hideDialog();
+            }
+        }
+    };
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setImageUri(result.uri);
+            hideDialog();
+        }
+    };
+    const onFormSubmit = () => {
+        if (selectedCustomer === null) {
+            showToast("Please Select Customer and Product", "error");
+            return false;
+        }
+        const formData = new FormData();
+        formData.append("company_id", (auth.user)?.company_id);
+        formData.append("cost_center_id", (auth.user)?.cost_center_id);
+        formData.append("customer_name", selectedCustomer?.name);
+        formData.append("from_date", inputDate?.toString());
+        if (imageUri) {
+            formData.append("image", {
+                uri: imageUri,
+                type: "image/jpeg", // Modify the type based on your image type
+                name: "image.jpg", // Modify the name based on your image name
+            });
+        }
+        formData.append("notes", note);
+        formData.append("phone", selectedCustomer?.phoneNumbers[0]?.digits || null);
+        formData.append("phone_id", selectedCustomer?.id);
+        if(selectedProduct){
+            formData.append('product_id', selectedProduct?.id);
+        }
+        formData.append("price", price);
+        formData.append("qty", qty);
+        formData.append("transaction_type_id", 2);
+        formData.append("user_id", auth?.user?.id);
+
+        request(formData);
+    };
+
+    const handlePriceChange = (inputPrice) => {
+        setPrice(inputPrice);
+        setAmount(parseFloat(inputPrice || 1) * parseFloat(qty));
+    };
+
+    const handleQtyChange = (inputQty) => {
+        setQty(inputQty)
+        setAmount(parseFloat(price || 1) * parseFloat(inputQty));
+    };
+
+    const handleContactSelect = (contactObj) => {
+        setSelectedCustomer(contactObj);
+    };
+
+    const handleProductSelect = (product) => {
+        setSelectedProduct(product)
+        setAmount(parseFloat(product.price) * parseFloat(qty));
+        setPrice(product.price)
+    };
+
+    const handleDateChange = (d) => setInputDate(d);
     return (
         <View className={"flex-1 bg-white"}>
             <KeyboardAvoidingView
@@ -170,9 +191,7 @@ const FlatListDropDown = ({navigation}) => {
                     data={contacts}
                     inputLabel="Select Customer"
                     headerTitle="Showing contact from Phonebook"
-                    onSelect={(contactObj) => {
-                        setSelectedCustomer(contactObj);
-                    }}
+                    onSelect={handleContactSelect}
                     filterEnabled={true}
                 />
                 {!isLoading && <View className={"mt-2 -z-10"}>
@@ -180,20 +199,13 @@ const FlatListDropDown = ({navigation}) => {
                         data={products}
                         inputLabel="Select Product"
                         headerTitle="List of products"
-                        onSelect={(value) => {
-                            setSelectedProduct(value)
-                            setAmount(parseFloat(value.price) * parseFloat(qty));
-                            setPrice(value.price)
-                        }}
+                        onSelect={handleProductSelect}
                     />
                 </View>}
                 <View className={"flex flex-row gap-2 mt-0 -z-30"}>
                     <TextInput
                         className={"bg-white flex-1 mt-2 -z-30"}
-                        onChangeText={(inputQty) => {
-                            setQty(inputQty)
-                            setAmount(parseFloat(price) * parseFloat(inputQty));
-                        }}
+                        onChangeText={handleQtyChange}
                         value={qty.toString()}
                         mode={"outlined"}
                         label={"Qty"}
@@ -201,10 +213,7 @@ const FlatListDropDown = ({navigation}) => {
                     />
                     <TextInput
                         className={"bg-white flex-1 mt-2 -z-30"}
-                        onChangeText={(inputPrice) => {
-                            setPrice(inputPrice)
-                            setAmount(parseFloat(inputPrice) * parseFloat(qty));
-                        }}
+                        onChangeText={handlePriceChange}
                         value={price.toString()}
                         mode={"outlined"}
                         label={"Price"}
@@ -215,7 +224,6 @@ const FlatListDropDown = ({navigation}) => {
                     className={"bg-white mt-2 -z-30"}
                     value={amount.toString()}
                     mode={"outlined"}
-                    onChangeText={(value) => setAmount(value)}
                     label={"Amount"}
                     inputMode={"numeric"}
                     editable={false}
@@ -225,7 +233,7 @@ const FlatListDropDown = ({navigation}) => {
                         locale="en"
                         label="From"
                         value={inputDate}
-                        onChange={(d) => setInputDate(d)}
+                        onChange={handleDateChange}
                         inputMode="start"
                         mode={"outlined"}
                         className={"bg-blue-50 mx-1"}

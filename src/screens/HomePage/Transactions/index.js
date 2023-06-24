@@ -4,12 +4,12 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import {useCallback, useEffect, useState} from "react";
-import {ActivityIndicator, TouchableOpacity, View} from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { Searchbar, Text } from "react-native-paper";
-import {useCustomersData, useTransactionsData} from "../../../apis/useApi";
-import {useAuth} from "../../../hooks";
-import {useFocusEffect} from "@react-navigation/native";
+import { useTransactionsData } from "../../../apis/useApi";
+import { useAuth } from "../../../hooks";
+import { useFocusEffect } from "@react-navigation/native";
 
 const renderHeader = () => (
   <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
@@ -54,14 +54,14 @@ const renderItem = ({ item, index }) => (
           {item?.customer?.name}
         </Text>
         <Text variant={"labelSmall"} className="text-slate-400">
-          {item?.created_at}
+          {item?.date}
         </Text>
       </View>
     </View>
     <View>
       {item?.transaction_type_id === 1 ? (
         <View className={"mr-2"}>
-          <Text variant={"bodyMedium"} className="text-slate-800 mr-2">{item?.amount}</Text>
+          <Text variant={"bodyMedium"} className="text-slate-800 mr-2">{ parseFloat(item?.amount).toFixed(2) }</Text>
           <Text variant={"labelSmall"} className="text-slate-400 mr-2">
             (Udhaar)
           </Text>
@@ -78,7 +78,7 @@ const renderItem = ({ item, index }) => (
         {item?.transaction_type_id === 2 ? (
           <View>
             <Text variant={"bodyMedium"} className="text-slate-800">
-              {item?.amount}
+              { parseFloat(item?.amount).toFixed(2) }
             </Text>
             <Text variant={"labelSmall"} className="text-slate-400">
               (Payment)
@@ -99,21 +99,16 @@ export default function Index() {
 
   const auth = useAuth.use?.token();
   const {mutate, data, isLoading} = useTransactionsData();
+
   const [reload, setReload] = useState(false);
+  const [filteredList, setFilteredList] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showOptions, setShowOptions] = useState(false);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     setFilteredList(data?.data);
   }, [data]);
-
-  function loadCustomerData(){
-    setReload(true)
-    const formData = new FormData();
-    formData.append('company_id', auth.user.company_id);
-    formData.append('cost_center_id', auth.user.cost_center_id);
-    formData.append('user_id', auth.user.id);
-    mutate(formData);
-    setReload(false)
-  }
 
   useEffect(() => {
     loadCustomerData();
@@ -129,6 +124,16 @@ export default function Index() {
       }, [])
   );
 
+  function loadCustomerData(){
+    setReload(true)
+    const formData = new FormData();
+    formData.append('company_id', auth.user.company_id);
+    formData.append('cost_center_id', auth.user.cost_center_id);
+    formData.append('user_id', auth.user.id);
+    mutate(formData);
+    setReload(false)
+  }
+
   const options = [
     { label: "Credit Given", onPress: handleClearSelection },
     {
@@ -138,10 +143,6 @@ export default function Index() {
     { label: "Clear", onPress: handleEditSelectedItem },
   ];
 
-  const [filteredList, setFilteredList] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [showOptions, setShowOptions] = useState(false);
-  const [query, setQuery] = useState("");
   const handleSearch = (text) => {
     setQuery(text);
     const filtered = (data?.data).filter((item) =>

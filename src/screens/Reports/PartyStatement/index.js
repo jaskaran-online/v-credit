@@ -45,7 +45,7 @@ const renderItem = ({ item, index }) => (
                     {item?.customer?.name}
                 </Text>
                 <Text variant={"labelSmall"} className="text-slate-400">
-                    {item?.created_at}
+                    {item?.date}
                 </Text>
             </View>
         </View>

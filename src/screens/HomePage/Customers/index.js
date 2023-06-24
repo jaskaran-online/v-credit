@@ -29,7 +29,7 @@ const renderItem = ({item, index}) => {
             <Text variant={"titleSmall"}
                   className={(toPay > toReceive) ? "text-red-600" : "text-green-600"}>
                 {
-                    toReceive > 0 ?  toReceive - toPay   : toPay > 0 ?   toPay - toReceive :   toReceive - toPay
+                    toReceive > 0 ?  parseFloat(toReceive - toPay).toFixed(2)   : toPay > 0 ?   parseFloat(toPay - toReceive).toFixed(2) :   parseFloat(toReceive - toPay).toFixed(2)
                 }
             </Text>
             {/*<List.Icon icon="share" color={(index % 2 === 0) ? "gray" : "dodgerblue"} style={{*/}
