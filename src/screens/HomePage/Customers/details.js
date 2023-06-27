@@ -11,6 +11,7 @@ import {
 import {FloatingButtons} from "./../index"
 import {useCustomerTransactionData} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
+import {renderHeader} from "../../../core/utils";
 
 const makePhoneCall = (phoneNumber) => {
     const url = `tel:${phoneNumber}`;
@@ -47,26 +48,6 @@ const sendWhatsApp = (phoneWithCountryCode) => {
         alert("Please insert mobile no");
     }
 };
-
-const renderHeader = () => (
-    <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
-        <View className="flex-1 border-b-2 border-slate-300 w-1/3">
-            <Text variant={"bodyMedium"} className="text-left text-slate-800">
-                Customer
-            </Text>
-        </View>
-        <View className="flex-1 border-b-2 border-amber-400">
-            <Text variant={"bodyMedium"} className="text-right text-slate-800 mr-2">
-                Given
-            </Text>
-        </View>
-        <View className="flex-1 border-b-2 border-blue-500">
-            <Text variant={"bodyMedium"} className="text-right text-slate-800">
-                Received
-            </Text>
-        </View>
-    </View>
-);
 
 const renderItem = ({item, index}) => (
     <TouchableOpacity
@@ -300,7 +281,7 @@ export default function Index({navigation, route}) {
 
             <FlashList
                 data={filteredList}
-                renderItem={renderItem}
+                renderItem={({ item, index }) => renderItem({ item, index, userId: auth.user.id })}
                 ListHeaderComponent={renderHeader}
                 estimatedItemSize={200}
                 onSearch={handleSearch}

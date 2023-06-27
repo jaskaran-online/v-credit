@@ -18,7 +18,6 @@ const _useAuth = create((set, get) => ({
   hydrate: async () => {
     try {
       const userToken = await getToken();
-      console.log({userToken});
       if (userToken !== null) {
         get().signIn(userToken);
       } else {

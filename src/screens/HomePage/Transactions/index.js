@@ -10,90 +10,18 @@ import { Searchbar, Text } from "react-native-paper";
 import { useTransactionsData } from "../../../apis/useApi";
 import { useAuth } from "../../../hooks";
 import { useFocusEffect } from "@react-navigation/native";
+import navigation from '../../../navigations/index'
+import {renderHeader, renderItem} from '../../../core/utils';
+const isToday = (dateString) => {
+  const currentDate = new Date();
+  const inputDate = new Date(dateString);
 
-const renderHeader = () => (
-  <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
-    <View className="flex-1 border-b-2 border-slate-300 w-1/3">
-      <Text variant={"bodyMedium"} className="text-left text-slate-800">
-        Customer
-      </Text>
-    </View>
-    <View className="flex-1 border-b-2 border-amber-400">
-      <Text variant={"bodyMedium"} className="text-center text-slate-800 mr-2">
-        Given
-      </Text>
-    </View>
-    <View className="flex-1 border-b-2 border-blue-500">
-      <Text variant={"bodyMedium"} className="text-center text-slate-800">
-        Received
-      </Text>
-    </View>
-  </View>
-);
-
-const renderItem = ({ item, index }) => (
-  <TouchableOpacity
-    className={
-      "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
-    }
-  >
-    <View className="flex flex-row items-center w-1/4">
-      <View className="mr-1">
-        {item?.transaction_type_id === 2 ? (
-          <MaterialCommunityIcons
-            name="call-received"
-            size={14}
-            color="green"
-          />
-        ) : (
-          <MaterialIcons name="call-made" size={14} color="red" />
-        )}
-      </View>
-      <View>
-        <Text variant={"titleSmall"} className="text-slate-800">
-          {item?.customer?.name}
-        </Text>
-        <Text variant={"labelSmall"} className="text-slate-400">
-          {item?.date}
-        </Text>
-      </View>
-    </View>
-    <View>
-      {item?.transaction_type_id === 1 ? (
-        <View className={"mr-2"}>
-          <Text variant={"bodyMedium"} className="text-slate-800 mr-2">{ parseFloat(item?.amount).toFixed(2) }</Text>
-          <Text variant={"labelSmall"} className="text-slate-400 mr-2">
-            (Udhaar)
-          </Text>
-        </View>
-      ) : (
-        <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-          {" "}
-          -{" "}
-        </Text>
-      )}
-    </View>
-    <View className={"flex flex-row items-right"}>
-      <View>
-        {item?.transaction_type_id === 2 ? (
-          <View>
-            <Text variant={"bodyMedium"} className="text-slate-800">
-              { parseFloat(item?.amount).toFixed(2) }
-            </Text>
-            <Text variant={"labelSmall"} className="text-slate-400">
-              (Payment)
-            </Text>
-          </View>
-        ) : (
-          <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-            {" "}
-            -{" "}
-          </Text>
-        )}
-      </View>
-    </View>
-  </TouchableOpacity>
-);
+  return (
+      currentDate.getFullYear() === inputDate.getFullYear() &&
+      currentDate.getMonth() === inputDate.getMonth() &&
+      currentDate.getDate() === inputDate.getDate()
+  );
+};
 
 export default function Index() {
 
@@ -244,7 +172,7 @@ export default function Index() {
 
       <FlashList
         data={filteredList}
-        renderItem={renderItem}
+        renderItem={({ item, index }) => renderItem({ item, index, userId: auth.user.id })}
         ListHeaderComponent={renderHeader}
         estimatedItemSize={200}
         refreshing={reload}

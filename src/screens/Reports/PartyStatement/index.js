@@ -8,88 +8,12 @@ import {styled} from "nativewind";
 import {DatePickerInput} from 'react-native-paper-dates';
 import { TwoCards } from '../../Components/TwoCards';
 import {useAuth} from "../../../hooks";
-import {useDailyBook, usePartyStatement} from "../../../apis/useApi";
+import {usePartyStatement} from "../../../apis/useApi";
+import {renderHeader, renderItem} from "../../../core/utils";
 
-const renderHeader = () => <View className={"flex-row justify-between px-4 py-2 space-x-2 items-center"}>
-    <View className="flex-1 border-b-2 border-slate-300 w-1/3">
-        <Text variant={"bodyMedium"} className="text-left text-slate-800">Customer</Text>
-    </View>
-    <View className="flex-1 border-b-2 border-amber-400">
-        <Text variant={"bodyMedium"} className="text-right text-slate-800 mr-2">Given</Text>
-    </View>
-    <View className="flex-1 border-b-2 border-blue-500">
-        <Text variant={"bodyMedium"} className="text-right text-slate-800">Received</Text>
-    </View>
-</View>
-
-const renderItem = ({ item, index }) => (
-    <TouchableOpacity
-        className={
-            "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
-        }
-    >
-        <View className="flex flex-row items-center w-1/4">
-            <View className="mr-1">
-                {item?.transaction_type_id === 2 ? (
-                    <MaterialCommunityIcons
-                        name="call-received"
-                        size={14}
-                        color="green"
-                    />
-                ) : (
-                    <MaterialIcons name="call-made" size={14} color="red" />
-                )}
-            </View>
-            <View>
-                <Text variant={"titleSmall"} className="text-slate-800">
-                    {item?.customer?.name}
-                </Text>
-                <Text variant={"labelSmall"} className="text-slate-400">
-                    {item?.date}
-                </Text>
-            </View>
-        </View>
-        <View>
-            {item?.transaction_type_id === 1 ? (
-                <View className={"mr-2"}>
-                    <Text variant={"bodyMedium"} className="text-slate-800 mr-2">{item?.amount}</Text>
-                    <Text variant={"labelSmall"} className="text-slate-400 mr-2">
-                        (Udhaar)
-                    </Text>
-                </View>
-            ) : (
-                <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-                    {" "}
-                    -{" "}
-                </Text>
-            )}
-        </View>
-        <View className={"flex flex-row items-right"}>
-            <View>
-                {item?.transaction_type_id === 2 ? (
-                    <View>
-                        <Text variant={"bodyMedium"} className="text-slate-800">
-                            {item?.amount}
-                        </Text>
-                        <Text variant={"labelSmall"} className="text-slate-400">
-                            (Payment)
-                        </Text>
-                    </View>
-                ) : (
-                    <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-                        {" "}
-                        -{" "}
-                    </Text>
-                )}
-            </View>
-        </View>
-    </TouchableOpacity>
-);
 export default function Index() {
 
-
     const auth = useAuth.use?.token();
-
     const {mutate, data : dailyBookData, isLoading} = usePartyStatement();
     const [reload, setReload] = useState(false);
 
@@ -107,12 +31,8 @@ export default function Index() {
         return `${year}-${month}-${day}`;
     }
     function loadCustomerData(){
-
-
         const fromDateStr = dateFormat(fromDate);
         const toDateStr = dateFormat(toDate);
-
-
         setReload(true)
         const formData = new FormData();
         formData.append('company_id', auth.user.company_id);
@@ -229,7 +149,7 @@ export default function Index() {
         </View>
         {!isLoading ? <FlashList
             data={filteredList}
-            renderItem={renderItem}
+            renderItem={({ item, index }) => renderItem({ item, index, userId: auth.user.id })}
             ListHeaderComponent={renderHeader}
             estimatedItemSize={200}
             onSearch={handleSearch}

@@ -59,6 +59,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.21.8",
+    "react-devtools": "^4.27.8",
     "tailwindcss": "^3.3.2"
   },
   "private": true

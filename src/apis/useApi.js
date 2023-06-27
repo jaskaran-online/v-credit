@@ -100,6 +100,19 @@ export const usePaymentApi = () => {
     });
 };
 
+export const useEditPaymentApi = () => {
+    return useMutation({
+        mutationKey : "editPayment",
+        mutationFn : (data) => post('api/v1/get/transaction-by-id', data)
+    });
+};
+
+export const useUpdatePaymentApi = () => {
+    return useMutation({
+        mutationKey : "updatePayment",
+        mutationFn : (data) => post('api/v1/update/transactions', data)
+    });
+};
 
 export const usePutData = () => {
     return useMutation((data) => put('your-put-url', data));

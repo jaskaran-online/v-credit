@@ -1,5 +1,5 @@
 // noinspection JSValidateTypes
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {KeyboardAvoidingView, TouchableOpacity, View, Image, Keyboard} from "react-native";
 import {Button, Dialog, Text, TextInput} from "react-native-paper"
 import * as Contacts from 'expo-contacts';
@@ -9,9 +9,22 @@ import {MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
 import {Camera} from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import {getItem, setItem} from "../../../core/utils";
-import {usePaymentApi, useProductsApi} from "../../../apis/useApi";
+import {useEditPaymentApi, usePaymentApi, useProductsApi, useUpdatePaymentApi} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
 import Toast from "react-native-toast-message";
+
+function convertDateFormat(dateString) {
+    const dateObj = new Date(dateString);
+
+    const convertedDate = dateObj.toISOString()
+        .slice(0, 10) // Extract YYYY-MM-DD
+        .replace('T', ' '); // Replace 'T' with a space
+
+    const convertedTime = dateObj.toISOString()
+        .slice(11, 19); // Extract HH:MM:SS
+
+    return `${convertedDate} ${convertedTime}`;
+}
 
 const showToast = (message, type) => {
     Toast.show({
@@ -22,28 +35,17 @@ const showToast = (message, type) => {
     });
 }
 
-function convertDateFormat(dateString) {
-    const dateObj = new Date(dateString);
-
-    const convertedDate = dateObj.toISOString()
-        .slice(0, 10) // Extract YYYY-MM-DD
-        .replace('T', ' '); // Replace 'T' with a space
-    const convertedTime = dateObj.toISOString()
-        .slice(11, 19); // Extract HH:MM:SS
-
-    return `${convertedDate} ${convertedTime}`;
-}
-
-
-const TakePayment = ({navigation}) => {
+let TRANS_TYPES = [{id:1,name: "Given"},{id:2,name:"Received"}];
+const EditTransaction = ({navigation, route}) => {
     const auth = useAuth.use?.token();
     const {
         mutate: request,
         data: paymentApiResponse,
         isSuccess: isPaymentSuccess,
         error: paymentError,
+        isLoading : updateLoading,
         isError
-    } = usePaymentApi();
+    } = useUpdatePaymentApi();
     const {
         mutate: productRequest,
         isLoading,
@@ -52,6 +54,8 @@ const TakePayment = ({navigation}) => {
         error: productsError,
         isErrorProduct
     } = useProductsApi();
+
+    const {mutate : editApiRequest, data : transactionData, isLoading: loadingTransactionData} = useEditPaymentApi();
 
     const [amount, setAmount] = useState(0);
     const [contacts, setContacts] = useState([]);
@@ -63,6 +67,42 @@ const TakePayment = ({navigation}) => {
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [visible, setVisible] = useState(false);
+    const [transactionType, setTransactionType] = useState(null);
+
+
+    const transaction = route?.params?.transaction;
+
+    useEffect(() => {
+        setSelectedProduct(transaction?.product);
+        setSelectedCustomer(transaction?.customer);
+        // let imageURI = `http://mycreditbook.com/images/${transaction?.image}`;
+        // setImageUri(imageURI)
+        let transactionType = TRANS_TYPES.filter(x => x.id === transaction.transaction_type_id)
+        console.log({transactionType})
+        setTransactionType(transactionType[0])
+        loadTransactionData();
+    }, [route.params?.transaction]);
+
+    useEffect(() => {
+        if(!loadingTransactionData){
+            if (transactionData !== null || transactionData?.data !== undefined) {
+                setPrice(transactionData?.data?.price || 0);
+                setQty(transactionData?.data?.qty || 0);
+                setAmount(transactionData?.data?.amount || 0);
+                setNote(transactionData?.data?.notes || '');
+            }
+        }
+    }, [loadingTransactionData]);
+
+    function loadTransactionData(){
+        const formData = new FormData();
+        formData.append('company_id', auth.user.company_id);
+        formData.append('cost_center_id', auth.user.cost_center_id);
+        formData.append('company_id', auth?.user.company_id);
+        formData.append('user_id', auth.user.id);
+        formData.append('id', route?.params?.transaction?.id);
+        editApiRequest(formData);
+    }
 
     useEffect(() => {
         const formData = new FormData();
@@ -121,7 +161,6 @@ const TakePayment = ({navigation}) => {
 
     const handleCameraCapture = async () => {
         const {status: cameraStatus} = await Camera.requestCameraPermissionsAsync();
-        console.log({cameraStatus});
         if (cameraStatus === 'granted') {
             const photo = await ImagePicker.launchCameraAsync();
             if (!photo?.cancelled) {
@@ -146,13 +185,13 @@ const TakePayment = ({navigation}) => {
     };
     const onFormSubmit = () => {
         if (selectedCustomer === null) {
-            showToast("Please Select Customer and Product", "error");
+            showToast("Please Select Customer", "error");
             return false;
         }
         const formData = new FormData();
         formData.append("company_id", (auth.user)?.company_id);
         formData.append("cost_center_id", (auth.user)?.cost_center_id);
-        formData.append("customer_name", selectedCustomer?.name);
+        // formData.append("customer_name", selectedCustomer?.name);
         formData.append("from_date", convertDateFormat(inputDate.toString()));
         if (imageUri) {
             formData.append("image", {
@@ -162,17 +201,16 @@ const TakePayment = ({navigation}) => {
             });
         }
         formData.append("notes", note);
-        formData.append("phone", selectedCustomer?.phoneNumbers[0]?.number || null);
-        formData.append("phone_id", selectedCustomer?.id);
+        // formData.append("phone", selectedCustomer?.phoneNumbers ? selectedCustomer?.phoneNumbers[0]?.digits : selectedCustomer?.phone || null);
+        // formData.append("phone_id", selectedCustomer?.id);
         if(selectedProduct){
             formData.append('product_id', selectedProduct?.id);
         }
         formData.append("price", price);
         formData.append("qty", qty);
-        formData.append("transaction_type_id", 2);
+        formData.append("transaction_type_id", transactionType?.id);
         formData.append("user_id", auth?.user?.id);
-        // console.log(formData)
-        // console.log(selectedCustomer)
+        formData.append("id", transaction?.id);
         request(formData);
     };
 
@@ -197,6 +235,7 @@ const TakePayment = ({navigation}) => {
     };
 
     const handleDateChange = (d) => setInputDate(d);
+
     return (
         <View className={"flex-1 bg-white"}>
             <KeyboardAvoidingView
@@ -206,7 +245,9 @@ const TakePayment = ({navigation}) => {
                     inputLabel="Select Customer"
                     headerTitle="Showing contact from Phonebook"
                     onSelect={handleContactSelect}
-                    filterEnabled={true}
+                    selectedItemName={transaction?.customer?.name}
+                    enableSearch={true}
+                    isReadOnly={true}
                 />
                 {!isLoading && <View className={"mt-2 -z-10"}>
                     <DropDownFlashList
@@ -214,6 +255,21 @@ const TakePayment = ({navigation}) => {
                         inputLabel="Select Product"
                         headerTitle="List of products"
                         onSelect={handleProductSelect}
+                        selectedItemName={transaction?.product?.name}
+                        enableSearch={true}
+                    />
+                    <View className={"mt-2 -z-10"}/>
+                    <DropDownFlashList
+                        data={TRANS_TYPES}
+                        inputLabel="Transaction Type"
+                        headerTitle="Transaction Type"
+                        onSelect={(contactObj) => {
+                            setTransactionType(contactObj);
+                        }}
+                        isTransparent={false}
+                        filterEnabled={true}
+                        enableSearch={false}
+                        selectedItemName={transactionType?.name || ""}
                     />
                 </View>}
                 <View className={"flex flex-row gap-2 mt-0 -z-30"}>
@@ -269,8 +325,8 @@ const TakePayment = ({navigation}) => {
                     {imageUri && <Image source={{uri: imageUri, width: 150, height: 150}} resizeMethod={"auto"}
                                         className={"mt-4"}/>}
                 </>
-                <Button mode={"contained"} className={"mt-4 py-1 -z-50"}
-                        onPress={() => onFormSubmit()}>Submit</Button>
+                <Button mode={"contained"} className={"mt-4 py-1 -z-50 bg-green-600"} loading={updateLoading} disabled={updateLoading}
+                        onPress={() => onFormSubmit()}>Update</Button>
             </KeyboardAvoidingView>
 
             <Dialog visible={visible} onDismiss={hideDialog} dismissable={true} style={{backgroundColor: "white"}}
@@ -299,4 +355,4 @@ const TakePayment = ({navigation}) => {
     );
 };
 
-export default React.memo(TakePayment);
+export default React.memo(EditTransaction);

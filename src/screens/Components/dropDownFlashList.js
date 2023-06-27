@@ -1,10 +1,21 @@
-import {Dimensions, FlatList, TouchableOpacity, View} from "react-native";
+import {Dimensions, TouchableOpacity, View} from "react-native";
 import {Text, TextInput} from "react-native-paper";
 import {FlashList} from "@shopify/flash-list";
-import React, {useEffect, useState, memo} from "react";
+import React, {useEffect, useState, memo, useRef} from "react";
 
-function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = () => null, inputLabel = "label", headerTitle = "headerTitle", closeDropDown = false, isTransparent = false, isLoading = false, selectedItemName = "", enableSearch = true}) {
-
+function DropDownFlashList({
+                               data = [],
+                               onSelect = () => null,
+                               onChangeInput = () => null,
+                               inputLabel = "label",
+                               headerTitle = "headerTitle",
+                               closeDropDown = false,
+                               isTransparent = false,
+                               isLoading = false,
+                               selectedItemName = "",
+                               enableSearch = true,
+                               isReadOnly = false
+                           }) {
     const [isDropDownOpen, setIsDropDownOpen] = useState(closeDropDown);
     const [filteredContacts, setFilteredContacts] = useState(data);
 
@@ -70,15 +81,15 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
         )
     }
 
-    let flashListHeight = filteredContacts?.length === 1 ? 100 : filteredContacts?.length  * 70;
-    if(flashListHeight > Dimensions.get("screen").height){
+    let flashListHeight = filteredContacts?.length === 1 ? 100 : filteredContacts?.length * 70;
+    if (flashListHeight > Dimensions.get("screen").height) {
         flashListHeight = Dimensions.get("screen").height - 400;
     }
     return (<View className={"relative z-50"}>
         <TextInput
-            className={isTransparent ? "bg-blue-50" : "bg-white"}
+            className={isTransparent || isReadOnly ? "bg-blue-50" : "bg-white"}
             onChangeText={(text) => {
-                if(enableSearch) {
+                if (enableSearch) {
                     searchItems(text);
                 }
                 onChangeInput(text);
@@ -87,14 +98,17 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
             value={value}
             mode={"outlined"}
             label={inputLabel}
-            right={<TextInput.Icon icon={isDropDownOpen  ? "close" : "chevron-down"} size={28} color={'red'} onPress={() => setIsDropDownOpen((value) => !value)}/>}
+
+            right={!isReadOnly && <TextInput.Icon icon={isDropDownOpen ? "close" : "chevron-down"} size={28} color={'red'}
+                                   onPress={() => setIsDropDownOpen((value) => !value)}/>}
             // onEndEditing={() => setIsDropDownOpen(false)}
+            editable={!isReadOnly}
         />
-        {isDropDownOpen && (<View
+        {(isDropDownOpen && !isReadOnly) && (<View
             style={{
                 height: flashListHeight
             }}
-          className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl z-50"}>
+            className={"bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl z-50"}>
             <FlashList
                 data={filteredContacts}
                 estimatedItemSize={200}
@@ -106,7 +120,8 @@ function DropDownFlashList({data = [], onSelect = () => null, onChangeInput  = (
                 ItemSeparatorComponent={renderSeparator}
                 ListHeaderComponent={renderHeader}
 
-                ListEmptyComponent={<View className={"flex-1 d-flex justify-center items-center h-16"}><Text variant={"bodyMedium"}>No Records Available!</Text></View>}
+                ListEmptyComponent={<View className={"flex-1 d-flex justify-center items-center h-16"}><Text
+                    variant={"bodyMedium"}>No Records Available!</Text></View>}
             />
         </View>)}
     </View>);

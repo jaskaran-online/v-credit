@@ -25,6 +25,19 @@ const showToast = (message, type) => {
     });
 }
 
+function convertDateFormat(dateString) {
+    const dateObj = new Date(dateString);
+
+    const convertedDate = dateObj.toISOString()
+        .slice(0, 10) // Extract YYYY-MM-DD
+        .replace('T', ' '); // Replace 'T' with a space
+
+    const convertedTime = dateObj.toISOString()
+        .slice(11, 19); // Extract HH:MM:SS
+
+    return `${convertedDate} ${convertedTime}`;
+}
+
 const FlatListDropDown = ({navigation}) => {
     const auth = useAuth.use?.token();
     const {mutate: productRequest, isLoading ,data: products, isSuccess: isProductsSuccess, error : productsError, isErrorProduct} = useProductsApi();
@@ -122,8 +135,8 @@ const FlatListDropDown = ({navigation}) => {
     };
 
     const handlePriceChange = (inputPrice) => {
-        setPrice(inputPrice);
-        setAmount(parseFloat(inputPrice || 1) * parseFloat(qty));
+        setPrice(inputPrice?.price);
+        setAmount(parseFloat(inputPrice?.price || 1) * parseFloat(qty));
     };
 
     const handleQtyChange = (inputQty) => {
@@ -141,7 +154,7 @@ const FlatListDropDown = ({navigation}) => {
         formData.append('company_id', auth.user?.company_id);
         formData.append('cost_center_id', auth.user?.cost_center_id);
         formData.append('customer_name', selectedCustomer?.name);
-        formData.append('from_date', inputDate?.toString());
+        formData.append("from_date", convertDateFormat(inputDate.toString()));
         if(imageUri){
             formData.append('image', {
                 uri: imageUri,

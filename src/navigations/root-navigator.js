@@ -22,6 +22,7 @@ import GiveMoney from "../screens/HomePage/GiveMoney";
 import {View} from "react-native";
 import {Button} from "react-native-paper";
 import {ErrorBoundary} from "react-error-boundary";
+import {EditTransaction} from "../screens";
 
 const Stack = createNativeStackNavigator();
 
@@ -147,6 +148,16 @@ export const Root = () => {
                             }}
                             name="GiveMoney"
                             component={GiveMoney}
+                        />
+
+                        <Stack.Screen
+                            options={{
+                                headerStyle: headerBackgroundColor,
+                                headerShown: true,
+                                headerTitle: "Edit",
+                            }}
+                            name="EditTransaction"
+                            component={EditTransaction}
                         />
                     </Stack.Group>
                 )}
