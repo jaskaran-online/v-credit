@@ -3,7 +3,7 @@ import {Linking, TouchableOpacity, View} from 'react-native';
 import createSecureStore from '@neverdull-agency/expo-unlimited-secure-store';
 import navigation from "../navigations";
 import {MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
-import {Text} from "react-native-paper";
+import {List, Text} from "react-native-paper";
 const SecureStore = createSecureStore();
 
 export async function getItem(key) {
@@ -113,6 +113,14 @@ export const renderItem = ({ item: transaction, index, userId }) => {
             )}
           </View>
         </View>
+          {(isToday(transaction?.created_at) && transaction?.user_id === userId) && <>
+              <List.Icon icon="pen"  size="5" color={"dodgerblue"} style={{
+                  backgroundColor: "whitesmoke",
+                  borderRadius: 100,
+                  padding: 5,
+                  marginLeft: 10
+              }}/>
+          </>}
       </TouchableOpacity>
   );
 }

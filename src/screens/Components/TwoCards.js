@@ -28,7 +28,7 @@ export function TwoCards({toReceive = 0, toPay = 0}) {
         <View>
           <Text variant={"bodyMedium"} className="text-slate-500">To Receive</Text>
           <Text variant={"titleMedium"} className="font-bold text-slate-700">
-            ₹{ parseFloat(toReceive).toFixed(2) }
+            ₹{ Math.abs(parseFloat(toReceive).toFixed(2)) }
           </Text>
         </View>
       </Box>
@@ -39,7 +39,7 @@ export function TwoCards({toReceive = 0, toPay = 0}) {
         <View>
           <Text variant={"bodyMedium"} className="text-slate-500">To Pay</Text>
           <Text variant={"titleMedium"} className="font-bold text-slate-700">
-            ₹{ parseFloat(toPay).toFixed(2) }
+            ₹{ Math.abs(parseFloat(toPay).toFixed(2)) }
           </Text>
         </View>
       </Box>

@@ -13,6 +13,10 @@ const renderItem = ({item, index}) => {
     const  toPay = item?.sumAmountByType?.toPay || 0;
     const toReceive = item?.sumAmountByType?.toReceive || 0;
 
+    if(toPay == 0 && toReceive == 0){
+        return null;
+    }
+
     return (<View
         className={"flex flex-row justify-between px-4 py-2 border-b-2 border-slate-200"}>
         <TouchableOpacity onPress={() => navigation.navigate('CustomerTransactionDetails', {
@@ -29,15 +33,9 @@ const renderItem = ({item, index}) => {
             <Text variant={"titleSmall"}
                   className={(toPay > toReceive) ? "text-red-600" : "text-green-600"}>
                 {
-                    toReceive > 0 ?  parseFloat(toReceive - toPay).toFixed(2)   : toPay > 0 ?   parseFloat(toPay - toReceive).toFixed(2) :   parseFloat(toReceive - toPay).toFixed(2)
+                    Math.abs(toReceive > 0 ?  parseFloat(toReceive - toPay).toFixed(2)   : toPay > 0 ?   parseFloat(toPay - toReceive).toFixed(2) :   parseFloat(toReceive - toPay).toFixed(2))
                 }
             </Text>
-            {/*<List.Icon icon="share" color={(index % 2 === 0) ? "gray" : "dodgerblue"} style={{*/}
-            {/*    backgroundColor: (index % 2 === 0) ? 'whitesmoke' : '#dbeafe',*/}
-            {/*    borderRadius: 100,*/}
-            {/*    padding: 3,*/}
-            {/*    marginLeft: 10*/}
-            {/*}}/>*/}
         </TouchableOpacity>
     </View>);
 };

@@ -201,7 +201,7 @@ export default function Index({navigation, route}) {
                                 Total Balance
                             </Text>
                             <Text variant="titleLarge" className="text-slate-900 font-bold">
-                                { toReceive > 0 ?  parseFloat(toReceive - toPay).toFixed(2)   : toPay > 0 ?   parseFloat(toPay - toReceive).toFixed(2) : parseFloat(toReceive - toPay).toFixed(2) }₹
+                                { Math.abs(toReceive > 0 ?  parseFloat(toReceive - toPay).toFixed(2)   : toPay > 0 ?   parseFloat(toPay - toReceive).toFixed(2) : parseFloat(toReceive - toPay).toFixed(2)) }₹
                             </Text>
                         </View>
                     </View>

@@ -80,6 +80,12 @@ const Drawer = createDrawerNavigator();
 export function DrawerNavigator() {
 
     const auth = useAuth.use?.token();
+    const hasRoleOneOrFour = auth?.user?.roles?.some(role => role.id === 1 || role.id === 4);
+    console.log({
+        hasRoleOneOrFour
+    })
+
+
     const dimensions = useWindowDimensions();
     return (
         <Drawer.Navigator
@@ -115,8 +121,7 @@ export function DrawerNavigator() {
                     ),
                 }}
             />
-
-            <Drawer.Screen
+            {hasRoleOneOrFour && <Drawer.Screen
                 name="Reports"
                 component={Reports}
                 options={{
@@ -130,7 +135,7 @@ export function DrawerNavigator() {
                         <Icon name="nav-icon-list-a" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
                     ),
                 }}
-            />
+            />}
 
         </Drawer.Navigator>
     );
