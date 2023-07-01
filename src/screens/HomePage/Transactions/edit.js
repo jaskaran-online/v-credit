@@ -61,7 +61,7 @@ const EditTransaction = ({navigation, route}) => {
     const [contacts, setContacts] = useState([]);
     const [imageUri, setImageUri] = useState(null);
     const [inputDate, setInputDate] = useState(new Date());
-    const [note, setNote] = useState(note);
+    const [note, setNote] = useState('');
     const [price, setPrice] = useState(1);
     const [qty, setQty] = useState(1);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -147,6 +147,10 @@ const EditTransaction = ({navigation, route}) => {
     }, []);
 
 
+    useEffect(() => {
+        setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toPrecision(4));
+    }, [price, qty]);
+
     if (isPaymentSuccess) {
         showToast(paymentApiResponse.data.message, 'success');
         setTimeout(() => navigation.navigate('HomePage'), 1000);
@@ -188,6 +192,12 @@ const EditTransaction = ({navigation, route}) => {
             showToast("Please Select Customer", "error");
             return false;
         }
+
+        if(price == 0 || qty == 0){
+            showToast("Please check price and qty", 'error');
+            return false;
+        }
+
         const formData = new FormData();
         formData.append("company_id", (auth.user)?.company_id);
         formData.append("cost_center_id", (auth.user)?.cost_center_id);
@@ -216,12 +226,10 @@ const EditTransaction = ({navigation, route}) => {
 
     const handlePriceChange = (inputPrice) => {
         setPrice(inputPrice);
-        setAmount(parseFloat(inputPrice || 1) * parseFloat(qty));
     };
 
     const handleQtyChange = (inputQty) => {
         setQty(inputQty)
-        setAmount(parseFloat(price || 1) * parseFloat(inputQty));
     };
 
     const handleContactSelect = (contactObj) => {
@@ -230,7 +238,6 @@ const EditTransaction = ({navigation, route}) => {
 
     const handleProductSelect = (product) => {
         setSelectedProduct(product)
-        setAmount(parseFloat(product.price) * parseFloat(qty));
         setPrice(product.price)
     };
 

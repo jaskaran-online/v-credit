@@ -66,11 +66,11 @@ const FlatListDropDown = ({navigation}) => {
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [qty, setQty] = useState(1);
-    const [price, setPrice] = useState(1);
+    const [price, setPrice] = useState(0);
     const [amount, setAmount] = useState(0);
     const [inputDate, setInputDate] = useState(new Date());
     const [imageUri, setImageUri] = useState(null);
-    const [note, setNote] = useState(note);
+    const [note, setNote] = useState("");
 
     useEffect(() => {
         (async () => {
@@ -101,6 +101,10 @@ const FlatListDropDown = ({navigation}) => {
             }
         })();
     }, []);
+
+    useEffect(() => {
+        setAmount(parseFloat(price || 0) * parseFloat(qty || 1));
+    }, [price, qty]);
 
     const showDialog = () => {
         setVisible(true);
@@ -135,18 +139,22 @@ const FlatListDropDown = ({navigation}) => {
     };
 
     const handlePriceChange = (inputPrice) => {
-        setPrice(inputPrice?.price);
-        setAmount(parseFloat(inputPrice?.price || 1) * parseFloat(qty));
+        setPrice(inputPrice);
     };
 
     const handleQtyChange = (inputQty) => {
         setQty(inputQty)
-        setAmount(parseFloat(price || 1) * parseFloat(inputQty));
     };
+
     const onFormSubmit = () => {
 
         if(selectedCustomer == null){
-            showToast("Please Select Customer and Product", 'error');
+            showToast("Please Select Customer", 'error');
+            return false;
+        }
+
+        if(price == 0 || qty == 0){
+            showToast("Please check price and qty", 'error');
             return false;
         }
 
@@ -193,7 +201,7 @@ const FlatListDropDown = ({navigation}) => {
                         data={products}
                         inputLabel="Select Product (Optional)"
                         headerTitle="List of products"
-                        onSelect={handlePriceChange}
+                        onSelect={(product) => handlePriceChange(product?.price)}
                     />
                 </View>}
                 <View className={"flex flex-row gap-2 mt-0 -z-30"}>

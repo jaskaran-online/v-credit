@@ -57,7 +57,7 @@ const TakePayment = ({navigation}) => {
     const [contacts, setContacts] = useState([]);
     const [imageUri, setImageUri] = useState(null);
     const [inputDate, setInputDate] = useState(new Date());
-    const [note, setNote] = useState(note);
+    const [note, setNote] = useState("");
     const [price, setPrice] = useState(1);
     const [qty, setQty] = useState(1);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -106,6 +106,9 @@ const TakePayment = ({navigation}) => {
         })();
     }, []);
 
+    useEffect(() => {
+        setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toPrecision(4));
+    }, [price, qty]);
 
     if (isPaymentSuccess) {
         showToast(paymentApiResponse.data.message, 'success');
@@ -146,9 +149,15 @@ const TakePayment = ({navigation}) => {
     };
     const onFormSubmit = () => {
         if (selectedCustomer === null) {
-            showToast("Please Select Customer and Product", "error");
+            showToast("Please Select Customer", "error");
             return false;
         }
+
+        if(price == 0 || qty == 0){
+            showToast("Please check price and qty", 'error');
+            return false;
+        }
+
         const formData = new FormData();
         formData.append("company_id", (auth.user)?.company_id);
         formData.append("cost_center_id", (auth.user)?.cost_center_id);
@@ -178,22 +187,14 @@ const TakePayment = ({navigation}) => {
 
     const handlePriceChange = (inputPrice) => {
         setPrice(inputPrice);
-        setAmount(parseFloat(inputPrice || 1) * parseFloat(qty));
     };
 
     const handleQtyChange = (inputQty) => {
         setQty(inputQty)
-        setAmount(parseFloat(price || 1) * parseFloat(inputQty));
     };
 
     const handleContactSelect = (contactObj) => {
         setSelectedCustomer(contactObj);
-    };
-
-    const handleProductSelect = (product) => {
-        setSelectedProduct(product)
-        setAmount(parseFloat(product.price) * parseFloat(qty));
-        setPrice(product.price)
     };
 
     const handleDateChange = (d) => setInputDate(d);
@@ -213,7 +214,7 @@ const TakePayment = ({navigation}) => {
                         data={products}
                         inputLabel="Select Product"
                         headerTitle="List of products"
-                        onSelect={handleProductSelect}
+                        onSelect={(product) => handlePriceChange(product?.price)}
                     />
                 </View>}
                 <View className={"flex flex-row gap-2 mt-0 -z-30"}>

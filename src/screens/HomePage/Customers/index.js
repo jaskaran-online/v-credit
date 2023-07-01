@@ -10,8 +10,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import {useQueryClient} from "@tanstack/react-query";
 const renderItem = ({item, index}) => {
 
-    const  toPay = item?.sumAmountByType?.toPay || 0;
-    const toReceive = item?.sumAmountByType?.toReceive || 0;
+    const  toPay = item?.toPay || 0;
+    const toReceive = item?.toReceive || 0;
 
     if(toPay == 0 && toReceive == 0){
         return null;
@@ -20,22 +20,24 @@ const renderItem = ({item, index}) => {
     return (<View
         className={"flex flex-row justify-between px-4 py-2 border-b-2 border-slate-200"}>
         <TouchableOpacity onPress={() => navigation.navigate('CustomerTransactionDetails', {
-            id: item?.id,
-            name: item?.name
+            id: item.customer?.id,
+            name: item.customer?.name
         })}>
-            <Text variant="titleSmall" class={"text-slate-800"}>{item?.name}</Text>
-            <Text variant={"labelSmall"} className="text-slate-400">{item?.created_at}</Text>
+            <Text variant="titleSmall" class={"text-slate-800"}>{item?.customer?.name}</Text>
+            <Text variant={"labelSmall"} className="text-slate-400">{item?.customer?.created_at}</Text>
         </TouchableOpacity>
         <TouchableOpacity className={"flex flex-row justify-center items-center"}  onPress={() => navigation.navigate('CustomerTransactionDetails', {
             id: item?.id,
             name: item?.name
         })}>
-            <Text variant={"titleSmall"}
-                  className={(toPay > toReceive) ? "text-red-600" : "text-green-600"}>
-                {
-                    Math.abs(toReceive > 0 ?  parseFloat(toReceive - toPay).toFixed(2)   : toPay > 0 ?   parseFloat(toPay - toReceive).toFixed(2) :   parseFloat(toReceive - toPay).toFixed(2))
-                }
-            </Text>
+            <View className={"mr-3"}>
+                <Text variant="bodySmall" className="text-red-400">Given</Text>
+                <Text variant={"bodyMedium"} className="text-slate-400">{toReceive} ₹</Text>
+            </View>
+            <View>
+                <Text variant="bodySmall" className="text-green-600">Received</Text>
+                <Text variant={"bodyMedium"} className="text-slate-400">{toPay} ₹</Text>
+            </View>
         </TouchableOpacity>
     </View>);
 };
@@ -64,6 +66,8 @@ export default function Index() {
         formData.append('company_id', auth?.user.company_id);
         formData.append('user_id', auth?.user.id);
         mutate(formData);
+        console.log("Customer Data")
+        console.log(formData)
         setReload(false)
     }
 

@@ -36,8 +36,8 @@ export default function Index({navigation}) {
             <CardComponent onPress={() => {
                 navigation.navigate('AllTransactions')
             }} iconName="bank" title={"All Transactions"} description={"All Transactions between any duration"}/>
-            <CardComponent onPress={() => {
-                navigation.navigate('CostCenter')
-            }} iconName="home" title={"Cost Centre Wise Profit "} description={"Transaction all debit and credit "}/>
+            {/*<CardComponent onPress={() => {*/}
+            {/*    navigation.navigate('CostCenter')*/}
+            {/*}} iconName="home" title={"Cost Centre Wise Profit "} description={"Transaction all debit and credit "}/>*/}
         </View>);
 }

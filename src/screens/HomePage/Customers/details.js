@@ -148,7 +148,7 @@ export default function Index({navigation, route}) {
         const filteredList = (data?.data?.transactions).filter(item =>
             String(item.amount).includes(inputValue) || String(item.id).includes(inputValue)
         );
-        setFilteredList(filteredList);
+        // setFilteredList(filteredList);
     };
 
     function loadCustomerData(){
@@ -160,8 +160,9 @@ export default function Index({navigation, route}) {
         formData.append('user_id', auth.user.id);
         mutate(formData);
         setReload(false);
+        console.log(formData);
     }
-
+console.log(data)
     const handleSelect = (item) => {
         setSelectedItem(item);
     };
@@ -185,16 +186,16 @@ export default function Index({navigation, route}) {
         setSelectedItem(null);
     };
 
-    const toReceive =  data?.data?.sumAmountByType.toReceive || 0;
-    const toPay = data?.data?.sumAmountByType.toPay || 0;
+    const toReceive =  data?.data?.toReceive || 0;
+    const toPay = data?.data?.toPay || 0;
     return (
         <View className={"bg-white flex-1"}>
             <View className="bg-blue-50 h-28">
                 <View
                     className="mx-2 h-24 bg-white mt-1 rounded-md shadow-sm flex flex-row items-center justify-between px-6">
                     <View className="flex flex-row space-x-4 items-center">
-                        <View className="bg-red-400 p-2 rounded-full">
-                            <MaterialIcons name="call-made" size={20} color="white"/>
+                        <View className="h-8 w-8 rounded-full overflow-hidden">
+                            <Text className="bg-red-400 p-2 text-white  text-center flex-1 justify-center items-center rounded-full size-12">₹</Text>
                         </View>
                         <View className="ml-2">
                             <Text variant="bodyMedium" className="text-slate-600">
@@ -207,10 +208,10 @@ export default function Index({navigation, route}) {
                     </View>
 
                     <View className="flex flex-row space-x-6 pr-2">
-                        <TouchableOpacity className="bg-blue-50 p-2 rounded-full  flex items-center" onPress={() => makePhoneCall(data?.data?.phone)}>
+                        <TouchableOpacity className="bg-blue-50 p-2 rounded-full  flex items-center" onPress={() => makePhoneCall(data?.data?.customer?.phone)}>
                             <MaterialIcons name="call" size={24} color="dodgerblue"/>
                         </TouchableOpacity>
-                        <TouchableOpacity className="bg-blue-50 p-2 rounded-full" onPress={() => sendWhatsApp(data?.data?.phone)}>
+                        <TouchableOpacity className="bg-blue-50 p-2 rounded-full" onPress={() => sendWhatsApp(data?.data?.customer?.phone)}>
                             <MaterialCommunityIcons name="whatsapp" size={26} color="green"/>
                         </TouchableOpacity>
                     </View>
@@ -278,21 +279,22 @@ export default function Index({navigation, route}) {
                     })}
                 </View>
             )}
-
-            <FlashList
-                data={filteredList}
-                renderItem={({ item, index }) => renderItem({ item, index, userId: auth.user.id })}
-                ListHeaderComponent={renderHeader}
-                estimatedItemSize={200}
-                onSearch={handleSearch}
-                onSelect={handleSelect}
-                selected={selectedItem}
-                showOptions={showOptions}
-                options={options}
-                refreshing={reload}
-                onRefresh={loadCustomerData}
-                onOptionSelect={handleOptionSelect}
-            />
+            {filteredList && (
+                <FlashList
+                    data={filteredList}
+                    renderItem={({ item, index }) => renderItem({ item, index, userId: auth.user.id })}
+                    ListHeaderComponent={renderHeader}
+                    estimatedItemSize={200}
+                    onSearch={handleSearch}
+                    onSelect={handleSelect}
+                    selected={selectedItem}
+                    showOptions={showOptions}
+                    options={options}
+                    refreshing={reload}
+                    onRefresh={loadCustomerData}
+                    onOptionSelect={handleOptionSelect}
+                />
+            )}
             <FloatingButtons navigation={navigation}/>
         </View>
     );
