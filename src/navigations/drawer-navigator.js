@@ -81,11 +81,6 @@ export function DrawerNavigator() {
 
     const auth = useAuth.use?.token();
     const hasRoleOneOrFour = auth?.user?.roles?.some(role => role.id === 1 || role.id === 4);
-    console.log({
-        hasRoleOneOrFour
-    })
-
-
     const dimensions = useWindowDimensions();
     return (
         <Drawer.Navigator

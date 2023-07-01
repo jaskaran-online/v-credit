@@ -7,7 +7,7 @@ import {useCustomersData} from "../../../apis/useApi";
 import {useCallback, useEffect, useState} from "react";
 import {useAuth} from "../../../hooks";
 import { useFocusEffect } from "@react-navigation/native";
-import {useQueryClient} from "@tanstack/react-query";
+
 const renderItem = ({item, index}) => {
 
     const  toPay = item?.toPay || 0;
@@ -32,11 +32,11 @@ const renderItem = ({item, index}) => {
         })}>
             <View className={"mr-3"}>
                 <Text variant="bodySmall" className="text-red-400">Given</Text>
-                <Text variant={"bodyMedium"} className="text-slate-400">{toReceive} ₹</Text>
+                <Text variant={"bodyMedium"} className="text-slate-400">{(toReceive.toPrecision(2))} ₹</Text>
             </View>
             <View>
                 <Text variant="bodySmall" className="text-green-600">Received</Text>
-                <Text variant={"bodyMedium"} className="text-slate-400">{toPay} ₹</Text>
+                <Text variant={"bodyMedium"} className="text-slate-400">{toPay.toPrecision(2)} ₹</Text>
             </View>
         </TouchableOpacity>
     </View>);
@@ -44,7 +44,6 @@ const renderItem = ({item, index}) => {
 
 export default function Index() {
 
-    const queryClient = useQueryClient();
     useFocusEffect(
         useCallback(() => {
             loadCustomerData();

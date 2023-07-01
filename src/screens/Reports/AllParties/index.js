@@ -17,13 +17,20 @@ export default function Index() {
     const {mutate: customerMutate, data: customersData, isLoading: isCustomerLoading, error} = useCustomersData();
 
     const [reload, setPartyReload] = useState(false);
-
     const [filteredList, setFilteredList] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [showOptions, setShowOptions] = useState("");
     const [query, setQuery] = useState("");
     const [customer, setCustomer] = useState("");
     const [inputDate, setInputDate] = useState(new Date());
+    const [customersList, setCustomersList] = useState([]);
+
+    useEffect(() => {
+        if(customersData?.data){
+            let customers = (customersData?.data).map(item => item.customer);
+            setCustomersList(customers);
+        }
+    }, [customersData]);
 
     function fetchCustomers() {
         const formData = new FormData();
@@ -52,7 +59,6 @@ export default function Index() {
         formData.append('customer_id', customer?.id);
         formData.append('date', dateString);
         allPartiesMutate(formData);
-        console.log(formData);
         setPartyReload(false)
     }
 
@@ -124,8 +130,8 @@ export default function Index() {
                         className={"bg-blue-50 mx-1 w-44"}
                     />
                 </View>
-                {!isCustomerLoading && <DropDownFlashList
-                    data={customersData?.data}
+                {(customersList.length > 0) && <DropDownFlashList
+                    data={customersList}
                     inputLabel="Parties"
                     headerTitle="Showing contact from Phonebook"
                     onSelect={(contactObj) => {

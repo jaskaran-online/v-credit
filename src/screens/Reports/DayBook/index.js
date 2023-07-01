@@ -111,7 +111,7 @@ function DayBook() {
     setSelectedItem(null);
   };
 
-  const [inputDate, setInputDate] = useState(new Date('2023-06-11'));
+  const [inputDate, setInputDate] = useState(new Date('2022-06-11'));
 
   return (
     <View className={"bg-white flex-1"}>

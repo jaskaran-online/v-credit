@@ -8,6 +8,11 @@ export const useCompanyProductsData = (url) => {
     return useQuery(['getData', url], () => get(url));
 };
 
+
+export const useCompanyCostCenterData = (url) => {
+    return useQuery(['getCostCenters', url], () => get(url));
+};
+
 export const useCustomerTransactionData = () => {
     return useMutation({
         mutationKey:  "getCustomerTransactionData",

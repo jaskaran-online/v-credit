@@ -153,6 +153,11 @@ const TakePayment = ({navigation}) => {
             return false;
         }
 
+        if(selectedCustomer?.phoneNumbers === undefined){
+            showToast("Contact you selected doesn't have mobile number!", 'error');
+            return false;
+        }
+
         if(price == 0 || qty == 0){
             showToast("Please check price and qty", 'error');
             return false;

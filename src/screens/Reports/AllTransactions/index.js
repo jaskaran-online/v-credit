@@ -28,6 +28,14 @@ export default function Index() {
     const [transactionType, setTransactionType] = useState(null);
     const [fromDate, setFromDate] = useState(new Date(new Date().setMonth(new Date().getMonth() - 1)));
     const [toDate, setToDate] = useState(new Date());
+    const [customersList, setCustomersList] = useState([]);
+
+    useEffect(() => {
+        if(customersData?.data){
+            let customers = (customersData?.data).map(item => item.customer);
+            setCustomersList(customers);
+        }
+    }, [customersData]);
 
     function fetchCustomers() {
         const formData = new FormData();
@@ -65,7 +73,6 @@ export default function Index() {
         formData.append('fromDate', fromDateStr);
 
         transactionsMutate(formData);
-        console.log(formData)
         setTransactionsReload(false)
     }
 
@@ -122,8 +129,6 @@ export default function Index() {
         setSelectedItem(null);
     };
 
-    console.log(transactionsLoading)
-
   return (
     <View className={"bg-white flex-1"}>
       <StatusBar animated={true} />
@@ -150,8 +155,8 @@ export default function Index() {
             />
             </View>
             <View>
-                {!isCustomerLoading && <DropDownFlashList
-                    data={customersData?.data}
+                {(customersList.length > 0) && <DropDownFlashList
+                    data={customersList}
                     inputLabel="Parties"
                     headerTitle="Showing list of parties"
                     onSelect={(contactObj) => {

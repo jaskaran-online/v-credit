@@ -160,7 +160,6 @@ export default function Index({navigation, route}) {
         formData.append('user_id', auth.user.id);
         mutate(formData);
         setReload(false);
-        console.log(formData);
     }
 console.log(data)
     const handleSelect = (item) => {

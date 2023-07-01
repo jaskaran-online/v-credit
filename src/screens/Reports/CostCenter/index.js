@@ -13,7 +13,7 @@ import { StatusBar } from "expo-status-bar";
 import { styled } from "nativewind";
 import { DatePickerInput } from "react-native-paper-dates";
 import { TwoCards } from "../../Components/TwoCards";
-import { useAllTransactions, useCustomersData} from "../../../apis/useApi";
+import {useAllTransactions, useCompanyCostCenterData, useCustomersData} from "../../../apis/useApi";
 import DropDownFlashList from "../../Components/dropDownFlashList";
 import {useAuth} from "../../../hooks";
 import navigation from "../../../navigations";
@@ -108,20 +108,20 @@ const renderItem = ({item, index}) => (
 
 export default function Index() {
     const auth = useAuth.use?.token();
-
+    const costCenter = useCompanyCostCenterData('api/v1/get/cost-center/'+auth?.user.cost_center_id);
     const {mutate: customerMutate, data: customersData, isLoading: isCustomerLoading, error} = useCustomersData();
     const {mutate: transactionsMutate, data: transactionsData, isLoading: transactionsLoading} = useAllTransactions();
+
     const [reload, setTransactionsReload] = useState(false);
 
     const [filteredList, setFilteredList] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [showOptions, setShowOptions] = useState("");
     const [query, setQuery] = useState("");
-    const [customer, setCustomer] = useState("");
+    const [selectedCostCenter, setSelectedCostCenter] = useState("");
     const [transactionType, setTransactionType] = useState(null);
     const [fromDate, setFromDate] = useState(new Date(new Date().setMonth(new Date().getMonth() - 1)));
     const [toDate, setToDate] = useState(new Date());
-
     function fetchCustomers() {
         const formData = new FormData();
         formData.append('cost_center_id', auth?.user.cost_center_id);
@@ -149,22 +149,21 @@ export default function Index() {
 
         const formData = new FormData();
         formData.append('company_id', auth.user.company_id);
-        formData.append('cost_center_id', auth.user.cost_center_id);
-        formData.append('customer_id', customer?.id);
-        if(transactionType){
-            formData.append('transaction_type_id', transactionType);
+        if(selectedCostCenter){
+            formData.append('cost_center_id', selectedCostCenter.id);
+        }else{
+            formData.append('cost_center_id', auth.user.cost_center_id);
         }
         formData.append('toDate', toDateStr);
         formData.append('fromDate', fromDateStr);
 
         transactionsMutate(formData);
-        console.log(formData)
         setTransactionsReload(false)
     }
 
     useEffect(() => {
         loadTransactionsData();
-    }, [customer, fromDate, toDate, transactionType]);
+    }, [ selectedCostCenter,fromDate, toDate]);
 
 
     useEffect(() => {
@@ -194,10 +193,10 @@ export default function Index() {
 
     const handleSearch = (text) => {
         setQuery(text);
-        const filtered = (transactionsData?.data?.transactions).filter((item) =>
-            item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
-        );
-        setFilteredList(filtered);
+        // const filtered = (transactionsData?.data?.transactions).filter((item) =>
+        //     item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
+        // );
+        // setFilteredList(filtered);
     };
 
     const handleClearSelection = () => {
@@ -241,16 +240,16 @@ export default function Index() {
                     />
                 </View>
                 <View>
-                    {!isCustomerLoading && <DropDownFlashList
-                        data={customersData?.data}
+                    {!costCenter.isLoading && costCenter?.data?.data?.length > 0 && <DropDownFlashList
+                        data={costCenter?.data?.data}
                         inputLabel="Select Cost Center"
                         headerTitle="Showing list of cost-center"
-                        onSelect={(contactObj) => {
-                            setCustomer(contactObj);
+                        onSelect={(selectedCostCenter) => {
+                            setSelectedCostCenter(selectedCostCenter);
                         }}
                         isTransparent={true}
-                        filterEnabled={true}
-                        selectedItemName={customer?.name || ""}
+                        filterEnabled={false}
+                        selectedItemName={selectedCostCenter?.name || ""}
                     />}
                     <View className={"mt-2"}/>
                 </View>
@@ -278,7 +277,7 @@ export default function Index() {
                         className={"bg-white border-2 border-slate-200 h-10"}
                     />
                 </View>
-                <View style={{flex: 1, height: '100%'}}>
+                <View style={{flex: 1, height: '100%', width: '100%'}}>
                     {transactionsLoading
                         ? <ActivityIndicator/>
                         : <FlashList
