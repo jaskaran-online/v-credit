@@ -185,8 +185,7 @@ const FlatListDropDown = ({navigation}) => {
         formData.append('transaction_type_id', 1);
         formData.append('qty', qty);
         formData.append('user_id', auth?.user?.id);
-        console.log(formData)
-        // request(formData);
+        request(formData);
     }
 
     return (
