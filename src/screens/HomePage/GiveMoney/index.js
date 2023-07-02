@@ -193,7 +193,6 @@ const FlatListDropDown = ({navigation}) => {
         formData.append('transaction_type_id', 1);
         formData.append('qty', qty);
         formData.append('user_id', auth?.user?.id);
-        console.log(formData)
         request(formData);
     }
 
@@ -215,7 +214,7 @@ const FlatListDropDown = ({navigation}) => {
                         data={products}
                         inputLabel="Select Product (Optional)"
                         headerTitle="List of products"
-                        onSelect={(product) => handlePriceChange(product?.price)}
+                        onSelect={(product) => handlePriceChange(parseFloat(product?.price).toFixed(4))}
                     />
                 </View>}
                 <View className={"flex flex-row gap-2 mt-0 -z-30"}>

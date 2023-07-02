@@ -88,7 +88,7 @@ const EditTransaction = ({navigation, route}) => {
             if (transactionData !== null || transactionData?.data !== undefined) {
                 setPrice(transactionData?.data?.price || 0);
                 setQty(transactionData?.data?.qty || 0);
-                setAmount(transactionData?.data?.amount || 0);
+                setAmount(parseFloat(transactionData?.data?.amount).toFixed(4) || 0);
                 setNote(transactionData?.data?.notes || '');
             }
         }
@@ -148,7 +148,7 @@ const EditTransaction = ({navigation, route}) => {
 
 
     useEffect(() => {
-        setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toPrecision(4));
+        setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(4));
     }, [price, qty]);
 
     if (isPaymentSuccess) {

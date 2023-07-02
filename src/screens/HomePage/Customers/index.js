@@ -10,11 +10,19 @@ import { useFocusEffect } from "@react-navigation/native";
 
 const renderItem = ({item, index}) => {
 
-    const  toPay = item?.toPay || 0;
-    const toReceive = item?.toReceive || 0;
+    const  toPay = parseFloat(item?.toPay || 0);
+    const toReceive = parseFloat(item?.toReceive || 0);
 
-    if(toPay == 0 && toReceive == 0){
-        return null;
+    let balance = 0;
+    let color = "text-slate-300";
+    if(toReceive > toPay){
+        balance = toReceive - toPay;
+        color = "text-green-700";
+    }else if( toReceive < toPay){
+        balance = toPay - toReceive
+        color = "text-red-400";
+    }else{
+        color = "text-slate-300";
     }
 
     return (<View
@@ -31,12 +39,7 @@ const renderItem = ({item, index}) => {
             name: item.customer?.name
         })}>
             <View className={"mr-3"}>
-                <Text variant="bodySmall" className="text-red-400">Given</Text>
-                <Text variant={"bodyMedium"} className="text-slate-400">{(toReceive.toFixed(2))} ₹</Text>
-            </View>
-            <View>
-                <Text variant="bodySmall" className="text-green-600">Received</Text>
-                <Text variant={"bodyMedium"} className="text-slate-400">{toPay.toFixed(2)} ₹</Text>
+                <Text variant={"bodyMedium"} className={color}>{(balance).toFixed(2) } ₹</Text>
             </View>
         </TouchableOpacity>
     </View>);
@@ -65,8 +68,6 @@ export default function Index() {
         formData.append('company_id', auth?.user.company_id);
         formData.append('user_id', auth?.user.id);
         mutate(formData);
-        console.log("Customer Data")
-        console.log(formData)
         setReload(false)
     }
 

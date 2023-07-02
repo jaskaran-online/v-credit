@@ -228,7 +228,7 @@ const TakePayment = ({navigation}) => {
                         data={products}
                         inputLabel="Select Product"
                         headerTitle="List of products"
-                        onSelect={(product) => handlePriceChange(product?.price)}
+                        onSelect={(product) => handlePriceChange(parseFloat(product?.price || 0).toFixed(4))}
                     />
                 </View>}
                 <View className={"flex flex-row gap-2 mt-0 -z-30"}>
