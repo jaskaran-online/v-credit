@@ -10,8 +10,8 @@ import { useFocusEffect } from "@react-navigation/native";
 
 const renderItem = ({item, index}) => {
 
-    const  toPay = parseFloat(item?.toPay || 0);
-    const toReceive = parseFloat(item?.toReceive || 0);
+    const  toPay = parseFloat(item?.toPay || 0).toFixed(2);
+    const toReceive = parseFloat(item?.toReceive || 0).toFixed(2);
 
     let balance = 0;
     let color = "text-slate-300";

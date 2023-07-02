@@ -5,10 +5,11 @@ import { withTheme } from "react-native-paper";
 import { TabNavigator } from "../Components/TabNavigator";
 import { TwoCards } from "../Components/TwoCards";
 import {useCustomerTransactionData, useTotalTransactionData} from "../../apis/useApi";
-import {useCallback, useEffect} from "react";
+import {memo, useCallback, useEffect} from "react";
 import {useAuth} from "../../hooks";
 import { focusManager } from '@tanstack/react-query'
 import {useFocusEffect} from "@react-navigation/native";
+import FloatingButtons from "../Components/FloatingButton";
 
 function Index({navigation}) {
     useFocusEffect(
@@ -48,32 +49,3 @@ function Index({navigation}) {
 }
 
 export default withTheme(Index);
-
-export function FloatingButtons({navigation}) {
-  return (
-    <View
-      className={
-        "absolute bottom-10 flex w-full flex-row justify-evenly space-x-2 px-4 "
-      }
-    >
-      <View className={"flex-1"}>
-        <Button
-          mode={"contained"}
-          onPress={() => navigation.navigate("TakeMoney")}
-          className={"bg-sky-500 shadow shadow-slate-300"}
-        >
-          Take Payment
-        </Button>
-      </View>
-      <View className={"flex-1"}>
-        <Button
-          mode={"contained"}
-          onPress={() => navigation.navigate("GiveMoney")}
-          className={"bg-amber-500 shadow shadow-slate-300"}
-        >
-          Give Credit
-        </Button>
-      </View>
-    </View>
-  );
-}

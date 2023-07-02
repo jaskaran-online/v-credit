@@ -38,7 +38,7 @@ function convertDateFormat(dateString) {
     return `${convertedDate} ${convertedTime}`;
 }
 
-const FlatListDropDown = ({navigation}) => {
+const FlatListDropDown = ({navigation, route}) => {
     const auth = useAuth.use?.token();
     const {mutate: productRequest, isLoading ,data: products, isSuccess: isProductsSuccess, error : productsError, isErrorProduct} = useProductsApi();
     const {mutate: request, data: paymentApiResponse, isSuccess: isPaymentSuccess, error : paymentError, isError} = usePaymentApi();
@@ -63,7 +63,7 @@ const FlatListDropDown = ({navigation}) => {
     const [contacts, setContacts] = useState([]);
     const [visible, setVisible] = useState(false);
 
-    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [selectedCustomer, setSelectedCustomer] = useState(route.params?.customer);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [qty, setQty] = useState(1);
     const [price, setPrice] = useState(0);
@@ -147,23 +147,25 @@ const FlatListDropDown = ({navigation}) => {
     };
 
     const onFormSubmit = () => {
-        let phoneNumber = null;
-
-        if(selectedCustomer == null){
-            showToast("Please Select Customer", 'error');
+        let phoneNumber = route?.params?.customer?.phone || null;
+        console.log(phoneNumber)
+        if (selectedCustomer === null) {
+            showToast("Please Select Customer", "error");
             return false;
         }
 
-        if (!selectedCustomer?.phoneNumbers) {
+        if (!selectedCustomer?.phoneNumbers && phoneNumber === null) {
             showToast("The contact you selected doesn't have a mobile number!", 'error');
             return false;
         }
 
-        const phoneNumberObject = selectedCustomer.phoneNumbers[0];
-        if (phoneNumberObject?.number) {
-            phoneNumber = phoneNumberObject.number;
-        } else if (phoneNumberObject?.digits) {
-            phoneNumber = phoneNumberObject.digits;
+        if(phoneNumber == null){
+            const phoneNumberObject = selectedCustomer?.phoneNumbers[0];
+            if (phoneNumberObject?.number) {
+                phoneNumber = phoneNumberObject.number;
+            } else if (phoneNumberObject?.digits) {
+                phoneNumber = phoneNumberObject.digits;
+            }
         }
 
         if(price == 0 || qty == 0){
@@ -207,6 +209,7 @@ const FlatListDropDown = ({navigation}) => {
                     onSelect={(contactObj) => {
                         setSelectedCustomer(contactObj);
                     }}
+                    selectedItemName={selectedCustomer?.name}
                     filterEnabled={true}
                 />
                 {!isLoading && <View className={"mt-2 -z-10"}>

@@ -34,8 +34,7 @@ function convertDateFormat(dateString) {
     return `${convertedDate} ${convertedTime}`;
 }
 
-
-const TakePayment = ({navigation}) => {
+const TakePayment = ({navigation, route}) => {
     const auth = useAuth.use?.token();
     const {
         mutate: request,
@@ -60,7 +59,7 @@ const TakePayment = ({navigation}) => {
     const [note, setNote] = useState("");
     const [price, setPrice] = useState(1);
     const [qty, setQty] = useState(1);
-    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [selectedCustomer, setSelectedCustomer] = useState(route.params?.customer);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [visible, setVisible] = useState(false);
 
@@ -124,7 +123,6 @@ const TakePayment = ({navigation}) => {
 
     const handleCameraCapture = async () => {
         const {status: cameraStatus} = await Camera.requestCameraPermissionsAsync();
-        console.log({cameraStatus});
         if (cameraStatus === 'granted') {
             const photo = await ImagePicker.launchCameraAsync();
             if (!photo?.cancelled) {
@@ -148,22 +146,25 @@ const TakePayment = ({navigation}) => {
         }
     };
     const onFormSubmit = () => {
-        let phoneNumber = null;
+        let phoneNumber = route?.params?.customer?.phone || null;
+
         if (selectedCustomer === null) {
             showToast("Please Select Customer", "error");
             return false;
         }
 
-        if (!selectedCustomer?.phoneNumbers) {
+        if (!selectedCustomer?.phoneNumbers && phoneNumber === null) {
             showToast("The contact you selected doesn't have a mobile number!", 'error');
             return false;
         }
 
-        const phoneNumberObject = selectedCustomer.phoneNumbers[0];
-        if (phoneNumberObject?.number) {
-            phoneNumber = phoneNumberObject.number;
-        } else if (phoneNumberObject?.digits) {
-            phoneNumber = phoneNumberObject.digits;
+        if(phoneNumber == null){
+            const phoneNumberObject = selectedCustomer?.phoneNumbers[0];
+            if (phoneNumberObject?.number) {
+                phoneNumber = phoneNumberObject.number;
+            } else if (phoneNumberObject?.digits) {
+                phoneNumber = phoneNumberObject.digits;
+            }
         }
 
 
@@ -221,6 +222,7 @@ const TakePayment = ({navigation}) => {
                     inputLabel="Select Customer"
                     headerTitle="Showing contact from Phonebook"
                     onSelect={handleContactSelect}
+                    selectedItemName={selectedCustomer?.name}
                     filterEnabled={true}
                 />
                 {!isLoading && <View className={"mt-2 -z-10"}>

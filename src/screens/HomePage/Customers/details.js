@@ -8,10 +8,11 @@ import {
     MaterialIcons,
 } from "@expo/vector-icons";
 
-import {FloatingButtons} from "./../index"
+
 import {useCustomerTransactionData} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
 import {renderHeader} from "../../../core/utils";
+import FloatingButtons from "../../Components/FloatingButton";
 
 const makePhoneCall = (phoneNumber) => {
     const url = `tel:${phoneNumber}`;
@@ -161,7 +162,6 @@ export default function Index({navigation, route}) {
         mutate(formData);
         setReload(false);
     }
-console.log(data)
     const handleSelect = (item) => {
         setSelectedItem(item);
     };
@@ -294,7 +294,7 @@ console.log(data)
                     onOptionSelect={handleOptionSelect}
                 />
             )}
-            <FloatingButtons navigation={navigation}/>
+            <FloatingButtons navigation={navigation} customer={data?.data?.customer}/>
         </View>
     );
 }
