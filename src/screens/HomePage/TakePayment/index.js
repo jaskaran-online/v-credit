@@ -107,7 +107,7 @@ const TakePayment = ({navigation}) => {
     }, []);
 
     useEffect(() => {
-        setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toPrecision(4));
+        setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(4));
     }, [price, qty]);
 
     if (isPaymentSuccess) {
@@ -148,15 +148,24 @@ const TakePayment = ({navigation}) => {
         }
     };
     const onFormSubmit = () => {
+        let phoneNumber = null;
         if (selectedCustomer === null) {
             showToast("Please Select Customer", "error");
             return false;
         }
 
-        if(selectedCustomer?.phoneNumbers === undefined){
-            showToast("Contact you selected doesn't have mobile number!", 'error');
+        if (!selectedCustomer?.phoneNumbers) {
+            showToast("The contact you selected doesn't have a mobile number!", 'error');
             return false;
         }
+
+        const phoneNumberObject = selectedCustomer.phoneNumbers[0];
+        if (phoneNumberObject?.number) {
+            phoneNumber = phoneNumberObject.number;
+        } else if (phoneNumberObject?.digits) {
+            phoneNumber = phoneNumberObject.digits;
+        }
+
 
         if(price == 0 || qty == 0){
             showToast("Please check price and qty", 'error');
@@ -176,7 +185,7 @@ const TakePayment = ({navigation}) => {
             });
         }
         formData.append("notes", note);
-        formData.append("phone", selectedCustomer?.phoneNumbers[0]?.number || null);
+        formData.append("phone", phoneNumber);
         formData.append("phone_id", selectedCustomer?.id);
         if(selectedProduct){
             formData.append('product_id', selectedProduct?.id);

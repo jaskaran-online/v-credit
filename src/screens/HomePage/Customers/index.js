@@ -27,16 +27,16 @@ const renderItem = ({item, index}) => {
             <Text variant={"labelSmall"} className="text-slate-400">{item?.customer?.created_at}</Text>
         </TouchableOpacity>
         <TouchableOpacity className={"flex flex-row justify-center items-center"}  onPress={() => navigation.navigate('CustomerTransactionDetails', {
-            id: item?.id,
-            name: item?.name
+            id: item.customer?.id,
+            name: item.customer?.name
         })}>
             <View className={"mr-3"}>
                 <Text variant="bodySmall" className="text-red-400">Given</Text>
-                <Text variant={"bodyMedium"} className="text-slate-400">{(toReceive.toPrecision(2))} ₹</Text>
+                <Text variant={"bodyMedium"} className="text-slate-400">{(toReceive.toFixed(2))} ₹</Text>
             </View>
             <View>
                 <Text variant="bodySmall" className="text-green-600">Received</Text>
-                <Text variant={"bodyMedium"} className="text-slate-400">{toPay.toPrecision(2)} ₹</Text>
+                <Text variant={"bodyMedium"} className="text-slate-400">{toPay.toFixed(2)} ₹</Text>
             </View>
         </TouchableOpacity>
     </View>);

@@ -147,15 +147,23 @@ const FlatListDropDown = ({navigation}) => {
     };
 
     const onFormSubmit = () => {
+        let phoneNumber = null;
 
         if(selectedCustomer == null){
             showToast("Please Select Customer", 'error');
             return false;
         }
 
-        if(selectedCustomer?.phoneNumbers === undefined){
-            showToast("Contact you selected doesn't have mobile number!", 'error');
+        if (!selectedCustomer?.phoneNumbers) {
+            showToast("The contact you selected doesn't have a mobile number!", 'error');
             return false;
+        }
+
+        const phoneNumberObject = selectedCustomer.phoneNumbers[0];
+        if (phoneNumberObject?.number) {
+            phoneNumber = phoneNumberObject.number;
+        } else if (phoneNumberObject?.digits) {
+            phoneNumber = phoneNumberObject.digits;
         }
 
         if(price == 0 || qty == 0){
@@ -177,7 +185,7 @@ const FlatListDropDown = ({navigation}) => {
         }
         formData.append('notes', note);
         formData.append('price', price);
-        formData.append('phone',  selectedCustomer?.phoneNumbers[0]?.digits || null);
+        formData.append('phone',  phoneNumber);
         formData.append('phone_id', selectedCustomer?.id);
         if(selectedProduct){
             formData.append('product_id', selectedProduct?.id);
@@ -185,6 +193,7 @@ const FlatListDropDown = ({navigation}) => {
         formData.append('transaction_type_id', 1);
         formData.append('qty', qty);
         formData.append('user_id', auth?.user?.id);
+        console.log(formData)
         request(formData);
     }
 

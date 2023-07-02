@@ -242,7 +242,6 @@ const EditTransaction = ({navigation, route}) => {
     };
 
     const handleDateChange = (d) => setInputDate(d);
-
     return (
         <View className={"flex-1 bg-white"}>
             <KeyboardAvoidingView
