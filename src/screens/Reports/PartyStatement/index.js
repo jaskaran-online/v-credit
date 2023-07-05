@@ -8,13 +8,15 @@ import {styled} from "nativewind";
 import {DatePickerInput} from 'react-native-paper-dates';
 import { TwoCards } from '../../Components/TwoCards';
 import {useAuth} from "../../../hooks";
-import {usePartyStatement} from "../../../apis/useApi";
+import {useCustomersData, usePartyStatement} from "../../../apis/useApi";
 import {renderHeader, renderItem} from "../../../core/utils";
+import DropDownFlashList from "../../Components/dropDownFlashList";
 
 export default function Index() {
 
     const auth = useAuth.use?.token();
     const {mutate, data : dailyBookData, isLoading} = usePartyStatement();
+    const {mutate: customerMutate, data: customersData, isLoading: isCustomerLoading, error} = useCustomersData();
     const [reload, setReload] = useState(false);
 
     const [filteredList, setFilteredList] = useState([]);
@@ -23,6 +25,8 @@ export default function Index() {
     const [query, setQuery] = useState("");
     const [fromDate, setFromDate] = useState(new Date(new Date().setMonth(new Date().getMonth() - 1)));
     const [toDate, setToDate] = useState(new Date());
+    const [customersList, setCustomersList] = useState([]);
+    const [customer, setCustomer] = useState(null);
 
     function dateFormat(date){
         const year = date.getFullYear();
@@ -37,10 +41,13 @@ export default function Index() {
         const formData = new FormData();
         formData.append('company_id', auth.user.company_id);
         formData.append('cost_center_id', auth.user.cost_center_id);
+        if(customer){
+            formData.append('customer_id', customer?.id);
+        }
         formData.append('toDate', toDateStr);
         formData.append('fromDate', fromDateStr);
 
-        formData.append('user_id', auth.user.id);
+        // formData.append('user_id', auth.user.id);
         mutate(formData);
         setReload(false)
     }
@@ -51,7 +58,26 @@ export default function Index() {
 
     useEffect(() => {
         loadCustomerData();
-    }, [toDate,fromDate]);
+    }, [toDate, fromDate, customer]);
+
+    useEffect(() => {
+        if(customersData?.data){
+            let customers = (customersData?.data).map(item => item.customer);
+            setCustomersList(customers);
+        }
+    }, [customersData]);
+
+    function fetchCustomers() {
+        const formData = new FormData();
+        formData.append('cost_center_id', auth?.user.cost_center_id);
+        formData.append('company_id', auth?.user.company_id);
+        // formData.append('user_id', auth?.user.id);
+        customerMutate(formData);
+    }
+
+    useEffect(() => {
+        fetchCustomers();
+    }, []);
 
     const handleSearch = (text) => {
         setQuery(text);
@@ -126,6 +152,19 @@ export default function Index() {
                     mode={"outlined"}
                     className={"bg-blue-50 mx-1"}
                 />
+            </View>
+            <View>
+                {(customersList.length > 0) && <DropDownFlashList
+                    data={customersList}
+                    inputLabel="Parties"
+                    headerTitle="Showing contact from Phonebook"
+                    onSelect={(contactObj) => {
+                        setCustomer(contactObj);
+                    }}
+                    isTransparent={true}
+                    filterEnabled={true}
+                    selectedItemName={customer?.name || ""}
+                />}
             </View>
             <TwoCards toReceive={dailyBookData?.data?.totalOfTransactions?.toReceive} toPay={dailyBookData?.data?.totalOfTransactions?.toPay} />
         </StyledView>

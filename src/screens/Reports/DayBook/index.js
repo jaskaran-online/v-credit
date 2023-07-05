@@ -59,7 +59,7 @@ function DayBook() {
     formData.append('company_id', auth.user.company_id);
     formData.append('cost_center_id', auth.user.cost_center_id);
     formData.append('date', dateString);
-    formData.append('user_id', auth.user.id);
+    // formData.append('user_id', auth.user.id);
     mutate(formData);
     setReload(false)
   }

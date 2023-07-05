@@ -22,7 +22,11 @@ export default function Index() {
     const [showOptions, setShowOptions] = useState("");
     const [query, setQuery] = useState("");
     const [customer, setCustomer] = useState("");
-    const [inputDate, setInputDate] = useState(new Date());
+    const [inputDate, setInputDate] = useState(() => {
+        const currentDate = new Date();
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        return currentDate;
+    });
     const [customersList, setCustomersList] = useState([]);
 
     useEffect(() => {
@@ -36,7 +40,7 @@ export default function Index() {
         const formData = new FormData();
         formData.append('cost_center_id', auth?.user.cost_center_id);
         formData.append('company_id', auth?.user.company_id);
-        formData.append('user_id', auth?.user.id);
+        // formData.append('user_id', auth?.user.id);
         customerMutate(formData);
     }
 
@@ -56,9 +60,12 @@ export default function Index() {
         const formData = new FormData();
         formData.append('company_id', auth.user.company_id);
         formData.append('cost_center_id', auth.user.cost_center_id);
-        formData.append('customer_id', customer?.id);
+        if(customer){
+            formData.append('customer_id', customer?.id);
+        }
         formData.append('date', dateString);
         allPartiesMutate(formData);
+        console.log(formData)
         setPartyReload(false)
     }
 

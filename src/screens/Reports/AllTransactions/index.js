@@ -65,7 +65,9 @@ export default function Index() {
         const formData = new FormData();
         formData.append('company_id', auth.user.company_id);
         formData.append('cost_center_id', auth.user.cost_center_id);
-        formData.append('customer_id', customer?.id);
+        if(customer){
+            formData.append('customer_id', customer?.id);
+        }
         if(transactionType){
             formData.append('transaction_type_id', transactionType);
         }
