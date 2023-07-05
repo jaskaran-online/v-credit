@@ -148,7 +148,6 @@ const FlatListDropDown = ({navigation, route}) => {
 
     const onFormSubmit = () => {
         let phoneNumber = route?.params?.customer?.phone || null;
-        console.log(phoneNumber)
         if (selectedCustomer === null) {
             showToast("Please Select Customer", "error");
             return false;

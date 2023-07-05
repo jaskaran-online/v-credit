@@ -195,8 +195,6 @@ const TakePayment = ({navigation, route}) => {
         formData.append("qty", qty);
         formData.append("transaction_type_id", 2);
         formData.append("user_id", auth?.user?.id);
-        // console.log(formData)
-        // console.log(selectedCustomer)
         request(formData);
     };
 

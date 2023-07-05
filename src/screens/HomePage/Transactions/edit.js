@@ -77,8 +77,7 @@ const EditTransaction = ({navigation, route}) => {
         setSelectedCustomer(transaction?.customer);
         // let imageURI = `http://mycreditbook.com/images/${transaction?.image}`;
         // setImageUri(imageURI)
-        let transactionType = TRANS_TYPES.filter(x => x.id === transaction.transaction_type_id)
-        console.log({transactionType})
+        let transactionType = TRANS_TYPES.filter(x => x.id === transaction.transaction_type_id);
         setTransactionType(transactionType[0])
         loadTransactionData();
     }, [route.params?.transaction]);

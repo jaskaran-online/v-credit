@@ -33,6 +33,7 @@
     "expo-splash-screen": "~0.18.2",
     "expo-status-bar": "~1.4.4",
     "expo-updates": "~0.16.4",
+    "lodash": "^4.17.21",
     "nativewind": "^2.0.11",
     "patch-package": "^7.0.0",
     "react": "18.2.0",

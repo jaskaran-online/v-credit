@@ -1,28 +1,27 @@
 import {View, TouchableOpacity, ActivityIndicator} from 'react-native';
 import {FlashList} from "@shopify/flash-list";
 import {List, Text, Divider} from 'react-native-paper'
-
+import _ from 'lodash';
 import navigation from '../../../navigations/index'
 import {useCustomersData} from "../../../apis/useApi";
 import {useCallback, useEffect, useState} from "react";
 import {useAuth} from "../../../hooks";
 import { useFocusEffect } from "@react-navigation/native";
+import {useFilterToggleStore} from "../../Components/TwoCards";
 
 const renderItem = ({item, index}) => {
 
-    const  toPay = parseFloat(item?.toPay || 0).toFixed(2);
-    const toReceive = parseFloat(item?.toReceive || 0).toFixed(2);
+    const toPay = parseFloat((item?.toPay || 0).toFixed(2));
+    const toReceive = parseFloat((item?.toReceive || 0).toFixed(2));
 
     let balance = 0;
-    let color = "text-slate-300";
+    let color = "text-slate-400";
     if(toReceive > toPay){
         balance = toReceive - toPay;
         color = "text-green-700";
     }else if( toReceive < toPay){
         balance = toPay - toReceive
         color = "text-red-400";
-    }else{
-        color = "text-slate-300";
     }
 
     return (<View
@@ -39,14 +38,13 @@ const renderItem = ({item, index}) => {
             name: item.customer?.name
         })}>
             <View className={"mr-3"}>
-                <Text variant={"bodyMedium"} className={color}>{(balance).toFixed(2) } ₹</Text>
+                <Text variant={"bodyMedium"} className={`${color} `}>{(balance).toFixed(2) } ₹</Text>
             </View>
         </TouchableOpacity>
     </View>);
 };
 
 export default function Index() {
-
     useFocusEffect(
         useCallback(() => {
             loadCustomerData();
@@ -60,6 +58,19 @@ export default function Index() {
     const {mutate, data, isLoading, error} = useCustomersData();
     const [reload, setReload] = useState(false);
     const auth = useAuth?.use?.token();
+
+    const filterBy = useFilterToggleStore(state => state.filterBy);
+    const [orderedData, setOrderedData] = useState([]);
+    useEffect(() => {
+        if(data?.data){
+            if(filterBy !== "none"){
+                const orderedArray = _.orderBy(data?.data, ['type'], [filterBy === "toReceive" ? 'desc' : 'asc']);
+                setOrderedData(orderedArray);
+            }else{
+                setOrderedData(data?.data);
+            }
+        }
+    }, [filterBy, data, isLoading]);
 
     function loadCustomerData(){
         setReload(true)
@@ -80,7 +91,7 @@ export default function Index() {
             {isLoading && !data ? <View className={"flex-1 justify-center"}>
                 <ActivityIndicator/>
             </View> : <FlashList
-                data={data?.data}
+                data={orderedData}
                 renderItem={renderItem}
                 estimatedItemSize={200}
                 refreshing={reload}

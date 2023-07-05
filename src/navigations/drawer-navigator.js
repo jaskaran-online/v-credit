@@ -22,7 +22,7 @@ function CustomDrawerContent(props) {
 
     const signOut = useAuth.use.signOut();
     const auth = useAuth.use?.token();
-    console.log(auth?.user?.name)
+
     return (
         <View style={{flex: 1, backgroundColor: COLORS.white}}>
             <DrawerContentScrollView {...props}>
