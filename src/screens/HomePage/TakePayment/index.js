@@ -62,12 +62,32 @@ const TakePayment = ({navigation, route}) => {
     const [selectedCustomer, setSelectedCustomer] = useState(route.params?.customer);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [visible, setVisible] = useState(false);
+    const [contactMobileNumbers, setContactMobileNumbers] = useState([]);
+    const [contactSelectedMobileNumber  , setContactSelectedMobileNumber ] = useState(null);
 
     useEffect(() => {
         const formData = new FormData();
         formData.append('company_id', auth?.user?.company_id);
         productRequest(formData)
     }, []);
+
+    useEffect(() => {
+        if(selectedCustomer?.phoneNumbers){
+            const updatedData = (selectedCustomer?.phoneNumbers).map(obj => {
+                return {
+                    ...obj,
+                    name: obj.digits
+                };
+            });
+            setContactMobileNumbers(updatedData);
+        }
+    }, [selectedCustomer]);
+
+    useEffect(() => {
+        if(contactMobileNumbers.length === 1){
+            setContactSelectedMobileNumber(contactMobileNumbers[0]?.digits);
+        }
+    }, [contactMobileNumbers]);
 
     useEffect(() => {
         if (isError) {
@@ -209,7 +229,6 @@ const TakePayment = ({navigation, route}) => {
     const handleContactSelect = (contactObj) => {
         setSelectedCustomer(contactObj);
     };
-
     const handleDateChange = (d) => setInputDate(d);
     return (
         <View className={"flex-1 bg-white"}>
@@ -223,6 +242,16 @@ const TakePayment = ({navigation, route}) => {
                     selectedItemName={selectedCustomer?.name}
                     filterEnabled={true}
                 />
+                {contactMobileNumbers && <View className={"mt-2 -z-10"}>
+                    <DropDownFlashList
+                        data={contactMobileNumbers}
+                        inputLabel={contactSelectedMobileNumber ? "Selected Mobile Number" : "Select Mobile Number"}
+                        headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
+                        onSelect={(product) => handlePriceChange(parseFloat(product?.price || 0).toFixed(4))}
+
+                    />
+                </View>}
+
                 {!isLoading && <View className={"mt-2 -z-10"}>
                     <DropDownFlashList
                         data={products}
