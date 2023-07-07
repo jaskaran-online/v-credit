@@ -274,7 +274,6 @@ const GivePayment = ({navigation, route}) => {
         return processedString;
     }
 
-    console.log({contactSelectedMobileNumber, contactMobileNumbers})
     return (
         <View className={"flex-1 bg-white"}>
             <KeyboardAvoidingView

@@ -13,6 +13,7 @@ import {useCustomerTransactionData} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
 import {renderHeader} from "../../../core/utils";
 import FloatingButtons from "../../Components/FloatingButton";
+import _ from "lodash";
 
 const makePhoneCall = (phoneNumber) => {
     const url = `tel:${phoneNumber}`;
@@ -119,23 +120,43 @@ const renderItem = ({item, index}) => (
 export default function Index({navigation, route}) {
     const auth = useAuth.use?.token();
     const {mutate, data, isLoading} = useCustomerTransactionData();
+    const [orderedData, setOrderedData] = useState([]);
+    const [filterBy, setFilteredBy] = useState("Clear");
+
+    useEffect(() => {
+        if(data?.data){
+            if(filterBy === "Clear"){
+                setOrderedData(data?.data?.transactions);
+            }else{
+                const orderedArray = _.orderBy(data?.data?.transactions, ['transaction_type_id'], [filterBy === "Payment Received" ? 'desc' : 'asc']);
+                setOrderedData(orderedArray);
+            }
+        }
+    }, [filterBy, data, isLoading]);
+
+    useEffect(() => {
+        setFilteredList(orderedData);
+    }, [orderedData]);
 
     useEffect(() => {
         loadCustomerData();
     }, []);
 
     useEffect(() => {
-        setFilteredList(data?.data?.transactions);
-    }, [data]);
-
+        setFilteredList(orderedData);
+    }, [orderedData]);
 
     const options = [
-        {label: "Credit Given", onPress: handleClearSelection},
+        { label: "Credit Given", onPress: () => setFilteredBy("Credit Given") },
         {
             label: "Payment Received",
-            onPress: handleDeleteSelectedItem,
+            onPress: () => setFilteredBy("Payment Received"),
         },
-        {label: "Clear", onPress: handleEditSelectedItem},
+        { label: "Clear", onPress: () => {
+                setFilteredBy("Clear");
+                setShowOptions(false);
+            }
+        },
     ];
 
     const [filteredList, setFilteredList] = useState([]);
@@ -162,27 +183,8 @@ export default function Index({navigation, route}) {
         mutate(formData);
         setReload(false);
     }
-    const handleSelect = (item) => {
-        setSelectedItem(item);
-    };
-
     const handleOptionSelect = (show) => {
         setShowOptions((show) => !show);
-    };
-
-    const handleClearSelection = () => {
-        setSelectedItem(null);
-    };
-
-    const handleDeleteSelectedItem = () => {
-        const filtered = filteredList.filter((item) => item.id !== selectedItem.id);
-        setFilteredList(filtered);
-        setSelectedItem(null);
-    };
-
-    const handleEditSelectedItem = () => {
-        console.log("Edit selected item:", selectedItem);
-        setSelectedItem(null);
     };
 
     const toReceive =  data?.data?.toReceive || 0;
@@ -267,7 +269,7 @@ export default function Index({navigation, route}) {
                                 key={index}
                                 onPress={value.onPress}
                                 className={
-                                    value.label === "Clear" ? "bg-slate-200" : "bg-white"
+                                    value.label === filterBy ? "bg-slate-200" : "bg-white"
                                 }
                             >
                                 <Text variant={"labelLarge"} className={"pl-2 pr-4 py-2"}>
@@ -284,8 +286,6 @@ export default function Index({navigation, route}) {
                     renderItem={({ item, index }) => renderItem({ item, index, userId: auth.user.id })}
                     ListHeaderComponent={renderHeader}
                     estimatedItemSize={200}
-                    onSearch={handleSearch}
-                    onSelect={handleSelect}
                     selected={selectedItem}
                     showOptions={showOptions}
                     options={options}
