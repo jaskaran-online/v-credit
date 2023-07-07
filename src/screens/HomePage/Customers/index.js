@@ -64,11 +64,11 @@ export default function Index() {
 
     useEffect(() => {
         if(data?.data){
-            if(filterBy !== "none"){
+            if(filterBy === "none"){
+                setOrderedData(data?.data);
+            }else{
                 const orderedArray = _.orderBy(data?.data, ['type'], [filterBy === "toReceive" ? 'desc' : 'asc']);
                 setOrderedData(orderedArray);
-            }else{
-                setOrderedData(data?.data);
             }
         }
     }, [filterBy, data, isLoading]);

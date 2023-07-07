@@ -8,24 +8,34 @@ import {
     MaterialIcons,
 } from "@expo/vector-icons";
 
-
 import {useCustomerTransactionData} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
 import {renderHeader} from "../../../core/utils";
 import FloatingButtons from "../../Components/FloatingButton";
 import _ from "lodash";
 
+function processString(input = null) {
+    if(input == null || input === "" || input === "null"){
+        return "";
+    }
+    // Remove "-", ",", and spaces from the string
+    let processedString = input.replace(/[-,\s]/g, '');
+
+    // If the resulting string has a length greater than 10, remove the first three letters
+    if (processedString.length > 10) {
+        processedString = processedString.substring(3);
+    }
+
+    return processedString;
+}
+
 const makePhoneCall = (phoneNumber) => {
-    const url = `tel:${phoneNumber}`;
+    const url = `tel:${processString(phoneNumber)}`;
     Linking.canOpenURL(url)
         .then((supported) => {
-            if (supported) {
-                return Linking.openURL(url);
-            } else {
-                alert("Phone call not supported");
-            }
+            return Linking.openURL(url);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
 };
 
 const sendWhatsApp = (phoneWithCountryCode) => {
