@@ -20,7 +20,9 @@ function DropDownFlashList({
     const [filteredContacts, setFilteredContacts] = useState(data);
 
     useEffect(() => {
-        setFilteredContacts(data);
+        if(data){
+            setFilteredContacts(data);
+        }
     }, [data]);
 
     const [value, setValue] = useState(selectedItemName);
@@ -116,7 +118,7 @@ function DropDownFlashList({
                     height: "100%"
                 }}
                 renderItem={renderItem}
-                keyExtractor={(value, index) => index}
+                keyExtractor={(itemValue, index) => index}
                 ItemSeparatorComponent={renderSeparator}
                 ListHeaderComponent={renderHeader}
 

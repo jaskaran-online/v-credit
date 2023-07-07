@@ -9,7 +9,7 @@ import {MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
 import {Camera} from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import {getItem, setItem} from "../../../core/utils";
-import {usePaymentApi, useProductsApi} from "../../../apis/useApi";
+import {useCustomersData, usePaymentApi, useProductsApi} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
 import Toast from "react-native-toast-message";
 
@@ -51,6 +51,12 @@ const TakePayment = ({navigation, route}) => {
         error: productsError,
         isErrorProduct
     } = useProductsApi();
+    const {
+        mutate: customerRequest,
+        data: customerData,
+        isLoading: isLoadingCustomer,
+        customerError
+    } = useCustomersData();
 
     const [amount, setAmount] = useState(0);
     const [contacts, setContacts] = useState([]);
@@ -64,8 +70,10 @@ const TakePayment = ({navigation, route}) => {
     const [visible, setVisible] = useState(false);
     const [contactMobileNumbers, setContactMobileNumbers] = useState([]);
     const [contactSelectedMobileNumber  , setContactSelectedMobileNumber ] = useState(null);
+    const [combinedContacts  , setCombinedContacts ] = useState([]);
 
     useEffect(() => {
+        loadCustomerData();
         const formData = new FormData();
         formData.append('company_id', auth?.user?.company_id);
         productRequest(formData)
@@ -76,7 +84,7 @@ const TakePayment = ({navigation, route}) => {
             const updatedData = (selectedCustomer?.phoneNumbers).map(obj => {
                 return {
                     ...obj,
-                    name: obj.digits
+                    name: processString(obj.digits)
                 };
             });
             setContactMobileNumbers(updatedData);
@@ -85,7 +93,7 @@ const TakePayment = ({navigation, route}) => {
 
     useEffect(() => {
         if(contactMobileNumbers.length === 1){
-            setContactSelectedMobileNumber(contactMobileNumbers[0]?.digits);
+            setContactSelectedMobileNumber(processString(contactMobileNumbers[0]?.digits));
         }
     }, [contactMobileNumbers]);
 
@@ -96,34 +104,10 @@ const TakePayment = ({navigation, route}) => {
     }, [isError]);
 
     useEffect(() => {
-        (async () => {
-            const {status: contactStatus} = await Contacts.requestPermissionsAsync();
-            if (contactStatus === 'granted') {
-                try {
-                    const localContacts = await getItem('contacts')
-                    if (localContacts) {
-                        setContacts(localContacts);
-                    } else {
-                        const {data: contactsArray} = await Contacts.getContactsAsync({
-                            fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-                        });
-                        if (contactsArray.length > 0) {
-                            setContacts(contactsArray);
-                            setItem('contacts', contactsArray).then(r => console.log(r))
-                        }
-                    }
-                } catch (error) {
-                    const {data: contactsArray} = await Contacts.getContactsAsync({
-                        fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-                    });
-                    if (contactsArray.length > 0) {
-                        setContacts(contactsArray);
-                        setItem('contacts', contactsArray).then(r => console.log(r))
-                    }
-                }
-            }
-        })();
-    }, []);
+        if (!isLoadingCustomer) {
+            loadContactsFromDevice();
+        }
+    }, [isLoadingCustomer]);
 
     useEffect(() => {
         setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(4));
@@ -132,6 +116,53 @@ const TakePayment = ({navigation, route}) => {
     if (isPaymentSuccess) {
         showToast(paymentApiResponse.data.message, 'success');
         setTimeout(() => navigation.navigate('HomePage'), 1000);
+    }
+
+    const loadContactsFromDevice = async () => {
+        const {status: contactStatus} = await Contacts.requestPermissionsAsync();
+        if (contactStatus === 'granted') {
+            let filteredContacts = (customerData?.data?.map(obj => obj.customer))?.map(obj => {
+                return {
+                    id: obj.phone_id,
+                    name: obj.name,
+                    digits: obj.phone,
+                    contactType: "person",
+                    phoneNumbers : [{digits: obj.phone}],
+                    imageAvailable: false
+                };
+            });
+
+            try {
+                const localContacts = await getItem('contacts')
+                if (localContacts) {
+                    setContacts([...filteredContacts, ...localContacts]);
+                } else {
+                    const {data: contactsArray} = await Contacts.getContactsAsync({
+                        fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
+                    });
+                    if (contactsArray.length > 0) {
+                        setContacts([...filteredContacts, ...contactsArray]);
+                        setItem('contacts', contactsArray).then(r => console.log(r))
+                    }
+                }
+            } catch (error) {
+                const {data: contactsArray} = await Contacts.getContactsAsync({
+                    fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
+                });
+                if (contactsArray.length > 0) {
+                    setContacts([...filteredContacts, ...contactsArray]);
+                    setItem('contacts', contactsArray).then(r => console.log(r))
+                }
+            }
+        }
+    }
+
+    function loadCustomerData(){
+        const customerFormData = new FormData();
+        customerFormData.append('cost_center_id', auth?.user.cost_center_id);
+        customerFormData.append('company_id', auth?.user.company_id);
+        customerFormData.append('user_id', auth?.user.id);
+        customerRequest(customerFormData);
     }
 
     const showDialog = () => {
@@ -179,14 +210,8 @@ const TakePayment = ({navigation, route}) => {
         }
 
         if(phoneNumber == null){
-            const phoneNumberObject = selectedCustomer?.phoneNumbers[0];
-            if (phoneNumberObject?.number) {
-                phoneNumber = phoneNumberObject.number;
-            } else if (phoneNumberObject?.digits) {
-                phoneNumber = phoneNumberObject.digits;
-            }
+            phoneNumber = contactSelectedMobileNumber;
         }
-
 
         if(price == 0 || qty == 0){
             showToast("Please check price and qty", 'error');
@@ -230,6 +255,23 @@ const TakePayment = ({navigation, route}) => {
         setSelectedCustomer(contactObj);
     };
     const handleDateChange = (d) => setInputDate(d);
+
+    function processString(input = null) {
+        if(input == null || input === "" || input === "null"){
+            return "";
+        }
+        // Remove "-", ",", and spaces from the string
+        let processedString = input.replace(/[-,\s]/g, '');
+
+        // If the resulting string has a length greater than 10, remove the first three letters
+        if (processedString.length > 10) {
+            processedString = processedString.substring(3);
+        }
+
+        return processedString;
+    }
+
+    console.log({contactSelectedMobileNumber})
     return (
         <View className={"flex-1 bg-white"}>
             <KeyboardAvoidingView
@@ -242,15 +284,26 @@ const TakePayment = ({navigation, route}) => {
                     selectedItemName={selectedCustomer?.name}
                     filterEnabled={true}
                 />
-                {contactMobileNumbers && <View className={"mt-2 -z-10"}>
-                    <DropDownFlashList
-                        data={contactMobileNumbers}
-                        inputLabel={contactSelectedMobileNumber ? "Selected Mobile Number" : "Select Mobile Number"}
-                        headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
-                        onSelect={(product) => handlePriceChange(parseFloat(product?.price || 0).toFixed(4))}
-
-                    />
-                </View>}
+                {((contactSelectedMobileNumber && contactMobileNumbers.length === 1) || contactSelectedMobileNumber === null || contactSelectedMobileNumber === "")  ?
+                        <TextInput
+                            className={"bg-white mt-2 -z-30"}
+                            onChangeText={(mobile) => setContactSelectedMobileNumber(processString(mobile))}
+                            value={contactSelectedMobileNumber == "null" ? "" : contactSelectedMobileNumber}
+                            mode={"outlined"}
+                            label={"Mobile Number"}
+                        />
+                    :
+                <>{contactMobileNumbers &&
+                    <View className={"mt-2 -z-10"}>
+                        <DropDownFlashList
+                            data={contactMobileNumbers}
+                            inputLabel={contactSelectedMobileNumber ? "Selected Mobile Number" : "Select Mobile Number"}
+                            headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
+                            onSelect={(contact) => setContactSelectedMobileNumber(contact?.digits ? processString(contact?.digits) : null)}
+                        />
+                    </View>
+                    }</>
+                }
 
                 {!isLoading && <View className={"mt-2 -z-10"}>
                     <DropDownFlashList

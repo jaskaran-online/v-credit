@@ -61,6 +61,7 @@ export default function Index() {
 
     const filterBy = useFilterToggleStore(state => state.filterBy);
     const [orderedData, setOrderedData] = useState([]);
+
     useEffect(() => {
         if(data?.data){
             if(filterBy !== "none"){
