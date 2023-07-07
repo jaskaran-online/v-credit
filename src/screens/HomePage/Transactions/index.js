@@ -10,6 +10,7 @@ import { Searchbar, Text } from "react-native-paper";
 import { useTransactionsData } from "../../../apis/useApi";
 import { useAuth } from "../../../hooks";
 import { useFocusEffect } from "@react-navigation/native";
+import _ from 'lodash';
 import navigation from '../../../navigations/index'
 import {renderHeader, renderItem} from '../../../core/utils';
 const isToday = (dateString) => {
@@ -30,13 +31,25 @@ export default function Index() {
 
   const [reload, setReload] = useState(false);
   const [filteredList, setFilteredList] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [query, setQuery] = useState("");
+  const [orderedData, setOrderedData] = useState([]);
+  const [filterBy, setFilteredBy] = useState("Clear");
 
   useEffect(() => {
-    setFilteredList(data?.data);
-  }, [data]);
+    if(data?.data){
+      if(filterBy === "Clear"){
+        setOrderedData(data?.data);
+      }else{
+        const orderedArray = _.orderBy(data?.data, ['transaction_type_id'], [filterBy === "Payment Received" ? 'desc' : 'asc']);
+        setOrderedData(orderedArray);
+      }
+    }
+  }, [filterBy, data, isLoading]);
+
+  useEffect(() => {
+    setFilteredList(orderedData);
+  }, [orderedData]);
 
   useEffect(() => {
     loadCustomerData();
@@ -63,45 +76,30 @@ export default function Index() {
   }
 
   const options = [
-    { label: "Credit Given", onPress: handleClearSelection },
+    { label: "Credit Given", onPress: () => setFilteredBy("Credit Given") },
     {
       label: "Payment Received",
-      onPress: handleDeleteSelectedItem,
+      onPress: () => setFilteredBy("Payment Received"),
     },
-    { label: "Clear", onPress: handleEditSelectedItem },
+    { label: "Clear", onPress: () => {
+        setFilteredBy("Clear");
+        setShowOptions(false);
+      }
+    },
   ];
 
   const handleSearch = (text) => {
     setQuery(text);
-    const filtered = (data?.data).filter((item) =>
+    const filtered = (orderedData).filter((item) =>
       item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredList(filtered);
-  };
-
-  const handleSelect = (item) => {
-    setSelectedItem(item);
   };
 
   const handleOptionSelect = (show) => {
     setShowOptions((show) => !show);
   };
 
-  const handleClearSelection = () => {
-    setSelectedItem(null);
-  };
-
-  const handleDeleteSelectedItem = () => {
-    const filtered = filteredList.filter((item) => item.id !== selectedItem.id);
-    setFilteredList(filtered);
-    setSelectedItem(null);
-  };
-
-  const handleEditSelectedItem = () => {
-    setSelectedItem(null);
-  };
-
-  
   return (
     <View className={"bg-white flex-1"}>
       <View
@@ -155,7 +153,7 @@ export default function Index() {
                   key={index}
                   onPress={value.onPress}
                   className={
-                    value.label === "Clear" ? "bg-slate-200" : "bg-white"
+                    value.label === filterBy ? "bg-slate-200" : "bg-white"
                   }
                 >
                   <Text variant={"labelLarge"} className={"pl-2 pr-4 py-2"}>
@@ -178,8 +176,6 @@ export default function Index() {
         refreshing={reload}
         onRefresh={loadCustomerData}
         onSearch={handleSearch}
-        onSelect={handleSelect}
-        selected={selectedItem}
         showOptions={showOptions}
         options={options}
         onOptionSelect={handleOptionSelect}
