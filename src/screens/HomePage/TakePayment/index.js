@@ -287,26 +287,30 @@ const TakePayment = ({navigation, route}) => {
                     selectedItemName={selectedCustomer?.name}
                     filterEnabled={true}
                 />
-                {((contactSelectedMobileNumber && contactMobileNumbers.length === 1) || contactSelectedMobileNumber === null || contactSelectedMobileNumber === "")  ?
+                {selectedCustomer && <>
+                    {((contactMobileNumbers.length === 1) || (selectedCustomer && (contactSelectedMobileNumber === null || contactSelectedMobileNumber !== "")))  ?
                         <TextInput
                             className={"bg-white mt-2 -z-30"}
-                            onChangeText={(mobile) => setContactSelectedMobileNumber(processString(mobile))}
+                            onChangeText={(mobile) => setContactSelectedMobileNumber(mobile)}
                             value={contactSelectedMobileNumber == "null" ? "" : contactSelectedMobileNumber}
                             mode={"outlined"}
                             label={"Mobile Number"}
                         />
-                    :
-                <>{contactMobileNumbers &&
-                    <View className={"mt-2 -z-10"}>
-                        <DropDownFlashList
-                            data={contactMobileNumbers}
-                            inputLabel={contactSelectedMobileNumber ? "Selected Mobile Number" : "Select Mobile Number"}
-                            headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
-                            onSelect={(contact) => setContactSelectedMobileNumber(contact?.digits ? processString(contact?.digits) : null)}
-                        />
-                    </View>
-                    }</>
-                }
+                        :
+                        <>{contactMobileNumbers &&
+                            <View className={"mt-2 -z-10"}>
+                                <DropDownFlashList
+                                    data={contactMobileNumbers}
+                                    inputLabel={contactSelectedMobileNumber ? "Selected Mobile Number" : "Select Mobile Number"}
+                                    headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
+                                    onSelect={(contact) => {
+                                        setContactSelectedMobileNumber(contact?.digits ? processString(contact?.digits) : null)
+                                    }}
+                                />
+                            </View>
+                        }</>
+                    }
+                </>}
 
                 {!isLoading && <View className={"mt-2 -z-10"}>
                     <DropDownFlashList
