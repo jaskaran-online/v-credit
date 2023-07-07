@@ -8,20 +8,17 @@ import {DatePickerInput} from "react-native-paper-dates";
 import {MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
 import {Camera} from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import {getItem, removeItem, setItem} from "../../../core/utils";
-import {useCompanyProductsData, usePaymentApi, useProductsApi} from "../../../apis/useApi";
+import {getItem, setItem} from "../../../core/utils";
+import {useCustomersData, usePaymentApi, useProductsApi} from "../../../apis/useApi";
 import {useAuth} from "../../../hooks";
 import Toast from "react-native-toast-message";
-import { QueryClient } from '@tanstack/react-query';
-
-const queryClient = new QueryClient();
 
 const showToast = (message, type) => {
     Toast.show({
         type: type,
         text1: type === 'success' ? 'Success' : 'Error',
         text2: message,
-        position : "bottom"
+        position: "bottom"
     });
 }
 
@@ -31,80 +28,145 @@ function convertDateFormat(dateString) {
     const convertedDate = dateObj.toISOString()
         .slice(0, 10) // Extract YYYY-MM-DD
         .replace('T', ' '); // Replace 'T' with a space
-
     const convertedTime = dateObj.toISOString()
         .slice(11, 19); // Extract HH:MM:SS
 
     return `${convertedDate} ${convertedTime}`;
 }
 
-const FlatListDropDown = ({navigation, route}) => {
+const GivePayment = ({navigation, route}) => {
     const auth = useAuth.use?.token();
-    const {mutate: productRequest, isLoading ,data: products, isSuccess: isProductsSuccess, error : productsError, isErrorProduct} = useProductsApi();
-    const {mutate: request, data: paymentApiResponse, isSuccess: isPaymentSuccess, error : paymentError, isError} = usePaymentApi();
+    const {
+        mutate: request,
+        data: paymentApiResponse,
+        isSuccess: isPaymentSuccess,
+        error: paymentError,
+        isError
+    } = usePaymentApi();
+    const {
+        mutate: productRequest,
+        isLoading,
+        data: products,
+        isSuccess: isProductsSuccess,
+        error: productsError,
+        isErrorProduct
+    } = useProductsApi();
+    const {
+        mutate: customerRequest,
+        data: customerData,
+        isLoading: isLoadingCustomer,
+        customerError
+    } = useCustomersData();
+
+    const [amount, setAmount] = useState(0);
+    const [contacts, setContacts] = useState([]);
+    const [imageUri, setImageUri] = useState(null);
+    const [inputDate, setInputDate] = useState(new Date());
+    const [note, setNote] = useState("");
+    const [price, setPrice] = useState(1);
+    const [qty, setQty] = useState(1);
+    const [selectedCustomer, setSelectedCustomer] = useState(route.params?.customer);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [visible, setVisible] = useState(false);
+    const [contactMobileNumbers, setContactMobileNumbers] = useState(route?.params?.customer?.phone ? [{
+        name: route?.params?.customer?.name,
+        digits: route?.params?.customer?.phone
+    }] : []);
+    const [contactSelectedMobileNumber  , setContactSelectedMobileNumber ] = useState(route?.params?.customer?.phone || null);
+    const [combinedContacts  , setCombinedContacts ] = useState([]);
 
     useEffect(() => {
+        loadCustomerData();
         const formData = new FormData();
         formData.append('company_id', auth?.user?.company_id);
         productRequest(formData)
     }, []);
 
+    useEffect(() => {
+        if(selectedCustomer?.phoneNumbers){
+            const updatedData = (selectedCustomer?.phoneNumbers).map(obj => {
+                return {
+                    ...obj,
+                    name: processString(obj.digits)
+                };
+            });
+            setContactMobileNumbers(updatedData);
+        }
+    }, [selectedCustomer]);
 
-    if(isError){
-        showToast(paymentError.message, 'error');
-    }
+    useEffect(() => {
+        if(contactMobileNumbers.length === 1){
+            setContactSelectedMobileNumber(processString(contactMobileNumbers[0]?.digits));
+        }
+    }, [contactMobileNumbers]);
 
-    if(isPaymentSuccess){
+    useEffect(() => {
+        if (isError) {
+            showToast(paymentError.message, 'error');
+        }
+    }, [isError]);
+
+    useEffect(() => {
+        if (!isLoadingCustomer) {
+            loadContactsFromDevice();
+        }
+    }, [isLoadingCustomer]);
+
+    useEffect(() => {
+        setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(4));
+    }, [price, qty]);
+
+    if (isPaymentSuccess) {
         showToast(paymentApiResponse.data.message, 'success');
         setTimeout(() => navigation.navigate('HomePage'), 1000);
     }
 
+    const loadContactsFromDevice = async () => {
+        const {status: contactStatus} = await Contacts.requestPermissionsAsync();
+        if (contactStatus === 'granted') {
+            let filteredContacts = (customerData?.data?.map(obj => obj.customer))?.map(obj => {
+                return {
+                    id: obj.phone_id,
+                    name: obj.name,
+                    digits: obj.phone,
+                    contactType: "person",
+                    phoneNumbers : [{digits: obj.phone}],
+                    imageAvailable: false
+                };
+            });
 
-    const [contacts, setContacts] = useState([]);
-    const [visible, setVisible] = useState(false);
-
-    const [selectedCustomer, setSelectedCustomer] = useState(route.params?.customer);
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [qty, setQty] = useState(1);
-    const [price, setPrice] = useState(0);
-    const [amount, setAmount] = useState(0);
-    const [inputDate, setInputDate] = useState(new Date());
-    const [imageUri, setImageUri] = useState(null);
-    const [note, setNote] = useState("");
-
-    useEffect(() => {
-        (async () => {
-            const {status: contactStatus} = await Contacts.requestPermissionsAsync();
-            if (contactStatus === 'granted') {
-                try {
-                    const localContacts = await getItem('contacts')
-                    if (localContacts) {
-                        setContacts(localContacts);
-                    } else {
-                        const {data : contactsArray} = await Contacts.getContactsAsync({
-                            fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-                        });
-                        if (contactsArray.length > 0) {
-                            setContacts(contactsArray);
-                            setItem('contacts', contactsArray).then(r => console.log(r))
-                        }
-                    }
-                } catch (error) {
+            try {
+                const localContacts = await getItem('contacts')
+                if (localContacts) {
+                    setContacts([...filteredContacts, ...localContacts]);
+                } else {
                     const {data: contactsArray} = await Contacts.getContactsAsync({
                         fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
                     });
                     if (contactsArray.length > 0) {
-                        setContacts(contactsArray);
+                        setContacts([...filteredContacts, ...contactsArray]);
                         setItem('contacts', contactsArray).then(r => console.log(r))
                     }
                 }
+            } catch (error) {
+                const {data: contactsArray} = await Contacts.getContactsAsync({
+                    fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
+                });
+                if (contactsArray.length > 0) {
+                    setContacts([...filteredContacts, ...contactsArray]);
+                    setItem('contacts', contactsArray).then(r => console.log(r))
+                }
             }
-        })();
-    }, []);
+        }
+    }
 
-    useEffect(() => {
-        setAmount(parseFloat(price || 0) * parseFloat(qty || 1));
-    }, [price, qty]);
+    function loadCustomerData(){
+        const customerFormData = new FormData();
+        customerFormData.append('cost_center_id', auth?.user.cost_center_id);
+        customerFormData.append('company_id', auth?.user.company_id);
+        customerFormData.append('user_id', auth?.user.id);
+        customerRequest(customerFormData);
+    }
 
     const showDialog = () => {
         setVisible(true);
@@ -137,17 +199,9 @@ const FlatListDropDown = ({navigation, route}) => {
             hideDialog();
         }
     };
-
-    const handlePriceChange = (inputPrice) => {
-        setPrice(inputPrice);
-    };
-
-    const handleQtyChange = (inputQty) => {
-        setQty(inputQty)
-    };
-
     const onFormSubmit = () => {
         let phoneNumber = route?.params?.customer?.phone || null;
+
         if (selectedCustomer === null) {
             showToast("Please Select Customer", "error");
             return false;
@@ -159,12 +213,7 @@ const FlatListDropDown = ({navigation, route}) => {
         }
 
         if(phoneNumber == null){
-            const phoneNumberObject = selectedCustomer?.phoneNumbers[0];
-            if (phoneNumberObject?.number) {
-                phoneNumber = phoneNumberObject.number;
-            } else if (phoneNumberObject?.digits) {
-                phoneNumber = phoneNumberObject.digits;
-            }
+            phoneNumber = contactSelectedMobileNumber;
         }
 
         if(price == 0 || qty == 0){
@@ -173,30 +222,59 @@ const FlatListDropDown = ({navigation, route}) => {
         }
 
         const formData = new FormData();
-        formData.append('company_id', auth.user?.company_id);
-        formData.append('cost_center_id', auth.user?.cost_center_id);
-        formData.append('customer_name', selectedCustomer?.name);
+        formData.append("company_id", (auth.user)?.company_id);
+        formData.append("cost_center_id", (auth.user)?.cost_center_id);
+        formData.append("customer_name", selectedCustomer?.name);
         formData.append("from_date", convertDateFormat(inputDate.toString()));
-        if(imageUri){
-            formData.append('image', {
+        if (imageUri) {
+            formData.append("image", {
                 uri: imageUri,
-                type: 'image/jpeg', // Modify the type based on your image type
-                name: 'image.jpg', // Modify the name based on your image name
+                type: "image/jpeg", // Modify the type based on your image type
+                name: "image.jpg", // Modify the name based on your image name
             });
         }
-        formData.append('notes', note);
-        formData.append('price', price);
-        formData.append('phone',  phoneNumber);
-        formData.append('phone_id', selectedCustomer?.id);
+        formData.append("notes", note);
+        formData.append("phone", phoneNumber);
+        formData.append("phone_id", selectedCustomer?.id);
         if(selectedProduct){
             formData.append('product_id', selectedProduct?.id);
         }
-        formData.append('transaction_type_id', 1);
-        formData.append('qty', qty);
-        formData.append('user_id', auth?.user?.id);
+        formData.append("price", price);
+        formData.append("qty", qty);
+        formData.append("transaction_type_id", 1);
+        formData.append("user_id", auth?.user?.id);
         request(formData);
+    };
+
+    const handlePriceChange = (inputPrice) => {
+        setPrice(inputPrice);
+    };
+
+    const handleQtyChange = (inputQty) => {
+        setQty(inputQty)
+    };
+
+    const handleContactSelect = (contactObj) => {
+        setSelectedCustomer(contactObj);
+    };
+    const handleDateChange = (d) => setInputDate(d);
+
+    function processString(input = null) {
+        if(input == null || input === "" || input === "null"){
+            return "";
+        }
+        // Remove "-", ",", and spaces from the string
+        let processedString = input.replace(/[-,\s]/g, '');
+
+        // If the resulting string has a length greater than 10, remove the first three letters
+        if (processedString.length > 10) {
+            processedString = processedString.substring(3);
+        }
+
+        return processedString;
     }
 
+    console.log({contactSelectedMobileNumber})
     return (
         <View className={"flex-1 bg-white"}>
             <KeyboardAvoidingView
@@ -205,18 +283,37 @@ const FlatListDropDown = ({navigation, route}) => {
                     data={contacts}
                     inputLabel="Select Customer"
                     headerTitle="Showing contact from Phonebook"
-                    onSelect={(contactObj) => {
-                        setSelectedCustomer(contactObj);
-                    }}
+                    onSelect={handleContactSelect}
                     selectedItemName={selectedCustomer?.name}
                     filterEnabled={true}
                 />
+                {((contactSelectedMobileNumber && contactMobileNumbers.length === 1) || contactSelectedMobileNumber === null || contactSelectedMobileNumber === "")  ?
+                    <TextInput
+                        className={"bg-white mt-2 -z-30"}
+                        onChangeText={(mobile) => setContactSelectedMobileNumber(processString(mobile))}
+                        value={contactSelectedMobileNumber == "null" ? "" : contactSelectedMobileNumber}
+                        mode={"outlined"}
+                        label={"Mobile Number"}
+                    />
+                    :
+                    <>{contactMobileNumbers &&
+                        <View className={"mt-2 -z-10"}>
+                            <DropDownFlashList
+                                data={contactMobileNumbers}
+                                inputLabel={contactSelectedMobileNumber ? "Selected Mobile Number" : "Select Mobile Number"}
+                                headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
+                                onSelect={(contact) => setContactSelectedMobileNumber(contact?.digits ? processString(contact?.digits) : null)}
+                            />
+                        </View>
+                    }</>
+                }
+
                 {!isLoading && <View className={"mt-2 -z-10"}>
                     <DropDownFlashList
                         data={products}
-                        inputLabel="Select Product (Optional)"
+                        inputLabel="Select Product"
                         headerTitle="List of products"
-                        onSelect={(product) => handlePriceChange(parseFloat(product?.price).toFixed(4))}
+                        onSelect={(product) => handlePriceChange(parseFloat(product?.price || 0).toFixed(4))}
                     />
                 </View>}
                 <View className={"flex flex-row gap-2 mt-0 -z-30"}>
@@ -241,7 +338,6 @@ const FlatListDropDown = ({navigation, route}) => {
                     className={"bg-white mt-2 -z-30"}
                     value={amount.toString()}
                     mode={"outlined"}
-                    onChangeText={(value) => setAmount(value)}
                     label={"Amount"}
                     inputMode={"numeric"}
                     editable={false}
@@ -251,7 +347,7 @@ const FlatListDropDown = ({navigation, route}) => {
                         locale="en"
                         label="From"
                         value={inputDate}
-                        onChange={(d) => setInputDate(d)}
+                        onChange={handleDateChange}
                         inputMode="start"
                         mode={"outlined"}
                         className={"bg-blue-50 mx-1"}
@@ -270,7 +366,8 @@ const FlatListDropDown = ({navigation, route}) => {
                     inputMode={"text"}
                 />
                 <>
-                    {imageUri && <Image source={{uri: imageUri, width: 150, height: 150}} resizeMethod={"auto"} className={"mt-4"}/>}
+                    {imageUri && <Image source={{uri: imageUri, width: 150, height: 150}} resizeMethod={"auto"}
+                                        className={"mt-4"}/>}
                 </>
                 <Button mode={"contained"} className={"mt-4 py-1 -z-50"}
                         onPress={() => onFormSubmit()}>Submit</Button>
@@ -302,4 +399,4 @@ const FlatListDropDown = ({navigation, route}) => {
     );
 };
 
-export default React.memo(FlatListDropDown);
+export default React.memo(GivePayment);
