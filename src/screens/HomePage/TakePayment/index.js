@@ -68,8 +68,11 @@ const TakePayment = ({navigation, route}) => {
     const [selectedCustomer, setSelectedCustomer] = useState(route.params?.customer);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [visible, setVisible] = useState(false);
-    const [contactMobileNumbers, setContactMobileNumbers] = useState([]);
-    const [contactSelectedMobileNumber  , setContactSelectedMobileNumber ] = useState(null);
+    const [contactMobileNumbers, setContactMobileNumbers] = useState(route?.params?.customer?.phone ? [{
+        name: route?.params?.customer?.name,
+        digits: route?.params?.customer?.phone
+    }] : []);
+    const [contactSelectedMobileNumber  , setContactSelectedMobileNumber ] = useState(route?.params?.customer?.phone || null);
     const [combinedContacts  , setCombinedContacts ] = useState([]);
 
     useEffect(() => {
