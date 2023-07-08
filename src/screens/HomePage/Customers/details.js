@@ -205,30 +205,35 @@ export default function Index({ navigation, route }) {
     setShowOptions((show) => !show);
   };
 
-  const toReceive = data?.data?.toReceive || 0;
-  const toPay = data?.data?.toPay || 0;
+  const toPay = parseFloat((data?.data?.toPay || 0).toFixed(2));
+  const toReceive = parseFloat((data?.data?.toReceive || 0).toFixed(2));
+
+  let balance = 0;
+  let BgColor = "bg-slate-400";
+  if(toReceive > toPay){
+    balance = toReceive - toPay;
+    BgColor = "bg-green-700";
+  }else if( toReceive < toPay){
+    balance = toPay - toReceive
+    BgColor = "bg-red-400";
+  }
+
   return (
     <View className={"bg-white flex-1"}>
       <View className="bg-blue-50 h-28">
-        <View className="mx-2 h-24 bg-white mt-1 rounded-md shadow-sm flex flex-row items-center justify-between px-6">
+        <View className="mx-2 h-24 bg-white mt-1 rounded-md shadow-sm flex flex-row items-center justify-between px-4">
           <View className="flex flex-row space-x-4 items-center">
             <View className="h-8 w-8 rounded-full overflow-hidden">
-              <Text className="bg-red-400 p-2 text-white  text-center flex-1 justify-center items-center rounded-full size-12">
+              <Text className={`${BgColor} p-2 text-white text-center flex-1 justify-center items-center rounded-full size-12`}>
                 ₹
               </Text>
             </View>
             <View className="ml-2">
-              <Text variant="bodyMedium" className="text-slate-600">
-                Total Balance
+              <Text variant="bodyMedium" className="text-slate-600 ">
+                {toReceive > toPay ? "To Receive" : "To Pay"}
               </Text>
-              <Text variant="titleLarge" className="text-slate-900 font-bold">
-                {Math.abs(
-                  toReceive > 0
-                    ? parseFloat(toReceive - toPay).toFixed(2)
-                    : toPay > 0
-                    ? parseFloat(toPay - toReceive).toFixed(2)
-                    : parseFloat(toReceive - toPay).toFixed(2)
-                )}
+              <Text variant="bodyLarge" className="text-slate-900 font-bold">
+                {Math.abs(balance)}
                 ₹
               </Text>
             </View>
@@ -237,7 +242,7 @@ export default function Index({ navigation, route }) {
           <View className="flex flex-row space-x-4 pr-2 pl-8">
             <TouchableOpacity
               className="bg-red-50 p-2 rounded-full  flex items-center"
-              onPress={() => navigation.navigate("DetailsPdf")}
+              onPress={() => navigation.navigate("DetailsPdf", {data : data?.data})}
             >
               <MaterialIcons name="picture-as-pdf" size={24} color="tomato" />
             </TouchableOpacity>

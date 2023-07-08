@@ -6,7 +6,7 @@ import navigation from '../../../navigations/index'
 import {useCustomersData} from "../../../apis/useApi";
 import {useCallback, useEffect, useState} from "react";
 import {useAuth} from "../../../hooks";
-import { useFocusEffect } from "@react-navigation/native";
+import {useFocusEffect} from "@react-navigation/native";
 import {useFilterToggleStore} from "../../Components/TwoCards";
 
 const renderItem = ({item, index}) => {
@@ -16,10 +16,10 @@ const renderItem = ({item, index}) => {
 
     let balance = 0;
     let color = "text-slate-400";
-    if(toReceive > toPay){
+    if (toReceive > toPay) {
         balance = toReceive - toPay;
         color = "text-green-700";
-    }else if( toReceive < toPay){
+    } else if (toReceive < toPay) {
         balance = toPay - toReceive
         color = "text-red-400";
     }
@@ -33,12 +33,13 @@ const renderItem = ({item, index}) => {
             <Text variant="titleSmall" class={"text-slate-800"}>{item?.customer?.name}</Text>
             <Text variant={"labelSmall"} className="text-slate-400">{item?.customer?.created_at}</Text>
         </TouchableOpacity>
-        <TouchableOpacity className={"flex flex-row justify-center items-center"}  onPress={() => navigation.navigate('CustomerTransactionDetails', {
-            id: item.customer?.id,
-            name: item.customer?.name
-        })}>
+        <TouchableOpacity className={"flex flex-row justify-center items-center"}
+                          onPress={() => navigation.navigate('CustomerTransactionDetails', {
+                              id: item.customer?.id,
+                              name: item.customer?.name
+                          })}>
             <View className={"mr-3"}>
-                <Text variant={"bodyMedium"} className={`${color} `}>{(balance).toFixed(2) } ₹</Text>
+                <Text variant={"bodyMedium"} className={`${color} `}>{Math.abs((balance).toFixed(2))} ₹</Text>
             </View>
         </TouchableOpacity>
     </View>);
@@ -63,17 +64,17 @@ export default function Index() {
     const [orderedData, setOrderedData] = useState([]);
 
     useEffect(() => {
-        if(data?.data){
-            if(filterBy === "none"){
+        if (data?.data) {
+            if (filterBy === "none") {
                 setOrderedData(data?.data);
-            }else{
+            } else {
                 const orderedArray = _.orderBy(data?.data, ['type'], [filterBy === "toReceive" ? 'desc' : 'asc']);
                 setOrderedData(orderedArray);
             }
         }
     }, [filterBy, data, isLoading]);
 
-    function loadCustomerData(){
+    function loadCustomerData() {
         setReload(true)
         const formData = new FormData();
         formData.append('cost_center_id', auth?.user.cost_center_id);
@@ -98,7 +99,8 @@ export default function Index() {
                 refreshing={reload}
                 onRefresh={loadCustomerData}
                 ListFooterComponent={<View style={{height: 100}}/>}
-                ListEmptyComponent={<View className={"flex-1 d-flex justify-center items-center h-16"}><Text variant={"bodyMedium"}>No Records Available!</Text></View>}
+                ListEmptyComponent={<View className={"flex-1 d-flex justify-center items-center h-16"}><Text
+                    variant={"bodyMedium"}>No Records Available!</Text></View>}
             />}
         </View>
     );
