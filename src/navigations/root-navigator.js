@@ -16,6 +16,7 @@ import {
 } from "../screens/Reports";
 
 import CustomerTransactionDetails from "../screens/HomePage/Customers/details";
+import ShareScreen from "../screens/HomePage/Customers/pdf";
 
 import TakePayment from "../screens/HomePage/TakePayment";
 import GiveMoney from "../screens/HomePage/GiveMoney";
@@ -128,6 +129,17 @@ export const Root = () => {
                             })}
                             name="CustomerTransactionDetails"
                             component={CustomerTransactionDetails}
+                        />
+
+
+                        <Stack.Screen
+                            options={({route}) => ({
+                                title: (route?.params?.name) ? route?.params?.name : 'Details',
+                                headerStyle: headerBackgroundColor,
+                                headerShown: true,
+                            })}
+                            name="DetailsPdf"
+                            component={ShareScreen}
                         />
 
                         <Stack.Screen
