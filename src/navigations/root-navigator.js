@@ -190,8 +190,8 @@ function ErrorFallback({error, resetErrorBoundary}) {
 
 export const RootNavigator = ({theme}) => (
     <NavigationContainer theme={theme} navigationRef={navigationRef}>
-        <ErrorBoundary FallbackComponent={ErrorFallback}>
+        {/*<ErrorBoundary FallbackComponent={ErrorFallback}>*/}
             <Root/>
-        </ErrorBoundary>
+        {/*</ErrorBoundary>*/}
     </NavigationContainer>
 );

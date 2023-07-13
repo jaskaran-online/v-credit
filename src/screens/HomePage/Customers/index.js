@@ -1,6 +1,6 @@
 import {View, TouchableOpacity, ActivityIndicator} from 'react-native';
 import {FlashList} from "@shopify/flash-list";
-import {List, Text, Divider} from 'react-native-paper'
+import {List, Text, Divider, Searchbar} from 'react-native-paper'
 import _ from 'lodash';
 import navigation from '../../../navigations/index'
 import {useCustomersData} from "../../../apis/useApi";
@@ -8,6 +8,7 @@ import {useCallback, useEffect, useState} from "react";
 import {useAuth} from "../../../hooks";
 import {useFocusEffect} from "@react-navigation/native";
 import {useFilterToggleStore} from "../../Components/TwoCards";
+import {Feather} from "@expo/vector-icons";
 
 const renderItem = ({item, index}) => {
 
@@ -51,7 +52,7 @@ export default function Index() {
             loadCustomerData();
             return () => {
                 // Useful for cleanup functions
-                console.log("Screen was unfocused");
+                // console.log("Screen was unfocused");
             };
         }, [])
     );
@@ -61,18 +62,27 @@ export default function Index() {
     const auth = useAuth?.use?.token();
 
     const filterBy = useFilterToggleStore(state => state.filterBy);
+    const [query, setQuery] = useState("");
+    const [filteredList, setFilteredList] = useState([]);
     const [orderedData, setOrderedData] = useState([]);
 
     useEffect(() => {
-        if (data?.data) {
+        if (data?.data){
             if (filterBy === "none") {
                 setOrderedData(data?.data);
             } else {
-                const orderedArray = _.orderBy(data?.data, ['type'], [filterBy === "toReceive" ? 'desc' : 'asc']);
-                setOrderedData(orderedArray);
+                setOrderedData(
+                    _.filter(data?.data, {
+                        'type': filterBy === "toReceive" ? 1 : 0
+                    })
+                );
             }
         }
     }, [filterBy, data, isLoading]);
+
+    useEffect(() => {
+        setFilteredList(orderedData);
+    }, [orderedData]);
 
     function loadCustomerData() {
         setReload(true)
@@ -88,12 +98,48 @@ export default function Index() {
         loadCustomerData();
     }, []);
 
+    const handleSearch = (text) => {
+        setQuery(text);
+        const filtered = (orderedData).filter((item) =>
+            item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
+        );
+        setFilteredList(filtered);
+    };
+
+    const handleOptionSelect = (show) => {
+        setShowOptions((show) => !show);
+    };
+
     return (
         <View className={"bg-white flex-1"}>
+            <View
+                className={
+                    "flex flex-row justify-between w-full px-3 items-center py-4"
+                }
+            >
+                <View className={"flex flex-row relative"}>
+                    <Searchbar
+                        onChangeText={handleSearch}
+                        value={query.toString()}
+                        style={{
+                            width: "100%",
+                            backgroundColor : "transparent"
+                        }}
+                        inputStyle={{
+                            fontSize: 12,
+                            lineHeight : Platform.OS === "android" ? 16 :  0,
+                            paddingBottom: 20
+                        }}
+                        placeholder="Search Customer Name"
+                        className={"bg-white border-2 border-slate-200 h-10"}
+                    />
+                </View>
+            </View>
+
             {isLoading && !data ? <View className={"flex-1 justify-center"}>
                 <ActivityIndicator/>
             </View> : <FlashList
-                data={orderedData}
+                data={filteredList}
                 renderItem={renderItem}
                 estimatedItemSize={200}
                 refreshing={reload}
