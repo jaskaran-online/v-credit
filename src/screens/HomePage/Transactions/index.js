@@ -13,16 +13,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import _ from 'lodash';
 import navigation from '../../../navigations/index'
 import {renderHeader, renderItem} from '../../../core/utils';
-const isToday = (dateString) => {
-  const currentDate = new Date();
-  const inputDate = new Date(dateString);
-
-  return (
-      currentDate.getFullYear() === inputDate.getFullYear() &&
-      currentDate.getMonth() === inputDate.getMonth() &&
-      currentDate.getDate() === inputDate.getDate()
-  );
-};
 
 export default function Index() {
 
@@ -70,7 +60,7 @@ export default function Index() {
     const formData = new FormData();
     formData.append('company_id', auth.user.company_id);
     formData.append('cost_center_id', auth.user.cost_center_id);
-    formData.append('user_id', auth.user.id);
+    // formData.append('user_id', auth.user.id);
     mutate(formData);
     setReload(false)
   }

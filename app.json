@@ -1,5 +1,6 @@
 {
   "expo": {
+    "experiments.turboModules": true,
     "name": "My Credit Book",
     "slug": "CASPRO",
     "version": "1.0.0",

@@ -8,7 +8,7 @@ import {useCallback, useEffect, useState} from "react";
 import {useAuth} from "../../../hooks";
 import {useFocusEffect} from "@react-navigation/native";
 import {useFilterToggleStore} from "../../Components/TwoCards";
-import {Feather} from "@expo/vector-icons";
+import {Feather, MaterialIcons} from "@expo/vector-icons";
 
 const renderItem = ({item, index}) => {
 
@@ -24,25 +24,30 @@ const renderItem = ({item, index}) => {
         balance = toPay - toReceive
         color = "text-red-400";
     }
-
+    let isEven = index % 2 === 0 ? color = "bg-slate-50" : color = "bg-white";
     return (<View
-        className={"flex flex-row justify-between px-4 py-2 border-b-2 border-slate-200"}>
-        <TouchableOpacity onPress={() => navigation.navigate('CustomerTransactionDetails', {
+        className={`${isEven} flex flex-row justify-between px-4 py-2`}>
+        <TouchableOpacity className={"w-[60%]"} onPress={() => navigation.navigate('CustomerTransactionDetails', {
             id: item.customer?.id,
             name: item.customer?.name
         })}>
             <Text variant="titleSmall" class={"text-slate-800"}>{item?.customer?.name}</Text>
             <Text variant={"labelSmall"} className="text-slate-400">{item?.customer?.created_at}</Text>
         </TouchableOpacity>
-        <TouchableOpacity className={"flex flex-row justify-center items-center"}
-                          onPress={() => navigation.navigate('CustomerTransactionDetails', {
-                              id: item.customer?.id,
-                              name: item.customer?.name
-                          })}>
+        <View className={"flex flex-row justify-center items-center"}>
             <View className={"mr-3"}>
                 <Text variant={"bodyMedium"} className={`${color} `}>{Math.abs((balance).toFixed(2))} ₹</Text>
             </View>
-        </TouchableOpacity>
+            <TouchableOpacity
+                className="bg-blue-50 p-2 rounded-full  flex items-center"
+                onPress={() => navigation.navigate("DetailsPdf", {
+                    id: item.customer?.id,
+                    name: item.customer?.name
+                })}
+            >
+                <MaterialIcons name="share" size={18} color="dodgerblue" />
+            </TouchableOpacity>
+        </View>
     </View>);
 };
 

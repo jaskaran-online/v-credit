@@ -61,71 +61,75 @@ const sendWhatsApp = (phoneWithCountryCode) => {
   }
 };
 
-const renderItem = ({ item, index }) => (
-  <TouchableOpacity
-    className={
-      "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
-    }
-  >
-    <View className="flex flex-row items-center w-1/4">
-      <View className="mr-1">
-        {item?.transaction_type_id === 2 ? (
-          <MaterialCommunityIcons
-            name="call-received"
-            size={14}
-            color="green"
-          />
-        ) : (
-          <MaterialIcons name="call-made" size={14} color="red" />
-        )}
-      </View>
-      <View>
-        <Text variant={"titleSmall"} className="text-slate-800">
-          {item?.transaction_type_id === 2 ? "Payment" : "Credit"}
-        </Text>
-        <Text variant={"labelSmall"} className="text-slate-400">
-          {item?.date}
-        </Text>
-      </View>
-    </View>
-    <View>
-      {item?.transaction_type_id === 1 ? (
-        <View className={"mr-2"}>
-          <Text variant={"bodyMedium"} className="text-slate-800 mr-2">
-            {parseFloat(item?.amount).toFixed(2)}₹
-          </Text>
-          <Text variant={"labelSmall"} className="text-slate-400 mr-2">
-            (Udhaar)
-          </Text>
-        </View>
-      ) : (
-        <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-          {" "}
-          -{" "}
-        </Text>
-      )}
-    </View>
-    <View className={"flex flex-row items-right"}>
-      <View>
-        {item?.transaction_type_id === 2 ? (
+const renderItem = ({ item, index }) => {
+  let color;
+  let isEven = index % 2 === 0 ? color = "bg-slate-50" : color = "bg-white";
+  return (
+      <TouchableOpacity
+          className={
+            "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
+          }
+      >
+        <View className="flex flex-row items-center w-1/4">
+          <View className="mr-1">
+            {item?.transaction_type_id === 2 ? (
+                <MaterialCommunityIcons
+                    name="call-received"
+                    size={14}
+                    color="green"
+                />
+            ) : (
+                <MaterialIcons name="call-made" size={14} color="red"/>
+            )}
+          </View>
           <View>
-            <Text variant={"bodyMedium"} className="text-slate-800">
-              {parseFloat(item?.amount).toFixed(2)}₹
+            <Text variant={"titleSmall"} className="text-slate-800">
+              {item?.transaction_type_id === 2 ? "Payment" : "Credit"}
             </Text>
             <Text variant={"labelSmall"} className="text-slate-400">
-              (Payment)
+              {item?.date}
             </Text>
           </View>
-        ) : (
-          <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
-            {" "}
-            -{" "}
-          </Text>
-        )}
-      </View>
-    </View>
-  </TouchableOpacity>
-);
+        </View>
+        <View>
+          {item?.transaction_type_id === 1 ? (
+              <View className={"mr-2"}>
+                <Text variant={"bodyMedium"} className="text-slate-800 mr-2">
+                  {parseFloat(item?.amount).toFixed(2)}₹
+                </Text>
+                <Text variant={"labelSmall"} className="text-slate-400 mr-2">
+                  (Udhaar)
+                </Text>
+              </View>
+          ) : (
+              <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
+                {" "}
+                -{" "}
+              </Text>
+          )}
+        </View>
+        <View className={"flex flex-row items-right"}>
+          <View>
+            {item?.transaction_type_id === 2 ? (
+                <View>
+                  <Text variant={"bodyMedium"} className="text-slate-800">
+                    {parseFloat(item?.amount).toFixed(2)}₹
+                  </Text>
+                  <Text variant={"labelSmall"} className="text-slate-400">
+                    (Payment)
+                  </Text>
+                </View>
+            ) : (
+                <Text variant={"bodyMedium"} className={"text-slate-400 text-center"}>
+                  {" "}
+                  -{" "}
+                </Text>
+            )}
+          </View>
+        </View>
+      </TouchableOpacity>
+  );
+};
 
 export default function Index({ navigation, route }) {
   const auth = useAuth.use?.token();
@@ -197,7 +201,7 @@ export default function Index({ navigation, route }) {
     formData.append("company_id", auth.user.company_id);
     formData.append("cost_center_id", auth.user.cost_center_id);
     formData.append("customer_id", route.params.id);
-    formData.append("user_id", auth.user.id);
+    // formData.append("user_id", auth.user.id);
     mutate(formData);
     setReload(false);
   }
@@ -242,7 +246,10 @@ export default function Index({ navigation, route }) {
           <View className="flex flex-row space-x-4 pr-2 pl-8">
             <TouchableOpacity
               className="bg-red-50 p-2 rounded-full  flex items-center"
-              onPress={() => navigation.navigate("DetailsPdf", {data : data?.data})}
+              onPress={() => navigation.navigate("DetailsPdf", {
+                id: data?.data?.customer?.id,
+                name: data?.data?.customer?.name
+              })}
             >
               <MaterialIcons name="picture-as-pdf" size={24} color="tomato" />
             </TouchableOpacity>
