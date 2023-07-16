@@ -41,7 +41,7 @@ export const isToday = (dateString) => {
     return (currentDate.getFullYear() === inputDate.getFullYear() && currentDate.getMonth() === inputDate.getMonth() && currentDate.getDate() === inputDate.getDate());
 };
 
-function formatDate(inputDate) {
+export function formatDateForMessage(inputDate) {
     const date = new Date(inputDate);
 
     // Function to get the ordinal suffix for the day (e.g., 1st, 2nd, 3rd, 4th, etc.)
@@ -69,9 +69,7 @@ function formatDate(inputDate) {
     ];
 
     // Format the date as "dd MMMM yyyy"
-    const formattedDate = `${day}${getOrdinalSuffix(day)} ${monthNames[monthIndex]} ${year}`;
-
-    return formattedDate;
+    return `${day}${getOrdinalSuffix(day)} ${monthNames[monthIndex]} ${year}`;
 }
 
 const Row = ({transaction, index, userId}) => {
@@ -81,28 +79,28 @@ const Row = ({transaction, index, userId}) => {
     let balance = parseFloat(transaction?.customer?.balance);
     let balanceType = transaction?.customer?.balance_type;
     let isEditable = (isToday(transaction?.created_at) && transaction?.user_id === userId);
-
+    let dateFormatted = formatDateForMessage(transaction?.date);
     if(transaction?.transaction_type_id === 2){
-        message = "Hi " + transaction?.customer?.name + ",\n" +
-            "\n" +
-            "I received payment of "+ parseFloat(transaction?.amount).toFixed(2) +" on "+ formatDate(transaction?.date) +" from you. \n" +
-            "\n Total Balance: "+ Math.abs(balance).toFixed(2) +" "+ balanceType + ". \n" +
-            "Thanks,\n" +
-            transaction?.user?.name+"\n" +
-            "\n" +
-            "For complete details, Click : \n" +
-            "http://mycreditbook.com/udhaar-khata/"+transaction?.customer?.id+"-"+transaction?.user_id;
+        message = `Hi ${transaction?.customer?.name},
+        
+I received payment of ${parseFloat(transaction?.amount).toFixed(2)} ₹ on ${dateFormatted} from you.
+Total Balance: ${Math.abs(balance).toFixed(2)} ₹ ${balanceType}.
+    
+Thanks,
+${transaction?.user?.name}
+For complete details,
+Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${transaction?.user_id}`;
     }else {
-        message = "Hi " + transaction?.customer?.name + ",\n" +
-            "\n" +
-            "I gave you credit of "+ parseFloat(transaction?.amount).toFixed(2) +" to me as of "+ formatDate(transaction?.date) +"." +
-            "\n Total Balance: "+ Math.abs(balance).toFixed(2) +" "+ balanceType + ". \n" +
-            "\n" +
-            "Thanks,\n" +
-            transaction?.user?.name+"\n" +
-            "\n" +
-            "For complete details, Click : \n" +
-            "http://mycreditbook.com/udhaar-khata/"+transaction?.customer?.id+"-"+transaction?.user_id;
+
+        message = `Hi ${transaction?.customer?.name},
+        
+I gave you credit of ${parseFloat(transaction?.amount).toFixed(2)} ₹ on ${dateFormatted}.
+Total Balance: ${Math.abs(balance).toFixed(2)} ₹ ${balanceType}.
+
+Thanks,
+${transaction?.user?.name}
+For complete details,
+Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${transaction?.user_id}`;
     }
     const handleListExpand = () => {
         if(balanceType !== "clear" || isEditable){
@@ -132,7 +130,7 @@ const Row = ({transaction, index, userId}) => {
                         {transaction?.customer?.name}
                     </Text>
                     <Text variant={"labelSmall"} className="text-slate-400">
-                        {formatDate(transaction?.date)}
+                        {formatDateForMessage(transaction?.date)}
                     </Text>
                 </View>
             </View>
@@ -171,7 +169,7 @@ const Row = ({transaction, index, userId}) => {
                 <TouchableOpacity
                     className="flex items-center gap-1"
                     onPress={(isToday(transaction?.created_at) && transaction?.user_id === userId) ? () => navigation.navigate('EditTransaction', {transaction: transaction}) : () => null}>
-                    <MaterialIcons name="edit" size={24} color="gray"/>
+                    <MaterialIcons name="edit" size={20} color="dodgerblue"/>
                     <Text variant={"labelSmall"} className="text-slate-800">Edit</Text>
                 </TouchableOpacity>
             </>}
@@ -183,7 +181,7 @@ const Row = ({transaction, index, userId}) => {
                     name: transaction.customer?.name
                 })}
             >
-                <MaterialIcons name="picture-as-pdf" size={24} color="tomato" />
+                <MaterialIcons name="picture-as-pdf" size={22} color="tomato" />
                 <Text variant={"labelSmall"} className="text-slate-800">PDF</Text>
             </TouchableOpacity>
 
@@ -192,7 +190,7 @@ const Row = ({transaction, index, userId}) => {
                     message : message
                 });
             }}>
-                <MaterialCommunityIcons name="whatsapp" size={26} color="green" />
+                <MaterialCommunityIcons name="whatsapp" size={22} color="green" />
                 <Text variant={"labelSmall"} className="text-slate-800">Share</Text>
             </TouchableOpacity>}
 

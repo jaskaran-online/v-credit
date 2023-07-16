@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Linking, Platform } from "react-native";
+import {View, TouchableOpacity, Linking, Platform, Share} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { Text, Searchbar } from "react-native-paper";
 import { useEffect, useState } from "react";
@@ -10,7 +10,7 @@ import {
 
 import { useCustomerTransactionData } from "../../../apis/useApi";
 import { useAuth } from "../../../hooks";
-import { renderHeader } from "../../../core/utils";
+import {formatDateForMessage, renderHeader} from "../../../core/utils";
 import FloatingButtons from "../../Components/FloatingButton";
 import _ from "lodash";
 
@@ -61,14 +61,42 @@ const sendWhatsApp = (phoneWithCountryCode) => {
   }
 };
 
-const renderItem = ({ item, index }) => {
-  let color;
-  let isEven = index % 2 === 0 ? color = "bg-slate-50" : color = "bg-white";
+const renderItem = ({ item, index, user, customer,balance }) => {
+  let message;
+  let isEven = index % 2 === 0 ? "bg-slate-50" : "bg-white";
+  let dateFormatted = formatDateForMessage(item?.date);
+  if(item?.transaction_type_id === 2){
+    message = `Hi ${customer?.name},
+    
+I received payment of ${parseFloat(item?.amount).toFixed(2)} ₹ on ${dateFormatted} from you.
+Total Balance: ${Math.abs(balance).toFixed(2)} ₹.
+
+Thanks,
+${user?.name}
+For complete details,
+Click : http://mycreditbook.com/udhaar-khata/${customer?.id}-${user?.id}`;
+  }else {
+
+    message = `Hi ${customer?.name},
+I gave you credit of ${parseFloat(item?.amount).toFixed(2)} ₹ on ${dateFormatted}.
+Total Balance: ${Math.abs(balance).toFixed(2)} ₹.
+
+Thanks,
+${user?.name}
+For complete details,
+Click : http://mycreditbook.com/udhaar-khata/${customer?.id}-${user?.id}`;
+  }
+  
   return (
       <TouchableOpacity
           className={
             "flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200"
           }
+          onPress={async () => {
+            await Share.share({
+              message: message
+            });
+          }}
       >
         <View className="flex flex-row items-center w-1/4">
           <View className="mr-1">
@@ -87,7 +115,7 @@ const renderItem = ({ item, index }) => {
               {item?.transaction_type_id === 2 ? "Payment" : "Credit"}
             </Text>
             <Text variant={"labelSmall"} className="text-slate-400">
-              {item?.date}
+              {dateFormatted}
             </Text>
           </View>
         </View>
@@ -125,6 +153,9 @@ const renderItem = ({ item, index }) => {
                   -{" "}
                 </Text>
             )}
+          </View>
+          <View className="mx-2 bg-blue-50 h-8 w-8 rounded-full flex justify-center items-center">
+            <MaterialIcons name="share" size={18} color={`dodgerblue`} />
           </View>
         </View>
       </TouchableOpacity>
@@ -334,7 +365,7 @@ export default function Index({ navigation, route }) {
         <FlashList
           data={filteredList}
           renderItem={({ item, index }) =>
-            renderItem({ item, index, userId: auth.user.id })
+            renderItem({ item, index, user: auth.user, balance, customer : data?.data?.customer })
           }
           ListHeaderComponent={renderHeader}
           estimatedItemSize={200}

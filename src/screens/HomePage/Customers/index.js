@@ -1,6 +1,6 @@
-import {View, TouchableOpacity, ActivityIndicator} from 'react-native';
+import {View, TouchableOpacity, ActivityIndicator, Share} from 'react-native';
 import {FlashList} from "@shopify/flash-list";
-import {List, Text, Divider, Searchbar} from 'react-native-paper'
+import {Text, Searchbar} from 'react-native-paper'
 import _ from 'lodash';
 import navigation from '../../../navigations/index'
 import {useCustomersData} from "../../../apis/useApi";
@@ -8,7 +8,8 @@ import {useCallback, useEffect, useState} from "react";
 import {useAuth} from "../../../hooks";
 import {useFocusEffect} from "@react-navigation/native";
 import {useFilterToggleStore} from "../../Components/TwoCards";
-import {Feather, MaterialIcons} from "@expo/vector-icons";
+import {MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
+import {formatDateForMessage} from "../../../core/utils";
 
 const renderItem = ({item, index}) => {
 
@@ -24,7 +25,8 @@ const renderItem = ({item, index}) => {
         balance = toPay - toReceive
         color = "text-red-400";
     }
-    let isEven = index % 2 === 0 ? color = "bg-slate-50" : color = "bg-white";
+    let isEven = index % 2 === 0 ?  "bg-slate-50" : "bg-white";
+    let formatedDate = formatDateForMessage(item?.last_transaction_date);
     return (<View
         className={`${isEven} flex flex-row justify-between px-4 py-2`}>
         <TouchableOpacity className={"w-[60%]"} onPress={() => navigation.navigate('CustomerTransactionDetails', {
@@ -32,20 +34,42 @@ const renderItem = ({item, index}) => {
             name: item.customer?.name
         })}>
             <Text variant="titleSmall" class={"text-slate-800"}>{item?.customer?.name}</Text>
-            <Text variant={"labelSmall"} className="text-slate-400">{item?.customer?.created_at}</Text>
+            <Text variant={"labelSmall"} className="text-slate-400">{formatedDate}</Text>
         </TouchableOpacity>
         <View className={"flex flex-row justify-center items-center"}>
             <View className={"mr-3"}>
-                <Text variant={"bodyMedium"} className={`${color} `}>{Math.abs((balance).toFixed(2))} ₹</Text>
+                <Text variant={"bodyMedium"} className={`${color}`}>{Math.abs((balance).toFixed(2))} ₹</Text>
             </View>
             <TouchableOpacity
-                className="bg-blue-50 p-2 rounded-full  flex items-center"
+                className={`${toReceive < toPay && balance !== 0 ? "bg-blue-50" : "bg-slate-100"} p-2 rounded-full flex items-center`}
+                onPress={async () => {
+                if(toReceive < toPay && balance !== 0) {
+                    let messageDate = formatDateForMessage(item?.last_transaction_date);
+                    let message = `Hi ${item?.customer?.name},
+                    
+This is a friendly reminder that you have to pay ${balance} ₹ to me as of ${messageDate}.
+
+Thanks,
+${item?.user?.name}
+For complete details, Click :
+http://mycreditbook.com/udhaar-khata/${item?.customer?.id+"-"+item?.user?.id}
+                `;
+                    await Share.share({
+                        message: message,
+                    });
+                }
+            }}
+        >
+                <MaterialCommunityIcons name="reminder" size={18} color={`${toReceive < toPay && balance !== 0 ? "dodgerblue" : "gray"}`} />
+            </TouchableOpacity>
+            <TouchableOpacity
+                className={`ml-1 bg-red-50 p-2 rounded-full flex items-center`}
                 onPress={() => navigation.navigate("DetailsPdf", {
-                    id: item.customer?.id,
-                    name: item.customer?.name
+                    id: item?.customer?.id,
+                    name: item?.customer?.name
                 })}
             >
-                <MaterialIcons name="share" size={18} color="dodgerblue" />
+                <MaterialIcons name="picture-as-pdf" size={18} color={`tomato`} />
             </TouchableOpacity>
         </View>
     </View>);
