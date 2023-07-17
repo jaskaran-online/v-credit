@@ -1,34 +1,33 @@
-import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import * as SplashScreen from "expo-splash-screen";
-import React, {useEffect} from "react";
-import {navigationRef} from "./index"
-import {useAuth} from '../hooks';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as SplashScreen from 'expo-splash-screen';
+import React, { useEffect } from 'react';
+import { navigationRef } from './index';
+import { useAuth } from '../hooks';
 
-import {AuthNavigator} from "./auth-navigator";
-import {NavigationContainer} from "./navigation-container";
-import {DrawerNavigator} from "./drawer-navigator";
+import { AuthNavigator } from './auth-navigator';
+import { NavigationContainer } from './navigation-container';
+import { DrawerNavigator } from './drawer-navigator';
 import {
     AllParties,
     AllTransactions,
     DayBook,
     PartyStatement,
-    CostCenter
-} from "../screens/Reports";
+    CostCenter,
+} from '../screens/Reports';
 
-import CustomerTransactionDetails from "../screens/HomePage/Customers/details";
-import ShareScreen from "../screens/HomePage/Customers/pdf";
+import CustomerTransactionDetails from '../screens/HomePage/Customers/details';
+import ShareScreen from '../screens/HomePage/Customers/pdf';
 
-import TakePayment from "../screens/HomePage/TakePayment";
-import GiveMoney from "../screens/HomePage/GiveMoney";
-import {View} from "react-native";
-import {Button} from "react-native-paper";
-import {ErrorBoundary} from "react-error-boundary";
-import {EditTransaction} from "../screens";
+import TakePayment from '../screens/HomePage/TakePayment';
+import GiveMoney from '../screens/HomePage/GiveMoney';
+import { View } from 'react-native';
+import { Button } from 'react-native-paper';
+import { ErrorBoundary } from 'react-error-boundary';
+import { EditTransaction } from '../screens';
 
 const Stack = createNativeStackNavigator();
 
 export const Root = () => {
-
     const status = useAuth.use.status();
 
     const hideSplash = React.useCallback(async () => {
@@ -36,37 +35,37 @@ export const Root = () => {
     }, []);
 
     useEffect(() => {
-        if (status !== "idle") {
+        if (status !== 'idle') {
             hideSplash();
         }
     }, [hideSplash, status]);
 
-    const headerBackgroundColor = {backgroundColor: "#eff6ff"};
+    const headerBackgroundColor = { backgroundColor: '#eff6ff' };
 
     return (
         <Stack.Navigator
             screenOptions={{
                 headerShown: false,
                 gestureEnabled: false,
-                animation: "flip",
+                animation: 'flip',
                 headerShadowVisible: false, // applied here
             }}
         >
             <Stack.Group>
-                {status === "signOut" ? (
+                {status === 'signOut' ? (
                     <Stack.Screen
                         screenOptions={{
                             headerShown: false,
                         }}
-                        name="Auth"
+                        name='Auth'
                         component={AuthNavigator}
                     />
                 ) : (
                     <Stack.Group>
                         {/* App Drawer Route Navigator */}
                         <Stack.Screen
-                            options={{headerShown: false}}
-                            name="App"
+                            options={{ headerShown: false }}
+                            name='App'
                             component={DrawerNavigator}
                         />
 
@@ -75,9 +74,9 @@ export const Root = () => {
                             options={{
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
-                                headerTitle: "Day Book",
+                                headerTitle: 'Day Book',
                             }}
-                            name="DayBook"
+                            name='DayBook'
                             component={DayBook}
                         />
 
@@ -85,9 +84,9 @@ export const Root = () => {
                             options={{
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
-                                headerTitle: "Party Statement",
+                                headerTitle: 'Party Statement',
                             }}
-                            name="Party"
+                            name='Party'
                             component={PartyStatement}
                         />
 
@@ -95,9 +94,9 @@ export const Root = () => {
                             options={{
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
-                                headerTitle: "All Parties",
+                                headerTitle: 'All Parties',
                             }}
-                            name="AllParty"
+                            name='AllParty'
                             component={AllParties}
                         />
 
@@ -105,9 +104,9 @@ export const Root = () => {
                             options={{
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
-                                headerTitle: "All Transactions",
+                                headerTitle: 'All Transactions',
                             }}
-                            name="AllTransactions"
+                            name='AllTransactions'
                             component={AllTransactions}
                         />
 
@@ -115,30 +114,33 @@ export const Root = () => {
                             options={{
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
-                                headerTitle: "Cost Centre Wise Profit",
+                                headerTitle: 'Cost Centre Wise Profit',
                             }}
-                            name="CostCenter"
+                            name='CostCenter'
                             component={CostCenter}
                         />
 
                         <Stack.Screen
-                            options={({route}) => ({
-                                title: (route?.params?.name) ? route?.params?.name : 'Details',
+                            options={({ route }) => ({
+                                title: route?.params?.name
+                                    ? route?.params?.name
+                                    : 'Details',
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
                             })}
-                            name="CustomerTransactionDetails"
+                            name='CustomerTransactionDetails'
                             component={CustomerTransactionDetails}
                         />
 
-
                         <Stack.Screen
-                            options={({route}) => ({
-                                title: (route?.params?.name) ? route?.params?.name : 'Details',
+                            options={({ route }) => ({
+                                title: route?.params?.name
+                                    ? route?.params?.name
+                                    : 'Details',
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
                             })}
-                            name="DetailsPdf"
+                            name='DetailsPdf'
                             component={ShareScreen}
                         />
 
@@ -146,9 +148,9 @@ export const Root = () => {
                             options={{
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
-                                headerTitle: "Take Money",
+                                headerTitle: 'Take Money',
                             }}
-                            name="TakeMoney"
+                            name='TakeMoney'
                             component={TakePayment}
                         />
 
@@ -156,9 +158,9 @@ export const Root = () => {
                             options={{
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
-                                headerTitle: "Give Money",
+                                headerTitle: 'Give Money',
                             }}
-                            name="GiveMoney"
+                            name='GiveMoney'
                             component={GiveMoney}
                         />
 
@@ -166,9 +168,9 @@ export const Root = () => {
                             options={{
                                 headerStyle: headerBackgroundColor,
                                 headerShown: true,
-                                headerTitle: "Edit",
+                                headerTitle: 'Edit',
                             }}
-                            name="EditTransaction"
+                            name='EditTransaction'
                             component={EditTransaction}
                         />
                     </Stack.Group>
@@ -178,20 +180,19 @@ export const Root = () => {
     );
 };
 
-
-function ErrorFallback({error, resetErrorBoundary}) {
+function ErrorFallback({ error, resetErrorBoundary }) {
     return (
         <View>
             <Text>An error occurred: {error.message}</Text>
-            <Button title="Try Again" onPress={resetErrorBoundary}/>
+            <Button title='Try Again' onPress={resetErrorBoundary} />
         </View>
     );
 }
 
-export const RootNavigator = ({theme}) => (
+export const RootNavigator = ({ theme }) => (
     <NavigationContainer theme={theme} navigationRef={navigationRef}>
         {/*<ErrorBoundary FallbackComponent={ErrorFallback}>*/}
-            <Root/>
+        <Root />
         {/*</ErrorBoundary>*/}
     </NavigationContainer>
 );

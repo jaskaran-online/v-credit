@@ -2,7 +2,14 @@ import icons from './icons';
 import images from './images';
 import animations from './animations';
 import config from './config';
-import theme, {COLORS, FONTS, responsiveFontSize, responsiveHeight, responsiveWidth, SIZES,} from './theme';
+import theme, {
+    COLORS,
+    FONTS,
+    responsiveFontSize,
+    responsiveHeight,
+    responsiveWidth,
+    SIZES,
+} from './theme';
 
 export {
     icons,
@@ -15,5 +22,5 @@ export {
     responsiveWidth,
     responsiveHeight,
     responsiveFontSize,
-    config
+    config,
 };

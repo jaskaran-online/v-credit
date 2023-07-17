@@ -1,5 +1,5 @@
 // useApi.js
-import {useQuery, useMutation, QueryClient} from '@tanstack/react-query';
+import { useQuery, useMutation, QueryClient } from '@tanstack/react-query';
 import { get, post, put, patch, del } from './api';
 
 const queryClient = new QueryClient();
@@ -8,32 +8,31 @@ export const useCompanyProductsData = (url) => {
     return useQuery(['getData', url], () => get(url));
 };
 
-
 export const useCompanyCostCenterData = (url) => {
     return useQuery(['getCostCenters', url], () => get(url));
 };
 
 export const useCustomerTransactionData = () => {
     return useMutation({
-        mutationKey:  "getCustomerTransactionData",
+        mutationKey: 'getCustomerTransactionData',
         mutationFn: (data) => post('api/v1/get/customer/transactions', data),
-        cacheTime : 500,
+        cacheTime: 500,
     });
 };
 
 export const useCustomersData = () => {
     return useMutation({
-        mutationKey:  "getCustomerData",
+        mutationKey: 'getCustomerData',
         mutationFn: (data) => post('api/v1/get/customer/list', data),
-        cacheTime : 500,
+        cacheTime: 500,
     });
 };
 
 export const useTransactionsData = () => {
     return useMutation({
-        mutationKey : 'totalAmount',
-        mutationFn : (data) => post('api/v1/get/today/transactions', data),
-        cacheTime : 500
+        mutationKey: 'totalAmount',
+        mutationFn: (data) => post('api/v1/get/today/transactions', data),
+        cacheTime: 500,
     });
 };
 
@@ -43,79 +42,78 @@ export const useAuthLogin = () => {
 
 export const useTotalTransactionData = () => {
     return useMutation({
-        mutationKey:  "getCustomerTotalData",
+        mutationKey: 'getCustomerTotalData',
         mutationFn: (data) => post('api/v1/get/today/transactions/total', data),
-        cacheTime : 500,
+        cacheTime: 500,
     });
 };
 
 export const useDailyBook = () => {
     return useMutation({
-        mutationKey:  "dailyBook",
+        mutationKey: 'dailyBook',
         mutationFn: (data) => post('api/v1/daily-book', data),
-        cacheTime : 500,
+        cacheTime: 500,
     });
 };
 
 export const usePartyStatement = () => {
     return useMutation({
-        mutationKey:  "partyStatement",
+        mutationKey: 'partyStatement',
         mutationFn: (data) => post('api/v1/party-statement', data),
-        cacheTime : 500,
+        cacheTime: 500,
     });
 };
 
 export const useAllParties = () => {
     return useMutation({
-        mutationKey:  "allParties",
+        mutationKey: 'allParties',
         mutationFn: (data) => post('api/v1/all-parties', data),
-        cacheTime : 500,
+        cacheTime: 500,
     });
 };
 
 export const useAllTransactions = () => {
     return useMutation({
-        mutationKey:  "allTransactionsReport",
+        mutationKey: 'allTransactionsReport',
         mutationFn: (data) => post('api/v1/all-transactions', data),
-        cacheTime : 500,
+        cacheTime: 500,
     });
 };
 
 export const useCostCenterProfitReport = () => {
     return useMutation({
-        mutationKey:  "costCenterProfitReport",
+        mutationKey: 'costCenterProfitReport',
         mutationFn: (data) => post('api/v1/cost-center-profit', data),
-        cacheTime : 500,
+        cacheTime: 500,
     });
 };
 
-
 export const useProductsApi = () => {
     return useMutation({
-        mutationKey:  "productsApi",
+        mutationKey: 'productsApi',
         mutationFn: (data) => post('api/v1/products', data),
-        cacheTime : 500,
+        cacheTime: 500,
     });
 };
 
 export const usePaymentApi = () => {
     return useMutation({
-        mutationKey : "payment",
-        mutationFn : (data) => post('api/v1/transactions', data)
+        mutationKey: 'payment',
+        mutationFn: (data) => post('api/v1/transactions', data),
     });
 };
 
 export const useEditPaymentApi = () => {
     return useMutation({
-        mutationKey : "editPayment",
-        mutationFn : (data) => post('api/v1/get/transaction-by-id', data)
+        mutationKey: 'editPayment',
+        mutationFn: (data) => post('api/v1/get/transaction-by-id', data),
     });
 };
 
 export const useUpdatePaymentApi = () => {
     return useMutation({
-        mutationKey : "updatePayment",
-        mutationFn : (data) => post('api/v1/update/transactions', data)
+        mutationKey: 'updatePayment',
+        mutationFn: (data) => post('api/v1/update/transactions', data),
     });
 };
 

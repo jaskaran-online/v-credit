@@ -3,9 +3,9 @@ import axios from 'axios';
 const axiosInstance = axios.create({
     baseURL: 'http://mycreditbook.com/',
     headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'multipart/form-data'
-    }
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+    },
 });
 
 // Function to make GET requests
@@ -24,7 +24,11 @@ export const post = async (url, data) => {
         const response = await axiosInstance.post(url, data);
         return response.data;
     } catch (error) {
-        if (error.response && error.response.data && error.response.data.message) {
+        if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+        ) {
             throw new Error(error.response.data.message);
         } else {
             throw new Error('An error occurred during the request.');

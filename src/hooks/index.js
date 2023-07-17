@@ -1,5 +1,3 @@
-import {useAuth} from "./useAuth";
+import { useAuth } from './useAuth';
 
-export {
-    useAuth
-}
+export { useAuth };

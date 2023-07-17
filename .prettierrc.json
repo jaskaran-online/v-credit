@@ -1,0 +1,24 @@
+{
+  "printWidth": 80,                 
+  "tabWidth": 4,                    
+  "useTabs": false,                 
+  "semi": true,                     
+  "singleQuote": true,              
+  "jsxSingleQuote": true,           
+  "trailingComma": "all",           
+  "bracketSpacing": true,           
+  "jsxBracketSameLine": false,      
+  "arrowParens": "always",          
+  "requirePragma": false,           
+  "insertPragma": false,            
+  "proseWrap": "preserve",          
+  "endOfLine": "auto",              
+  "overrides": [
+    {
+      "files": "*.json",            
+      "options": {
+        "tabWidth": 4               
+      }
+    }
+  ]
+}

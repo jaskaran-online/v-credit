@@ -6,53 +6,64 @@ import {
     DrawerItemList,
 } from '@react-navigation/drawer';
 import React from 'react';
-import {
-    StyleSheet,
-    useWindowDimensions,
-    View
-} from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 
-import { Avatar, Button, Text } from "react-native-paper";
+import { Avatar, Button, Text } from 'react-native-paper';
 import { COLORS } from '../core';
 import { HomePage, Reports } from '../screens';
 
-import { useAuth } from "../hooks";
+import { useAuth } from '../hooks';
 
 function CustomDrawerContent(props) {
-
     const signOut = useAuth.use.signOut();
     const auth = useAuth.use?.token();
 
     return (
-        <View style={{flex: 1, backgroundColor: COLORS.white}}>
+        <View style={{ flex: 1, backgroundColor: COLORS.white }}>
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerHeaderContainer}>
                     <View style={styles.drawerHeaderInnerContainer}>
                         <View>
-                            <Text variant={"titleMedium"}>{auth?.user?.name || "User Name"}</Text>
-                            <Text variant={"bodySmall"} className={"text-slate-600"}>{auth?.user?.email}</Text>
+                            <Text variant={'titleMedium'}>
+                                {auth?.user?.name || 'User Name'}
+                            </Text>
+                            <Text
+                                variant={'bodySmall'}
+                                className={'text-slate-600'}
+                            >
+                                {auth?.user?.email}
+                            </Text>
                         </View>
-                        <Avatar.Text size={50} color="white" labelStyle={{ fontSize :20 }} label="US" />
+                        <Avatar.Text
+                            size={50}
+                            color='white'
+                            labelStyle={{ fontSize: 20 }}
+                            label='US'
+                        />
                     </View>
                 </View>
                 <DrawerItemList {...props} />
 
                 <DrawerItem
-                    label="App Rating"
+                    label='App Rating'
                     labelStyle={styles.drawerItemLabel}
                     onPress={() => alert('Will be available soon!')}
-                    icon={({size}) => (
-                        <Icon name="star" size={size - 5} color={COLORS.primary} />
+                    icon={({ size }) => (
+                        <Icon
+                            name='star'
+                            size={size - 5}
+                            color={COLORS.primary}
+                        />
                     )}
                 />
 
                 <DrawerItem
-                    label="Invite Friends"
+                    label='Invite Friends'
                     labelStyle={styles.drawerItemLabel}
                     onPress={() => alert('Will be available soon!')}
-                    icon={({size}) => (
+                    icon={({ size }) => (
                         <Icon
-                            name="share"
+                            name='share'
                             size={size - 5}
                             color={COLORS.primary}
                         />
@@ -62,13 +73,16 @@ function CustomDrawerContent(props) {
 
             <View style={styles.footerButtonContainer}>
                 <Button
-                    mode="contained"
+                    mode='contained'
                     compact={true}
-                    onPress={() => signOut()}>
+                    onPress={() => signOut()}
+                >
                     Logout
                 </Button>
                 <View style={styles.footerVersionTextContainer}>
-                    <Text className={"text-slate-500"} variant="bodySmall">Version : 00.1</Text>
+                    <Text className={'text-slate-500'} variant='bodySmall'>
+                        Version : 00.1
+                    </Text>
                 </View>
             </View>
         </View>
@@ -78,21 +92,23 @@ function CustomDrawerContent(props) {
 const Drawer = createDrawerNavigator();
 
 export function DrawerNavigator() {
-
     const auth = useAuth.use?.token();
-    const hasRoleOneOrFour = auth?.user?.roles?.some(role => role.id === 1 || role.id === 4);
+    const hasRoleOneOrFour = auth?.user?.roles?.some(
+        (role) => role.id === 1 || role.id === 4,
+    );
     const dimensions = useWindowDimensions();
     return (
         <Drawer.Navigator
             drawerContent={CustomDrawerContent}
-            initialRouteName="HomePage"
+            initialRouteName='HomePage'
             allowFontScaling={false}
             animationEnabled
-            drawerActiveBackgroundColor={"black"}
+            drawerActiveBackgroundColor={'black'}
             screenOptions={() => ({
                 drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
                 headerShown: true,
-                headerTitleAlign: 'center', headerStyle: {
+                headerTitleAlign: 'center',
+                headerStyle: {
                     backgroundColor: COLORS.white,
                 },
                 headerTitleStyle: {
@@ -100,38 +116,57 @@ export function DrawerNavigator() {
                 },
                 headerTintColor: COLORS.darkTransparent,
                 headerShadowVisible: false,
-            })}>
-
+            })}
+        >
             <Drawer.Screen
-                name="HomePage"
+                name='HomePage'
                 component={HomePage}
                 options={{
                     headerShown: true,
                     drawerActiveTintColor: COLORS.white,
                     drawerActiveBackgroundColor: COLORS.primary,
-                    headerStyle : { backgroundColor : '#eff6ff'},
-                    title: auth?.user?.company?.name || "Home",
-                    drawerIcon: ({focused, size}) => (
-                        <Icon name="home" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
+                    headerStyle: { backgroundColor: '#eff6ff' },
+                    title: auth?.user?.company?.name || 'Home',
+                    drawerIcon: ({ focused, size }) => (
+                        <Icon
+                            name='home'
+                            size={size - 5}
+                            color={focused ? COLORS.white : COLORS.primary}
+                        />
                     ),
                 }}
             />
-            {hasRoleOneOrFour && <Drawer.Screen
-                name="Reports"
-                component={Reports}
-                options={{
-                    headerShown: true,
-                    headerTitle : "Reports",
-                    headerStyle : { backgroundColor : '#eff6ff'},
-                    title: ({focused}) =>(<Text style={{color: focused ? COLORS.white : COLORS.darkTransparent}}>Reports</Text>),
-                    drawerActiveTintColor: COLORS.white,
-                    drawerActiveBackgroundColor: COLORS.primary,
-                    drawerIcon: ({focused, size}) => (
-                        <Icon name="nav-icon-list-a" size={size - 5} color={focused ? COLORS.white : COLORS.primary} />
-                    ),
-                }}
-            />}
-
+            {hasRoleOneOrFour && (
+                <Drawer.Screen
+                    name='Reports'
+                    component={Reports}
+                    options={{
+                        headerShown: true,
+                        headerTitle: 'Reports',
+                        headerStyle: { backgroundColor: '#eff6ff' },
+                        title: ({ focused }) => (
+                            <Text
+                                style={{
+                                    color: focused
+                                        ? COLORS.white
+                                        : COLORS.darkTransparent,
+                                }}
+                            >
+                                Reports
+                            </Text>
+                        ),
+                        drawerActiveTintColor: COLORS.white,
+                        drawerActiveBackgroundColor: COLORS.primary,
+                        drawerIcon: ({ focused, size }) => (
+                            <Icon
+                                name='nav-icon-list-a'
+                                size={size - 5}
+                                color={focused ? COLORS.white : COLORS.primary}
+                            />
+                        ),
+                    }}
+                />
+            )}
         </Drawer.Navigator>
     );
 }
