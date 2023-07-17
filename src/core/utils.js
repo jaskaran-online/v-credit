@@ -173,7 +173,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
           {transaction?.transaction_type_id === 1 ? (
             <View className={'mr-2'}>
               <Text variant={'bodyMedium'} className='text-slate-800 mr-2'>
-                {parseFloat(transaction?.amount).toFixed(2)}
+                {parseFloat(transaction?.amount).toFixed(2)} ₹
               </Text>
               <Text variant={'labelSmall'} className='text-slate-400 mr-2'>
                 (Udhaar)
@@ -194,7 +194,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
             {transaction?.transaction_type_id === 2 ? (
               <View>
                 <Text variant={'bodyMedium'} className='text-slate-800'>
-                  {parseFloat(transaction?.amount).toFixed(2)}
+                  {parseFloat(transaction?.amount).toFixed(2)} ₹
                 </Text>
                 <Text variant={'labelSmall'} className='text-slate-400'>
                   (Payment)

@@ -115,65 +115,6 @@ export const SIZES = {
 };
 
 export const FONTS = {
-  largeTitle: {
-    fontFamily: 'Roboto-regular',
-    fontSize: SIZES.largeTitle,
-    lineHeight: responsiveFontSize(6),
-    color: '#000000d6',
-  },
-  h1: {
-    fontFamily: 'Roboto-Black',
-    fontSize: SIZES.h1,
-    lineHeight: responsiveFontSize(4),
-    color: '#000000d6',
-  },
-  h2: {
-    fontFamily: 'Roboto-Bold',
-    fontSize: SIZES.h2,
-    color: '#000000d6',
-  },
-  h3: {
-    fontFamily: 'Roboto-Bold',
-    fontSize: SIZES.h3,
-    lineHeight: responsiveFontSize(2.5),
-    color: '#000000d6',
-  },
-  h4: {
-    fontFamily: 'Roboto-Bold',
-    fontSize: SIZES.h4,
-    lineHeight: responsiveFontSize(2),
-    color: '#000000d6',
-  },
-  body1: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: SIZES.body1,
-    lineHeight: 36,
-    color: '#000000d6',
-  },
-  body2: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: SIZES.body2,
-    lineHeight: 30,
-    color: '#000000d6',
-  },
-  body3: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: SIZES.body3,
-    lineHeight: 22,
-    color: '#000000d6',
-  },
-  body4: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: SIZES.body4,
-    lineHeight: 22,
-    color: '#000000d6',
-  },
-  body5: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: SIZES.body5,
-    lineHeight: 22,
-    color: '#000000d6',
-  },
 };
 
 const appTheme = { COLORS, SIZES, FONTS };

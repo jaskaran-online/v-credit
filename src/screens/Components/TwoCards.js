@@ -93,7 +93,7 @@ export function TwoCards({ toReceive = 0, toPay = 0 }) {
               filterByToReceive ? 'text-white' : 'text-slate-700'
             } font-bold `}
           >
-            ₹{Math.abs(parseFloat(toReceive).toFixed(2))}
+            {Math.abs(parseFloat(toReceive).toFixed(2))} ₹
           </Text>
         </View>
       </Box>
@@ -127,7 +127,7 @@ export function TwoCards({ toReceive = 0, toPay = 0 }) {
               filterByToPay ? 'text-white' : 'text-slate-700'
             } font-bold `}
           >
-            ₹{Math.abs(parseFloat(toPay).toFixed(2))}
+            {Math.abs(parseFloat(toPay).toFixed(2))} ₹
           </Text>
         </View>
       </Box>

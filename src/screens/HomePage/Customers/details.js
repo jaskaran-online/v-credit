@@ -13,6 +13,7 @@ import { useCustomerTransactionData } from '../../../apis/useApi';
 import { formatDateForMessage, renderHeader } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import FloatingButtons from '../../Components/FloatingButton';
+import { log } from 'react-native-reanimated';
 
 function processString(input = null) {
   if (input == null || input === '' || input === 'null') {
@@ -38,27 +39,40 @@ const makePhoneCall = (phoneNumber) => {
     .catch((error) => console.error(error));
 };
 
-const sendWhatsApp = (phoneWithCountryCode) => {
-  let msg = 'Hi..';
+const sendWhatsApp = async ({
+  created_at,
+  to_pay_balance,
+  to_receive_balance,
+  name,
+  balance,
+  id,
+}) => {
+  let messageDate = formatDateForMessage(created_at);
+  let message = `Hi ${name}`;
 
-  let mobile =
-    Platform.OS !== 'ios' ? '+' + phoneWithCountryCode : phoneWithCountryCode;
-  if (mobile) {
-    if (msg) {
-      let url = 'whatsapp://send?text=' + msg + '&phone=' + mobile;
-      Linking.openURL(url)
-        .then(() => {
-          console.log('WhatsApp Opened');
-        })
-        .catch(() => {
-          alert('Make sure WhatsApp installed on your device');
-        });
-    } else {
-      alert('Please insert message to send');
-    }
+  if (to_receive_balance < to_pay_balance && balance !== 0) {
+    message = `Hi ${name},
+          
+This is a friendly reminder that you have to pay ${Math.abs(balance).toFixed(2)} ₹ to me as of ${messageDate}.
+
+Thanks,
+MyCreditBook
+For complete details,
+Click : http://mycreditbook.com/udhaar-khata/${id}
+      `;
   } else {
-    alert('Please insert mobile no');
+    message = `Hi ${name},
+          
+I will pay ${Math.abs(balance).toFixed(2)}₹ to you.
+
+Thanks,
+MyCreditBook
+For complete details,
+Click : http://mycreditbook.com/udhaar-khata/${id}`;
   }
+  await Share.share({
+    message: message,
+  });
 };
 
 const renderItem = ({ item, index, user, customer, balance }) => {
@@ -67,10 +81,8 @@ const renderItem = ({ item, index, user, customer, balance }) => {
   if (item?.transaction_type_id === 2) {
     message = `Hi ${customer?.name},
     
-I received payment of ${parseFloat(item?.amount).toFixed(
-      2,
-    )} ₹ on ${dateFormatted} from you.
-Total Balance: ${Math.abs(balance).toFixed(2)} ₹.
+I received payment of ${parseFloat(item?.amount).toFixed(2)} ₹ on ${dateFormatted} from you.
+Total Balance: ${Math.abs(balance).toFixed(2)}₹.
 
 Thanks,
 ${user?.name}
@@ -78,9 +90,7 @@ For complete details,
 Click : http://mycreditbook.com/udhaar-khata/${customer?.id}-${user?.id}`;
   } else {
     message = `Hi ${customer?.name},
-I gave you credit of ${parseFloat(item?.amount).toFixed(
-      2,
-    )} ₹ on ${dateFormatted}.
+I gave you credit of ${parseFloat(item?.amount).toFixed(2)} ₹ on ${dateFormatted}.
 Total Balance: ${Math.abs(balance).toFixed(2)} ₹.
 
 Thanks,
@@ -295,7 +305,7 @@ export default function Index({ navigation, route }) {
             </TouchableOpacity>
             <TouchableOpacity
               className='bg-blue-50 p-2 rounded-full'
-              onPress={() => sendWhatsApp(data?.data?.customer?.phone)}
+              onPress={() => sendWhatsApp(data?.data?.customer)}
             >
               <MaterialCommunityIcons name='whatsapp' size={26} color='green' />
             </TouchableOpacity>

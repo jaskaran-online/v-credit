@@ -1,6 +1,4 @@
-import {
-  Feather
-} from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import _ from 'lodash';
@@ -13,7 +11,11 @@ import { useAuth } from '../../../hooks';
 
 export default function Index() {
   const auth = useAuth.use?.token();
-  const { mutate, data, isLoading } = useTransactionsData();
+  const {
+    mutate: transactionRequest,
+    data: transactionData,
+    isLoading,
+  } = useTransactionsData();
 
   const [reload, setReload] = useState(false);
   const [filteredList, setFilteredList] = useState([]);
@@ -23,45 +25,36 @@ export default function Index() {
   const [filterBy, setFilteredBy] = useState('Clear');
 
   useEffect(() => {
-    if (data?.data) {
+    if (transactionData?.data) {
       if (filterBy === 'Clear') {
-        setOrderedData(data?.data);
+        setOrderedData(transactionData?.data);
       } else {
         const orderedArray = _.orderBy(
-          data?.data,
+          transactionData?.data,
           ['transaction_type_id'],
           [filterBy === 'Payment Received' ? 'desc' : 'asc'],
         );
         setOrderedData(orderedArray);
       }
     }
-  }, [filterBy, data, isLoading]);
+  }, [filterBy, transactionData, isLoading]);
 
   useEffect(() => {
     setFilteredList(orderedData);
   }, [orderedData]);
 
-  useEffect(() => {
-    loadCustomerData();
-  }, []);
-
   useFocusEffect(
     useCallback(() => {
-      loadCustomerData();
-      return () => {
-        // Useful for cleanup functions
-        console.log('Screen was unfocused');
-      };
+      loadTransactions();
     }, []),
   );
 
-  function loadCustomerData() {
+  function loadTransactions() {
     setReload(true);
     const formData = new FormData();
     formData.append('company_id', auth.user.company_id);
     formData.append('cost_center_id', auth.user.cost_center_id);
-    // formData.append('user_id', auth.user.id);
-    mutate(formData);
+    transactionRequest(formData);
     setReload(false);
   }
 
@@ -156,30 +149,26 @@ export default function Index() {
           })}
         </View>
       )}
-      {isLoading ? (
-        <ActivityIndicator className={'mt-16'} />
-      ) : (
-        <FlashList
-          data={filteredList}
-          renderItem={({ item, index }) =>
-            renderItem({ item, index, userId: auth.user.id })
-          }
-          ListHeaderComponent={renderHeader}
-          estimatedItemSize={200}
-          refreshing={reload}
-          onRefresh={loadCustomerData}
-          onSearch={handleSearch}
-          showOptions={showOptions}
-          options={options}
-          onOptionSelect={handleOptionSelect}
-          ListFooterComponent={<View style={{ height: 100 }} />}
-          ListEmptyComponent={
-            <View className={'flex-1 d-flex justify-center items-center h-16'}>
-              <Text variant={'bodyMedium'}>No Records Available!</Text>
-            </View>
-          }
-        />
-      )}
+      <FlashList
+        data={filteredList || []}
+        renderItem={({ item, index }) =>
+          renderItem({ item, index, userId: auth.user.id })
+        }
+        ListHeaderComponent={renderHeader}
+        estimatedItemSize={200}
+        refreshing={reload}
+        onRefresh={loadTransactions}
+        onSearch={handleSearch}
+        showOptions={showOptions}
+        options={options}
+        onOptionSelect={handleOptionSelect}
+        ListFooterComponent={<View style={{ height: 100 }} />}
+        ListEmptyComponent={
+          <View className={'flex-1 d-flex justify-center items-center h-16'}>
+            <Text variant={'bodyMedium'}>No Records Available!</Text>
+          </View>
+        }
+      />
     </View>
   );
 }

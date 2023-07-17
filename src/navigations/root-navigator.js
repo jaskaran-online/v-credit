@@ -1,29 +1,26 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
-import { navigationRef } from './index';
 import { useAuth } from '../hooks';
+import { navigationRef } from './index';
 
-import { AuthNavigator } from './auth-navigator';
-import { NavigationContainer } from './navigation-container';
-import { DrawerNavigator } from './drawer-navigator';
 import {
   AllParties,
   AllTransactions,
+  CostCenter,
   DayBook,
   PartyStatement,
-  CostCenter,
 } from '../screens/Reports';
+import { AuthNavigator } from './auth-navigator';
+import { DrawerNavigator } from './drawer-navigator';
+import { NavigationContainer } from './navigation-container';
 
 import CustomerTransactionDetails from '../screens/HomePage/Customers/details';
 import ShareScreen from '../screens/HomePage/Customers/pdf';
 
-import TakePayment from '../screens/HomePage/TakePayment';
-import GiveMoney from '../screens/HomePage/GiveMoney';
-import { View } from 'react-native';
-import { Button } from 'react-native-paper';
-import { ErrorBoundary } from 'react-error-boundary';
 import { EditTransaction } from '../screens';
+import GiveMoney from '../screens/HomePage/GiveMoney';
+import TakePayment from '../screens/HomePage/TakePayment';
 
 const Stack = createNativeStackNavigator();
 
@@ -176,19 +173,8 @@ export const Root = () => {
   );
 };
 
-function ErrorFallback({ error, resetErrorBoundary }) {
-  return (
-    <View>
-      <Text>An error occurred: {error.message}</Text>
-      <Button title='Try Again' onPress={resetErrorBoundary} />
-    </View>
-  );
-}
-
 export const RootNavigator = ({ theme }) => (
   <NavigationContainer theme={theme} navigationRef={navigationRef}>
-    {/*<ErrorBoundary FallbackComponent={ErrorFallback}>*/}
     <Root />
-    {/*</ErrorBoundary>*/}
   </NavigationContainer>
 );

@@ -101,17 +101,8 @@ http://mycreditbook.com/udhaar-khata/${
 };
 
 export default function Index() {
-  useFocusEffect(
-    useCallback(() => {
-      loadCustomerData();
-      return () => {
-        // Useful for cleanup functions
-        // console.log("Screen was unfocused");
-      };
-    }, []),
-  );
 
-  const { mutate, data, isLoading } = useCustomersData();
+  const { mutate: customerDataRequest, data: customerData, isLoading } = useCustomersData();
   const [reload, setReload] = useState(false);
   const auth = useAuth?.use?.token();
 
@@ -121,36 +112,38 @@ export default function Index() {
   const [orderedData, setOrderedData] = useState([]);
 
   useEffect(() => {
-    if (data?.data) {
+    if (customerData?.data) {
       if (filterBy === 'none') {
-        setOrderedData(data?.data);
+        setOrderedData(customerData?.data);
       } else {
         setOrderedData(
-          _.filter(data?.data, {
+          _.filter(customerData?.data, {
             type: filterBy === 'toReceive' ? 1 : 0,
           }),
         );
       }
     }
-  }, [filterBy, data, isLoading]);
+  }, [filterBy, customerData, isLoading]);
 
   useEffect(() => {
     setFilteredList(orderedData);
   }, [orderedData]);
 
-  function loadCustomerData() {
+  function getCustomerData() {
     setReload(true);
     const formData = new FormData();
     formData.append('cost_center_id', auth?.user.cost_center_id);
     formData.append('company_id', auth?.user.company_id);
     formData.append('user_id', auth?.user.id);
-    mutate(formData);
+    customerDataRequest(formData);
     setReload(false);
   }
 
-  useEffect(() => {
-    loadCustomerData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getCustomerData();
+    }, []),
+  );
 
   const handleSearch = (text) => {
     setQuery(text);
@@ -159,7 +152,6 @@ export default function Index() {
     );
     setFilteredList(filtered);
   };
-
 
   return (
     <View className={'bg-white flex-1'}>
@@ -187,25 +179,19 @@ export default function Index() {
         </View>
       </View>
 
-      {isLoading && !data ? (
-        <View className={'flex-1 justify-center'}>
-          <ActivityIndicator />
-        </View>
-      ) : (
-        <FlashList
-          data={filteredList}
-          renderItem={renderItem}
-          estimatedItemSize={200}
-          refreshing={reload}
-          onRefresh={loadCustomerData}
-          ListFooterComponent={<View style={{ height: 100 }} />}
-          ListEmptyComponent={
-            <View className={'flex-1 d-flex justify-center items-center h-16'}>
-              <Text variant={'bodyMedium'}>No Records Available!</Text>
-            </View>
-          }
-        />
-      )}
+      <FlashList
+        data={filteredList || []}
+        renderItem={renderItem}
+        estimatedItemSize={200}
+        refreshing={reload}
+        onRefresh={getCustomerData}
+        ListFooterComponent={<View style={{ height: 100 }} />}
+        ListEmptyComponent={
+          <View className={'flex-1 d-flex justify-center items-center h-16'}>
+            <Text variant={'bodyMedium'}>No Records Available!</Text>
+          </View>
+        }
+      />
     </View>
   );
 }
