@@ -1,10 +1,10 @@
-import { TouchableOpacity, View } from 'react-native';
-import { Text } from 'react-native-paper';
 import {
   AntDesign,
   Ionicons,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
+import { TouchableOpacity, View } from 'react-native';
+import { Text } from 'react-native-paper';
 
 function CardComponent({ title, iconName, description, onPress = () => null }) {
   return (

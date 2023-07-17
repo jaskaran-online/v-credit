@@ -70,7 +70,7 @@ const GivePayment = ({ navigation, route }) => {
   const [selectedCustomer, setSelectedCustomer] = useState(
     route.params?.customer || null,
   );
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct] = useState(null);
   const [visible, setVisible] = useState(false);
   const [contactMobileNumbers, setContactMobileNumbers] = useState(
     route?.params?.customer?.phone

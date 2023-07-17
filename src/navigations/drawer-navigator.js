@@ -7,11 +7,9 @@ import {
 } from '@react-navigation/drawer';
 import React from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
-
 import { Avatar, Button, Text } from 'react-native-paper';
 import { COLORS } from '../core';
 import { HomePage, Reports } from '../screens';
-
 import { useAuth } from '../hooks';
 
 function CustomDrawerContent(props) {

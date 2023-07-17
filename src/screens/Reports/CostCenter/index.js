@@ -1,20 +1,19 @@
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
-import { Text, Searchbar } from 'react-native-paper';
-import { useEffect, useState } from 'react';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
 import { StatusBar } from 'expo-status-bar';
-import { styled } from 'nativewind';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
-import { TwoCards } from '../../Components/TwoCards';
 import {
   useAllTransactions,
   useCompanyCostCenterData,
   useCustomersData,
 } from '../../../apis/useApi';
-import DropDownFlashList from '../../Components/dropDownFlashList';
 import { useAuth } from '../../../hooks';
 import navigation from '../../../navigations';
+import { TwoCards } from '../../Components/TwoCards';
+import DropDownFlashList from '../../Components/dropDownFlashList';
 
 const renderHeader = () => (
   <View className={'flex-row justify-between px-4 py-2 space-x-2 items-center'}>
@@ -36,7 +35,7 @@ const renderHeader = () => (
   </View>
 );
 
-const renderItem = ({ item, index }) => (
+const renderItem = ({ item }) => (
   <TouchableOpacity
     className={
       'flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200'
@@ -115,9 +114,6 @@ export default function Index() {
   );
   const {
     mutate: customerMutate,
-    data: customersData,
-    isLoading: isCustomerLoading,
-    error,
   } = useCustomersData();
   const {
     mutate: transactionsMutate,
@@ -197,7 +193,7 @@ export default function Index() {
     setSelectedItem(item);
   };
 
-  const handleOptionSelect = (show) => {
+  const handleOptionSelect = () => {
     setShowOptions((show) => !show);
   };
 

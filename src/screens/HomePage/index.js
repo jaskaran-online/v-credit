@@ -1,18 +1,15 @@
-import { View } from 'react-native';
-import { Button } from 'react-native-paper';
+import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
+import { useCallback, useEffect } from 'react';
+import { View } from 'react-native';
 import { withTheme } from 'react-native-paper';
+import {
+  useTotalTransactionData
+} from '../../apis/useApi';
+import { useAuth } from '../../hooks';
+import FloatingButtons from '../Components/FloatingButton';
 import { TabNavigator } from '../Components/TabNavigator';
 import { TwoCards } from '../Components/TwoCards';
-import {
-  useCustomerTransactionData,
-  useTotalTransactionData,
-} from '../../apis/useApi';
-import { memo, useCallback, useEffect } from 'react';
-import { useAuth } from '../../hooks';
-import { focusManager } from '@tanstack/react-query';
-import { useFocusEffect } from '@react-navigation/native';
-import FloatingButtons from '../Components/FloatingButton';
 
 function Index({ navigation }) {
   useFocusEffect(
@@ -26,7 +23,7 @@ function Index({ navigation }) {
   );
 
   const auth = useAuth.use?.token();
-  const { mutate, data, isLoading } = useTotalTransactionData();
+  const { mutate, data } = useTotalTransactionData();
   function loadCustomerData() {
     const formData = new FormData();
     formData.append('company_id', auth.user.company_id);

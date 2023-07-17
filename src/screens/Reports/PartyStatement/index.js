@@ -1,26 +1,17 @@
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
-import {
-  List,
-  Text,
-  Divider,
-  TextInput,
-  Menu,
-  Searchbar,
-} from 'react-native-paper';
-import { useEffect, useState } from 'react';
-import {
-  Feather,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { styled } from 'nativewind';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import {
+  Searchbar,
+  Text
+} from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
-import { TwoCards } from '../../Components/TwoCards';
-import { useAuth } from '../../../hooks';
 import { useCustomersData, usePartyStatement } from '../../../apis/useApi';
 import { renderHeader, renderItem } from '../../../core/utils';
+import { useAuth } from '../../../hooks';
+import { TwoCards } from '../../Components/TwoCards';
 import DropDownFlashList from '../../Components/dropDownFlashList';
 
 export default function Index() {
@@ -29,8 +20,6 @@ export default function Index() {
   const {
     mutate: customerMutate,
     data: customersData,
-    isLoading: isCustomerLoading,
-    error,
   } = useCustomersData();
   const [reload, setReload] = useState(false);
 
@@ -121,7 +110,7 @@ export default function Index() {
     setSelectedItem(item);
   };
 
-  const handleOptionSelect = (show) => {
+  const handleOptionSelect = () => {
     setShowOptions((show) => !show);
   };
 
@@ -141,14 +130,6 @@ export default function Index() {
   };
 
   const StyledView = styled(TouchableOpacity);
-  const Box = ({ className, children, ...props }) => (
-    <StyledView
-      className={`flex text-center h-20 rounded ₹{className}`}
-      {...props}
-    >
-      {children}
-    </StyledView>
-  );
 
   const [inputDate, setInputDate] = useState(new Date('2023-06-01'));
   const [fromInputDate, setFromInputDate] = useState(new Date('2023-06-11'));

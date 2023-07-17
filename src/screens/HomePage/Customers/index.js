@@ -1,15 +1,15 @@
-import { View, TouchableOpacity, ActivityIndicator, Share } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
-import { Text, Searchbar } from 'react-native-paper';
-import _ from 'lodash';
-import navigation from '../../../navigations/index';
-import { useCustomersData } from '../../../apis/useApi';
-import { useCallback, useEffect, useState } from 'react';
-import { useAuth } from '../../../hooks';
-import { useFocusEffect } from '@react-navigation/native';
-import { useFilterToggleStore } from '../../Components/TwoCards';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list';
+import _ from 'lodash';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Share, TouchableOpacity, View } from 'react-native';
+import { Searchbar, Text } from 'react-native-paper';
+import { useCustomersData } from '../../../apis/useApi';
 import { formatDateForMessage } from '../../../core/utils';
+import { useAuth } from '../../../hooks';
+import navigation from '../../../navigations/index';
+import { useFilterToggleStore } from '../../Components/TwoCards';
 
 const renderItem = ({ item, index }) => {
   const toPay = parseFloat((item?.toPay || 0).toFixed(2));
@@ -111,7 +111,7 @@ export default function Index() {
     }, []),
   );
 
-  const { mutate, data, isLoading, error } = useCustomersData();
+  const { mutate, data, isLoading } = useCustomersData();
   const [reload, setReload] = useState(false);
   const auth = useAuth?.use?.token();
 
@@ -160,9 +160,6 @@ export default function Index() {
     setFilteredList(filtered);
   };
 
-  const handleOptionSelect = (show) => {
-    setShowOptions((show) => !show);
-  };
 
   return (
     <View className={'bg-white flex-1'}>

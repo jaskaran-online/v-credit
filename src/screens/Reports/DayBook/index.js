@@ -5,7 +5,6 @@ import { memo, useEffect, useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
-
 import { useDailyBook } from '../../../apis/useApi';
 import { renderHeader, renderItem } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
@@ -15,7 +14,7 @@ const StyledView = styled(TouchableOpacity);
 function DayBook() {
   const auth = useAuth.use?.token();
   const { mutate, data: dailyBookData, isLoading } = useDailyBook();
-  const [reload, setReload] = useState(false);
+  const [, setReload] = useState(false);
 
   const [filteredList, setFilteredList] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);

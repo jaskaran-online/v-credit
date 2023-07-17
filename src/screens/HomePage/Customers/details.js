@@ -1,18 +1,18 @@
-import { View, TouchableOpacity, Linking, Platform, Share } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
-import { Text, Searchbar } from 'react-native-paper';
-import { useEffect, useState } from 'react';
 import {
   Feather,
   MaterialCommunityIcons,
   MaterialIcons,
 } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
+import { useEffect, useState } from 'react';
+import { Linking, Platform, Share, TouchableOpacity, View } from 'react-native';
+import { Searchbar, Text } from 'react-native-paper';
 
-import { useCustomerTransactionData } from '../../../apis/useApi';
-import { useAuth } from '../../../hooks';
-import { formatDateForMessage, renderHeader } from '../../../core/utils';
-import FloatingButtons from '../../Components/FloatingButton';
 import _ from 'lodash';
+import { useCustomerTransactionData } from '../../../apis/useApi';
+import { formatDateForMessage, renderHeader } from '../../../core/utils';
+import { useAuth } from '../../../hooks';
+import FloatingButtons from '../../Components/FloatingButton';
 
 function processString(input = null) {
   if (input == null || input === '' || input === 'null') {
@@ -32,7 +32,7 @@ function processString(input = null) {
 const makePhoneCall = (phoneNumber) => {
   const url = `tel:${processString(phoneNumber)}`;
   Linking.canOpenURL(url)
-    .then((supported) => {
+    .then(() => {
       return Linking.openURL(url);
     })
     .catch((error) => console.error(error));
@@ -47,7 +47,7 @@ const sendWhatsApp = (phoneWithCountryCode) => {
     if (msg) {
       let url = 'whatsapp://send?text=' + msg + '&phone=' + mobile;
       Linking.openURL(url)
-        .then((data) => {
+        .then(() => {
           console.log('WhatsApp Opened');
         })
         .catch(() => {
@@ -63,7 +63,6 @@ const sendWhatsApp = (phoneWithCountryCode) => {
 
 const renderItem = ({ item, index, user, customer, balance }) => {
   let message;
-  let isEven = index % 2 === 0 ? 'bg-slate-50' : 'bg-white';
   let dateFormatted = formatDateForMessage(item?.date);
   if (item?.transaction_type_id === 2) {
     message = `Hi ${customer?.name},
@@ -224,11 +223,6 @@ export default function Index({ navigation, route }) {
 
   const handleSearch = (inputValue) => {
     setQuery(inputValue);
-    const filteredList = (data?.data?.transactions).filter(
-      (item) =>
-        String(item.amount).includes(inputValue) ||
-        String(item.id).includes(inputValue),
-    );
     // setFilteredList(filteredList);
   };
 
@@ -242,7 +236,7 @@ export default function Index({ navigation, route }) {
     mutate(formData);
     setReload(false);
   }
-  const handleOptionSelect = (show) => {
+  const handleOptionSelect = () => {
     setShowOptions((show) => !show);
   };
 
@@ -353,7 +347,7 @@ export default function Index({ navigation, route }) {
             'border-2 border-slate-100 shadow-black shadow-lg right-10 top-14'
           }
         >
-          {options.map((value, index, array) => {
+          {options.map((value, index) => {
             return (
               <TouchableOpacity
                 key={index}

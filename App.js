@@ -9,9 +9,9 @@ import {
   MD3LightTheme as LightTheme,
   Provider as PaperProvider,
 } from 'react-native-paper';
-import { RootNavigator } from './src/navigations/root-navigator';
 import Toast from 'react-native-toast-message';
 import { useAuth } from './src/hooks';
+import { RootNavigator } from './src/navigations/root-navigator';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -40,7 +40,7 @@ export default function App() {
     authHydrate();
   }, []);
 
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isDarkTheme] = useState(false);
   const theme = isDarkTheme ? darkTheme : lightTheme;
 
   return (

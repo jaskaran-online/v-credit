@@ -1,13 +1,13 @@
 import { FlashList } from '@shopify/flash-list';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
-import { useAuth } from '../../../hooks';
 import { useAllParties, useCustomersData } from '../../../apis/useApi';
-import DropDownFlashList from '../../Components/dropDownFlashList';
 import { renderHeader, renderItem } from '../../../core/utils';
+import { useAuth } from '../../../hooks';
+import DropDownFlashList from '../../Components/dropDownFlashList';
 
 export default function Index() {
   const auth = useAuth.use?.token();
@@ -20,11 +20,9 @@ export default function Index() {
   const {
     mutate: customerMutate,
     data: customersData,
-    isLoading: isCustomerLoading,
-    error,
   } = useCustomersData();
 
-  const [reload, setPartyReload] = useState(false);
+  const [, setPartyReload] = useState(false);
   const [filteredList, setFilteredList] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showOptions, setShowOptions] = useState('');
@@ -98,7 +96,7 @@ export default function Index() {
     setSelectedItem(item);
   };
 
-  const handleOptionSelect = (show) => {
+  const handleOptionSelect = () => {
     setShowOptions((show) => !show);
   };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import HTMLCodeView from './HTMLCodeView';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';

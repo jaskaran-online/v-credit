@@ -1,14 +1,14 @@
 import { Linking, Share, TouchableOpacity, View } from 'react-native';
 // import * as SecureStore from 'expo-secure-store';
-import createSecureStore from '@neverdull-agency/expo-unlimited-secure-store';
-import navigation from '../navigations';
 import {
   MaterialCommunityIcons,
   MaterialIcons,
   Octicons,
 } from '@expo/vector-icons';
-import { Text } from 'react-native-paper';
+import createSecureStore from '@neverdull-agency/expo-unlimited-secure-store';
 import React, { useState } from 'react';
+import { Text } from 'react-native-paper';
+import navigation from '../navigations';
 
 const SecureStore = createSecureStore();
 

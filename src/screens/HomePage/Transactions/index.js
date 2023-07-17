@@ -1,18 +1,15 @@
 import {
-  Feather,
-  MaterialCommunityIcons,
-  MaterialIcons,
+  Feather
 } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
+import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { useTransactionsData } from '../../../apis/useApi';
-import { useAuth } from '../../../hooks';
-import { useFocusEffect } from '@react-navigation/native';
-import _ from 'lodash';
-import navigation from '../../../navigations/index';
 import { renderHeader, renderItem } from '../../../core/utils';
+import { useAuth } from '../../../hooks';
 
 export default function Index() {
   const auth = useAuth.use?.token();
@@ -91,7 +88,7 @@ export default function Index() {
     setFilteredList(filtered);
   };
 
-  const handleOptionSelect = (show) => {
+  const handleOptionSelect = () => {
     setShowOptions((show) => !show);
   };
 
@@ -142,7 +139,7 @@ export default function Index() {
             'border-2 border-slate-100 shadow-black shadow-lg right-10 top-14'
           }
         >
-          {options.map((value, index, array) => {
+          {options.map((value, index) => {
             return (
               <TouchableOpacity
                 key={index}

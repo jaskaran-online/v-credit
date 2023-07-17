@@ -1,14 +1,14 @@
-import { View, ActivityIndicator } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
-import { Text, Searchbar } from 'react-native-paper';
-import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
-import { TwoCards } from '../../Components/TwoCards';
 import { useAllTransactions, useCustomersData } from '../../../apis/useApi';
-import DropDownFlashList from '../../Components/dropDownFlashList';
-import { useAuth } from '../../../hooks';
 import { renderHeader, renderItem } from '../../../core/utils';
+import { useAuth } from '../../../hooks';
+import { TwoCards } from '../../Components/TwoCards';
+import DropDownFlashList from '../../Components/dropDownFlashList';
 
 export default function Index() {
   const auth = useAuth.use?.token();
@@ -16,8 +16,6 @@ export default function Index() {
   const {
     mutate: customerMutate,
     data: customersData,
-    isLoading: isCustomerLoading,
-    error,
   } = useCustomersData();
   const {
     mutate: transactionsMutate,
@@ -107,7 +105,7 @@ export default function Index() {
     setSelectedItem(item);
   };
 
-  const handleOptionSelect = (show) => {
+  const handleOptionSelect = () => {
     setShowOptions((show) => !show);
   };
 

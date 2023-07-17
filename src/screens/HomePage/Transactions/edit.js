@@ -1,28 +1,26 @@
 // noinspection JSValidateTypes
-import React, { useEffect, useRef, useState } from 'react';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Camera } from 'expo-camera';
+import * as Contacts from 'expo-contacts';
+import * as ImagePicker from 'expo-image-picker';
+import React, { useEffect, useState } from 'react';
 import {
+  Image,
+  Keyboard,
   KeyboardAvoidingView,
   TouchableOpacity,
   View,
-  Image,
-  Keyboard,
 } from 'react-native';
 import { Button, Dialog, Text, TextInput } from 'react-native-paper';
-import * as Contacts from 'expo-contacts';
-import DropDownFlashList from '../../Components/dropDownFlashList';
 import { DatePickerInput } from 'react-native-paper-dates';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { Camera } from 'expo-camera';
-import * as ImagePicker from 'expo-image-picker';
-import { getItem, setItem } from '../../../core/utils';
-import {
-  useEditPaymentApi,
-  usePaymentApi,
-  useProductsApi,
-  useUpdatePaymentApi,
-} from '../../../apis/useApi';
-import { useAuth } from '../../../hooks';
 import Toast from 'react-native-toast-message';
+import {
+  useEditPaymentApi, useProductsApi,
+  useUpdatePaymentApi
+} from '../../../apis/useApi';
+import { getItem, setItem } from '../../../core/utils';
+import { useAuth } from '../../../hooks';
+import DropDownFlashList from '../../Components/dropDownFlashList';
 
 function convertDateFormat(dateString) {
   const dateObj = new Date(dateString);
@@ -64,9 +62,6 @@ const EditTransaction = ({ navigation, route }) => {
     mutate: productRequest,
     isLoading,
     data: products,
-    isSuccess: isProductsSuccess,
-    error: productsError,
-    isErrorProduct,
   } = useProductsApi();
 
   const {

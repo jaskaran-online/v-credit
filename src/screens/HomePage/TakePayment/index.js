@@ -1,27 +1,27 @@
 // noinspection JSValidateTypes
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Camera } from 'expo-camera';
+import * as Contacts from 'expo-contacts';
+import * as ImagePicker from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
 import {
+  Image,
+  Keyboard,
   KeyboardAvoidingView,
   TouchableOpacity,
   View,
-  Image,
-  Keyboard,
 } from 'react-native';
 import { Button, Dialog, Text, TextInput } from 'react-native-paper';
-import * as Contacts from 'expo-contacts';
-import DropDownFlashList from '../../Components/dropDownFlashList';
 import { DatePickerInput } from 'react-native-paper-dates';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { Camera } from 'expo-camera';
-import * as ImagePicker from 'expo-image-picker';
-import { getItem, setItem } from '../../../core/utils';
+import Toast from 'react-native-toast-message';
 import {
   useCustomersData,
   usePaymentApi,
   useProductsApi,
 } from '../../../apis/useApi';
+import { getItem, setItem } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
-import Toast from 'react-native-toast-message';
+import DropDownFlashList from '../../Components/dropDownFlashList';
 
 const showToast = (message, type) => {
   Toast.show({
@@ -70,7 +70,7 @@ const TakePayment = ({ navigation, route }) => {
   const [selectedCustomer, setSelectedCustomer] = useState(
     route.params?.customer || null,
   );
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct] = useState(null);
   const [visible, setVisible] = useState(false);
   const [contactMobileNumbers, setContactMobileNumbers] = useState(
     route?.params?.customer?.phone

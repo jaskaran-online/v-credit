@@ -1,19 +1,18 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  View,
-  ScrollView,
+  View
 } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
+import { useAuthLogin } from '../../apis/useApi';
 import { COLORS } from '../../core';
 import { useAuth } from '../../hooks';
-import { useForm, Controller } from 'react-hook-form';
-import { useAuthLogin } from '../../apis/useApi';
-import Toast from 'react-native-toast-message';
 
 const showToast = (error) => {
   Toast.show({
