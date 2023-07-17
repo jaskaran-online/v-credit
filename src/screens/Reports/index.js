@@ -6,10 +6,10 @@ import DayBook from './DayBook';
 import PartyStatement from './PartyStatement';
 
 export {
-    AllParties,
-    AllReports,
-    AllTransactions,
-    CostCenter,
-    DayBook,
-    PartyStatement,
+  AllParties,
+  AllReports,
+  AllTransactions,
+  CostCenter,
+  DayBook,
+  PartyStatement,
 };

@@ -6,15 +6,15 @@ import { Login } from '../screens';
 const Stack = createNativeStackNavigator();
 
 export const AuthNavigator = () => {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name='Login'
-                component={Login}
-                options={{
-                    headerShown: false,
-                }}
-            />
-        </Stack.Navigator>
-    );
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name='Login'
+        component={Login}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
 };

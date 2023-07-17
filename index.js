@@ -12,13 +12,13 @@ registerRootComponent(App);
 registerTranslation('en', en);
 
 if (Text.defaultProps == null) {
-    Text.defaultProps = {};
-    Text.defaultProps.allowFontScaling = false;
+  Text.defaultProps = {};
+  Text.defaultProps.allowFontScaling = false;
 }
 
 if (TextInput.defaultProps == null) {
-    TextInput.defaultProps = {};
-    TextInput.defaultProps.allowFontScaling = false;
+  TextInput.defaultProps = {};
+  TextInput.defaultProps.allowFontScaling = false;
 }
 
 Text.defaultProps.allowFontScaling = false;
