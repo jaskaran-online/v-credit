@@ -12,10 +12,12 @@ import { TwoCards } from '../../Components/TwoCards';
 
 const StyledView = styled(TouchableOpacity);
 function DayBook() {
+
+  
   const auth = useAuth.use?.token();
   const { mutate, data: dailyBookData, isLoading } = useDailyBook();
-  const [, setReload] = useState(false);
-
+  const [reload, setReload] = useState(false);
+  const [inputDate, setInputDate] = useState(new Date());
   const [filteredList, setFilteredList] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showOptions, setShowOptions] = useState('');
@@ -29,10 +31,7 @@ function DayBook() {
             locale='en'
             label='Date'
             value={inputDate}
-            onChange={(d) => {
-              setInputDate(d);
-              setTimeout(() => loadCustomerData(), 1500);
-            }}
+            onChange={(date) => setInputDate(date)}
             inputMode='start'
             mode={'outlined'}
             className={'bg-blue-50 mx-1'}
@@ -45,27 +44,33 @@ function DayBook() {
       </View>
     );
   }
-  function loadCustomerData() {
-    setReload(true);
 
+  function loadCustomerData() {
+
+    setReload(true);
+    console.log(inputDate)
     const currentDate = inputDate;
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
     const day = String(currentDate.getDate()).padStart(2, '0');
     const dateString = `${year}-${month}-${day}`;
     const formData = new FormData();
+    console.log(dateString)
     formData.append('company_id', auth.user.company_id);
     formData.append('cost_center_id', auth.user.cost_center_id);
     formData.append('date', dateString);
-    // formData.append('user_id', auth.user.id);
-    console.log(formData);
+
     mutate(formData);
     setReload(false);
   }
 
-  useEffect(() => {
+  useEffect(function(){
     loadCustomerData();
   }, []);
+
+  useEffect(function(){
+    loadCustomerData();
+  }, [inputDate]);
 
   const handleSearch = (text) => {
     setQuery(text);
@@ -109,8 +114,6 @@ function DayBook() {
   const handleEditSelectedItem = () => {
     setSelectedItem(null);
   };
-
-  const [inputDate, setInputDate] = useState(new Date());
 
   return (
     <View className={'bg-white flex-1'}>
