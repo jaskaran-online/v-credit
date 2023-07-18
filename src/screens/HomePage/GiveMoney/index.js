@@ -93,7 +93,6 @@ const GivePayment = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    console.log(selectedCustomer);
     if (selectedCustomer?.phoneNumbers) {
       const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
         return {
@@ -168,7 +167,7 @@ const GivePayment = ({ navigation, route }) => {
           });
           if (contactsArray.length > 0) {
             setContacts([...filteredContacts, ...contactsArray]);
-            setItem('contacts', contactsArray).then((r) => console.log(r));
+            setItem('contacts', contactsArray).then((r) => null);
           }
         }
       } catch (error) {
@@ -177,7 +176,7 @@ const GivePayment = ({ navigation, route }) => {
         });
         if (contactsArray.length > 0) {
           setContacts([...filteredContacts, ...contactsArray]);
-          setItem('contacts', contactsArray).then((r) => console.log(r));
+          setItem('contacts', contactsArray).then((r) => null);
         }
       }
     }
@@ -283,8 +282,8 @@ const GivePayment = ({ navigation, route }) => {
 
   const handleContactSelect = (contactObj) => {
     setSelectedCustomer(contactObj);
-    // console.log({contactObj});
   };
+
   const handleDateChange = (d) => setInputDate(d);
 
   function processString(input = null) {

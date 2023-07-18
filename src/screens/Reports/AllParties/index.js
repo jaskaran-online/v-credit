@@ -71,7 +71,6 @@ export default function Index() {
     }
     formData.append('date', dateString);
     allPartiesMutate(formData);
-    console.log(formData);
     setPartyReload(false);
   }
 
@@ -123,7 +122,6 @@ export default function Index() {
   };
 
   const handleEditSelectedItem = () => {
-    console.log('Edit selected item:', selectedItem);
     setSelectedItem(null);
   };
 

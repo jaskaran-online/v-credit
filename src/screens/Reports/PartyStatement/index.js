@@ -3,10 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { styled } from 'nativewind';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import {
-  Searchbar,
-  Text
-} from 'react-native-paper';
+import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 import { useCustomersData, usePartyStatement } from '../../../apis/useApi';
 import { renderHeader, renderItem } from '../../../core/utils';
@@ -17,10 +14,7 @@ import DropDownFlashList from '../../Components/dropDownFlashList';
 export default function Index() {
   const auth = useAuth.use?.token();
   const { mutate, data: dailyBookData, isLoading } = usePartyStatement();
-  const {
-    mutate: customerMutate,
-    data: customersData,
-  } = useCustomersData();
+  const { mutate: customerMutate, data: customersData } = useCustomersData();
   const [reload, setReload] = useState(false);
 
   const [filteredList, setFilteredList] = useState([]);
@@ -125,14 +119,10 @@ export default function Index() {
   };
 
   const handleEditSelectedItem = () => {
-    console.log('Edit selected item:', selectedItem);
     setSelectedItem(null);
   };
 
   const StyledView = styled(TouchableOpacity);
-
-  const [inputDate, setInputDate] = useState(new Date('2023-06-01'));
-  const [fromInputDate, setFromInputDate] = useState(new Date('2023-06-11'));
 
   return (
     <View className={'bg-white flex-1'}>

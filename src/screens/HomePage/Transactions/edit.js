@@ -144,7 +144,7 @@ const EditTransaction = ({ navigation, route }) => {
             });
             if (contactsArray.length > 0) {
               setContacts(contactsArray);
-              setItem('contacts', contactsArray).then((r) => console.log(r));
+              setItem('contacts', contactsArray).then((r) => null);
             }
           }
         } catch (error) {
@@ -153,7 +153,7 @@ const EditTransaction = ({ navigation, route }) => {
           });
           if (contactsArray.length > 0) {
             setContacts(contactsArray);
-            setItem('contacts', contactsArray).then((r) => console.log(r));
+            setItem('contacts', contactsArray).then((r) => null);
           }
         }
       }

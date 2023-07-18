@@ -48,14 +48,12 @@ function DayBook() {
   function loadCustomerData() {
 
     setReload(true);
-    console.log(inputDate)
     const currentDate = inputDate;
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
     const day = String(currentDate.getDate()).padStart(2, '0');
     const dateString = `${year}-${month}-${day}`;
     const formData = new FormData();
-    console.log(dateString)
     formData.append('company_id', auth.user.company_id);
     formData.append('cost_center_id', auth.user.cost_center_id);
     formData.append('date', dateString);

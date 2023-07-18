@@ -132,7 +132,6 @@ export default function Index() {
   };
 
   const handleEditSelectedItem = () => {
-    console.log('Edit selected item:', selectedItem);
     setSelectedItem(null);
   };
 

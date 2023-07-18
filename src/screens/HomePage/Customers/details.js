@@ -40,14 +40,13 @@ const makePhoneCall = (phoneNumber) => {
 };
 
 const sendWhatsApp = async ({
-  created_at,
   to_pay_balance,
   to_receive_balance,
   name,
   balance,
   id,
-}) => {
-  let messageDate = formatDateForMessage(created_at);
+}, {date}) => {
+  let messageDate = formatDateForMessage(date);
   let message = `Hi ${name}`;
 
   if (to_receive_balance < to_pay_balance && balance !== 0) {
@@ -305,7 +304,7 @@ export default function Index({ navigation, route }) {
             </TouchableOpacity>
             <TouchableOpacity
               className='bg-blue-50 p-2 rounded-full'
-              onPress={() => sendWhatsApp(data?.data?.customer)}
+              onPress={() => sendWhatsApp(data?.data?.customer, filteredList[filteredList.length - 1])}
             >
               <MaterialCommunityIcons name='whatsapp' size={26} color='green' />
             </TouchableOpacity>
