@@ -400,7 +400,7 @@ const GivePayment = ({ navigation, route }) => {
         />
         <View className={'flex flex-row w-full mt-2 -z-30'}>
           <DatePickerInput
-            locale='en'
+            locale='en-GB'
             label='From'
             value={inputDate}
             onChange={handleDateChange}

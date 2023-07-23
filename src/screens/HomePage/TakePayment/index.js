@@ -400,8 +400,8 @@ const TakePayment = ({ navigation, route }) => {
         />
         <View className={'flex flex-row w-full mt-2 -z-30'}>
           <DatePickerInput
-            locale='en'
-            label='From'
+            locale='en-GB'
+            label='Date'
             value={inputDate}
             onChange={handleDateChange}
             inputMode='start'

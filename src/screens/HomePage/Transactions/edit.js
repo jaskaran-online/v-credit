@@ -93,6 +93,7 @@ const EditTransaction = ({ navigation, route }) => {
       (x) => x.id === transaction.transaction_type_id,
     );
     setTransactionType(transactionType[0]);
+    setInputDate(new Date(transaction.date));
     loadTransactionData();
   }, [route.params?.transaction]);
 
@@ -324,7 +325,7 @@ const EditTransaction = ({ navigation, route }) => {
         />
         <View className={'flex flex-row w-full mt-2 -z-30'}>
           <DatePickerInput
-            locale='en'
+            locale='en-GB'
             label='From'
             value={inputDate}
             onChange={handleDateChange}

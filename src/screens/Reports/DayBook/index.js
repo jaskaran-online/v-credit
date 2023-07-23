@@ -28,7 +28,7 @@ function DayBook() {
       <View className='bg-blue-50 h-40'>
         <StyledView className='flex h-1/4 p-2 bg-blue-50'>
           <DatePickerInput
-            locale='en'
+            locale='en-GB'
             label='Date'
             value={inputDate}
             onChange={(date) => setInputDate(date)}

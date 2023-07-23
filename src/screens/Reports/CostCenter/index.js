@@ -229,7 +229,7 @@ export default function Index() {
       <View className='flex h-15 p-2 bg-blue-50'>
         <View className={'flex flex-row mb-2'}>
           <DatePickerInput
-            locale='en'
+            locale='en-GB'
             label='From'
             value={fromDate}
             onChange={(d) => setFromDate(d)}
@@ -239,7 +239,7 @@ export default function Index() {
           />
 
           <DatePickerInput
-            locale='en'
+            locale='en-GB'
             label='To'
             value={toDate}
             onChange={(d) => setToDate(d)}

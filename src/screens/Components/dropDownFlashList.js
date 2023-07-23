@@ -113,8 +113,15 @@ function DropDownFlashList({
             <TextInput.Icon
               icon={isDropDownOpen ? 'close' : 'chevron-down'}
               size={28}
-              color={'red'}
-              onPress={() => setIsDropDownOpen((value) => !value)}
+              color={isDropDownOpen ? 'red' : 'gray'}
+              onPress={() => {
+                if(selectedItemName === ''){
+                  setValue('');
+                  setFilteredContacts(data);
+                }else{
+                  setIsDropDownOpen((value) => !value);
+                }
+              }}
             />
           )
         }
