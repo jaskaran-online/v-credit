@@ -36,9 +36,10 @@ function convertDateFormat(dateString) {
   const dateObj = new Date(dateString);
 
   const convertedDate = dateObj
-    .toISOString()
-    .slice(0, 10) // Extract YYYY-MM-DD
-    .replace('T', ' '); // Replace 'T' with a space
+      .toISOString()
+      .slice(0, 10) // Extract YYYY-MM-DD
+      .replace('T', ' '); // Replace 'T' with a space
+
   const convertedTime = dateObj.toISOString().slice(11, 19); // Extract HH:MM:SS
 
   return `${convertedDate} ${convertedTime}`;
