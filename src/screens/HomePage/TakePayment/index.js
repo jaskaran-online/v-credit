@@ -32,6 +32,21 @@ const showToast = (message, type) => {
   });
 };
 
+function processString(input = null) {
+  if (input == null || input === '' || input === 'null') {
+    return '';
+  }
+  // Remove "-", ",", and spaces from the string
+  let processedString = input.replace(/[-,\s]/g, '');
+
+  // If the resulting string has a length greater than 10, remove the first three letters
+  if (processedString.length > 10) {
+    processedString = processedString.substring(3);
+  }
+
+  return processedString;
+}
+
 function convertDateFormat(dateString) {
   const dateObj = new Date(dateString);
 
@@ -84,7 +99,7 @@ const TakePayment = ({ navigation, route }) => {
       : [],
   );
   const [contactSelectedMobileNumber, setContactSelectedMobileNumber] =
-    useState(route?.params?.customer?.phone || null);
+    useState(route?.params?.customer?.phone || undefined);
 
   useEffect(() => {
     loadCustomerData();
@@ -94,16 +109,19 @@ const TakePayment = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedCustomer?.phoneNumbers) {
-      const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
-        return {
-          ...obj,
-          name: obj.digits
-            ? processString(obj.digits)
-            : processString(obj.number),
-        };
-      });
-      setContactMobileNumbers(updatedData);
+    if(selectedCustomer){
+      if (selectedCustomer?.phoneNumbers) {
+        setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
+        const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
+          return {
+            ...obj,
+            name: obj.digits
+              ? processString(obj.digits)
+              : processString(obj.number),
+          };
+        });
+        setContactMobileNumbers(updatedData);
+      }
     }
   }, [selectedCustomer]);
 
@@ -129,7 +147,7 @@ const TakePayment = ({ navigation, route }) => {
 
   useEffect(() => {
     if (!isLoadingCustomer) {
-      loadContactsFromDevice();
+      loadContactsFromDevice().then(r => null);
     }
   }, [isLoadingCustomer]);
 
@@ -143,8 +161,6 @@ const TakePayment = ({ navigation, route }) => {
   }
 
   const loadContactsFromDevice = async () => {
-    const { status: contactStatus } = await Contacts.requestPermissionsAsync();
-    if (contactStatus === 'granted') {
       let filteredContacts = customerData?.data
         ?.map((obj) => obj.customer)
         ?.map((obj) => {
@@ -157,30 +173,14 @@ const TakePayment = ({ navigation, route }) => {
             imageAvailable: false,
           };
         });
-
-      try {
         const localContacts = await getItem('contacts');
         if (localContacts) {
-          setContacts([...filteredContacts, ...localContacts]);
-        } else {
-          const { data: contactsArray } = await Contacts.getContactsAsync({
-            fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-          });
-          if (contactsArray.length > 0) {
-            setContacts([...filteredContacts, ...contactsArray]);
-            setItem('contacts', contactsArray).then((r) => null);
+          if(customerData.length > 0) {
+            setContacts(localContacts);
+          }else{
+            setContacts([...filteredContacts, ...localContacts]);
           }
         }
-      } catch (error) {
-        const { data: contactsArray } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-        });
-        if (contactsArray.length > 0) {
-          setContacts([...filteredContacts, ...contactsArray]);
-          setItem('contacts', contactsArray).then((r) => null);
-        }
-      }
-    }
   };
 
   function loadCustomerData() {
@@ -287,21 +287,6 @@ const TakePayment = ({ navigation, route }) => {
   
   const handleDateChange = (d) => setInputDate(d);
 
-  function processString(input = null) {
-    if (input == null || input === '' || input === 'null') {
-      return '';
-    }
-    // Remove "-", ",", and spaces from the string
-    let processedString = input.replace(/[-,\s]/g, '');
-
-    // If the resulting string has a length greater than 10, remove the first three letters
-    if (processedString.length > 10) {
-      processedString = processedString.substring(3);
-    }
-
-    return processedString;
-  }
-
   return (
     <View className={'flex-1 bg-white'}>
       <KeyboardAvoidingView
@@ -318,9 +303,7 @@ const TakePayment = ({ navigation, route }) => {
         />
         {selectedCustomer && (
           <>
-            {contactMobileNumbers.length === 1 ||
-            contactSelectedMobileNumber === null ||
-            contactSelectedMobileNumber !== '' ? (
+            {(contactMobileNumbers.length === 1 || contactSelectedMobileNumber === null) ? (
               <TextInput
                 className={'bg-white mt-2 -z-30'}
                 onChangeText={(mobile) =>
@@ -345,6 +328,9 @@ const TakePayment = ({ navigation, route }) => {
                           ? 'Selected Mobile Number'
                           : 'Select Mobile Number'
                       }
+                      selectedItemName={processString(selectedCustomer?.phoneNumbers[0]?.number)}
+                      selectedItemDigits={processString(selectedCustomer?.phoneNumbers[0]?.digits)}
+                      enableSearch={false}
                       headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
                       onSelect={(contact) => {
                         setContactSelectedMobileNumber(
