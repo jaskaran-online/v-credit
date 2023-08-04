@@ -161,6 +161,7 @@ const TakePayment = ({ navigation, route }) => {
   }
 
   const loadContactsFromDevice = async () => {
+
       let filteredContacts = [];
       let localContacts = [];
 

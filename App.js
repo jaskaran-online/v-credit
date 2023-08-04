@@ -38,7 +38,29 @@ const darkTheme = {
 
 const loadContactsFromDevice = async () => {
   const { status: contactStatus } = await Contacts.requestPermissionsAsync();
+
   if (contactStatus === 'granted') {
+    try {
+      const localContacts = await getItem('contacts');
+      console.log(!localContacts)
+      if (!localContacts) {
+        const { data: contactsArray } = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
+        });
+        if (contactsArray.length > 0) {
+          setItem('contacts', contactsArray).then((r) => null);
+        }
+      }
+    } catch (error) {
+      const { data: contactsArray } = await Contacts.getContactsAsync({
+        fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
+      });
+      if (contactsArray.length > 0) {
+        setItem('contacts', contactsArray).then((r) => null);
+      }
+    }
+  }else{
+    setItem('contacts', null).then((r) => null);
     try {
       const localContacts = await getItem('contacts');
       if (localContacts) {
@@ -66,7 +88,7 @@ export default function App() {
 
   useEffect(function () {
     authHydrate();
-    loadContactsFromDevice().then(r => console.log(r));
+    loadContactsFromDevice().then(r => null);
   }, []);
 
   const [isDarkTheme] = useState(false);
