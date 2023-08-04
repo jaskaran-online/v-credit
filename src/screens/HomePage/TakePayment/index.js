@@ -147,7 +147,7 @@ const TakePayment = ({ navigation, route }) => {
 
   useEffect(() => {
     if (!isLoadingCustomer) {
-      loadContactsFromDevice().then(r => null);
+      loadContactsFromDevice();
     }
   }, [isLoadingCustomer]);
 

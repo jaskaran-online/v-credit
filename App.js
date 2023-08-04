@@ -37,12 +37,12 @@ const darkTheme = {
 };
 
 const loadContactsFromDevice = async () => {
-
   const { status: contactStatus } = await Contacts.requestPermissionsAsync();
   if (contactStatus === 'granted') {
     try {
       const localContacts = await getItem('contacts');
-      if (!localContacts) {
+      if (localContacts) {
+      } else {
         const { data: contactsArray } = await Contacts.getContactsAsync({
           fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
         });
@@ -51,15 +51,13 @@ const loadContactsFromDevice = async () => {
         }
       }
     } catch (error) {
-      console.error('Error loading local contacts:', error);
+      const { data: contactsArray } = await Contacts.getContactsAsync({
+        fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
+      });
+      if (contactsArray.length > 0) {
+        setItem('contacts', contactsArray).then((r) => null);
+      }
     }
-  } else if (contactStatus === 'undetermined') {
-    // User did not make a decision, ask again or handle accordingly
-    // For example, you could display a message asking the user to grant permissions
-    console.log('User has not granted contacts permission.');
-  } else {
-    // Handle the case where permission was denied by the user
-    console.log('User denied contacts permission.');
   }
 };
 
