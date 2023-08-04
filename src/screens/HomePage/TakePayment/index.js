@@ -161,7 +161,10 @@ const TakePayment = ({ navigation, route }) => {
   }
 
   const loadContactsFromDevice = async () => {
-      let filteredContacts = customerData?.data
+      let filteredContacts = [];
+      let localContacts = [];
+
+      filteredContacts = customerData?.data
         ?.map((obj) => obj.customer)
         ?.map((obj) => {
           return {
@@ -173,13 +176,9 @@ const TakePayment = ({ navigation, route }) => {
             imageAvailable: false,
           };
         });
-        const localContacts = await getItem('contacts');
-        if (localContacts) {
-          if(customerData.length > 0) {
-            setContacts(localContacts);
-          }else{
-            setContacts([...filteredContacts, ...localContacts]);
-          }
+      localContacts = await getItem('contacts');
+        if (localContacts.length > 0 || filteredContacts.length > 0) {
+          setContacts([...filteredContacts, ...localContacts]);
         }
   };
 
