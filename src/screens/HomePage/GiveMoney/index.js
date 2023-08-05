@@ -60,7 +60,7 @@ function convertDateFormat(dateString) {
   return `${convertedDate} ${convertedTime}`;
 }
 
-const TakePayment = ({ navigation, route }) => {
+const GiveMoney = ({ navigation, route }) => {
   const auth = useAuth.use?.token();
   const {
     mutate: request,
@@ -111,7 +111,7 @@ const TakePayment = ({ navigation, route }) => {
   useEffect(() => {
     if(selectedCustomer){
       if (selectedCustomer?.phoneNumbers) {
-        setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
+        // setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
         const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
           return {
             ...obj,
@@ -476,4 +476,4 @@ const TakePayment = ({ navigation, route }) => {
   );
 };
 
-export default React.memo(TakePayment);
+export default React.memo(GiveMoney);

@@ -111,7 +111,7 @@ const TakePayment = ({ navigation, route }) => {
   useEffect(() => {
     if(selectedCustomer){
       if (selectedCustomer?.phoneNumbers) {
-        setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
+        // setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
         const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
           return {
             ...obj,
