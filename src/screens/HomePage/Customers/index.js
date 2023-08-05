@@ -101,8 +101,11 @@ http://mycreditbook.com/udhaar-khata/${
 };
 
 export default function Index() {
-
-  const { mutate: customerDataRequest, data: customerData, isLoading } = useCustomersData();
+  const {
+    mutate: customerDataRequest,
+    data: customerData,
+    isLoading,
+  } = useCustomersData();
   const [reload, setReload] = useState(false);
   const auth = useAuth?.use?.token();
 

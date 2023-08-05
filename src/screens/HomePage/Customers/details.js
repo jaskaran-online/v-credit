@@ -39,20 +39,19 @@ const makePhoneCall = (phoneNumber) => {
     .catch((error) => console.error(error));
 };
 
-const sendWhatsApp = async ({
-  to_pay_balance,
-  to_receive_balance,
-  name,
-  balance,
-  id,
-}, {date}) => {
+const sendWhatsApp = async (
+  { to_pay_balance, to_receive_balance, name, balance, id },
+  { date },
+) => {
   let messageDate = formatDateForMessage(date);
   let message = `Hi ${name}`;
 
   if (to_receive_balance < to_pay_balance && balance !== 0) {
     message = `Hi ${name},
           
-This is a friendly reminder that you have to pay ${Math.abs(balance).toFixed(2)} ₹ to me as of ${messageDate}.
+This is a friendly reminder that you have to pay ${Math.abs(balance).toFixed(
+      2,
+    )} ₹ to me as of ${messageDate}.
 
 Thanks,
 MyCreditBook
@@ -80,7 +79,9 @@ const renderItem = ({ item, index, user, customer, balance }) => {
   if (item?.transaction_type_id === 2) {
     message = `Hi ${customer?.name},
     
-I received payment of ${parseFloat(item?.amount).toFixed(2)} ₹ on ${dateFormatted} from you.
+I received payment of ${parseFloat(item?.amount).toFixed(
+      2,
+    )} ₹ on ${dateFormatted} from you.
 Total Balance: ${Math.abs(balance).toFixed(2)}₹.
 
 Thanks,
@@ -89,7 +90,9 @@ For complete details,
 Click : http://mycreditbook.com/udhaar-khata/${customer?.id}-${user?.id}`;
   } else {
     message = `Hi ${customer?.name},
-I gave you credit of ${parseFloat(item?.amount).toFixed(2)} ₹ on ${dateFormatted}.
+I gave you credit of ${parseFloat(item?.amount).toFixed(
+      2,
+    )} ₹ on ${dateFormatted}.
 Total Balance: ${Math.abs(balance).toFixed(2)} ₹.
 
 Thanks,
@@ -304,7 +307,12 @@ export default function Index({ navigation, route }) {
             </TouchableOpacity>
             <TouchableOpacity
               className='bg-blue-50 p-2 rounded-full'
-              onPress={() => sendWhatsApp(data?.data?.customer, filteredList[filteredList.length - 1])}
+              onPress={() =>
+                sendWhatsApp(
+                  data?.data?.customer,
+                  filteredList[filteredList.length - 1],
+                )
+              }
             >
               <MaterialCommunityIcons name='whatsapp' size={26} color='green' />
             </TouchableOpacity>

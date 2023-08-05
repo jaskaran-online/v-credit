@@ -11,5 +11,5 @@ export {
   AllTransactions,
   CostCenter,
   DayBook,
-  PartyStatement
+  PartyStatement,
 };

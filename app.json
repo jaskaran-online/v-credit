@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "jsEngine": "jsc",
@@ -28,18 +26,13 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.webcooks.mycreditbook",
-      "permissions": [
-        "READ_CONTACTS",
-        "WRITE_CONTACTS"
-      ]
+      "permissions": ["READ_CONTACTS", "WRITE_CONTACTS"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      [
-        "expo-localization"
-      ],
+      ["expo-localization"],
       [
         "expo-contacts",
         {

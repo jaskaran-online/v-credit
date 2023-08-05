@@ -13,10 +13,7 @@ import DropDownFlashList from '../../Components/dropDownFlashList';
 export default function Index() {
   const auth = useAuth.use?.token();
 
-  const {
-    mutate: customerMutate,
-    data: customersData,
-  } = useCustomersData();
+  const { mutate: customerMutate, data: customersData } = useCustomersData();
   const {
     mutate: transactionsMutate,
     data: transactionsData,

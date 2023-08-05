@@ -1,7 +1,6 @@
 // noinspection JSValidateTypes
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
-import * as Contacts from 'expo-contacts';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
 import {
@@ -19,9 +18,9 @@ import {
   usePaymentApi,
   useProductsApi,
 } from '../../../apis/useApi';
-import { getItem, setItem } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
+import { useContactsStore } from '../index';
 
 const showToast = (message, type) => {
   Toast.show({
@@ -51,9 +50,9 @@ function convertDateFormat(dateString) {
   const dateObj = new Date(dateString);
 
   const convertedDate = dateObj
-      .toISOString()
-      .slice(0, 10) // Extract YYYY-MM-DD
-      .replace('T', ' '); // Replace 'T' with a space
+    .toISOString()
+    .slice(0, 10) // Extract YYYY-MM-DD
+    .replace('T', ' '); // Replace 'T' with a space
 
   const convertedTime = dateObj.toISOString().slice(11, 19); // Extract HH:MM:SS
 
@@ -70,14 +69,8 @@ const TakePayment = ({ navigation, route }) => {
     isError,
   } = usePaymentApi();
   const { mutate: productRequest, data: products } = useProductsApi();
-  const {
-    mutate: customerRequest,
-    data: customerData,
-    isLoading: isLoadingCustomer,
-  } = useCustomersData();
 
   const [amount, setAmount] = useState(0);
-  const [contacts, setContacts] = useState([]);
   const [imageUri, setImageUri] = useState(null);
   const [inputDate, setInputDate] = useState(new Date());
   const [note, setNote] = useState('');
@@ -86,7 +79,8 @@ const TakePayment = ({ navigation, route }) => {
   const [selectedCustomer, setSelectedCustomer] = useState(
     route.params?.customer || null,
   );
-  const [selectedProduct] = useState(null);
+  const contacts = useContactsStore((state) => state.contactsList);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [visible, setVisible] = useState(false);
   const [contactMobileNumbers, setContactMobileNumbers] = useState(
     route?.params?.customer?.phone
@@ -102,7 +96,6 @@ const TakePayment = ({ navigation, route }) => {
     useState(route?.params?.customer?.phone || undefined);
 
   useEffect(() => {
-    loadCustomerData();
     const formData = new FormData();
     formData.append('company_id', auth?.user?.company_id);
     productRequest(formData);
@@ -146,49 +139,12 @@ const TakePayment = ({ navigation, route }) => {
   }, [isError]);
 
   useEffect(() => {
-    if (!isLoadingCustomer) {
-      loadContactsFromDevice();
-    }
-  }, [isLoadingCustomer]);
-
-  useEffect(() => {
     setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(4));
   }, [price, qty]);
 
   if (isPaymentSuccess) {
     showToast(paymentApiResponse.data.message, 'success');
     setTimeout(() => navigation.navigate('HomePage'), 1000);
-  }
-
-  const loadContactsFromDevice = async () => {
-
-      let filteredContacts = [];
-      let localContacts = [];
-
-      filteredContacts = customerData?.data
-        ?.map((obj) => obj.customer)
-        ?.map((obj) => {
-          return {
-            id: obj.phone_id,
-            name: obj.name,
-            digits: obj.phone,
-            contactType: 'person',
-            phoneNumbers: [{ digits: obj.phone }],
-            imageAvailable: false,
-          };
-        });
-      localContacts = await getItem('contacts');
-        if (localContacts.length > 0 || filteredContacts.length > 0) {
-          setContacts([...filteredContacts, ...localContacts]);
-        }
-  };
-
-  function loadCustomerData() {
-    const customerFormData = new FormData();
-    customerFormData.append('cost_center_id', auth?.user.cost_center_id);
-    customerFormData.append('company_id', auth?.user.company_id);
-    customerFormData.append('user_id', auth?.user.id);
-    customerRequest(customerFormData);
   }
 
   const showDialog = () => {
@@ -239,6 +195,11 @@ const TakePayment = ({ navigation, route }) => {
       return false;
     }
 
+    if (contactSelectedMobileNumber === undefined) {
+      showToast('Please enter customer mobile number!', 'error');
+      return false;
+    }
+
     if (phoneNumber == null) {
       phoneNumber = contactSelectedMobileNumber;
     }
@@ -284,7 +245,7 @@ const TakePayment = ({ navigation, route }) => {
   const handleContactSelect = (contactObj) => {
     setSelectedCustomer(contactObj);
   };
-  
+
   const handleDateChange = (d) => setInputDate(d);
 
   return (
@@ -303,7 +264,8 @@ const TakePayment = ({ navigation, route }) => {
         />
         {selectedCustomer && (
           <>
-            {(contactMobileNumbers.length === 1 || contactSelectedMobileNumber === null) ? (
+            {contactMobileNumbers.length === 1 ||
+            contactSelectedMobileNumber === null ? (
               <TextInput
                 className={'bg-white mt-2 -z-30'}
                 onChangeText={(mobile) =>

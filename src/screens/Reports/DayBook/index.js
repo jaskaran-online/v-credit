@@ -12,8 +12,6 @@ import { TwoCards } from '../../Components/TwoCards';
 
 const StyledView = styled(TouchableOpacity);
 function DayBook() {
-
-  
   const auth = useAuth.use?.token();
   const { mutate, data: dailyBookData, isLoading } = useDailyBook();
   const [reload, setReload] = useState(false);
@@ -46,7 +44,6 @@ function DayBook() {
   }
 
   function loadCustomerData() {
-
     setReload(true);
     const currentDate = inputDate;
     const year = currentDate.getFullYear();
@@ -62,13 +59,16 @@ function DayBook() {
     setReload(false);
   }
 
-  useEffect(function(){
+  useEffect(function () {
     loadCustomerData();
   }, []);
 
-  useEffect(function(){
-    loadCustomerData();
-  }, [inputDate]);
+  useEffect(
+    function () {
+      loadCustomerData();
+    },
+    [inputDate],
+  );
 
   const handleSearch = (text) => {
     setQuery(text);
