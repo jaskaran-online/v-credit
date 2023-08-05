@@ -36,59 +36,11 @@ const darkTheme = {
   },
 };
 
-const loadContactsFromDevice = async () => {
-  const { status: contactStatus } = await Contacts.requestPermissionsAsync();
-
-  if (contactStatus === 'granted') {
-    try {
-      const localContacts = await getItem('contacts');
-      console.log(!localContacts)
-      if (!localContacts) {
-        const { data: contactsArray } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-        });
-        if (contactsArray.length > 0) {
-          setItem('contacts', contactsArray).then((r) => null);
-        }
-      }
-    } catch (error) {
-      const { data: contactsArray } = await Contacts.getContactsAsync({
-        fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-      });
-      if (contactsArray.length > 0) {
-        setItem('contacts', contactsArray).then((r) => null);
-      }
-    }
-  }else{
-    setItem('contacts', null).then((r) => null);
-    try {
-      const localContacts = await getItem('contacts');
-      if (localContacts) {
-      } else {
-        const { data: contactsArray } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-        });
-        if (contactsArray.length > 0) {
-          setItem('contacts', contactsArray).then((r) => null);
-        }
-      }
-    } catch (error) {
-      const { data: contactsArray } = await Contacts.getContactsAsync({
-        fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-      });
-      if (contactsArray.length > 0) {
-        setItem('contacts', contactsArray).then((r) => null);
-      }
-    }
-  }
-};
-
 export default function App() {
   const authHydrate = useAuth.use.hydrate();
 
   useEffect(function () {
     authHydrate();
-    loadContactsFromDevice().then(r => null);
   }, []);
 
   const [isDarkTheme] = useState(false);
