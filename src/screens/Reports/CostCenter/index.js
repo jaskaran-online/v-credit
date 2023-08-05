@@ -112,9 +112,7 @@ export default function Index() {
   const costCenter = useCompanyCostCenterData(
     'api/v1/get/cost-center/' + auth?.user.cost_center_id,
   );
-  const {
-    mutate: customerMutate,
-  } = useCustomersData();
+  const { mutate: customerMutate } = useCustomersData();
   const {
     mutate: transactionsMutate,
     data: transactionsData,

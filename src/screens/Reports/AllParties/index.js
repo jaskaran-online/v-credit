@@ -17,10 +17,7 @@ export default function Index() {
     data: allPartiesData,
     isLoading: allPartiesLoading,
   } = useAllParties();
-  const {
-    mutate: customerMutate,
-    data: customersData,
-  } = useCustomersData();
+  const { mutate: customerMutate, data: customersData } = useCustomersData();
 
   const [, setPartyReload] = useState(false);
   const [filteredList, setFilteredList] = useState([]);

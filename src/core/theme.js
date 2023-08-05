@@ -114,8 +114,7 @@ export const SIZES = {
   height,
 };
 
-export const FONTS = {
-};
+export const FONTS = {};
 
 const appTheme = { COLORS, SIZES, FONTS };
 

@@ -15,8 +15,9 @@ import { Button, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 import Toast from 'react-native-toast-message';
 import {
-  useEditPaymentApi, useProductsApi,
-  useUpdatePaymentApi
+  useEditPaymentApi,
+  useProductsApi,
+  useUpdatePaymentApi,
 } from '../../../apis/useApi';
 import { getItem, setItem } from '../../../core/utils';
 import { useAuth } from '../../../hooks';

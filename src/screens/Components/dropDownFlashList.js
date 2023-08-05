@@ -115,10 +115,10 @@ function DropDownFlashList({
               size={28}
               color={isDropDownOpen ? 'red' : 'gray'}
               onPress={() => {
-                if(selectedItemName === ''){
+                if (selectedItemName === '') {
                   setValue('');
                   setFilteredContacts(data);
-                }else{
+                } else {
                   setIsDropDownOpen((value) => !value);
                 }
               }}
