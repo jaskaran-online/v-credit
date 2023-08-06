@@ -12,8 +12,8 @@ import {
 import Toast from 'react-native-toast-message';
 import { useAuth } from './src/hooks';
 import { RootNavigator } from './src/navigations/root-navigator';
-import * as Contacts from "expo-contacts";
-import {getItem, setItem} from "./src/core/utils";
+import * as Contacts from 'expo-contacts';
+import { getItem, setItem } from './src/core/utils';
 
 // Create a client
 const queryClient = new QueryClient();

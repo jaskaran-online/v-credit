@@ -21,7 +21,7 @@ import ShareScreen from '../screens/HomePage/Customers/pdf';
 import { EditTransaction } from '../screens';
 import GiveMoney from '../screens/HomePage/GiveMoney';
 import TakePayment from '../screens/HomePage/TakePayment';
-import CustomerList from "../screens/HomePage/CustomerList";
+import CustomerList from '../screens/HomePage/CustomerList';
 
 const Stack = createNativeStackNavigator();
 
@@ -168,16 +168,15 @@ export const Root = () => {
               component={EditTransaction}
             />
 
-              <Stack.Screen
-                  options={{
-                      headerStyle: headerBackgroundColor,
-                      headerShown: true,
-                      headerTitle: 'Customers',
-                  }}
-                  name='ViewCustomers'
-                  component={CustomerList}
-              />
-
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerShown: true,
+                headerTitle: 'Customers',
+              }}
+              name='ViewCustomers'
+              component={CustomerList}
+            />
           </Stack.Group>
         )}
       </Stack.Group>

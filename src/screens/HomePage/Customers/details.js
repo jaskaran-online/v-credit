@@ -5,17 +5,24 @@ import {
 } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useEffect, useState } from 'react';
-import {Alert, Linking, Platform, Share, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Linking,
+  Platform,
+  Share,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 
-import _, {isUndefined} from 'lodash';
+import _, { isUndefined } from 'lodash';
 import { useCustomerTransactionData } from '../../../apis/useApi';
 import { formatDateForMessage, renderHeader } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import FloatingButtons from '../../Components/FloatingButton';
-import { log } from 'react-native-reanimated';
 
-function processString(input = null) {
+
+export function processString(input = null) {
   if (input == null || input === '' || input === 'null') {
     return '';
   }
@@ -201,16 +208,13 @@ export default function Index({ navigation, route }) {
   }, [filterBy, data, isLoading]);
 
   useEffect(() => {
-    setFilteredList(orderedData);
+    setFilteredList(_.sortBy(orderedData, ['date']).reverse());
   }, [orderedData]);
 
   useEffect(() => {
     loadCustomerData();
   }, []);
 
-  useEffect(() => {
-    setFilteredList(orderedData);
-  }, [orderedData]);
 
   const options = [
     { label: 'Credit Given', onPress: () => setFilteredBy('Credit Given') },
