@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Button, Dialog, Text, TextInput } from 'react-native-paper';
+import {Button, Checkbox, Dialog, Text, TextInput} from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 import Toast from 'react-native-toast-message';
 import {
@@ -82,6 +82,7 @@ const EditTransaction = ({ navigation, route }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [visible, setVisible] = useState(false);
   const [transactionType, setTransactionType] = useState(null);
+  const [inventoryChecked, setInventoryChecked] = React.useState(false);
 
   const transaction = route?.params?.transaction;
 
@@ -99,8 +100,10 @@ const EditTransaction = ({ navigation, route }) => {
   }, [route.params?.transaction]);
 
   useEffect(() => {
+
     if (!loadingTransactionData) {
       if (transactionData !== null || transactionData?.data !== undefined) {
+        setInventoryChecked(transactionData?.data?.qty > 0 && transactionData?.data?.price > 0);
         setPrice(transactionData?.data?.price || 0);
         setQty(transactionData?.data?.qty || 0);
         setAmount(parseFloat(transactionData?.data?.amount).toFixed(4) || 0);
@@ -208,10 +211,11 @@ const EditTransaction = ({ navigation, route }) => {
       showToast('Please Select Customer', 'error');
       return false;
     }
-
-    if (price == 0 || qty == 0) {
-      showToast('Please check price and qty', 'error');
-      return false;
+    if(inventoryChecked){
+      if (price == 0 || qty == 0) {
+        showToast('Please check price and qty', 'error');
+        return false;
+      }
     }
 
     const formData = new FormData();
@@ -229,11 +233,14 @@ const EditTransaction = ({ navigation, route }) => {
     formData.append('notes', note);
     // formData.append("phone", selectedCustomer?.phoneNumbers ? selectedCustomer?.phoneNumbers[0]?.digits : selectedCustomer?.phone || null);
     // formData.append("phone_id", selectedCustomer?.id);
-    if (selectedProduct) {
-      formData.append('product_id', selectedProduct?.id);
+    if(inventoryChecked){
+      if (selectedProduct) {
+        formData.append('product_id', selectedProduct?.id);
+      }
+      formData.append('price', price);
+      formData.append('qty', qty);
     }
-    formData.append('price', price);
-    formData.append('qty', qty);
+    formData.append('amount', amount);
     formData.append('transaction_type_id', transactionType?.id);
     formData.append('user_id', auth?.user?.id);
     formData.append('id', transaction?.id);
@@ -264,6 +271,19 @@ const EditTransaction = ({ navigation, route }) => {
         behavior='padding'
         className={'bg-white flex-1 px-4 pt-2'}
       >
+        <View className={"mr-5 flex flex-row items-center justify-end my-1"}>
+          <Checkbox
+              status={inventoryChecked ? 'checked' : 'unchecked'}
+              onPress={() => {
+                setInventoryChecked(!inventoryChecked);
+              }}
+          />
+          <TouchableOpacity onPress={() => {
+            setInventoryChecked(!inventoryChecked);
+          }}>
+            <Text>Inventory</Text>
+          </TouchableOpacity>
+        </View>
         <DropDownFlashList
           data={contacts}
           inputLabel='Select Customer'
@@ -273,56 +293,46 @@ const EditTransaction = ({ navigation, route }) => {
           enableSearch={true}
           isReadOnly={true}
         />
-        {!isLoading && (
-          <View className={'mt-2 -z-10'}>
-            <DropDownFlashList
-              data={products}
-              inputLabel='Select Product'
-              headerTitle='List of products'
-              onSelect={handleProductSelect}
-              selectedItemName={transaction?.product?.name}
-              enableSearch={true}
+        {inventoryChecked && (<>
+            {!isLoading && (
+              <View className={'mt-2 -z-10'}>
+                <DropDownFlashList
+                  data={products}
+                  inputLabel='Select Product'
+                  headerTitle='List of products'
+                  onSelect={handleProductSelect}
+                  selectedItemName={transaction?.product?.name}
+                  enableSearch={true}
+                />
+              </View>
+            )}
+          <View className={'flex flex-row gap-2 mt-0 -z-30'}>
+            <TextInput
+                className={'bg-white flex-1 mt-2 -z-30'}
+                onChangeText={handleQtyChange}
+                value={qty.toString()}
+                mode={'outlined'}
+                label={'Qty'}
+                keyboardType={'numeric'}
             />
-            <View className={'mt-2 -z-10'} />
-            <DropDownFlashList
-              data={TRANS_TYPES}
-              inputLabel='Transaction Type'
-              headerTitle='Transaction Type'
-              onSelect={(contactObj) => {
-                setTransactionType(contactObj);
-              }}
-              isTransparent={false}
-              filterEnabled={true}
-              enableSearch={false}
-              selectedItemName={transactionType?.name || ''}
+            <TextInput
+                className={'bg-white flex-1 mt-2 -z-30'}
+                onChangeText={handlePriceChange}
+                value={price.toString()}
+                mode={'outlined'}
+                label={'Price'}
+                keyboardType={'numeric'}
             />
           </View>
-        )}
-        <View className={'flex flex-row gap-2 mt-0 -z-30'}>
-          <TextInput
-            className={'bg-white flex-1 mt-2 -z-30'}
-            onChangeText={handleQtyChange}
-            value={qty.toString()}
-            mode={'outlined'}
-            label={'Qty'}
-            keyboardType={'numeric'}
-          />
-          <TextInput
-            className={'bg-white flex-1 mt-2 -z-30'}
-            onChangeText={handlePriceChange}
-            value={price.toString()}
-            mode={'outlined'}
-            label={'Price'}
-            keyboardType={'numeric'}
-          />
-        </View>
+        </>)}
         <TextInput
           className={'bg-white mt-2 -z-30'}
           value={amount.toString()}
           mode={'outlined'}
           label={'Amount'}
+          onChangeText={setAmount}
           inputMode={'numeric'}
-          editable={false}
+          editable={!inventoryChecked}
         />
         <View className={'flex flex-row w-full mt-2 -z-30'}>
           <DatePickerInput
@@ -343,6 +353,19 @@ const EditTransaction = ({ navigation, route }) => {
             <MaterialCommunityIcons name={'camera'} size={30} color={'black'} />
           </TouchableOpacity>
         </View>
+        <View className={'mt-2 -z-10'} />
+        <DropDownFlashList
+            data={TRANS_TYPES}
+            inputLabel='Transaction Type'
+            headerTitle='Transaction Type'
+            onSelect={(contactObj) => {
+              setTransactionType(contactObj);
+            }}
+            isTransparent={false}
+            filterEnabled={true}
+            enableSearch={false}
+            selectedItemName={transactionType?.name || ''}
+        />
         <TextInput
           className={'bg-white mt-2 -z-30'}
           onChangeText={(text) => setNote(text)}

@@ -5,10 +5,10 @@ import {
 } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useEffect, useState } from 'react';
-import { Linking, Platform, Share, TouchableOpacity, View } from 'react-native';
+import {Alert, Linking, Platform, Share, TouchableOpacity, View} from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 
-import _ from 'lodash';
+import _, {isUndefined} from 'lodash';
 import { useCustomerTransactionData } from '../../../apis/useApi';
 import { formatDateForMessage, renderHeader } from '../../../core/utils';
 import { useAuth } from '../../../hooks';

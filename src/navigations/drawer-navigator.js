@@ -1,4 +1,4 @@
-import { Fontisto as Icon } from '@expo/vector-icons';
+import { Fontisto as Icon, Ionicons  } from '@expo/vector-icons';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -11,6 +11,7 @@ import { Avatar, Button, Text } from 'react-native-paper';
 import { COLORS } from '../core';
 import { HomePage, Reports } from '../screens';
 import { useAuth } from '../hooks';
+import CustomerList from "../screens/HomePage/CustomerList";
 
 function CustomDrawerContent(props) {
   const signOut = useAuth.use.signOut();
@@ -148,6 +149,23 @@ export function DrawerNavigator() {
           }}
         />
       )}
+      <Drawer.Screen
+          name='Customers'
+          component={CustomerList}
+          options={{
+            headerShown: true,
+            drawerActiveTintColor: COLORS.white,
+            drawerActiveBackgroundColor: COLORS.primary,
+            headerStyle: { backgroundColor: '#eff6ff' },
+            drawerIcon: ({ focused, size }) => (
+                <Ionicons
+                    name='people'
+                    size={size - 5}
+                    color={focused ? COLORS.white : COLORS.primary}
+                />
+            ),
+          }}
+      />
     </Drawer.Navigator>
   );
 }

@@ -17,11 +17,17 @@ export const useContactsStore = create((set) => ({
     setContacts: (newState) => set((state) => ({contactsList: newState})),
 }));
 
+export const useCustomersStore = create((set) => ({
+    customersList: [],
+    setCustomers: (newState) => set((state) => ({customersList: newState})),
+}));
+
 export default function Index({navigation}) {
     const auth = useAuth.use?.token();
     const setContacts = useContactsStore((state) => state.setContacts);
-
+    const setCustomers = useCustomersStore((state) => state.setCustomers);
     const {mutate: cardRequest, data: cardData} = useTotalTransactionData();
+
     const {
         mutate: customerRequest,
         data: customerData,
@@ -50,6 +56,7 @@ export default function Index({navigation}) {
                     imageAvailable: false,
                 };
             });
+        setCustomers(filteredContacts);
         if (contactStatus === 'granted') {
             setContacts(filteredContacts);
             try {

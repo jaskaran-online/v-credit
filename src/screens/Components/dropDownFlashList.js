@@ -15,6 +15,7 @@ function DropDownFlashList({
   selectedItemName = '',
   enableSearch = true,
   isReadOnly = false,
+  width = 'w-full',
 }) {
   const [isDropDownOpen, setIsDropDownOpen] = useState(closeDropDown);
   const [filteredContacts, setFilteredContacts] = useState(data);
@@ -95,7 +96,7 @@ function DropDownFlashList({
     flashListHeight = Dimensions.get('screen').height - 400;
   }
   return (
-    <View className={'relative z-50'}>
+    <View className={`relative z-50 ${width}`}>
       <TextInput
         className={isTransparent || isReadOnly ? 'bg-blue-50' : 'bg-white'}
         onChangeText={(text) => {

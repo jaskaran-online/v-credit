@@ -1,8 +1,8 @@
 // noinspection JSValidateTypes
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { Camera } from 'expo-camera';
+import {MaterialCommunityIcons, MaterialIcons} from '@expo/vector-icons';
+import {Camera} from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Keyboard,
@@ -10,18 +10,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Button, Dialog, Text, TextInput } from 'react-native-paper';
-import { DatePickerInput } from 'react-native-paper-dates';
+import {Button, Checkbox, Dialog, Text, TextInput, Tooltip} from 'react-native-paper';
+import {DatePickerInput} from 'react-native-paper-dates';
 import Toast from 'react-native-toast-message';
 import {
   useCustomersData,
   usePaymentApi,
   useProductsApi,
 } from '../../../apis/useApi';
-import { getItem, setItem } from '../../../core/utils';
-import { useAuth } from '../../../hooks';
+import {useAuth} from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
-import { useContactsStore } from '../index';
+import {useContactsStore} from '../index';
 
 const showToast = (message, type) => {
   Toast.show({
@@ -60,7 +59,7 @@ function convertDateFormat(dateString) {
   return `${convertedDate} ${convertedTime}`;
 }
 
-const GiveMoney = ({ navigation, route }) => {
+const GiveMoney = ({navigation, route}) => {
   const auth = useAuth.use?.token();
   const {
     mutate: request,
@@ -69,7 +68,7 @@ const GiveMoney = ({ navigation, route }) => {
     error: paymentError,
     isError,
   } = usePaymentApi();
-  const { mutate: productRequest, data: products } = useProductsApi();
+  const {mutate: productRequest, data: products} = useProductsApi();
 
   const [amount, setAmount] = useState(0);
   const [imageUri, setImageUri] = useState(null);
@@ -103,16 +102,19 @@ const GiveMoney = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedCustomer?.phoneNumbers) {
-      const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
-        return {
-          ...obj,
-          name: obj.digits
-              ? processString(obj.digits)
-              : processString(obj.number),
-        };
-      });
-      setContactMobileNumbers(updatedData);
+    if (selectedCustomer) {
+      if (selectedCustomer?.phoneNumbers) {
+        // setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
+        const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
+          return {
+            ...obj,
+            name: obj.digits
+                ? processString(obj.digits)
+                : processString(obj.number),
+          };
+        });
+        setContactMobileNumbers(updatedData);
+      }
     }
   }, [selectedCustomer]);
 
@@ -153,7 +155,7 @@ const GiveMoney = ({ navigation, route }) => {
   const hideDialog = () => setVisible(false);
 
   const handleCameraCapture = async () => {
-    const { status: cameraStatus } =
+    const {status: cameraStatus} =
         await Camera.requestCameraPermissionsAsync();
     if (cameraStatus === 'granted') {
       const photo = await ImagePicker.launchCameraAsync();
@@ -222,11 +224,14 @@ const GiveMoney = ({ navigation, route }) => {
     formData.append('notes', note);
     formData.append('phone', phoneNumber);
     formData.append('phone_id', selectedCustomer?.id);
-    if (selectedProduct) {
-      formData.append('product_id', selectedProduct?.id);
+    if(inventoryChecked){
+      if (selectedProduct) {
+        formData.append('product_id', selectedProduct?.id);
+      }
+      formData.append('price', price);
+      formData.append('qty', qty);
     }
-    formData.append('price', price);
-    formData.append('qty', qty);
+    formData.append('amount', amount);
     formData.append('transaction_type_id', 1);
     formData.append('user_id', auth?.user?.id);
     request(formData);
@@ -246,12 +251,31 @@ const GiveMoney = ({ navigation, route }) => {
 
   const handleDateChange = (d) => setInputDate(d);
 
+  const [inventoryChecked, setInventoryChecked] = React.useState(false);
+
+  useEffect(() => {
+    setAmount("");
+  }, [inventoryChecked]);
+
   return (
       <View className={'flex-1 bg-white'}>
         <KeyboardAvoidingView
             behavior='padding'
-            className={'bg-white flex-1 px-4 pt-2'}
+            className={'bg-white flex-1 px-4 pt-1'}
         >
+          <View className={"mr-5 flex flex-row items-center justify-end my-1"}>
+            <Checkbox
+                status={inventoryChecked ? 'checked' : 'unchecked'}
+                onPress={() => {
+                  setInventoryChecked(!inventoryChecked);
+                }}
+            />
+            <TouchableOpacity onPress={() => {
+              setInventoryChecked(!inventoryChecked);
+            }}>
+              <Text>Inventory</Text>
+            </TouchableOpacity>
+          </View>
           <DropDownFlashList
               data={contacts}
               inputLabel='Select Customer'
@@ -288,6 +312,9 @@ const GiveMoney = ({ navigation, route }) => {
                                       ? 'Selected Mobile Number'
                                       : 'Select Mobile Number'
                                 }
+                                selectedItemName={processString(selectedCustomer?.phoneNumbers[0]?.number)}
+                                selectedItemDigits={processString(selectedCustomer?.phoneNumbers[0]?.digits)}
+                                enableSearch={false}
                                 headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
                                 onSelect={(contact) => {
                                   setContactSelectedMobileNumber(
@@ -305,42 +332,48 @@ const GiveMoney = ({ navigation, route }) => {
                 )}
               </>
           )}
+          {inventoryChecked && (
+              <>
+                <View className={'mt-2 -z-10'}>
+                  <DropDownFlashList
+                      data={products || []}
+                      inputLabel='Select Product'
+                      headerTitle='List of products'
+                      onSelect={(product) =>
+                          handlePriceChange(parseFloat(product?.price || 0).toFixed(4))
+                      }
+                  />
+                </View>
 
-          <View className={'mt-2 -z-10'}>
-            <DropDownFlashList
-                data={products || []}
-                inputLabel='Select Product'
-                headerTitle='List of products'
-                onSelect={(product) =>
-                    handlePriceChange(parseFloat(product?.price || 0).toFixed(4))
-                }
-            />
-          </View>
-          <View className={'flex flex-row gap-2 mt-0 -z-30'}>
-            <TextInput
-                className={'bg-white flex-1 mt-2 -z-30'}
-                onChangeText={handleQtyChange}
-                value={qty.toString()}
-                mode={'outlined'}
-                label={'Qty'}
-                keyboardType={'numeric'}
-            />
-            <TextInput
-                className={'bg-white flex-1 mt-2 -z-30'}
-                onChangeText={handlePriceChange}
-                value={price.toString()}
-                mode={'outlined'}
-                label={'Price'}
-                keyboardType={'numeric'}
-            />
-          </View>
+                <View className={'flex flex-row gap-2 mt-0 -z-30'}>
+                  <TextInput
+                      className={'bg-white flex-1 mt-2 -z-30'}
+                      onChangeText={handleQtyChange}
+                      value={qty.toString()}
+                      mode={'outlined'}
+                      label={'Qty'}
+                      keyboardType={'numeric'}
+                  />
+                  <TextInput
+                      className={'bg-white flex-1 mt-2 -z-30'}
+                      onChangeText={handlePriceChange}
+                      value={price.toString()}
+                      mode={'outlined'}
+                      label={'Price'}
+                      keyboardType={'numeric'}
+                  />
+                </View>
+
+              </>
+          )}
           <TextInput
               className={'bg-white mt-2 -z-30'}
               value={amount.toString()}
+              onChangeText={setAmount}
               mode={'outlined'}
               label={'Amount'}
               inputMode={'numeric'}
-              editable={false}
+              editable={!inventoryChecked}
           />
           <View className={'flex flex-row w-full mt-2 -z-30'}>
             <DatePickerInput
@@ -358,7 +391,7 @@ const GiveMoney = ({ navigation, route }) => {
                   'flex items-center justify-center px-4 bg-blue-50 shadow-sm border border-blue-100 rounded-lg my-[4px] mx-3'
                 }
             >
-              <MaterialCommunityIcons name={'camera'} size={30} color={'black'} />
+              <MaterialCommunityIcons name={'camera'} size={30} color={'black'}/>
             </TouchableOpacity>
           </View>
           <TextInput
@@ -372,7 +405,7 @@ const GiveMoney = ({ navigation, route }) => {
           <>
             {imageUri && (
                 <Image
-                    source={{ uri: imageUri, width: 150, height: 150 }}
+                    source={{uri: imageUri, width: 150, height: 150}}
                     resizeMethod={'auto'}
                     className={'mt-4'}
                 />
@@ -391,10 +424,10 @@ const GiveMoney = ({ navigation, route }) => {
             visible={visible}
             onDismiss={hideDialog}
             dismissable={true}
-            style={{ backgroundColor: 'white' }}
+            style={{backgroundColor: 'white'}}
             dismissableBackButton={true}
         >
-          <Dialog.Title style={{ fontSize: 18 }}>Select</Dialog.Title>
+          <Dialog.Title style={{fontSize: 18}}>Select</Dialog.Title>
           <Dialog.Content>
             <View className={'flex flex-row justify-evenly mb-10 mt-5'}>
               <View className={'flex gap-2 items-center'}>
@@ -421,7 +454,7 @@ const GiveMoney = ({ navigation, route }) => {
                       'flex justify-center items-center shadow-md bg-green-600 p-4 rounded-3xl'
                     }
                 >
-                  <MaterialIcons name={'photo'} size={30} color={'white'} />
+                  <MaterialIcons name={'photo'} size={30} color={'white'}/>
                 </TouchableOpacity>
                 <Text variant={'titleMedium'} className={'text-stone-600'}>
                   Gallery
