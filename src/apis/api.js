@@ -38,6 +38,7 @@ export const put = async (url, data) => {
     const response = await axiosInstance.put(url, data);
     return response.data;
   } catch (error) {
+    console.error(error);
     throw new Error('Network response was not ok');
   }
 };

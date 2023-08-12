@@ -54,7 +54,7 @@ export default function Index({ navigation }) {
       // ?.map((obj) => obj.customer)
       ?.map((obj) => {
         return {
-          id: obj?.phone_id,
+          id: obj?.id,
           name: obj.name,
           digits: obj.phone,
           contactType: 'person',

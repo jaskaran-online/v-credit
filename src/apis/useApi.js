@@ -36,6 +36,16 @@ export const useGetCustomersList = () => {
   });
 };
 
+export const useUpdateCustomer = () => {
+  return useMutation({
+    mutationKey: 'updateCustomer',
+    mutationFn: ({id, title, description}) => {
+      return post(`/api/v1/update/customer/${id}`, {id, title, description})
+    },
+    cacheTime: 500,
+  });
+};
+
 export const useTransactionsData = () => {
   return useMutation({
     mutationKey: 'totalAmount',

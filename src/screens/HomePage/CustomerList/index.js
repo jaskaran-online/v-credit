@@ -4,10 +4,13 @@ import {
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
 import { Alert, Linking, TouchableOpacity, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import {Button, Dialog, Portal, Text, TextInput} from 'react-native-paper';
 import { useCustomersStore } from '../index';
 import { FlashList } from '@shopify/flash-list';
 import { isUndefined } from 'lodash';
+import {useEffect, useState} from 'react';
+import {useGetCustomersList, useUpdateCustomer} from "../../../apis/useApi";
+import {showToast} from "../GiveMoney";
 
 export const sendWhatsAppMessage = (link) => {
   if (!isUndefined(link)) {
@@ -27,7 +30,7 @@ export const sendWhatsAppMessage = (link) => {
   }
 };
 
-function processString(input = null) {
+export function processString(input = null) {
   if (input == null || input === '' || input === 'null') {
     return '';
   }
@@ -42,7 +45,7 @@ function processString(input = null) {
   return processedString;
 }
 
-const makePhoneCall = (phoneNumber) => {
+export const makePhoneCall = (phoneNumber) => {
   const url = `tel:${processString(phoneNumber)}`;
   Linking.canOpenURL(url)
     .then(() => {
@@ -52,11 +55,13 @@ const makePhoneCall = (phoneNumber) => {
 };
 
 function CardComponent({
+  id,
   title,
-  iconName,
   description,
+  iconName,
   makeCall = () => null,
   whatsapp = () => null,
+  editContact = () => null,
 }) {
   return (
     <View
@@ -83,13 +88,28 @@ function CardComponent({
           </Text>
         </View>
       </View>
-      <View className={'flex flex-row gap-4'}>
+      <View className={'flex flex-row gap-3'}>
+
+        {/*Edit Button*/}
+        <TouchableOpacity
+            className='bg-slate-100 p-2 rounded-full'
+            onPress={() => editContact({
+              id,
+              title,
+              description})}
+        >
+          <MaterialCommunityIcons name='pencil' size={18} color='gray' />
+        </TouchableOpacity>
+
+        {/*Call Button*/}
         <TouchableOpacity
           className='bg-blue-100 p-2 rounded-full'
           onPress={makeCall}
         >
           <MaterialCommunityIcons name='phone' size={18} color='dodgerblue' />
         </TouchableOpacity>
+
+        {/*Whatsapp Button*/}
         <TouchableOpacity
           className='bg-emerald-50 p-2 rounded-full'
           onPress={whatsapp}
@@ -102,7 +122,36 @@ function CardComponent({
 }
 
 export default function Index({ navigation }) {
-  const customerList = useCustomersStore((state) => state.customersList);
+
+  const [visible, setVisible] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const {
+    mutate: updateCustomer,
+    data: customerUpdateData,
+    isLoading: isCustomerLoading,
+  } = useUpdateCustomer();
+
+  useEffect(() => {
+    if(!isCustomerLoading && customerUpdateData?.status){
+      showToast('Customer updated successfully', 'success');
+      if(selectedCustomer){
+        let index = customerList.findIndex(customer => customer.id === selectedCustomer.id);
+        customerList[index] = {
+          ...customerList[index],
+          name : selectedCustomer.title,
+          digits : selectedCustomer.description
+        };
+      }
+    }else{
+        showToast("Customer already exists with the same name or phone", 'error');
+    }
+  }, [isCustomerLoading, customerUpdateData]);
+
+  const showDialog = () => setVisible(true);
+
+  const hideDialog = () => setVisible(false);
+  let customerList = useCustomersStore((state) => state.customersList);
+
   return (
     <View className='flex-1 justify-start bg-blue-50'>
       <FlashList
@@ -111,16 +160,49 @@ export default function Index({ navigation }) {
           <CardComponent
             key={index}
             title={item.name}
+            id={item.id}
             iconName='person'
             description={item.digits}
-            makeCall={() => makePhoneCall(item.digits)}
             estimateItemSize={150}
+            makeCall={() => makePhoneCall(item.digits)}
             whatsapp={() =>
               sendWhatsAppMessage(`https://wa.me/91${item.digits}?text=Hello`)
             }
+            editContact={(item) => {
+              showDialog()
+              setSelectedCustomer(item);
+            }}
           />
         )}
       />
+
+      <Portal>
+        <Dialog visible={visible} onDismiss={hideDialog}>
+          <Dialog.Title className={""}>Edit Customer Details</Dialog.Title>
+          <Dialog.Content>
+            <TextInput mode={"outlined"} value={selectedCustomer?.title} onChangeText={(text) => {
+              setSelectedCustomer({
+                ...selectedCustomer,
+                title: text
+              })
+            }} label={"Customer Name"}/>
+            <View className='mt-2'/>
+            <TextInput keyboardType={"numeric"} mode={"outlined"} value={selectedCustomer?.description} onChangeText={(text) => {
+              setSelectedCustomer({
+                ...selectedCustomer,
+                description: text
+              })
+            }} label={"Mobile Number"}/>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button mode={"contained"} className={"px-4"} loading={isCustomerLoading} onPress={()=> {
+              hideDialog();
+              updateCustomer(selectedCustomer)
+            }}>Update</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
     </View>
   );
 }

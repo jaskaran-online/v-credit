@@ -29,7 +29,7 @@ import { useAuth } from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
 import { useContactsStore } from '../index';
 
-const showToast = (message, type) => {
+export const showToast = (message, type) => {
   Toast.show({
     type: type,
     text1: type === 'success' ? 'Success' : 'Error',
