@@ -28,6 +28,14 @@ export const useCustomersData = () => {
   });
 };
 
+export const useGetCustomersList = () => {
+  return useMutation({
+    mutationKey: 'getCustomersList',
+    mutationFn: ({company_id, cost_center_id}) => get(`/api/v1/get/customer/${company_id}/${cost_center_id}`),
+    cacheTime: 500,
+  });
+};
+
 export const useTransactionsData = () => {
   return useMutation({
     mutationKey: 'totalAmount',

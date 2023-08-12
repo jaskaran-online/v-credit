@@ -2,7 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
-import { useCustomersData, useTotalTransactionData } from '../../apis/useApi';
+import {useCustomersData, useGetCustomersList, useTotalTransactionData} from '../../apis/useApi';
 import { useAuth } from '../../hooks';
 import FloatingButtons from '../Components/FloatingButton';
 import { TabNavigator } from '../Components/TabNavigator';
@@ -34,6 +34,12 @@ export default function Index({ navigation }) {
     isLoading: isLoadingCustomer,
   } = useCustomersData();
 
+  const {
+    mutate: getCustomerRequest,
+    data: customersList,
+    isLoading: isCustomerLoading,
+  } = useGetCustomersList();
+
   function loadCustomerData() {
     const customerFormData = new FormData();
     customerFormData.append('cost_center_id', auth?.user.cost_center_id);
@@ -44,11 +50,11 @@ export default function Index({ navigation }) {
 
   const loadContactsFromDevice = async () => {
     const { status: contactStatus } = await Contacts.requestPermissionsAsync();
-    let filteredContacts = customerData?.data
-      ?.map((obj) => obj.customer)
+    let filteredContacts = customersList?.data
+      // ?.map((obj) => obj.customer)
       ?.map((obj) => {
         return {
-          id: obj.phone_id,
+          id: obj?.phone_id,
           name: obj.name,
           digits: obj.phone,
           contactType: 'person',
@@ -97,6 +103,9 @@ export default function Index({ navigation }) {
     useCallback(() => {
       makeApiCall();
       loadCustomerData();
+      getCustomerRequest({
+        company_id: auth.user.company_id,
+        cost_center_id: auth.user.cost_center_id});
     }, []),
   );
 
