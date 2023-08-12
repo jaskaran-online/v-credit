@@ -133,7 +133,7 @@ export default function Index({ navigation }) {
 
   useEffect(() => {
     if(!isCustomerLoading && customerUpdateData?.status){
-      showToast('Customer updated successfully', 'success');
+      showToast(customerUpdateData?.message, 'success');
       if(selectedCustomer){
         let index = customerList.findIndex(customer => customer.id === selectedCustomer.id);
         customerList[index] = {
@@ -143,7 +143,7 @@ export default function Index({ navigation }) {
         };
       }
     }else{
-        showToast("Customer already exists with the same name or phone", 'error');
+        showToast(customerUpdateData?.  message, 'error');
     }
   }, [isCustomerLoading, customerUpdateData]);
 
