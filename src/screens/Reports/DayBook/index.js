@@ -9,10 +9,12 @@ import { useDailyBook } from '../../../apis/useApi';
 import { renderHeader, renderItem } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import { TwoCards } from '../../Components/TwoCards';
+import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 const StyledView = styled(TouchableOpacity);
 function DayBook() {
   const auth = useAuth.use?.token();
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
   const { mutate, data: dailyBookData, isLoading } = useDailyBook();
   const [reload, setReload] = useState(false);
   const [inputDate, setInputDate] = useState(new Date());
@@ -51,7 +53,7 @@ function DayBook() {
     const day = String(currentDate.getDate()).padStart(2, '0');
     const dateString = `${year}-${month}-${day}`;
     const formData = new FormData();
-    formData.append('company_id', auth.user.company_id);
+    formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user.cost_center_id);
     formData.append('date', dateString);
 

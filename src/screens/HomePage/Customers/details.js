@@ -20,6 +20,7 @@ import { useCustomerTransactionData } from '../../../apis/useApi';
 import { formatDateForMessage, renderHeader } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import FloatingButtons from '../../Components/FloatingButton';
+import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 
 export function processString(input = null) {
@@ -236,7 +237,7 @@ export default function Index({ navigation, route }) {
   const [showOptions, setShowOptions] = useState(false);
   const [query, setQuery] = useState('');
   const [reload, setReload] = useState(false);
-
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
   const handleSearch = (inputValue) => {
     setQuery(inputValue);
     // setFilteredList(filteredList);
@@ -245,7 +246,7 @@ export default function Index({ navigation, route }) {
   function loadCustomerData() {
     setReload(true);
     const formData = new FormData();
-    formData.append('company_id', auth.user.company_id);
+    formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user.cost_center_id);
     formData.append('customer_id', route.params.id);
     // formData.append("user_id", auth.user.id);

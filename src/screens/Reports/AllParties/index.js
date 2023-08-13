@@ -8,10 +8,11 @@ import { useAllParties, useCustomersData } from '../../../apis/useApi';
 import { renderHeader, renderItem } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
+import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 export default function Index() {
   const auth = useAuth.use?.token();
-
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
   const {
     mutate: allPartiesMutate,
     data: allPartiesData,
@@ -42,7 +43,7 @@ export default function Index() {
   function fetchCustomers() {
     const formData = new FormData();
     formData.append('cost_center_id', auth?.user.cost_center_id);
-    formData.append('company_id', auth?.user.company_id);
+    formData.append('company_id', company?.id);
     // formData.append('user_id', auth?.user.id);
     customerMutate(formData);
   }
@@ -61,7 +62,7 @@ export default function Index() {
     const dateString = `${year}-${month}-${day}`;
 
     const formData = new FormData();
-    formData.append('company_id', auth.user.company_id);
+    formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user.cost_center_id);
     if (customer) {
       formData.append('customer_id', customer?.id);

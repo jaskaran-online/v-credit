@@ -22,12 +22,12 @@ import { EditTransaction } from '../screens';
 import GiveMoney from '../screens/HomePage/GiveMoney';
 import TakePayment from '../screens/HomePage/TakePayment';
 import CustomerList from '../screens/HomePage/CustomerList';
+import {create} from "zustand";
 
 const Stack = createNativeStackNavigator();
 
 export const Root = () => {
   const status = useAuth.use.status();
-
   const hideSplash = React.useCallback(async () => {
     await SplashScreen.hideAsync();
   }, []);

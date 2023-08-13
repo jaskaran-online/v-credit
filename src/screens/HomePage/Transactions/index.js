@@ -1,13 +1,15 @@
-import { Feather } from '@expo/vector-icons';
+import {Feather, MaterialCommunityIcons} from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import _ from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { Searchbar, Text } from 'react-native-paper';
+import {Button, Searchbar, Text} from 'react-native-paper';
 import { useTransactionsData } from '../../../apis/useApi';
 import { renderHeader, renderItem } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
+import {COLORS} from "../../../core";
+import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 export default function Index() {
   const auth = useAuth.use?.token();
@@ -23,6 +25,7 @@ export default function Index() {
   const [query, setQuery] = useState('');
   const [orderedData, setOrderedData] = useState([]);
   const [filterBy, setFilteredBy] = useState('Clear');
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
 
   useEffect(() => {
     if (transactionData?.data) {
@@ -46,13 +49,13 @@ export default function Index() {
   useFocusEffect(
     useCallback(() => {
       loadTransactions();
-    }, []),
+    }, [company]),
   );
 
   function loadTransactions() {
     setReload(true);
     const formData = new FormData();
-    formData.append('company_id', auth.user.company_id);
+    formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user.cost_center_id);
     transactionRequest(formData);
     setReload(false);
@@ -109,14 +112,11 @@ export default function Index() {
             className={'bg-white border-2 border-slate-200 h-10'}
           />
         </View>
-        <View className={'flex'} style={{ width: '15%' }}>
+        <View className={'flex'} style={{ width: '15%', marginRight: 10 }}>
           {options && (
-            <TouchableOpacity
-              className='p-2 bg-white border-slate-900 shadow shadow-slate-300 rounded-xl w-[48] mt-1 h-[40] justify-center items-center'
-              onPress={() => handleOptionSelect(true)}
-            >
-              <Feather name='filter' size={20} color='black' />
-            </TouchableOpacity>
+        <Button onPress={() => handleOptionSelect(true)} className={'bg-white rounded-full mr-2 border-2 shadow-sm'}>
+              <MaterialCommunityIcons  name='account-filter' size={22} color='black' />
+        </Button>
           )}
         </View>
       </View>

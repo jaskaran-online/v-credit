@@ -22,6 +22,7 @@ import {
 import { getItem, setItem } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
+import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 function convertDateFormat(dateString) {
   const dateObj = new Date(dateString);
@@ -83,6 +84,7 @@ const EditTransaction = ({ navigation, route }) => {
   const [visible, setVisible] = useState(false);
   const [transactionType, setTransactionType] = useState(null);
   const [inventoryChecked, setInventoryChecked] = React.useState(false);
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
 
   const transaction = route?.params?.transaction;
 
@@ -115,9 +117,8 @@ const EditTransaction = ({ navigation, route }) => {
 
   function loadTransactionData() {
     const formData = new FormData();
-    formData.append('company_id', auth.user.company_id);
     formData.append('cost_center_id', auth.user.cost_center_id);
-    formData.append('company_id', auth?.user.company_id);
+    formData.append('company_id', company?.id);
     formData.append('user_id', auth.user.id);
     formData.append('id', route?.params?.transaction?.id);
     editApiRequest(formData);
@@ -125,7 +126,7 @@ const EditTransaction = ({ navigation, route }) => {
 
   useEffect(() => {
     const formData = new FormData();
-    formData.append('company_id', auth?.user?.company_id);
+    formData.append('company_id', company?.id);
     productRequest(formData);
   }, []);
 
@@ -218,9 +219,9 @@ const EditTransaction = ({ navigation, route }) => {
         return false;
       }
     }
-
+    const company = useAuthCompanyStore((state) => state.selectedCompany);
     const formData = new FormData();
-    formData.append('company_id', auth.user?.company_id);
+    formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user?.cost_center_id);
     // formData.append("customer_name", selectedCustomer?.name);
     formData.append('from_date', convertDateFormat(inputDate.toString()));

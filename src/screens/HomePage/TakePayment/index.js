@@ -28,6 +28,7 @@ import {
 import { useAuth } from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
 import { useContactsStore } from '../index';
+import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 const showToast = (message, type) => {
   Toast.show({
@@ -77,6 +78,7 @@ const TakePayment = ({ navigation, route }) => {
   } = usePaymentApi();
   const { mutate: productRequest, data: products } = useProductsApi();
 
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
   const [amount, setAmount] = useState(0);
   const [imageUri, setImageUri] = useState(null);
   const [inputDate, setInputDate] = useState(new Date());
@@ -104,7 +106,7 @@ const TakePayment = ({ navigation, route }) => {
 
   useEffect(() => {
     const formData = new FormData();
-    formData.append('company_id', auth?.user?.company_id);
+    formData.append('company_id', company?.id);
     productRequest(formData);
   }, []);
 
@@ -215,9 +217,9 @@ const TakePayment = ({ navigation, route }) => {
       showToast('Please check price and qty', 'error');
       return false;
     }
-
+    const company = useAuthCompanyStore((state) => state.selectedCompany);
     const formData = new FormData();
-    formData.append('company_id', auth.user?.company_id);
+    formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user?.cost_center_id);
     formData.append('customer_name', selectedCustomer?.name);
     formData.append('from_date', convertDateFormat(inputDate.toString()));

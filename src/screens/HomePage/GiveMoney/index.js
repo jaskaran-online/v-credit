@@ -28,6 +28,7 @@ import {
 import { useAuth } from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
 import { useContactsStore } from '../index';
+import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 export const showToast = (message, type) => {
   Toast.show({
@@ -68,6 +69,7 @@ function convertDateFormat(dateString) {
 
 const GiveMoney = ({ navigation, route }) => {
   const auth = useAuth.use?.token();
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
   const {
     mutate: request,
     data: paymentApiResponse,
@@ -104,7 +106,7 @@ const GiveMoney = ({ navigation, route }) => {
 
   useEffect(() => {
     const formData = new FormData();
-    formData.append('company_id', auth?.user?.company_id);
+    formData.append('company_id', company?.id);
     productRequest(formData);
   }, []);
 
@@ -215,9 +217,10 @@ const GiveMoney = ({ navigation, route }) => {
       showToast('Please check price and qty', 'error');
       return false;
     }
+    const company = useAuthCompanyStore((state) => state.selectedCompany);
 
     const formData = new FormData();
-    formData.append('company_id', auth.user?.company_id);
+    formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user?.cost_center_id);
     formData.append('customer_name', selectedCustomer?.name);
     formData.append('from_date', convertDateFormat(inputDate.toString()));

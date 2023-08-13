@@ -3,7 +3,7 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
-import { Alert, Linking, TouchableOpacity, View } from 'react-native';
+import {ActivityIndicator, Alert, Linking, TouchableOpacity, View} from 'react-native';
 import {Button, Dialog, Portal, Text, TextInput} from 'react-native-paper';
 import { useCustomersStore } from '../index';
 import { FlashList } from '@shopify/flash-list';
@@ -11,6 +11,7 @@ import { isUndefined } from 'lodash';
 import {useEffect, useState} from 'react';
 import {useGetCustomersList, useUpdateCustomer} from "../../../apis/useApi";
 import {showToast} from "../GiveMoney";
+import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 export const sendWhatsAppMessage = (link) => {
   if (!isUndefined(link)) {
@@ -123,6 +124,9 @@ function CardComponent({
 
 export default function Index({ navigation }) {
 
+  let customerList = useCustomersStore((state) => state.customersList);
+  let setCustomerList = useCustomersStore((state) => state.setCustomers);
+
   const [visible, setVisible] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const {
@@ -132,8 +136,6 @@ export default function Index({ navigation }) {
   } = useUpdateCustomer();
 
   useEffect(() => {
-    if(!isCustomerLoading && customerUpdateData?.status){
-      showToast(customerUpdateData?.message, 'success');
       if(selectedCustomer){
         let index = customerList.findIndex(customer => customer.id === selectedCustomer.id);
         customerList[index] = {
@@ -141,21 +143,30 @@ export default function Index({ navigation }) {
           name : selectedCustomer.title,
           digits : selectedCustomer.description
         };
+      if(customerUpdateData?.status){
+        setCustomerList(customerList);
       }
+      showToast(customerUpdateData?.message, 'success');
     }else{
+      if(customerUpdateData){
         showToast(customerUpdateData?.  message, 'error');
+      }
     }
   }, [isCustomerLoading, customerUpdateData]);
 
   const showDialog = () => setVisible(true);
-
   const hideDialog = () => setVisible(false);
-  let customerList = useCustomersStore((state) => state.customersList);
 
   return (
     <View className='flex-1 justify-start bg-blue-50'>
+      {(!customerList) && (
+          <View className='flex-1 items-center justify-center'>
+            <ActivityIndicator size={25} color={'blue'}/>
+          </View>
+      )}
       <FlashList
         data={customerList}
+        estimateItemSize={72}
         renderItem={({ item, index }) => (
           <CardComponent
             key={index}
@@ -163,7 +174,6 @@ export default function Index({ navigation }) {
             id={item.id}
             iconName='person'
             description={item.digits}
-            estimateItemSize={150}
             makeCall={() => makePhoneCall(item.digits)}
             whatsapp={() =>
               sendWhatsAppMessage(`https://wa.me/91${item.digits}?text=Hello`)
@@ -177,17 +187,17 @@ export default function Index({ navigation }) {
       />
 
       <Portal>
-        <Dialog visible={visible} onDismiss={hideDialog}>
-          <Dialog.Title className={""}>Edit Customer Details</Dialog.Title>
+        <Dialog visible={visible} onDismiss={hideDialog} className={"bg-white rounded"}>
+          <Dialog.Title style={{fontSize: 18}} className={"font-semibold"}>Edit Customer Details</Dialog.Title>
           <Dialog.Content>
-            <TextInput mode={"outlined"} value={selectedCustomer?.title} onChangeText={(text) => {
+            <TextInput mode={"outlined"} className={"bg-white"} value={selectedCustomer?.title} onChangeText={(text) => {
               setSelectedCustomer({
                 ...selectedCustomer,
                 title: text
               })
             }} label={"Customer Name"}/>
             <View className='mt-2'/>
-            <TextInput keyboardType={"numeric"} mode={"outlined"} value={selectedCustomer?.description} onChangeText={(text) => {
+            <TextInput keyboardType={"numeric"} mode={"outlined"} className={"bg-white"} value={selectedCustomer?.description} onChangeText={(text) => {
               setSelectedCustomer({
                 ...selectedCustomer,
                 description: text
@@ -195,7 +205,7 @@ export default function Index({ navigation }) {
             }} label={"Mobile Number"}/>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button mode={"contained"} className={"px-4"} loading={isCustomerLoading} onPress={()=> {
+            <Button mode={"contained"} className={"px-6 rounded bg-blue-800"} loading={isCustomerLoading} onPress={()=> {
               hideDialog();
               updateCustomer(selectedCustomer)
             }}>Update</Button>

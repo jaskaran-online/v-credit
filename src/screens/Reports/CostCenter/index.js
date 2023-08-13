@@ -109,6 +109,7 @@ const renderItem = ({ item }) => (
 
 export default function Index() {
   const auth = useAuth.use?.token();
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
   const costCenter = useCompanyCostCenterData(
     'api/v1/get/cost-center/' + auth?.user.cost_center_id,
   );
@@ -134,7 +135,7 @@ export default function Index() {
   function fetchCustomers() {
     const formData = new FormData();
     formData.append('cost_center_id', auth?.user.cost_center_id);
-    formData.append('company_id', auth?.user.company_id);
+    formData.append('company_id', company?.id);
     // formData.append('user_id', auth?.user.id);
     customerMutate(formData);
   }
@@ -157,7 +158,7 @@ export default function Index() {
     const toDateStr = dateFormat(toDate);
 
     const formData = new FormData();
-    formData.append('company_id', auth.user.company_id);
+    formData.append('company_id', company?.id);
     if (selectedCostCenter) {
       formData.append('cost_center_id', selectedCostCenter.id);
     } else {

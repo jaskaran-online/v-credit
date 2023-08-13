@@ -10,6 +10,7 @@ import { formatDateForMessage } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import navigation from '../../../navigations/index';
 import { useFilterToggleStore } from '../../Components/TwoCards';
+import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 const renderItem = ({ item, index }) => {
   const toPay = parseFloat((item?.toPay || 0).toFixed(2));
@@ -108,6 +109,7 @@ export default function Index() {
   } = useCustomersData();
   const [reload, setReload] = useState(false);
   const auth = useAuth?.use?.token();
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
 
   const filterBy = useFilterToggleStore((state) => state.filterBy);
   const [query, setQuery] = useState('');
@@ -136,7 +138,7 @@ export default function Index() {
     setReload(true);
     const formData = new FormData();
     formData.append('cost_center_id', auth?.user.cost_center_id);
-    formData.append('company_id', auth?.user.company_id);
+    formData.append('company_id', company?.id);
     formData.append('user_id', auth?.user.id);
     customerDataRequest(formData);
     setReload(false);
@@ -145,7 +147,7 @@ export default function Index() {
   useFocusEffect(
     useCallback(() => {
       getCustomerData();
-    }, []),
+    }, [company]),
   );
 
   const handleSearch = (text) => {

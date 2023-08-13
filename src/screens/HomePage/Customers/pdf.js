@@ -9,6 +9,7 @@ import {useAuth} from '../../../hooks';
 import {useCustomerTransactionData} from '../../../apis/useApi';
 import _ from 'lodash';
 import {formatDateForMessage} from "../../../core/utils";
+import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 const ShareScreen = ({route}) => {
     const auth = useAuth.use?.token();
@@ -17,12 +18,11 @@ const ShareScreen = ({route}) => {
         data: customerData,
         isLoading,
     } = useCustomerTransactionData();
-
+    const company = useAuthCompanyStore((state) => state.selectedCompany);
     let data = customerData?.data;
-
     function loadCustomerData() {
         const formData = new FormData();
-        formData.append('company_id', auth.user.company_id);
+        formData.append('company_id', company?.id);
         formData.append('cost_center_id', auth.user.cost_center_id);
         formData.append('customer_id', route.params.id);
         // formData.append("user_id", auth.user.id);

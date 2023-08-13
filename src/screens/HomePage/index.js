@@ -10,6 +10,7 @@ import { TwoCards } from '../Components/TwoCards';
 import * as Contacts from 'expo-contacts';
 import { getItem, setItem } from '../../core/utils';
 import { create } from 'zustand';
+import {useAuthCompanyStore} from "../../navigations/drawer-navigator";
 
 // Create a Zustand store
 export const useContactsStore = create((set) => ({
@@ -27,6 +28,7 @@ export default function Index({ navigation }) {
   const setContacts = useContactsStore((state) => state.setContacts);
   const setCustomers = useCustomersStore((state) => state.setCustomers);
   const { mutate: cardRequest, data: cardData } = useTotalTransactionData();
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
 
   const {
     mutate: customerRequest,
@@ -43,7 +45,7 @@ export default function Index({ navigation }) {
   function loadCustomerData() {
     const customerFormData = new FormData();
     customerFormData.append('cost_center_id', auth?.user.cost_center_id);
-    customerFormData.append('company_id', auth?.user.company_id);
+    customerFormData.append('company_id', company?.id);
     customerFormData.append('user_id', auth?.user.id);
     customerRequest(customerFormData);
   }
@@ -93,7 +95,7 @@ export default function Index({ navigation }) {
 
   function makeApiCall() {
     const formData = new FormData();
-    formData.append('company_id', auth.user.company_id);
+    formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user.cost_center_id);
     formData.append('user_id', auth.user.id);
     cardRequest(formData);
@@ -103,10 +105,13 @@ export default function Index({ navigation }) {
     useCallback(() => {
       makeApiCall();
       loadCustomerData();
+
       getCustomerRequest({
-        company_id: auth.user.company_id,
-        cost_center_id: auth.user.cost_center_id});
-    }, []),
+        company_id: company?.id,
+        cost_center_id: auth.user.cost_center_id
+      });
+
+    }, [company]),
   );
 
   useEffect(() => {
