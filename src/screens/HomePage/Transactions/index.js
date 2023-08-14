@@ -28,18 +28,36 @@ export default function Index() {
   const company = useAuthCompanyStore((state) => state.selectedCompany);
 
   useEffect(() => {
+
     if (transactionData?.data) {
-      if (filterBy === 'Clear') {
-        setOrderedData(transactionData?.data);
-      } else {
-        const orderedArray = _.orderBy(
-          transactionData?.data,
-          ['transaction_type_id'],
-          [filterBy === 'Payment Received' ? 'desc' : 'asc'],
-        );
-        setOrderedData(orderedArray);
+      let orderedArray = [...transactionData.data]; // Create a copy of the array
+
+      switch (filterBy) {
+        case "Clear":
+        case "Show All Records":
+          setOrderedData(orderedArray);
+          setShowOptions(false);
+          break;
+        case "Payment Received":
+        case "Credit Given":
+          orderedArray.sort((a, b) => {
+            const sortOrder = filterBy === 'Payment Received' ? -1 : 1;
+            return sortOrder * (a.transaction_type_id - b.transaction_type_id);
+          });
+          setOrderedData([...orderedArray]); // Update the state with the sorted array
+          setShowOptions(false);
+          break;
+        case "Show My Records":
+          orderedArray = orderedArray.filter(item => item.user_id === auth?.user?.id);
+          setOrderedData([...orderedArray]); // Update the state with the filtered array
+          setShowOptions(false);
+          break;
+        default:
+          console.log("Unknown filter");
+          break;
       }
     }
+
   }, [filterBy, transactionData, isLoading]);
 
   useEffect(() => {
@@ -67,8 +85,10 @@ export default function Index() {
       label: 'Payment Received',
       onPress: () => setFilteredBy('Payment Received'),
     },
+    { label: 'Show All Records', onPress: () => setFilteredBy('Show All Records') },
+    { label: 'Show My Records', onPress: () => setFilteredBy('Show My Records') },
     {
-      label: 'Clear',
+      label: 'Clear Filter',
       onPress: () => {
         setFilteredBy('Clear');
         setShowOptions(false);
@@ -114,8 +134,8 @@ export default function Index() {
         </View>
         <View className={'flex'} style={{ width: '15%', marginRight: 10 }}>
           {options && (
-        <Button onPress={() => handleOptionSelect(true)} className={'bg-white rounded-full mr-2 border-2 shadow-sm'}>
-              <MaterialCommunityIcons  name='account-filter' size={22} color='black' />
+        <Button onPress={() => handleOptionSelect(true)} className={`${filterBy === "Clear" ? "bg-white" : "bg-blue-600" }  rounded-full mr-2 border-2 shadow-sm`}>
+              <MaterialCommunityIcons  name='account-filter' size={22} color={filterBy === "Clear" ? 'black' : 'white'} />
         </Button>
           )}
         </View>

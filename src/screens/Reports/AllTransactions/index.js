@@ -96,7 +96,7 @@ export default function Index() {
       label: 'Payment Received',
       onPress: handleDeleteSelectedItem,
     },
-    { label: 'Clear', onPress: handleEditSelectedItem },
+    { label: 'Clear', onPress: handleEditSelectedItem }
   ];
 
   const handleSelect = (item) => {

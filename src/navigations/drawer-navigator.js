@@ -21,6 +21,8 @@ import {HomePage, Reports} from '../screens';
 import {useAuth} from '../hooks';
 import CustomerList from '../screens/HomePage/CustomerList';
 import {create} from "zustand";
+import {createJSONStorage, persist} from "zustand/middleware";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function CustomDrawerContent(props) {
     const signOut = useAuth.use.signOut();
@@ -84,9 +86,12 @@ function CustomDrawerContent(props) {
 
 const Drawer = createDrawerNavigator();
 
-export const useAuthCompanyStore = create((set) => ({
+export const useAuthCompanyStore = create(persist((set) => ({
     selectedCompany: null,
     setCompany: (newState) => set((state) => ({selectedCompany: newState})),
+}),{
+    name: 'auth-store',
+    storage: createJSONStorage(() => AsyncStorage),
 }));
 
 export function DrawerNavigator() {
@@ -96,7 +101,8 @@ export function DrawerNavigator() {
         (role) => role.id === 1 || role.id === 4,
     );
 
-    const dimensions = useWindowDimensions();
+    const dimensions = useWindowDimensions()
+
     const setCompany = useAuthCompanyStore((state) => state.setCompany);
     const company = useAuthCompanyStore((state) => state.selectedCompany);
 
@@ -114,7 +120,7 @@ export function DrawerNavigator() {
         if(!company){
             setCompany(auth?.user?.company);
         }
-    }, [auth]);
+    }, []);
 
     return (
         <Drawer.Navigator
@@ -160,19 +166,19 @@ export function DrawerNavigator() {
                                         company</Dialog.Title>
                                     <Dialog.Content style={{minHeight: 100}}>
                                         <ScrollView>
-                                            {(auth?.user?.companies).map((company) => {
-                                                return (<View key={company.id}>
+                                            {(auth?.user?.companies).map((listCompany) => {
+                                                return (<View key={listCompany.id}>
                                                     <TouchableHighlight activeOpacity={1} underlayColor={"#eff6ff"}
                                                                         onPress={() => {
-                                                                            setChecked(company.id);
-                                                                            setCompany(company);
+                                                                            setChecked(listCompany.id);
+                                                                            setCompany(listCompany);
                                                                         }}>
                                                         <View className={"flex-row items-center gap-x-1 ml-1"}>
                                                             <RadioButton
-                                                                value={company.id}
-                                                                status={checked === company.id ? 'checked' : 'unchecked'}
+                                                                value={listCompany.id}
+                                                                status={(checked === listCompany.id || company.id === listCompany.id) ? 'checked' : 'unchecked'}
                                                             />
-                                                            <Text>{company.name}</Text>
+                                                            <Text>{listCompany.name}</Text>
                                                         </View>
                                                     </TouchableHighlight>
                                                 </View>)

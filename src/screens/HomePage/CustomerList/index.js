@@ -159,14 +159,8 @@ export default function Index({ navigation }) {
 
   return (
     <View className='flex-1 justify-start bg-blue-50'>
-      {(!customerList) && (
-          <View className='flex-1 items-center justify-center'>
-            <ActivityIndicator size={25} color={'blue'}/>
-          </View>
-      )}
       <FlashList
         data={customerList}
-        estimateItemSize={72}
         renderItem={({ item, index }) => (
           <CardComponent
             key={index}
@@ -184,6 +178,12 @@ export default function Index({ navigation }) {
             }}
           />
         )}
+        estimatedItemSize={100}
+        ListEmptyComponent={
+          <View className={'flex-1 d-flex justify-center items-center h-16'}>
+            <Text variant={'bodyMedium'}>No Records Available!</Text>
+          </View>
+        }
       />
 
       <Portal>
