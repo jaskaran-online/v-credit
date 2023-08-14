@@ -8,8 +8,7 @@ import {AntDesign, MaterialIcons} from '@expo/vector-icons';
 import {useAuth} from '../../../hooks';
 import {useCustomerTransactionData} from '../../../apis/useApi';
 import _ from 'lodash';
-import {formatDateForMessage} from "../../../core/utils";
-import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
+import {formatDateForMessage, useAuthCompanyStore} from "../../../core/utils";
 
 const ShareScreen = ({route}) => {
     const auth = useAuth.use?.token();

@@ -14,6 +14,7 @@ import { useAuth } from '../../../hooks';
 import navigation from '../../../navigations';
 import { TwoCards } from '../../Components/TwoCards';
 import DropDownFlashList from '../../Components/dropDownFlashList';
+import {useAuthCompanyStore} from "../../../core/utils";
 
 const renderHeader = () => (
   <View className={'flex-row justify-between px-4 py-2 space-x-2 items-center'}>

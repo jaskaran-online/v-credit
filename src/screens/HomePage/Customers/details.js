@@ -17,11 +17,9 @@ import { Searchbar, Text } from 'react-native-paper';
 
 import _, { isUndefined } from 'lodash';
 import { useCustomerTransactionData } from '../../../apis/useApi';
-import { formatDateForMessage, renderHeader } from '../../../core/utils';
+import {formatDateForMessage, renderHeader, useAuthCompanyStore} from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import FloatingButtons from '../../Components/FloatingButton';
-import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
-
 
 export function processString(input = null) {
   if (input == null || input === '' || input === 'null') {

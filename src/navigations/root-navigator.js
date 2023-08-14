@@ -22,12 +22,14 @@ import { EditTransaction } from '../screens';
 import GiveMoney from '../screens/HomePage/GiveMoney';
 import TakePayment from '../screens/HomePage/TakePayment';
 import CustomerList from '../screens/HomePage/CustomerList';
-import {create} from "zustand";
+import {useAuthCompanyStore} from "../core/utils";
 
 const Stack = createNativeStackNavigator();
 
 export const Root = () => {
   const status = useAuth.use.status();
+  const auth = useAuth.use?.token();
+  const setCompany = useAuthCompanyStore((state) => state.setCompany);
   const hideSplash = React.useCallback(async () => {
     await SplashScreen.hideAsync();
   }, []);
@@ -35,6 +37,7 @@ export const Root = () => {
   useEffect(() => {
     if (status !== 'idle') {
       hideSplash();
+        setCompany(auth?.user?.company)
     }
   }, [hideSplash, status]);
 

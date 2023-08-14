@@ -11,7 +11,6 @@ import { isUndefined } from 'lodash';
 import {useEffect, useState} from 'react';
 import {useGetCustomersList, useUpdateCustomer} from "../../../apis/useApi";
 import {showToast} from "../GiveMoney";
-import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 export const sendWhatsAppMessage = (link) => {
   if (!isUndefined(link)) {

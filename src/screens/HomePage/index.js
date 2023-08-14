@@ -8,9 +8,8 @@ import FloatingButtons from '../Components/FloatingButton';
 import { TabNavigator } from '../Components/TabNavigator';
 import { TwoCards } from '../Components/TwoCards';
 import * as Contacts from 'expo-contacts';
-import { getItem, setItem } from '../../core/utils';
+import {getItem, setItem, useAuthCompanyStore} from '../../core/utils';
 import { create } from 'zustand';
-import {useAuthCompanyStore} from "../../navigations/drawer-navigator";
 
 // Create a Zustand store
 export const useContactsStore = create((set) => ({

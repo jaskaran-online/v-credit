@@ -19,10 +19,9 @@ import {
   useProductsApi,
   useUpdatePaymentApi,
 } from '../../../apis/useApi';
-import { getItem, setItem } from '../../../core/utils';
+import {getItem, setItem, useAuthCompanyStore} from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
-import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 function convertDateFormat(dateString) {
   const dateObj = new Date(dateString);

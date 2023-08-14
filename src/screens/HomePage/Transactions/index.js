@@ -6,10 +6,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import {Button, Searchbar, Text} from 'react-native-paper';
 import { useTransactionsData } from '../../../apis/useApi';
-import { renderHeader, renderItem } from '../../../core/utils';
+import {renderHeader, renderItem, useAuthCompanyStore} from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import {COLORS} from "../../../core";
-import {useAuthCompanyStore} from "../../../navigations/drawer-navigator";
 
 export default function Index() {
   const auth = useAuth.use?.token();

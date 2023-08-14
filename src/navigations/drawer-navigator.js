@@ -21,8 +21,8 @@ import {HomePage, Reports} from '../screens';
 import {useAuth} from '../hooks';
 import CustomerList from '../screens/HomePage/CustomerList';
 import {create} from "zustand";
-import {createJSONStorage, persist} from "zustand/middleware";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useAuthCompanyStore} from "../core/utils";
+import {FacingModeToCameraType as auth} from "expo-camera/src/WebConstants";
 
 function CustomDrawerContent(props) {
     const signOut = useAuth.use.signOut();
@@ -86,26 +86,10 @@ function CustomDrawerContent(props) {
 
 const Drawer = createDrawerNavigator();
 
-export const useAuthCompanyStore = create(persist((set) => ({
-    selectedCompany: null,
-    setCompany: (newState) => set((state) => ({selectedCompany: newState})),
-}),{
-    name: 'auth-store',
-    storage: createJSONStorage(() => AsyncStorage),
-}));
-
-export function DrawerNavigator() {
-
+const CompanySwitch = () => {
     const auth = useAuth.use?.token();
-    const hasRoleOneOrFour = auth?.user?.roles?.some(
-        (role) => role.id === 1 || role.id === 4,
-    );
-
-    const dimensions = useWindowDimensions()
-
     const setCompany = useAuthCompanyStore((state) => state.setCompany);
     const company = useAuthCompanyStore((state) => state.selectedCompany);
-
     const [showCompanySwitchModal, setShowCompanySwitchModal] = useState(false);
     const [checked, setChecked] = useState(auth?.user?.company?.id);
     const showCompanySwitchModalHandler = () => {
@@ -115,12 +99,55 @@ export function DrawerNavigator() {
     const hideCompanySwitchModalHandler = () => {
         setShowCompanySwitchModal(false);
     }
+    return (<>
+        <Button onPress={showCompanySwitchModalHandler}
+                className={'bg-white rounded-full mr-2 border-2 shadow-sm'}>
+            <MaterialCommunityIcons name={"account-switch"} size={20} color={COLORS.primary}/>
+        </Button>
 
-    useEffect(function () {
-        if(!company){
-            setCompany(auth?.user?.company);
-        }
-    }, []);
+        <Portal>
+            <Dialog visible={showCompanySwitchModal} onDismiss={hideCompanySwitchModalHandler}
+                    className={"bg-white rounded"}>
+                <Dialog.Title style={{fontSize: 18}} className={"font-semibold"}>Please select
+                    company</Dialog.Title>
+                <Dialog.Content style={{minHeight: 100}}>
+                    <ScrollView>
+                        {(auth?.user?.companies).map((companyItem) => {
+                            return (<View key={companyItem.id}>
+                                <TouchableHighlight activeOpacity={1} underlayColor={"#eff6ff"}
+                                                    onPress={() => {
+                                                        setChecked(companyItem.id);
+                                                        setCompany(companyItem);
+                                                    }}>
+                                    <View className={"flex-row items-center gap-x-1 ml-1"}>
+                                        <RadioButton
+                                            value={companyItem.id}
+                                            status={checked === companyItem.id ? 'checked' : 'unchecked'}
+                                        />
+                                        <Text>{companyItem.name}</Text>
+                                    </View>
+                                </TouchableHighlight>
+                            </View>)
+                        })}
+                    </ScrollView>
+                </Dialog.Content>
+                <Dialog.Actions>
+                    <Button mode={"contained"} className={"px-6 rounded bg-blue-800"}
+                            onPress={hideCompanySwitchModalHandler}>Done</Button>
+                </Dialog.Actions>
+            </Dialog>
+        </Portal>
+    </>);
+}
+
+export function DrawerNavigator() {
+
+    const auth = useAuth.use?.token();
+    const hasRoleOneOrFour = auth?.user?.roles?.some(
+        (role) => role.id === 1 || role.id === 4,
+    );
+    const dimensions = useWindowDimensions();
+    const company = useAuthCompanyStore((state) => state.selectedCompany);
 
     return (
         <Drawer.Navigator
@@ -152,47 +179,7 @@ export function DrawerNavigator() {
                     drawerActiveBackgroundColor: COLORS.primary,
                     headerStyle: {backgroundColor: '#eff6ff'},
                     title: company?.name || 'Home',
-                    headerRight: ({size}) => (
-                        <>
-                            <Button onPress={showCompanySwitchModalHandler}
-                                    className={'bg-white rounded-full mr-2 border-2 shadow-sm'}>
-                                <MaterialCommunityIcons name={"account-switch"} size={20} color={COLORS.primary}/>
-                            </Button>
-
-                            <Portal>
-                                <Dialog visible={showCompanySwitchModal} onDismiss={hideCompanySwitchModalHandler}
-                                        className={"bg-white rounded"}>
-                                    <Dialog.Title style={{fontSize: 18}} className={"font-semibold"}>Please select
-                                        company</Dialog.Title>
-                                    <Dialog.Content style={{minHeight: 100}}>
-                                        <ScrollView>
-                                            {(auth?.user?.companies).map((listCompany) => {
-                                                return (<View key={listCompany.id}>
-                                                    <TouchableHighlight activeOpacity={1} underlayColor={"#eff6ff"}
-                                                                        onPress={() => {
-                                                                            setChecked(listCompany.id);
-                                                                            setCompany(listCompany);
-                                                                        }}>
-                                                        <View className={"flex-row items-center gap-x-1 ml-1"}>
-                                                            <RadioButton
-                                                                value={listCompany.id}
-                                                                status={(checked === listCompany.id || company.id === listCompany.id) ? 'checked' : 'unchecked'}
-                                                            />
-                                                            <Text>{listCompany.name}</Text>
-                                                        </View>
-                                                    </TouchableHighlight>
-                                                </View>)
-                                            })}
-                                        </ScrollView>
-                                    </Dialog.Content>
-                                    <Dialog.Actions>
-                                        <Button mode={"contained"} className={"px-6 rounded bg-blue-800"}
-                                                onPress={hideCompanySwitchModalHandler}>Done</Button>
-                                    </Dialog.Actions>
-                                </Dialog>
-                            </Portal>
-                        </>
-                    ),
+                    headerRight: () => <CompanySwitch/>,
                     drawerIcon: ({focused, size}) => (
                         <Icon
                             name='home'
