@@ -9,8 +9,10 @@ import { useCustomersStore } from '../index';
 import { FlashList } from '@shopify/flash-list';
 import { isUndefined } from 'lodash';
 import {useEffect, useState} from 'react';
-import {useGetCustomersList, useUpdateCustomer} from "../../../apis/useApi";
+import {useCreateCustomer, useGetCustomersList, useUpdateCustomer} from "../../../apis/useApi";
 import {showToast} from "../GiveMoney";
+import {useAuthCompanyStore} from "../../../core/utils";
+import {useAuth} from "../../../hooks";
 
 export const sendWhatsAppMessage = (link) => {
   if (!isUndefined(link)) {
@@ -125,14 +127,39 @@ export default function Index({ navigation }) {
 
   let customerList = useCustomersStore((state) => state.customersList);
   let setCustomerList = useCustomersStore((state) => state.setCustomers);
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
+  const auth = useAuth.use?.token();
 
   const [visible, setVisible] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [selectedCustomer, setSelectedCustomer] = useState({
+    'title' : '',
+    'description' : ''
+  });
   const {
     mutate: updateCustomer,
     data: customerUpdateData,
     isLoading: isCustomerLoading,
   } = useUpdateCustomer();
+
+  const {
+    mutate: createCustomer,
+    data: customerCreateData,
+    isLoading: isCustomerCreateLoading,
+  } = useCreateCustomer();
+
+  const {
+    mutate: getCustomerRequest,
+    data: customersList,
+    isLoading: isCustomerDataLoading,
+  } = useGetCustomersList();
+
+  useEffect(() => {
+    getCustomerRequest({
+      company_id: company?.id,
+      cost_center_id: auth.user.cost_center_id
+    });
+  }, [isCustomerLoading, customerUpdateData, customerCreateData, isCustomerCreateLoading]);
+
 
   useEffect(() => {
       if(selectedCustomer){
@@ -144,8 +171,12 @@ export default function Index({ navigation }) {
         };
       if(customerUpdateData?.status){
         setCustomerList(customerList);
+        setSelectedCustomer({
+          'title' : '',
+          'description' : ''
+        });
+        showToast(customerUpdateData?.message, 'success');
       }
-      showToast(customerUpdateData?.message, 'success');
     }else{
       if(customerUpdateData){
         showToast(customerUpdateData?.  message, 'error');
@@ -153,41 +184,65 @@ export default function Index({ navigation }) {
     }
   }, [isCustomerLoading, customerUpdateData]);
 
+  useEffect(() => {
+    if(!isCustomerCreateLoading && customerCreateData){
+      if(customerCreateData.status){
+        showToast(customerCreateData?.message, 'success');
+      }else{
+        showToast(customerCreateData?.message, 'error');
+      }
+      setSelectedCustomer({
+        'title' : '',
+        'description' : ''
+      });
+    }
+  }, [isCustomerCreateLoading, customerCreateData]);
+
+
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
 
   return (
     <View className='flex-1 justify-start bg-blue-50'>
-      <FlashList
-        data={customerList}
-        renderItem={({ item, index }) => (
-          <CardComponent
-            key={index}
-            title={item.name}
-            id={item.id}
-            iconName='person'
-            description={item.digits}
-            makeCall={() => makePhoneCall(item.digits)}
-            whatsapp={() =>
-              sendWhatsAppMessage(`https://wa.me/91${item.digits}?text=Hello`)
+      {isCustomerDataLoading ? <ActivityIndicator/> : (<>
+        <View className='flex flex-row justify-end items-center px-4'>
+          <Button icon={"plus"}  className={'w-42 flex-row justify-between items-center'} mode={"contained"} onPress={showDialog}>
+            <Text className={'text-white ml-2'}>Create</Text>
+          </Button>
+        </View>
+        <FlashList
+            data={customersList?.data}
+            renderItem={({ item, index }) => (
+                <CardComponent
+                    key={index}
+                    title={item.name}
+                    id={item.id}
+                    iconName='person'
+                    description={item.phone}
+                    makeCall={() => {
+                      makePhoneCall(item.phone)
+                    }}
+                    whatsapp={() => {
+                      sendWhatsAppMessage(`https://wa.me/91${item.phone}?text=Hello`)
+                    }}
+                    editContact={(item) => {
+                      showDialog()
+                      setSelectedCustomer(item);
+                    }}
+                />
+            )}
+            estimatedItemSize={100}
+            ListEmptyComponent={
+              <View className={'flex-1 d-flex justify-center items-center h-16'}>
+                <Text variant={'bodyMedium'}>No Records Available!</Text>
+              </View>
             }
-            editContact={(item) => {
-              showDialog()
-              setSelectedCustomer(item);
-            }}
-          />
-        )}
-        estimatedItemSize={100}
-        ListEmptyComponent={
-          <View className={'flex-1 d-flex justify-center items-center h-16'}>
-            <Text variant={'bodyMedium'}>No Records Available!</Text>
-          </View>
-        }
-      />
-
+            ListFooterComponent={<View className={"h-16"}/>}
+        />
+      </>)}
       <Portal>
         <Dialog visible={visible} onDismiss={hideDialog} className={"bg-white rounded"}>
-          <Dialog.Title style={{fontSize: 18}} className={"font-semibold"}>Edit Customer Details</Dialog.Title>
+          <Dialog.Title style={{fontSize: 18}} className={"font-semibold"}>{selectedCustomer.id ? "Edit Customer Details" : "Create Customer"}</Dialog.Title>
           <Dialog.Content>
             <TextInput mode={"outlined"} className={"bg-white"} value={selectedCustomer?.title} onChangeText={(text) => {
               setSelectedCustomer({
@@ -204,14 +259,23 @@ export default function Index({ navigation }) {
             }} label={"Mobile Number"}/>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button mode={"contained"} className={"px-6 rounded bg-blue-800"} loading={isCustomerLoading} onPress={()=> {
+            <Button mode={"contained"} className={"px-6 rounded"} loading={selectedCustomer.id ? isCustomerLoading : isCustomerCreateLoading} onPress={()=> {
               hideDialog();
-              updateCustomer(selectedCustomer)
-            }}>Update</Button>
+              if((selectedCustomer && selectedCustomer.title !== "") && (selectedCustomer.id)){
+                updateCustomer(selectedCustomer)
+              }else {
+                createCustomer({
+                  title: selectedCustomer.title,
+                  description: selectedCustomer.description,
+                  company_id : company.id,
+                  cost_center_id : auth.user.cost_center_id,
+                  user_id : auth.user.id
+                })
+              }
+            }}>{selectedCustomer.id ? "Update" : "Create" }</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
-
     </View>
   );
 }

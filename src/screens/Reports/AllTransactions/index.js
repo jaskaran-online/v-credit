@@ -76,7 +76,7 @@ export default function Index() {
     }
     formData.append('toDate', toDateStr);
     formData.append('fromDate', fromDateStr);
-
+    formData.append('user_id', auth.user.id);
     transactionsMutate(formData);
     setTransactionsReload(false);
   }

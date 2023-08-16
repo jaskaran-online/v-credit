@@ -24,7 +24,7 @@ const ShareScreen = ({route}) => {
         formData.append('company_id', company?.id);
         formData.append('cost_center_id', auth.user.cost_center_id);
         formData.append('customer_id', route.params.id);
-        // formData.append("user_id", auth.user.id);
+        formData.append("user_id", auth.user.id);
         mutate(formData);
     }
 

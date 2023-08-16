@@ -74,6 +74,7 @@ export default function Index() {
     const formData = new FormData();
     formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user.cost_center_id);
+    formData.append('user_id', auth.user.id);
     transactionRequest(formData);
     setReload(false);
   }

@@ -46,6 +46,16 @@ export const useUpdateCustomer = () => {
   });
 };
 
+export const useCreateCustomer = () => {
+  return useMutation({
+    mutationKey: 'createCustomer',
+    mutationFn: ({title, description, company_id, cost_center_id, user_id}) => {
+      return post(`/api/v1/create/customer`, {title, description, company_id, cost_center_id, user_id})
+    },
+    cacheTime: 500,
+  });
+};
+
 export const useTransactionsData = () => {
   return useMutation({
     mutationKey: 'totalAmount',
