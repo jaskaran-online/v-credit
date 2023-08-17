@@ -1,14 +1,18 @@
-import {Feather, MaterialCommunityIcons} from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import _ from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import {Button, Searchbar, Text} from 'react-native-paper';
+import { Button, Searchbar, Text } from 'react-native-paper';
 import { useTransactionsData } from '../../../apis/useApi';
-import {renderHeader, renderItem, useAuthCompanyStore} from '../../../core/utils';
+import {
+  renderHeader,
+  renderItem,
+  useAuthCompanyStore,
+} from '../../../core/utils';
 import { useAuth } from '../../../hooks';
-import {COLORS} from "../../../core";
+import { COLORS } from '../../../core';
 
 export default function Index() {
   const auth = useAuth.use?.token();
@@ -27,18 +31,17 @@ export default function Index() {
   const company = useAuthCompanyStore((state) => state.selectedCompany);
 
   useEffect(() => {
-
     if (transactionData?.data) {
       let orderedArray = [...transactionData.data]; // Create a copy of the array
 
       switch (filterBy) {
-        case "Clear":
-        case "Show All Records":
+        case 'Clear':
+        case 'Show All Records':
           setOrderedData(orderedArray);
           setShowOptions(false);
           break;
-        case "Payment Received":
-        case "Credit Given":
+        case 'Payment Received':
+        case 'Credit Given':
           orderedArray.sort((a, b) => {
             const sortOrder = filterBy === 'Payment Received' ? -1 : 1;
             return sortOrder * (a.transaction_type_id - b.transaction_type_id);
@@ -46,17 +49,18 @@ export default function Index() {
           setOrderedData([...orderedArray]); // Update the state with the sorted array
           setShowOptions(false);
           break;
-        case "Show My Records":
-          orderedArray = orderedArray.filter(item => item.user_id === auth?.user?.id);
+        case 'Show My Records':
+          orderedArray = orderedArray.filter(
+            (item) => item.user_id === auth?.user?.id,
+          );
           setOrderedData([...orderedArray]); // Update the state with the filtered array
           setShowOptions(false);
           break;
         default:
-          console.log("Unknown filter");
+          console.log('Unknown filter');
           break;
       }
     }
-
   }, [filterBy, transactionData, isLoading]);
 
   useEffect(() => {
@@ -85,8 +89,14 @@ export default function Index() {
       label: 'Payment Received',
       onPress: () => setFilteredBy('Payment Received'),
     },
-    { label: 'Show All Records', onPress: () => setFilteredBy('Show All Records') },
-    { label: 'Show My Records', onPress: () => setFilteredBy('Show My Records') },
+    {
+      label: 'Show All Records',
+      onPress: () => setFilteredBy('Show All Records'),
+    },
+    {
+      label: 'Show My Records',
+      onPress: () => setFilteredBy('Show My Records'),
+    },
     {
       label: 'Clear Filter',
       onPress: () => {
@@ -134,9 +144,18 @@ export default function Index() {
         </View>
         <View className={'flex'} style={{ width: '15%', marginRight: 10 }}>
           {options && (
-        <Button onPress={() => handleOptionSelect(true)} className={`${filterBy === "Clear" ? "bg-white" : "bg-blue-600" }  rounded-full mr-2 border-2 shadow-sm`}>
-              <MaterialCommunityIcons  name='account-filter' size={22} color={filterBy === "Clear" ? 'black' : 'white'} />
-        </Button>
+            <Button
+              onPress={() => handleOptionSelect(true)}
+              className={`${
+                filterBy === 'Clear' ? 'bg-white' : 'bg-blue-600'
+              }  rounded-full mr-2 border-2 shadow-sm`}
+            >
+              <MaterialCommunityIcons
+                name='account-filter'
+                size={22}
+                color={filterBy === 'Clear' ? 'black' : 'white'}
+              />
+            </Button>
           )}
         </View>
       </View>

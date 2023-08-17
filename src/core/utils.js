@@ -9,7 +9,7 @@ import createSecureStore from '@neverdull-agency/expo-unlimited-secure-store';
 import React, { useState } from 'react';
 import { Text } from 'react-native-paper';
 import navigation from '../navigations';
-import {create} from "zustand";
+import { create } from 'zustand';
 
 const SecureStore = createSecureStore();
 
@@ -311,4 +311,3 @@ export const useAuthCompanyStore = create((set) => ({
   selectedCompany: null,
   setCompany: (newState) => set((state) => ({ selectedCompany: newState })),
 }));
-

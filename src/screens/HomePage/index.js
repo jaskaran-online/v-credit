@@ -2,13 +2,17 @@ import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
-import {useCustomersData, useGetCustomersList, useTotalTransactionData} from '../../apis/useApi';
+import {
+  useCustomersData,
+  useGetCustomersList,
+  useTotalTransactionData,
+} from '../../apis/useApi';
 import { useAuth } from '../../hooks';
 import FloatingButtons from '../Components/FloatingButton';
 import { TabNavigator } from '../Components/TabNavigator';
 import { TwoCards } from '../Components/TwoCards';
 import * as Contacts from 'expo-contacts';
-import {getItem, setItem, useAuthCompanyStore} from '../../core/utils';
+import { getItem, setItem, useAuthCompanyStore } from '../../core/utils';
 import { create } from 'zustand';
 
 // Create a Zustand store
@@ -107,9 +111,8 @@ export default function Index({ navigation }) {
 
       getCustomerRequest({
         company_id: company?.id,
-        cost_center_id: auth.user.cost_center_id
+        cost_center_id: auth.user.cost_center_id,
       });
-
     }, [company]),
   );
 

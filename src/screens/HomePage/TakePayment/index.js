@@ -28,7 +28,7 @@ import {
 import { useAuth } from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
 import { useContactsStore } from '../index';
-import {useAuthCompanyStore} from "../../../core/utils";
+import { useAuthCompanyStore } from '../../../core/utils';
 
 const showToast = (message, type) => {
   Toast.show({

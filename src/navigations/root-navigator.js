@@ -22,7 +22,7 @@ import { EditTransaction } from '../screens';
 import GiveMoney from '../screens/HomePage/GiveMoney';
 import TakePayment from '../screens/HomePage/TakePayment';
 import CustomerList from '../screens/HomePage/CustomerList';
-import {useAuthCompanyStore} from "../core/utils";
+import { useAuthCompanyStore } from '../core/utils';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,7 +37,7 @@ export const Root = () => {
   useEffect(() => {
     if (status !== 'idle') {
       hideSplash();
-        setCompany(auth?.user?.company)
+      setCompany(auth?.user?.company);
     }
   }, [hideSplash, status]);
 

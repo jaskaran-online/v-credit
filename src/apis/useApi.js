@@ -31,7 +31,8 @@ export const useCustomersData = () => {
 export const useGetCustomersList = () => {
   return useMutation({
     mutationKey: 'getCustomersList',
-    mutationFn: ({company_id, cost_center_id}) => get(`/api/v1/get/customer/${company_id}/${cost_center_id}`),
+    mutationFn: ({ company_id, cost_center_id }) =>
+      get(`/api/v1/get/customer/${company_id}/${cost_center_id}`),
     cacheTime: 500,
   });
 };
@@ -39,8 +40,8 @@ export const useGetCustomersList = () => {
 export const useUpdateCustomer = () => {
   return useMutation({
     mutationKey: 'updateCustomer',
-    mutationFn: ({id, title, description}) => {
-      return post(`/api/v1/update/customer/${id}`, {id, title, description})
+    mutationFn: ({ id, title, description }) => {
+      return post(`/api/v1/update/customer/${id}`, { id, title, description });
     },
     cacheTime: 500,
   });
@@ -49,8 +50,20 @@ export const useUpdateCustomer = () => {
 export const useCreateCustomer = () => {
   return useMutation({
     mutationKey: 'createCustomer',
-    mutationFn: ({title, description, company_id, cost_center_id, user_id}) => {
-      return post(`/api/v1/create/customer`, {title, description, company_id, cost_center_id, user_id})
+    mutationFn: ({
+      title,
+      description,
+      company_id,
+      cost_center_id,
+      user_id,
+    }) => {
+      return post(`/api/v1/create/customer`, {
+        title,
+        description,
+        company_id,
+        cost_center_id,
+        user_id,
+      });
     },
     cacheTime: 500,
   });

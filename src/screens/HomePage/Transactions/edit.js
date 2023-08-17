@@ -19,7 +19,7 @@ import {
   useProductsApi,
   useUpdatePaymentApi,
 } from '../../../apis/useApi';
-import {getItem, setItem, useAuthCompanyStore} from '../../../core/utils';
+import { getItem, setItem, useAuthCompanyStore } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
 

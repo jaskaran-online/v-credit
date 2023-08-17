@@ -5,7 +5,11 @@ import { ActivityIndicator, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 import { useAllTransactions, useCustomersData } from '../../../apis/useApi';
-import {renderHeader, renderItem, useAuthCompanyStore} from '../../../core/utils';
+import {
+  renderHeader,
+  renderItem,
+  useAuthCompanyStore,
+} from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import { TwoCards } from '../../Components/TwoCards';
 import DropDownFlashList from '../../Components/dropDownFlashList';
@@ -95,7 +99,7 @@ export default function Index() {
       label: 'Payment Received',
       onPress: handleDeleteSelectedItem,
     },
-    { label: 'Clear', onPress: handleEditSelectedItem }
+    { label: 'Clear', onPress: handleEditSelectedItem },
   ];
 
   const handleSelect = (item) => {
