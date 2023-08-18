@@ -133,13 +133,15 @@ export default function Index() {
   }, [orderedData]);
 
   function getCustomerData() {
-    setReload(true);
-    const formData = new FormData();
-    formData.append('cost_center_id', auth?.user.cost_center_id);
-    formData.append('company_id', company?.id);
-    formData.append('user_id', auth?.user.id);
-    customerDataRequest(formData);
-    setReload(false);
+    if (company) {
+      setReload(true);
+      const formData = new FormData();
+      formData.append('cost_center_id', auth?.user.cost_center_id);
+      formData.append('company_id', company?.id);
+      formData.append('user_id', auth?.user.id);
+      customerDataRequest(formData);
+      setReload(false);
+    }
   }
 
   useFocusEffect(

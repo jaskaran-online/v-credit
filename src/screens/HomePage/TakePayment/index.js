@@ -196,28 +196,28 @@ const TakePayment = ({ navigation, route }) => {
       return false;
     }
 
-    if (!selectedCustomer?.phoneNumbers && phoneNumber === null) {
-      showToast(
-        "The contact you selected doesn't have a mobile number!",
-        'error',
-      );
-      return false;
-    }
-
-    if (contactSelectedMobileNumber === undefined) {
-      showToast('Please enter customer mobile number!', 'error');
-      return false;
-    }
-
-    if (phoneNumber == null) {
-      phoneNumber = contactSelectedMobileNumber;
-    }
+    // if (!selectedCustomer?.phoneNumbers && phoneNumber === null) {
+    //   showToast(
+    //     "The contact you selected doesn't have a mobile number!",
+    //     'error',
+    //   );
+    //   return false;
+    // }
+    //
+    // if (contactSelectedMobileNumber === undefined) {
+    //   showToast('Please enter customer mobile number!', 'error');
+    //   return false;
+    // }
+    //
+    // if (phoneNumber == null) {
+    //   phoneNumber = contactSelectedMobileNumber;
+    // }
 
     if (price == 0 || qty == 0) {
       showToast('Please check price and qty', 'error');
       return false;
     }
-    const company = useAuthCompanyStore((state) => state.selectedCompany);
+
     const formData = new FormData();
     formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user?.cost_center_id);
@@ -298,7 +298,8 @@ const TakePayment = ({ navigation, route }) => {
         {selectedCustomer && (
           <>
             {contactMobileNumbers.length === 1 ||
-            contactSelectedMobileNumber === null ? (
+            contactSelectedMobileNumber === null ||
+            route?.params?.customer?.phone === null ? (
               <TextInput
                 className={'bg-white mt-2 -z-30'}
                 onChangeText={(mobile) =>
@@ -314,7 +315,7 @@ const TakePayment = ({ navigation, route }) => {
               />
             ) : (
               <>
-                {contactMobileNumbers && (
+                {route?.params?.customer?.phone && contactMobileNumbers && (
                   <View className={'mt-2 -z-10'}>
                     <DropDownFlashList
                       data={contactMobileNumbers}

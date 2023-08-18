@@ -1,138 +1,142 @@
+import React, { useEffect, useCallback } from 'react';
+import { View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useEffect } from 'react';
-import { View } from 'react-native';
+import * as Contacts from 'expo-contacts';
+import { useAuth } from '../../hooks';
 import {
   useCustomersData,
   useGetCustomersList,
   useTotalTransactionData,
 } from '../../apis/useApi';
-import { useAuth } from '../../hooks';
-import FloatingButtons from '../Components/FloatingButton';
-import { TabNavigator } from '../Components/TabNavigator';
 import { TwoCards } from '../Components/TwoCards';
-import * as Contacts from 'expo-contacts';
+import { TabNavigator } from '../Components/TabNavigator';
+import FloatingButtons from '../Components/FloatingButton';
 import { getItem, setItem, useAuthCompanyStore } from '../../core/utils';
 import { create } from 'zustand';
 
-// Create a Zustand store
+// Create Zustand stores
 export const useContactsStore = create((set) => ({
   contactsList: [],
-  setContacts: (newState) => set((state) => ({ contactsList: newState })),
+  setContacts: (newState) => set({ contactsList: newState }),
 }));
 
 export const useCustomersStore = create((set) => ({
   customersList: [],
-  setCustomers: (newState) => set((state) => ({ customersList: newState })),
+  setCustomers: (newState) => set({ customersList: newState }),
 }));
 
-export default function Index({ navigation }) {
-  const auth = useAuth.use?.token();
-  const setContacts = useContactsStore((state) => state.setContacts);
-  const setCustomers = useCustomersStore((state) => state.setCustomers);
-  const { mutate: cardRequest, data: cardData } = useTotalTransactionData();
+const Index = ({ navigation }) => {
+  const auth = useAuth.use.token(); // Destructure the token directly
   const company = useAuthCompanyStore((state) => state.selectedCompany);
 
+  // Use object destructuring for more concise code
   const {
-    mutate: customerRequest,
-    data: customerData,
-    isLoading: isLoadingCustomer,
-  } = useCustomersData();
-
+    mutate: cardRequest,
+    data: cardData,
+    isLoading: isCardLoading,
+  } = useTotalTransactionData();
+  const { mutate: customerRequest } = useCustomersData();
   const {
     mutate: getCustomerRequest,
-    data: customersList,
+    data: customersListData,
     isLoading: isCustomerLoading,
   } = useGetCustomersList();
 
-  function loadCustomerData() {
-    const customerFormData = new FormData();
-    customerFormData.append('cost_center_id', auth?.user.cost_center_id);
-    customerFormData.append('company_id', company?.id);
-    customerFormData.append('user_id', auth?.user.id);
-    customerRequest(customerFormData);
-  }
+  // Load customer data and card totals
+  const loadCustomerData = useCallback(() => {
+    if (company && auth?.user) {
+      const customerFormData = new FormData();
+      customerFormData.append('cost_center_id', auth.user.cost_center_id);
+      customerFormData.append('company_id', company?.id);
+      customerFormData.append('user_id', auth.user.id);
+      customerRequest(customerFormData);
+    }
+  }, [auth.user, company, customerRequest]);
 
+  const getCardTotals = useCallback(() => {
+    if (company && auth?.user) {
+      const formData = new FormData();
+      formData.append('company_id', company?.id);
+      formData.append('cost_center_id', auth.user.cost_center_id);
+      formData.append('user_id', auth.user.id);
+      cardRequest(formData);
+    }
+  }, [auth.user, company, cardRequest]);
+
+  // Load contacts from device and update Zustand store
   const loadContactsFromDevice = async () => {
     const { status: contactStatus } = await Contacts.requestPermissionsAsync();
-    let filteredContacts = customersList?.data
-      // ?.map((obj) => obj.customer)
-      ?.map((obj) => {
-        return {
-          id: obj?.id,
+
+    if (contactStatus === 'granted' && customersListData?.data) {
+      try {
+        const { data: contactsArray } = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.PhoneNumbers],
+        });
+
+        const filteredContacts = customersListData.data.map((obj) => ({
+          id: obj.id,
           name: obj.name,
           digits: obj.phone,
           contactType: 'person',
-          phoneNumbers: [{ digits: obj.phone }],
+          phoneNumbers: obj.phone ? [{ digits: obj.phone }] : [],
           imageAvailable: false,
-        };
-      });
-    setCustomers(filteredContacts);
-    if (contactStatus === 'granted') {
-      setContacts(filteredContacts);
-      try {
-        const { data: contactsArray } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
+        }));
+
+        const newArray = contactsArray.filter((obj) =>
+          obj.hasOwnProperty('phoneNumbers'),
+        );
+
+        useContactsStore.setState({
+          contactsList: [...filteredContacts, ...newArray],
         });
-        if (contactsArray.length > 0) {
-          const newArray = contactsArray.filter((obj) =>
-            obj.hasOwnProperty('phoneNumbers'),
-          );
-          setContacts([...filteredContacts, ...newArray]);
-        }
       } catch (error) {
-        const { data: contactsArray } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-        });
-        if (contactsArray.length > 0) {
-          const newArray = contactsArray.filter((obj) =>
-            obj.hasOwnProperty('phoneNumbers'),
-          );
-          setContacts([...filteredContacts, ...newArray]);
-        }
+        console.error(error);
+        // Handle error gracefully if needed
       }
-    } else {
-      setContacts(filteredContacts);
     }
   };
 
-  function makeApiCall() {
-    const formData = new FormData();
-    formData.append('company_id', company?.id);
-    formData.append('cost_center_id', auth.user.cost_center_id);
-    formData.append('user_id', auth.user.id);
-    cardRequest(formData);
-  }
-
+  // Use useFocusEffect to handle component focus
   useFocusEffect(
     useCallback(() => {
-      makeApiCall();
+      getCardTotals();
       loadCustomerData();
-
       getCustomerRequest({
         company_id: company?.id,
         cost_center_id: auth.user.cost_center_id,
       });
-    }, [company]),
+    }, [
+      auth.user,
+      company,
+      getCardTotals,
+      loadCustomerData,
+      getCustomerRequest,
+    ]),
   );
 
+  // useEffect to load contacts when customer data is loaded
   useEffect(() => {
-    if (!isLoadingCustomer) {
+    if (!isCustomerLoading) {
       loadContactsFromDevice();
     }
-  }, [isLoadingCustomer]);
+  }, [isCustomerLoading]);
 
   return (
-    <View className='flex-1 bg-white'>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar animated={true} />
-      <TwoCards
-        toPay={cardData?.data?.toPay}
-        toReceive={cardData?.data?.toReceive}
-      />
-      <View className={'flex-1'}>
+      {!isCardLoading && (
+        <TwoCards
+          toPay={cardData?.data?.toPay}
+          toReceive={cardData?.data?.toReceive}
+        />
+      )}
+      <View style={{ flex: 1 }}>
         <TabNavigator />
       </View>
       <FloatingButtons navigation={navigation} />
     </View>
   );
-}
+};
+
+export default Index;

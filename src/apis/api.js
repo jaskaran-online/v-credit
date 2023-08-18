@@ -14,6 +14,11 @@ export const get = async (url) => {
     const response = await axiosInstance.get(url);
     return response.data;
   } catch (error) {
+    console.error({
+      method: 'GET',
+      error: error.response.data,
+      url,
+    });
     throw new Error(error);
   }
 };
@@ -25,6 +30,11 @@ export const post = async (url, data) => {
     return response.data;
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
+      console.error({
+        method: 'POST',
+        error: error.response.data,
+        url,
+      });
       throw new Error(error.response.data.message);
     } else {
       throw new Error('An error occurred during the request.');
@@ -39,6 +49,7 @@ export const put = async (url, data) => {
     return response.data;
   } catch (error) {
     console.error(error);
+    console.log('error.response.data.message', error.response.data.message);
     throw new Error('Network response was not ok');
   }
 };

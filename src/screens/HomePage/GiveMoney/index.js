@@ -39,7 +39,7 @@ export const showToast = (message, type) => {
   });
 };
 
-function processString(input = null) {
+export function processString(input = null) {
   if (input == null || input === '' || input === 'null') {
     return '';
   }
@@ -54,7 +54,7 @@ function processString(input = null) {
   return processedString;
 }
 
-function convertDateFormat(dateString) {
+export function convertDateFormat(dateString) {
   const dateObj = new Date(dateString);
 
   const convertedDate = dateObj
@@ -69,7 +69,6 @@ function convertDateFormat(dateString) {
 
 const GiveMoney = ({ navigation, route }) => {
   const auth = useAuth.use?.token();
-  const company = useAuthCompanyStore((state) => state.selectedCompany);
   const {
     mutate: request,
     data: paymentApiResponse,
@@ -79,6 +78,7 @@ const GiveMoney = ({ navigation, route }) => {
   } = usePaymentApi();
   const { mutate: productRequest, data: products } = useProductsApi();
 
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
   const [amount, setAmount] = useState(0);
   const [imageUri, setImageUri] = useState(null);
   const [inputDate, setInputDate] = useState(new Date());
@@ -196,28 +196,27 @@ const GiveMoney = ({ navigation, route }) => {
       return false;
     }
 
-    if (!selectedCustomer?.phoneNumbers && phoneNumber === null) {
-      showToast(
-        "The contact you selected doesn't have a mobile number!",
-        'error',
-      );
-      return false;
-    }
-
-    if (contactSelectedMobileNumber === undefined) {
-      showToast('Please enter customer mobile number!', 'error');
-      return false;
-    }
-
-    if (phoneNumber == null) {
-      phoneNumber = contactSelectedMobileNumber;
-    }
+    // if (!selectedCustomer?.phoneNumbers && phoneNumber === null) {
+    //   showToast(
+    //     "The contact you selected doesn't have a mobile number!",
+    //     'error',
+    //   );
+    //   return false;
+    // }
+    //
+    // if (contactSelectedMobileNumber === undefined) {
+    //   showToast('Please enter customer mobile number!', 'error');
+    //   return false;
+    // }
+    //
+    // if (phoneNumber == null) {
+    //   phoneNumber = contactSelectedMobileNumber;
+    // }
 
     if (price == 0 || qty == 0) {
       showToast('Please check price and qty', 'error');
       return false;
     }
-    const company = useAuthCompanyStore((state) => state.selectedCompany);
 
     const formData = new FormData();
     formData.append('company_id', company?.id);
@@ -299,7 +298,8 @@ const GiveMoney = ({ navigation, route }) => {
         {selectedCustomer && (
           <>
             {contactMobileNumbers.length === 1 ||
-            contactSelectedMobileNumber === null ? (
+            contactSelectedMobileNumber === null ||
+            route?.params?.customer?.phone === null ? (
               <TextInput
                 className={'bg-white mt-2 -z-30'}
                 onChangeText={(mobile) =>
@@ -315,7 +315,7 @@ const GiveMoney = ({ navigation, route }) => {
               />
             ) : (
               <>
-                {contactMobileNumbers && (
+                {route?.params?.customer?.phone && contactMobileNumbers && (
                   <View className={'mt-2 -z-10'}>
                     <DropDownFlashList
                       data={contactMobileNumbers}
