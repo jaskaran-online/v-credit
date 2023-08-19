@@ -229,7 +229,13 @@ export default function Index({ navigation }) {
               icon={'plus'}
               className={'w-42 flex-row justify-between items-center'}
               mode={'contained'}
-              onPress={showDialog}
+              onPress={() => {
+                setSelectedCustomer({
+                  title: '',
+                  description: '',
+                });
+                showDialog();
+              }}
             >
               <Text className={'text-white ml-2'}>Create</Text>
             </Button>
