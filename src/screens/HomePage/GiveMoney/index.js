@@ -39,7 +39,7 @@ export const showToast = (message, type) => {
   });
 };
 
-export function processString(input = null) {
+export const processString = (input = null) => {
   if (input == null || input === '' || input === 'null') {
     return '';
   }
@@ -54,13 +54,13 @@ export function processString(input = null) {
   return processedString;
 }
 
-export function convertDateFormat(dateString) {
+export const convertDateFormat = (dateString) => {
   const dateObj = new Date(dateString);
 
   const convertedDate = dateObj
-    .toISOString()
-    .slice(0, 10) // Extract YYYY-MM-DD
-    .replace('T', ' '); // Replace 'T' with a space
+      .toISOString()
+      .slice(0, 10) // Extract YYYY-MM-DD
+      .replace('T', ' '); // Replace 'T' with a space
 
   const convertedTime = dateObj.toISOString().slice(11, 19); // Extract HH:MM:SS
 
@@ -86,23 +86,23 @@ const GiveMoney = ({ navigation, route }) => {
   const [price, setPrice] = useState(1);
   const [qty, setQty] = useState(1);
   const [selectedCustomer, setSelectedCustomer] = useState(
-    route.params?.customer || null,
+      route.params?.customer || null,
   );
   const contacts = useContactsStore((state) => state.contactsList);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [visible, setVisible] = useState(false);
   const [contactMobileNumbers, setContactMobileNumbers] = useState(
-    route?.params?.customer?.phone
-      ? [
-          {
-            name: route?.params?.customer?.name,
-            digits: route?.params?.customer?.phone,
-          },
-        ]
-      : [],
+      route?.params?.customer?.phone
+          ? [
+            {
+              name: route?.params?.customer?.name,
+              digits: route?.params?.customer?.phone,
+            },
+          ]
+          : [],
   );
   const [contactSelectedMobileNumber, setContactSelectedMobileNumber] =
-    useState(route?.params?.customer?.phone || undefined);
+      useState(route?.params?.customer?.phone || undefined);
 
   useEffect(() => {
     const formData = new FormData();
@@ -113,13 +113,13 @@ const GiveMoney = ({ navigation, route }) => {
   useEffect(() => {
     if (selectedCustomer) {
       if (selectedCustomer?.phoneNumbers) {
-        // setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
+        setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
         const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
           return {
             ...obj,
             name: obj.digits
-              ? processString(obj.digits)
-              : processString(obj.number),
+                ? processString(obj.digits)
+                : processString(obj.number),
           };
         });
         setContactMobileNumbers(updatedData);
@@ -131,11 +131,11 @@ const GiveMoney = ({ navigation, route }) => {
     if (contactMobileNumbers.length === 1) {
       if (contactMobileNumbers[0]?.digits) {
         setContactSelectedMobileNumber(
-          processString(contactMobileNumbers[0]?.digits),
+            processString(contactMobileNumbers[0]?.digits),
         );
       } else {
         setContactSelectedMobileNumber(
-          processString(contactMobileNumbers[0]?.number),
+            processString(contactMobileNumbers[0]?.number),
         );
       }
     }
@@ -165,7 +165,7 @@ const GiveMoney = ({ navigation, route }) => {
 
   const handleCameraCapture = async () => {
     const { status: cameraStatus } =
-      await Camera.requestCameraPermissionsAsync();
+        await Camera.requestCameraPermissionsAsync();
     if (cameraStatus === 'granted') {
       const photo = await ImagePicker.launchCameraAsync();
       if (!photo?.cancelled) {
@@ -209,9 +209,9 @@ const GiveMoney = ({ navigation, route }) => {
     //   return false;
     // }
     //
-    // if (phoneNumber == null) {
-    //   phoneNumber = contactSelectedMobileNumber;
-    // }
+    if (phoneNumber == null) {
+      phoneNumber = contactSelectedMobileNumber;
+    }
 
     if (price == 0 || qty == 0) {
       showToast('Please check price and qty', 'error');
@@ -267,218 +267,219 @@ const GiveMoney = ({ navigation, route }) => {
   }, [inventoryChecked]);
 
   return (
-    <View className={'flex-1 bg-white'}>
-      <KeyboardAvoidingView
-        behavior='padding'
-        className={'bg-white flex-1 px-4 pt-1'}
-      >
-        <View className={'mr-5 flex flex-row items-center justify-end my-1'}>
-          <Checkbox
-            status={inventoryChecked ? 'checked' : 'unchecked'}
-            onPress={() => {
-              setInventoryChecked(!inventoryChecked);
-            }}
+      <View className={'flex-1 bg-white'}>
+        <KeyboardAvoidingView
+            behavior='padding'
+            className={'bg-white flex-1 px-4 pt-1'}
+        >
+          <View className={'mr-5 flex flex-row items-center justify-end my-1'}>
+            <Checkbox
+                status={inventoryChecked ? 'checked' : 'unchecked'}
+                onPress={() => {
+                  setInventoryChecked(!inventoryChecked);
+                }}
+            />
+            <TouchableOpacity
+                onPress={() => {
+                  setInventoryChecked(!inventoryChecked);
+                }}
+            >
+              <Text>Inventory</Text>
+            </TouchableOpacity>
+          </View>
+          <DropDownFlashList
+              data={contacts}
+              inputLabel='Select Customer'
+              headerTitle='Showing contact from Phone book'
+              onSelect={handleContactSelect}
+              selectedItemName={selectedCustomer?.name}
+              filterEnabled={true}
           />
-          <TouchableOpacity
-            onPress={() => {
-              setInventoryChecked(!inventoryChecked);
-            }}
-          >
-            <Text>Inventory</Text>
-          </TouchableOpacity>
-        </View>
-        <DropDownFlashList
-          data={contacts}
-          inputLabel='Select Customer'
-          headerTitle='Showing contact from Phone book'
-          onSelect={handleContactSelect}
-          selectedItemName={selectedCustomer?.name}
-          filterEnabled={true}
-        />
-        {selectedCustomer && (
-          <>
-            {contactMobileNumbers.length === 1 ||
-            contactSelectedMobileNumber === null ||
-            route?.params?.customer?.phone === null ? (
-              <TextInput
-                className={'bg-white mt-2 -z-30'}
-                onChangeText={(mobile) =>
-                  setContactSelectedMobileNumber(mobile)
-                }
-                value={
-                  contactSelectedMobileNumber == 'null'
-                    ? ''
-                    : contactSelectedMobileNumber
-                }
-                mode={'outlined'}
-                label={'Mobile Number'}
-              />
-            ) : (
+          {selectedCustomer && (
               <>
-                {route?.params?.customer?.phone && contactMobileNumbers && (
-                  <View className={'mt-2 -z-10'}>
-                    <DropDownFlashList
-                      data={contactMobileNumbers}
-                      inputLabel={
-                        contactSelectedMobileNumber
-                          ? 'Selected Mobile Number'
-                          : 'Select Mobile Number'
-                      }
-                      selectedItemName={processString(
-                        selectedCustomer?.phoneNumbers[0]?.number,
-                      )}
-                      selectedItemDigits={processString(
-                        selectedCustomer?.phoneNumbers[0]?.digits,
-                      )}
-                      enableSearch={false}
-                      headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
-                      onSelect={(contact) => {
-                        setContactSelectedMobileNumber(
-                          contact?.digits
-                            ? processString(contact?.digits)
-                            : contact?.number
-                            ? processString(contact?.number)
-                            : null,
-                        );
-                      }}
-                    />
-                  </View>
-                )}
+                {contactMobileNumbers.length === 1 ||
+                contactSelectedMobileNumber === null ||
+                route?.params?.customer?.phone === null || contactSelectedMobileNumber === undefined
+                    ? (
+                        <TextInput
+                            className={'bg-white mt-2 -z-30'}
+                            onChangeText={(mobile) =>
+                                setContactSelectedMobileNumber(mobile)
+                            }
+                            value={
+                              contactSelectedMobileNumber == 'null'
+                                  ? ''
+                                  : contactSelectedMobileNumber
+                            }
+                            mode={'outlined'}
+                            label={'Mobile Number'}
+                        />
+                    ) : (
+                        <>
+                          {route?.params?.customer?.phone || contactMobileNumbers && (
+                              <View className={'mt-2 -z-10'}>
+                                <DropDownFlashList
+                                    data={contactMobileNumbers}
+                                    inputLabel={
+                                      contactSelectedMobileNumber
+                                          ? 'Selected Mobile Number'
+                                          : 'Select Mobile Number'
+                                    }
+                                    selectedItemName={processString(
+                                        selectedCustomer?.phoneNumbers[0]?.number,
+                                    )}
+                                    selectedItemDigits={processString(
+                                        selectedCustomer?.phoneNumbers[0]?.digits,
+                                    )}
+                                    enableSearch={false}
+                                    headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
+                                    onSelect={(contact) => {
+                                      setContactSelectedMobileNumber(
+                                          contact?.digits
+                                              ? processString(contact?.digits)
+                                              : contact?.number
+                                                  ? processString(contact?.number)
+                                                  : null,
+                                      );
+                                    }}
+                                />
+                              </View>
+                          )}
+                        </>
+                    )}
               </>
+          )}
+          {inventoryChecked && (
+              <>
+                <View className={'mt-2 -z-10'}>
+                  <DropDownFlashList
+                      data={products || []}
+                      inputLabel='Select Product'
+                      headerTitle='List of products'
+                      onSelect={(product) =>
+                          handlePriceChange(parseFloat(product?.price || 0).toFixed(4))
+                      }
+                  />
+                </View>
+
+                <View className={'flex flex-row gap-2 mt-0 -z-30'}>
+                  <TextInput
+                      className={'bg-white flex-1 mt-2 -z-30'}
+                      onChangeText={handleQtyChange}
+                      value={qty.toString()}
+                      mode={'outlined'}
+                      label={'Qty'}
+                      keyboardType={'numeric'}
+                  />
+                  <TextInput
+                      className={'bg-white flex-1 mt-2 -z-30'}
+                      onChangeText={handlePriceChange}
+                      value={price.toString()}
+                      mode={'outlined'}
+                      label={'Price'}
+                      keyboardType={'numeric'}
+                  />
+                </View>
+              </>
+          )}
+          <TextInput
+              className={'bg-white mt-2 -z-30'}
+              value={amount.toString()}
+              onChangeText={setAmount}
+              mode={'outlined'}
+              label={'Amount'}
+              inputMode={'numeric'}
+              editable={!inventoryChecked}
+          />
+          <View className={'flex flex-row w-full mt-2 -z-30'}>
+            <DatePickerInput
+                locale='en-GB'
+                label='Date'
+                value={inputDate}
+                onChange={handleDateChange}
+                inputMode='start'
+                mode={'outlined'}
+                className={'bg-blue-50 mx-1'}
+            />
+            <TouchableOpacity
+                onPress={showDialog}
+                className={
+                  'flex items-center justify-center px-4 bg-blue-50 shadow-sm border border-blue-100 rounded-lg my-[4px] mx-3'
+                }
+            >
+              <MaterialCommunityIcons name={'camera'} size={30} color={'black'} />
+            </TouchableOpacity>
+          </View>
+          <TextInput
+              className={'bg-white mt-2 -z-30'}
+              onChangeText={(text) => setNote(text)}
+              value={note}
+              mode={'outlined'}
+              label={'Notes (Optional)'}
+              inputMode={'text'}
+          />
+          <>
+            {imageUri && (
+                <Image
+                    source={{ uri: imageUri, width: 150, height: 150 }}
+                    resizeMethod={'auto'}
+                    className={'mt-4'}
+                />
             )}
           </>
-        )}
-        {inventoryChecked && (
-          <>
-            <View className={'mt-2 -z-10'}>
-              <DropDownFlashList
-                data={products || []}
-                inputLabel='Select Product'
-                headerTitle='List of products'
-                onSelect={(product) =>
-                  handlePriceChange(parseFloat(product?.price || 0).toFixed(4))
-                }
-              />
-            </View>
-
-            <View className={'flex flex-row gap-2 mt-0 -z-30'}>
-              <TextInput
-                className={'bg-white flex-1 mt-2 -z-30'}
-                onChangeText={handleQtyChange}
-                value={qty.toString()}
-                mode={'outlined'}
-                label={'Qty'}
-                keyboardType={'numeric'}
-              />
-              <TextInput
-                className={'bg-white flex-1 mt-2 -z-30'}
-                onChangeText={handlePriceChange}
-                value={price.toString()}
-                mode={'outlined'}
-                label={'Price'}
-                keyboardType={'numeric'}
-              />
-            </View>
-          </>
-        )}
-        <TextInput
-          className={'bg-white mt-2 -z-30'}
-          value={amount.toString()}
-          onChangeText={setAmount}
-          mode={'outlined'}
-          label={'Amount'}
-          inputMode={'numeric'}
-          editable={!inventoryChecked}
-        />
-        <View className={'flex flex-row w-full mt-2 -z-30'}>
-          <DatePickerInput
-            locale='en-GB'
-            label='Date'
-            value={inputDate}
-            onChange={handleDateChange}
-            inputMode='start'
-            mode={'outlined'}
-            className={'bg-blue-50 mx-1'}
-          />
-          <TouchableOpacity
-            onPress={showDialog}
-            className={
-              'flex items-center justify-center px-4 bg-blue-50 shadow-sm border border-blue-100 rounded-lg my-[4px] mx-3'
-            }
+          <Button
+              mode={'contained'}
+              className={'mt-4 py-1 -z-50'}
+              onPress={() => onFormSubmit()}
           >
-            <MaterialCommunityIcons name={'camera'} size={30} color={'black'} />
-          </TouchableOpacity>
-        </View>
-        <TextInput
-          className={'bg-white mt-2 -z-30'}
-          onChangeText={(text) => setNote(text)}
-          value={note}
-          mode={'outlined'}
-          label={'Notes (Optional)'}
-          inputMode={'text'}
-        />
-        <>
-          {imageUri && (
-            <Image
-              source={{ uri: imageUri, width: 150, height: 150 }}
-              resizeMethod={'auto'}
-              className={'mt-4'}
-            />
-          )}
-        </>
-        <Button
-          mode={'contained'}
-          className={'mt-4 py-1 -z-50'}
-          onPress={() => onFormSubmit()}
-        >
-          Submit
-        </Button>
-      </KeyboardAvoidingView>
+            Submit
+          </Button>
+        </KeyboardAvoidingView>
 
-      <Dialog
-        visible={visible}
-        onDismiss={hideDialog}
-        dismissable={true}
-        style={{ backgroundColor: 'white' }}
-        dismissableBackButton={true}
-      >
-        <Dialog.Title style={{ fontSize: 18 }}>Select</Dialog.Title>
-        <Dialog.Content>
-          <View className={'flex flex-row justify-evenly mb-10 mt-5'}>
-            <View className={'flex gap-2 items-center'}>
-              <TouchableOpacity
-                onPress={handleCameraCapture}
-                className={
-                  'flex justify-center items-center shadow-md bg-blue-500 p-4 rounded-3xl'
-                }
-              >
-                <MaterialCommunityIcons
-                  name={'camera'}
-                  size={30}
-                  color={'white'}
-                />
-              </TouchableOpacity>
-              <Text variant={'titleMedium'} className={'text-stone-600'}>
-                Camera
-              </Text>
+        <Dialog
+            visible={visible}
+            onDismiss={hideDialog}
+            dismissable={true}
+            style={{ backgroundColor: 'white' }}
+            dismissableBackButton={true}
+        >
+          <Dialog.Title style={{ fontSize: 18 }}>Select</Dialog.Title>
+          <Dialog.Content>
+            <View className={'flex flex-row justify-evenly mb-10 mt-5'}>
+              <View className={'flex gap-2 items-center'}>
+                <TouchableOpacity
+                    onPress={handleCameraCapture}
+                    className={
+                      'flex justify-center items-center shadow-md bg-blue-500 p-4 rounded-3xl'
+                    }
+                >
+                  <MaterialCommunityIcons
+                      name={'camera'}
+                      size={30}
+                      color={'white'}
+                  />
+                </TouchableOpacity>
+                <Text variant={'titleMedium'} className={'text-stone-600'}>
+                  Camera
+                </Text>
+              </View>
+              <View className={'flex gap-2 items-center'}>
+                <TouchableOpacity
+                    onPress={pickImage}
+                    className={
+                      'flex justify-center items-center shadow-md bg-green-600 p-4 rounded-3xl'
+                    }
+                >
+                  <MaterialIcons name={'photo'} size={30} color={'white'} />
+                </TouchableOpacity>
+                <Text variant={'titleMedium'} className={'text-stone-600'}>
+                  Gallery
+                </Text>
+              </View>
             </View>
-            <View className={'flex gap-2 items-center'}>
-              <TouchableOpacity
-                onPress={pickImage}
-                className={
-                  'flex justify-center items-center shadow-md bg-green-600 p-4 rounded-3xl'
-                }
-              >
-                <MaterialIcons name={'photo'} size={30} color={'white'} />
-              </TouchableOpacity>
-              <Text variant={'titleMedium'} className={'text-stone-600'}>
-                Gallery
-              </Text>
-            </View>
-          </View>
-        </Dialog.Content>
-      </Dialog>
-    </View>
+          </Dialog.Content>
+        </Dialog>
+      </View>
   );
 };
 

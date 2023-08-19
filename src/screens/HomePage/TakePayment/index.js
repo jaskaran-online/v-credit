@@ -30,7 +30,7 @@ import DropDownFlashList from '../../Components/dropDownFlashList';
 import { useContactsStore } from '../index';
 import { useAuthCompanyStore } from '../../../core/utils';
 
-const showToast = (message, type) => {
+export const showToast = (message, type) => {
   Toast.show({
     type: type,
     text1: type === 'success' ? 'Success' : 'Error',
@@ -39,7 +39,7 @@ const showToast = (message, type) => {
   });
 };
 
-function processString(input = null) {
+export const processString = (input = null) => {
   if (input == null || input === '' || input === 'null') {
     return '';
   }
@@ -54,7 +54,7 @@ function processString(input = null) {
   return processedString;
 }
 
-function convertDateFormat(dateString) {
+export const convertDateFormat = (dateString) => {
   const dateObj = new Date(dateString);
 
   const convertedDate = dateObj
@@ -113,7 +113,7 @@ const TakePayment = ({ navigation, route }) => {
   useEffect(() => {
     if (selectedCustomer) {
       if (selectedCustomer?.phoneNumbers) {
-        // setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
+        setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
         const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
           return {
             ...obj,
@@ -209,9 +209,9 @@ const TakePayment = ({ navigation, route }) => {
     //   return false;
     // }
     //
-    // if (phoneNumber == null) {
-    //   phoneNumber = contactSelectedMobileNumber;
-    // }
+    if (phoneNumber == null) {
+      phoneNumber = contactSelectedMobileNumber;
+    }
 
     if (price == 0 || qty == 0) {
       showToast('Please check price and qty', 'error');
@@ -299,7 +299,8 @@ const TakePayment = ({ navigation, route }) => {
           <>
             {contactMobileNumbers.length === 1 ||
             contactSelectedMobileNumber === null ||
-            route?.params?.customer?.phone === null ? (
+            route?.params?.customer?.phone === null || contactSelectedMobileNumber === undefined
+                ? (
               <TextInput
                 className={'bg-white mt-2 -z-30'}
                 onChangeText={(mobile) =>
@@ -315,7 +316,7 @@ const TakePayment = ({ navigation, route }) => {
               />
             ) : (
               <>
-                {route?.params?.customer?.phone && contactMobileNumbers && (
+                {route?.params?.customer?.phone || contactMobileNumbers && (
                   <View className={'mt-2 -z-10'}>
                     <DropDownFlashList
                       data={contactMobileNumbers}
