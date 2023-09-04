@@ -52,7 +52,7 @@ export const processString = (input = null) => {
   }
 
   return processedString;
-}
+};
 
 export const convertDateFormat = (dateString) => {
   const dateObj = new Date(dateString);
@@ -65,7 +65,7 @@ export const convertDateFormat = (dateString) => {
   const convertedTime = dateObj.toISOString().slice(11, 19); // Extract HH:MM:SS
 
   return `${convertedDate} ${convertedTime}`;
-}
+};
 
 const TakePayment = ({ navigation, route }) => {
   const auth = useAuth.use?.token();
@@ -113,7 +113,9 @@ const TakePayment = ({ navigation, route }) => {
   useEffect(() => {
     if (selectedCustomer) {
       if (selectedCustomer?.phoneNumbers) {
-        setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
+        setContactSelectedMobileNumber(
+          processString(selectedCustomer?.phoneNumbers[0]?.numbers),
+        );
         const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
           return {
             ...obj,
@@ -299,8 +301,8 @@ const TakePayment = ({ navigation, route }) => {
           <>
             {contactMobileNumbers.length === 1 ||
             contactSelectedMobileNumber === null ||
-            route?.params?.customer?.phone === null || contactSelectedMobileNumber === undefined
-                ? (
+            route?.params?.customer?.phone === null ||
+            contactSelectedMobileNumber === undefined ? (
               <TextInput
                 className={'bg-white mt-2 -z-30'}
                 onChangeText={(mobile) =>
@@ -316,35 +318,36 @@ const TakePayment = ({ navigation, route }) => {
               />
             ) : (
               <>
-                {route?.params?.customer?.phone || contactMobileNumbers && (
-                  <View className={'mt-2 -z-10'}>
-                    <DropDownFlashList
-                      data={contactMobileNumbers}
-                      inputLabel={
-                        contactSelectedMobileNumber
-                          ? 'Selected Mobile Number'
-                          : 'Select Mobile Number'
-                      }
-                      selectedItemName={processString(
-                        selectedCustomer?.phoneNumbers[0]?.number,
-                      )}
-                      selectedItemDigits={processString(
-                        selectedCustomer?.phoneNumbers[0]?.digits,
-                      )}
-                      enableSearch={false}
-                      headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
-                      onSelect={(contact) => {
-                        setContactSelectedMobileNumber(
-                          contact?.digits
-                            ? processString(contact?.digits)
-                            : contact?.number
-                            ? processString(contact?.number)
-                            : null,
-                        );
-                      }}
-                    />
-                  </View>
-                )}
+                {route?.params?.customer?.phone ||
+                  (contactMobileNumbers && (
+                    <View className={'mt-2 -z-10'}>
+                      <DropDownFlashList
+                        data={contactMobileNumbers}
+                        inputLabel={
+                          contactSelectedMobileNumber
+                            ? 'Selected Mobile Number'
+                            : 'Select Mobile Number'
+                        }
+                        selectedItemName={processString(
+                          selectedCustomer?.phoneNumbers[0]?.number,
+                        )}
+                        selectedItemDigits={processString(
+                          selectedCustomer?.phoneNumbers[0]?.digits,
+                        )}
+                        enableSearch={false}
+                        headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
+                        onSelect={(contact) => {
+                          setContactSelectedMobileNumber(
+                            contact?.digits
+                              ? processString(contact?.digits)
+                              : contact?.number
+                              ? processString(contact?.number)
+                              : null,
+                          );
+                        }}
+                      />
+                    </View>
+                  ))}
               </>
             )}
           </>

@@ -3,7 +3,7 @@
     "experiments.turboModules": true,
     "name": "My Credit Book",
     "slug": "CASPRO",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -27,7 +27,7 @@
       },
       "package": "com.webcooks.mycreditbook",
       "permissions": ["READ_CONTACTS", "WRITE_CONTACTS"],
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"

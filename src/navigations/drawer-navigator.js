@@ -9,13 +9,12 @@ import {
   DrawerItem,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  FlatList,
+  Image,
   ScrollView,
   StyleSheet,
   TouchableHighlight,
-  TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -26,19 +25,29 @@ import {
   Portal,
   RadioButton,
   Text,
-  TextInput,
 } from 'react-native-paper';
 import { COLORS } from '../core';
 import { HomePage, Reports } from '../screens';
 import { useAuth } from '../hooks';
 import CustomerList from '../screens/HomePage/CustomerList';
-import { create } from 'zustand';
 import { useAuthCompanyStore } from '../core/utils';
-import { FacingModeToCameraType as auth } from 'expo-camera/src/WebConstants';
+import appJSON from '../../app.json';
 
 function CustomDrawerContent(props) {
   const signOut = useAuth.use.signOut();
   const auth = useAuth.use?.token();
+
+  const [deleteModalVisibility, setDeleteModalVisibility] = useState(false);
+  const [deleteAccountLoading, setLoadingDeleteAccount] = useState(false);
+
+  const toggleDeleteModalHandler = () => {
+    console.log('toggleDeleteModalHandler');
+    setLoadingDeleteAccount(true);
+    setTimeout(function () {
+      setLoadingDeleteAccount(false);
+      signOut();
+    }, 3000);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -83,15 +92,73 @@ function CustomDrawerContent(props) {
       </DrawerContentScrollView>
 
       <View style={styles.footerButtonContainer}>
-        <Button mode='contained' compact={true} onPress={() => signOut()}>
+        <Button
+          mode='contained'
+          compact={true}
+          onPress={() => signOut()}
+          icon={'door'}
+        >
           Logout
         </Button>
-        <View style={styles.footerVersionTextContainer}>
+        <Button
+          mode='contained'
+          compact={true}
+          onPress={() => setDeleteModalVisibility(true)}
+          icon={'delete'}
+          className={'mt-2 mb-1 bg-red-500'}
+        >
+          Delete Account
+        </Button>
+        <View style={styles.footerVersionTextContainer} className={'mb-2'}>
           <Text className={'text-slate-500'} variant='bodySmall'>
-            Version : 00.1
+            Version : {appJSON.expo.version}
           </Text>
         </View>
       </View>
+
+      <Portal>
+        <Dialog visible={deleteModalVisibility} className={'bg-white rounded'}>
+          <Dialog.Title style={{ fontSize: 14 }} className={'font-bold'}>
+            Are you sure you want to delete account ?
+          </Dialog.Title>
+          <Dialog.Content style={{ minHeight: 100 }}>
+            <View className={'flex-row justify-center items-center'}>
+              <Image
+                source={{
+                  uri: 'https://assets-v2.lottiefiles.com/a/e09820ea-116b-11ee-8e93-4f2a1602d144/HdbA8EJlUN.gif',
+                  width: 100,
+                  height: 100,
+                }}
+                className={'my-2'}
+              />
+            </View>
+            <Text
+              variant={'bodyMedium'}
+              className={'mb-1 text-red-600 font-semibold'}
+            >
+              {' '}
+              You cannot undo this action afterwards!{' '}
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button
+              mode={'contained'}
+              className={'px-4 rounded bg-red-500'}
+              onPress={() => toggleDeleteModalHandler()}
+              loading={deleteAccountLoading}
+            >
+              {deleteAccountLoading ? 'Please wait' : 'Agree'}
+            </Button>
+            <Button
+              mode={'contained'}
+              className={'px-4 rounded bg-gray-800'}
+              onPress={() => setDeleteModalVisibility(false)}
+            >
+              Cancel
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 }
@@ -164,7 +231,7 @@ const CompanySwitch = () => {
           <Dialog.Actions>
             <Button
               mode={'contained'}
-              className={'px-6 rounded bg-blue-800'}
+              className={'px-4 rounded bg-blue-800'}
               onPress={hideCompanySwitchModalHandler}
             >
               Done
