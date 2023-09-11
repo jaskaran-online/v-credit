@@ -34,14 +34,13 @@ import { useAuthCompanyStore } from '../core/utils';
 import appJSON from '../../app.json';
 
 function CustomDrawerContent(props) {
-  const signOut = useAuth.use.signOut();
+  const signOut = useAuth?.use?.signOut();
   const auth = useAuth.use?.token();
 
   const [deleteModalVisibility, setDeleteModalVisibility] = useState(false);
   const [deleteAccountLoading, setLoadingDeleteAccount] = useState(false);
 
   const toggleDeleteModalHandler = () => {
-    console.log('toggleDeleteModalHandler');
     setLoadingDeleteAccount(true);
     setTimeout(function () {
       setLoadingDeleteAccount(false);

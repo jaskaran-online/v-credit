@@ -6,10 +6,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Share, TouchableOpacity, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { useCustomersData } from '../../../apis/useApi';
-import { formatDateForMessage, useAuthCompanyStore } from '../../../core/utils';
+import {
+  formatDateForMessage,
+  useAuthCompanyStore,
+  useFilterToggleStore,
+} from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import navigation from '../../../navigations/index';
-import { useFilterToggleStore } from '../../Components/TwoCards';
+
 const renderItem = ({ item, index }) => {
   const toPay = parseFloat((item?.toPay || 0).toFixed(2));
   const toReceive = parseFloat((item?.toReceive || 0).toFixed(2));

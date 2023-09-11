@@ -19,31 +19,15 @@ import {
   useProductsApi,
   useUpdatePaymentApi,
 } from '../../../apis/useApi';
-import { getItem, setItem, useAuthCompanyStore } from '../../../core/utils';
+import {
+  convertDateFormat,
+  getItem,
+  setItem,
+  showToast,
+  useAuthCompanyStore,
+} from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
-
-function convertDateFormat(dateString) {
-  const dateObj = new Date(dateString);
-
-  const convertedDate = dateObj
-    .toISOString()
-    .slice(0, 10) // Extract YYYY-MM-DD
-    .replace('T', ' '); // Replace 'T' with a space
-
-  const convertedTime = dateObj.toISOString().slice(11, 19); // Extract HH:MM:SS
-
-  return `${convertedDate} ${convertedTime}`;
-}
-
-const showToast = (message, type) => {
-  Toast.show({
-    type: type,
-    text1: type === 'success' ? 'Success' : 'Error',
-    text2: message,
-    position: 'bottom',
-  });
-};
 
 let TRANS_TYPES = [
   { id: 1, name: 'Given' },

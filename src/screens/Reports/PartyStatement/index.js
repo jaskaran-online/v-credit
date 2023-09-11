@@ -128,6 +128,10 @@ export default function Index() {
 
   const StyledView = styled(TouchableOpacity);
 
+  const hasRoleOneOrFour = auth?.user?.roles?.some(
+    (role) => role.id === 1 || role.id === 4,
+  );
+
   return (
     <View className={'bg-white flex-1'}>
       <StatusBar animated={true} />
@@ -199,7 +203,12 @@ export default function Index() {
         <FlashList
           data={filteredList}
           renderItem={({ item, index }) =>
-            renderItem({ item, index, userId: auth.user.id })
+            renderItem({
+              item,
+              index,
+              userId: auth.user.id,
+              isAdmin: hasRoleOneOrFour,
+            })
           }
           ListHeaderComponent={renderHeader}
           estimatedItemSize={200}

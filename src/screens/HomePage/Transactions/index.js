@@ -1,26 +1,47 @@
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
-import _ from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { Button, Searchbar, Text } from 'react-native-paper';
-import { useTransactionsData } from '../../../apis/useApi';
+import { Image, TouchableOpacity, View } from 'react-native';
+import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
+import {
+  useTotalTransactionData,
+  useTransactionsData,
+  useTransactionsDelete,
+} from '../../../apis/useApi';
 import {
   renderHeader,
   renderItem,
+  showToast,
   useAuthCompanyStore,
+  useCardAmountStore,
+  useFilterToggleStore,
 } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
-import { COLORS } from '../../../core';
 
 export default function Index() {
   const auth = useAuth.use?.token();
+  let cardAmount = useCardAmountStore((state) => state.cardAmount);
+  let setCardAmount = useCardAmountStore((state) => state.setCardAmount);
   const {
     mutate: transactionRequest,
     data: transactionData,
     isLoading,
   } = useTransactionsData();
+  // Use object destructuring for more concise code
+  const {
+    mutate: cardRequest,
+    data: cardData,
+    isLoading: isCardLoading,
+  } = useTotalTransactionData();
+
+  const {
+    mutate: transactionDelRequest,
+    data: transactionDelData,
+    isLoading: transactionDelLoading,
+    isError: transactionDelError,
+    isSuccess: transactionDelSuccess,
+  } = useTransactionsDelete();
 
   const [reload, setReload] = useState(false);
   const [filteredList, setFilteredList] = useState([]);
@@ -28,7 +49,14 @@ export default function Index() {
   const [query, setQuery] = useState('');
   const [orderedData, setOrderedData] = useState([]);
   const [filterBy, setFilteredBy] = useState('Clear');
+  const [deleteModalVisibility, setDeleteModalVisibility] = useState(null);
   const company = useAuthCompanyStore((state) => state.selectedCompany);
+
+  useEffect(() => {
+    if (transactionDelLoading) {
+      setDeleteModalVisibility(null);
+    }
+  }, [transactionDelLoading]);
 
   useEffect(() => {
     if (transactionData?.data) {
@@ -70,8 +98,25 @@ export default function Index() {
   useFocusEffect(
     useCallback(() => {
       loadTransactions();
-    }, [company]),
+    }, [company, transactionDelSuccess]),
   );
+
+  const getCardTotals = useCallback(() => {
+    if (company && auth?.user) {
+      const formData = new FormData();
+      formData.append('company_id', company?.id);
+      formData.append('cost_center_id', auth.user.cost_center_id);
+      formData.append('user_id', auth.user.id);
+      cardRequest(formData);
+    }
+  }, [auth.user, company, cardRequest, transactionDelSuccess]);
+
+  let toggleFilter = useFilterToggleStore((state) => state.toggleFilter);
+
+  useEffect(() => {
+    loadTransactions();
+    getCardTotals();
+  }, [transactionDelSuccess]);
 
   function loadTransactions() {
     setReload(true);
@@ -81,6 +126,7 @@ export default function Index() {
     formData.append('user_id', auth.user.id);
     transactionRequest(formData);
     setReload(false);
+    toggleFilter('none');
   }
 
   const options = [
@@ -117,6 +163,28 @@ export default function Index() {
   const handleOptionSelect = () => {
     setShowOptions((show) => !show);
   };
+
+  const hasRoleOneOrFour = auth?.user?.roles?.some(
+    (role) => role.id === 1 || role.id === 4,
+  );
+
+  function handleDeleteRecord(deleteModalVisibility) {
+    transactionDelRequest({
+      id: deleteModalVisibility?.id,
+      user_id: auth?.user?.id,
+    });
+    showToast('Record Deleted Successfully', 'success');
+    toggleFilter('none');
+  }
+
+  useEffect(() => {
+    if (cardData?.data) {
+      setCardAmount({
+        toReceive: cardData?.data?.toReceive,
+        toPay: cardData?.data?.toPay,
+      });
+    }
+  }, [cardData, isCardLoading]);
 
   return (
     <View className={'bg-white flex-1'}>
@@ -191,7 +259,16 @@ export default function Index() {
       <FlashList
         data={filteredList || []}
         renderItem={({ item, index }) =>
-          renderItem({ item, index, userId: auth.user.id })
+          renderItem({
+            item,
+            index,
+            userId: auth.user.id,
+            isAdmin: hasRoleOneOrFour,
+            showDelete: true,
+            onDelete: (item = null) => {
+              setDeleteModalVisibility(item);
+            },
+          })
         }
         ListHeaderComponent={renderHeader}
         estimatedItemSize={200}
@@ -208,6 +285,46 @@ export default function Index() {
           </View>
         }
       />
+
+      <Portal>
+        <Dialog
+          visible={deleteModalVisibility !== null}
+          className={'bg-white rounded'}
+        >
+          <Dialog.Title style={{ fontSize: 14 }} className={'font-bold'}>
+            Are you sure you want to delete ?
+          </Dialog.Title>
+          <Dialog.Content style={{ minHeight: 100 }}>
+            <View className={'flex-row justify-center items-center'}>
+              <Image
+                source={{
+                  uri: 'https://assets-v2.lottiefiles.com/a/e09820ea-116b-11ee-8e93-4f2a1602d144/HdbA8EJlUN.gif',
+                  width: 100,
+                  height: 100,
+                }}
+                className={'my-2'}
+              />
+            </View>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button
+              mode={'contained'}
+              className={'px-4 rounded bg-red-500'}
+              onPress={() => handleDeleteRecord(deleteModalVisibility)}
+              loading={transactionDelLoading}
+            >
+              {transactionDelLoading ? 'Please wait' : 'Agree'}
+            </Button>
+            <Button
+              mode={'contained'}
+              className={'px-4 rounded bg-gray-800'}
+              onPress={() => setDeleteModalVisibility(null)}
+            >
+              Cancel
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 }

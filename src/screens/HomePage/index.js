@@ -12,23 +12,21 @@ import {
 import { TwoCards } from '../Components/TwoCards';
 import { TabNavigator } from '../Components/TabNavigator';
 import FloatingButtons from '../Components/FloatingButton';
-import { getItem, setItem, useAuthCompanyStore } from '../../core/utils';
-import { create } from 'zustand';
-
-// Create Zustand stores
-export const useContactsStore = create((set) => ({
-  contactsList: [],
-  setContacts: (newState) => set({ contactsList: newState }),
-}));
-
-export const useCustomersStore = create((set) => ({
-  customersList: [],
-  setCustomers: (newState) => set({ customersList: newState }),
-}));
+import {
+  getItem,
+  setItem,
+  useAuthCompanyStore,
+  useCardAmountStore,
+  useContactsStore,
+  useFilterToggleStore,
+} from '../../core/utils';
 
 const Index = ({ navigation }) => {
   const auth = useAuth.use.token(); // Destructure the token directly
   const company = useAuthCompanyStore((state) => state.selectedCompany);
+  let filterBy = useFilterToggleStore((state) => state.filterBy);
+  let cardAmount = useCardAmountStore((state) => state.cardAmount);
+  let setCardAmount = useCardAmountStore((state) => state.setCardAmount);
 
   // Use object destructuring for more concise code
   const {
@@ -118,19 +116,23 @@ const Index = ({ navigation }) => {
   // useEffect to load contacts when customer data is loaded
   useEffect(() => {
     if (!isCustomerLoading) {
-      loadContactsFromDevice();
+      loadContactsFromDevice().then((r) => null);
     }
   }, [isCustomerLoading]);
+
+  useEffect(() => {
+    if (cardData?.data) {
+      setCardAmount({
+        toReceive: cardData?.data?.toReceive,
+        toPay: cardData?.data?.toPay,
+      });
+    }
+  }, [cardData, isCardLoading]);
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar animated={true} />
-      {!isCardLoading && (
-        <TwoCards
-          toPay={cardData?.data?.toPay}
-          toReceive={cardData?.data?.toReceive}
-        />
-      )}
+      <TwoCards toPay={cardAmount?.toPay} toReceive={cardAmount?.toReceive} />
       <View style={{ flex: 1 }}>
         <TabNavigator />
       </View>

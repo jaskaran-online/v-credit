@@ -10,62 +10,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  Text,
-  TextInput,
-  Tooltip,
-} from 'react-native-paper';
+import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
-import Toast from 'react-native-toast-message';
-import {
-  useCustomersData,
-  usePaymentApi,
-  useProductsApi,
-} from '../../../apis/useApi';
+import { usePaymentApi, useProductsApi } from '../../../apis/useApi';
 import { useAuth } from '../../../hooks';
 import DropDownFlashList from '../../Components/dropDownFlashList';
-import { useContactsStore } from '../index';
-import { useAuthCompanyStore } from '../../../core/utils';
-
-export const showToast = (message, type) => {
-  Toast.show({
-    type: type,
-    text1: type === 'success' ? 'Success' : 'Error',
-    text2: message,
-    position: 'bottom',
-  });
-};
-
-export const processString = (input = null) => {
-  if (input == null || input === '' || input === 'null') {
-    return '';
-  }
-  // Remove "-", ",", and spaces from the string
-  let processedString = input.replace(/[-,\s]/g, '');
-
-  // If the resulting string has a length greater than 10, remove the first three letters
-  if (processedString.length > 10) {
-    processedString = processedString.substring(3);
-  }
-
-  return processedString;
-};
-
-export const convertDateFormat = (dateString) => {
-  const dateObj = new Date(dateString);
-
-  const convertedDate = dateObj
-    .toISOString()
-    .slice(0, 10) // Extract YYYY-MM-DD
-    .replace('T', ' '); // Replace 'T' with a space
-
-  const convertedTime = dateObj.toISOString().slice(11, 19); // Extract HH:MM:SS
-
-  return `${convertedDate} ${convertedTime}`;
-};
+import {
+  convertDateFormat,
+  processString,
+  showToast,
+  useAuthCompanyStore,
+  useContactsStore,
+} from '../../../core/utils';
 
 const TakePayment = ({ navigation, route }) => {
   const auth = useAuth.use?.token();
@@ -235,10 +191,10 @@ const TakePayment = ({ navigation, route }) => {
     formData.append('notes', note);
     formData.append('phone', phoneNumber);
     formData.append('phone_id', selectedCustomer?.id);
+    if (selectedProduct) {
+      formData.append('product_id', selectedProduct?.id);
+    }
     if (inventoryChecked) {
-      if (selectedProduct) {
-        formData.append('product_id', selectedProduct?.id);
-      }
       formData.append('price', price);
       formData.append('qty', qty);
     }
@@ -352,19 +308,18 @@ const TakePayment = ({ navigation, route }) => {
             )}
           </>
         )}
+        <View className={'mt-2 -z-10'}>
+          <DropDownFlashList
+            data={products || []}
+            inputLabel='Select Product'
+            headerTitle='List of products'
+            onSelect={(product) =>
+              handlePriceChange(parseFloat(product?.price || 0).toFixed(4))
+            }
+          />
+        </View>
         {inventoryChecked && (
           <>
-            <View className={'mt-2 -z-10'}>
-              <DropDownFlashList
-                data={products || []}
-                inputLabel='Select Product'
-                headerTitle='List of products'
-                onSelect={(product) =>
-                  handlePriceChange(parseFloat(product?.price || 0).toFixed(4))
-                }
-              />
-            </View>
-
             <View className={'flex flex-row gap-2 mt-0 -z-30'}>
               <TextInput
                 className={'bg-white flex-1 mt-2 -z-30'}

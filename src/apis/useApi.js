@@ -77,6 +77,15 @@ export const useTransactionsData = () => {
   });
 };
 
+export const useTransactionsDelete = () => {
+  return useMutation({
+    mutationKey: 'deleteTransaction',
+    mutationFn: (data) => {
+      return post('api/v1/delete/transaction', data);
+    },
+  });
+};
+
 export const useAuthLogin = () => {
   return useMutation((data) => post('api/v1/auth/login', data));
 };

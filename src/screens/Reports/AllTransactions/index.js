@@ -97,7 +97,7 @@ export default function Index() {
     { label: 'Credit Given', onPress: handleClearSelection },
     {
       label: 'Payment Received',
-      onPress: handleDeleteSelectedItem,
+      onPress: handleFilterPaymentReceived,
     },
     { label: 'Clear', onPress: handleEditSelectedItem },
   ];
@@ -126,7 +126,7 @@ export default function Index() {
     setSelectedItem(null);
   };
 
-  const handleDeleteSelectedItem = () => {
+  const handleFilterPaymentReceived = () => {
     const filtered = filteredList.filter((item) => item.id !== selectedItem.id);
     setFilteredList(filtered);
     setSelectedItem(null);
@@ -135,6 +135,10 @@ export default function Index() {
   const handleEditSelectedItem = () => {
     setSelectedItem(null);
   };
+
+  const hasRoleOneOrFour = auth?.user?.roles?.some(
+    (role) => role.id === 1 || role.id === 4,
+  );
 
   return (
     <View className={'bg-white flex-1'}>
@@ -232,6 +236,7 @@ export default function Index() {
                     item,
                     index,
                     userId: auth.user.id,
+                    isAdmin: hasRoleOneOrFour,
                   })
                 }
                 ListHeaderComponent={renderHeader}

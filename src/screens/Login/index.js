@@ -4,18 +4,10 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Image, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
-import Toast from 'react-native-toast-message';
 import { useAuthLogin } from '../../apis/useApi';
 import { COLORS } from '../../core';
 import { useAuth } from '../../hooks';
-
-const showToast = (error) => {
-  Toast.show({
-    type: 'error',
-    text1: 'Error',
-    text2: error?.message || 'Something went wrong!',
-  });
-};
+import { showToast } from '../../core/utils';
 
 export default function Index() {
   const {
@@ -27,8 +19,8 @@ export default function Index() {
     isSuccess,
   } = useAuthLogin();
 
-  if (isError) {
-    showToast(error);
+  if (isError && error) {
+    showToast(error, 'error');
   }
   const {
     control,

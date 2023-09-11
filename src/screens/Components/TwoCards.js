@@ -3,13 +3,7 @@ import { styled } from 'nativewind';
 import { TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useEffect, useState } from 'react';
-import { create } from 'zustand';
-
-// Create a Zustand store
-export const useFilterToggleStore = create((set) => ({
-  filterBy: 'none',
-  toggleFilter: (newState) => set((state) => ({ filterBy: newState })),
-}));
+import { useCardAmountStore, useFilterToggleStore } from '../../core/utils';
 
 const StyledView = styled(TouchableOpacity);
 
@@ -25,7 +19,7 @@ const Box = ({ className, children, onPress, ...props }) => (
 
 export function TwoCards({ toReceive = 0, toPay = 0 }) {
   let toggleFilter = useFilterToggleStore((state) => state.toggleFilter);
-
+  let cardAmount = useCardAmountStore((state) => state.cardAmount);
   const [filterByToReceive, setFilterByToReceive] = useState(false);
   const [filterByToPay, setFilterByToPay] = useState(false);
 
@@ -93,7 +87,7 @@ export function TwoCards({ toReceive = 0, toPay = 0 }) {
               filterByToReceive ? 'text-white' : 'text-slate-700'
             } font-bold `}
           >
-            {Math.abs(parseFloat(toReceive).toFixed(2))} ₹
+            {Math.abs(parseFloat(cardAmount?.toReceive).toFixed(2))} ₹
           </Text>
         </View>
       </Box>
@@ -127,7 +121,7 @@ export function TwoCards({ toReceive = 0, toPay = 0 }) {
               filterByToPay ? 'text-white' : 'text-slate-700'
             } font-bold `}
           >
-            {Math.abs(parseFloat(toPay).toFixed(2))} ₹
+            {Math.abs(parseFloat(cardAmount?.toPay).toFixed(2))} ₹
           </Text>
         </View>
       </Box>
