@@ -201,7 +201,7 @@ const CompanySwitch = () => {
           </Dialog.Title>
           <Dialog.Content style={{ minHeight: 100 }}>
             <ScrollView>
-              {(auth?.user?.companies).map((companyItem) => {
+              {auth?.user?.companies?.map((companyItem) => {
                 return (
                   <View key={companyItem.id}>
                     <TouchableHighlight

@@ -270,6 +270,7 @@ const TakePayment = ({ navigation, route }) => {
                     : contactSelectedMobileNumber
                 }
                 mode={'outlined'}
+                keyboardType={'phone-pad'}
                 label={'Mobile Number'}
               />
             ) : (
@@ -327,7 +328,7 @@ const TakePayment = ({ navigation, route }) => {
                 value={qty.toString()}
                 mode={'outlined'}
                 label={'Qty'}
-                keyboardType={'numeric'}
+                keyboardType={'decimal-pad'}
               />
               <TextInput
                 className={'bg-white flex-1 mt-2 -z-30'}
@@ -335,7 +336,7 @@ const TakePayment = ({ navigation, route }) => {
                 value={price.toString()}
                 mode={'outlined'}
                 label={'Price'}
-                keyboardType={'numeric'}
+                keyboardType={'decimal-pad'}
               />
             </View>
           </>
@@ -346,7 +347,7 @@ const TakePayment = ({ navigation, route }) => {
           onChangeText={setAmount}
           mode={'outlined'}
           label={'Amount'}
-          inputMode={'numeric'}
+          keyboardType={'decimal-pad'}
           editable={!inventoryChecked}
         />
         <View className={'flex flex-row w-full mt-2 -z-30'}>

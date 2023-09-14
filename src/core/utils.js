@@ -134,14 +134,28 @@ export function formatDateForMessage(inputDate) {
 }
 
 /**
- * Renders a row component for a transaction.
+ * Render a row component for displaying a transaction.
  *
  * @param {Object} transaction - The transaction object.
- * @param {number} index - The index of the row.
- * @param {string} userId - The ID of the current user.
+ * @param {number} index - The index of the transaction.
+ * @param {string} userId - The ID of the user.
+ * @param {boolean} isAdmin - Flag indicating if the user is an admin.
+ * @param {boolean} showDelete - Flag indicating if the delete button should be shown.
+ * @param {function} onDelete - Function to handle the delete action.
+ * @param {boolean} showPDF - Flag indicating if the PDF button should be shown.
+ * @param {boolean} showCustomerName - Flag indicating if the customer name should be shown.
  * @return {JSX.Element} The rendered row component.
  */
-const Row = ({ transaction, index, userId, isAdmin, showDelete, onDelete }) => {
+const Row = ({
+  transaction,
+  index,
+  userId,
+  isAdmin,
+  showDelete,
+  onDelete,
+  showPDF = false,
+  showCustomerName,
+}) => {
   const [expanded, setExpanded] = useState(false);
 
   let message;
@@ -208,9 +222,16 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
             )}
           </View>
           <View>
-            <Text variant={'titleSmall'} className='text-slate-800'>
-              {transaction?.customer?.name}
-            </Text>
+            {showCustomerName ? (
+              <Text variant={'titleSmall'} className='text-slate-800'>
+                {transaction?.customer?.name}
+              </Text>
+            ) : (
+              <Text variant={'titleSmall'} className='text-slate-800'>
+                {transaction?.transaction_type_id == 2 ? 'Credit' : 'Debit'}
+              </Text>
+            )}
+
             <Text variant={'labelSmall'} className='text-slate-400'>
               {formatDateForMessage(transaction?.date)}
             </Text>
@@ -292,21 +313,22 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
               </TouchableOpacity>
             </>
           )}
-
-          <TouchableOpacity
-            className='flex items-center gap-1'
-            onPress={() =>
-              navigation.navigate('DetailsPdf', {
-                id: transaction.customer?.id,
-                name: transaction.customer?.name,
-              })
-            }
-          >
-            <MaterialIcons name='picture-as-pdf' size={22} color='tomato' />
-            <Text variant={'labelSmall'} className='text-slate-800'>
-              PDF
-            </Text>
-          </TouchableOpacity>
+          {showPDF && (
+            <TouchableOpacity
+              className='flex items-center gap-1'
+              onPress={() =>
+                navigation.navigate('DetailsPdf', {
+                  id: transaction.customer?.id,
+                  name: transaction.customer?.name,
+                })
+              }
+            >
+              <MaterialIcons name='picture-as-pdf' size={22} color='tomato' />
+              <Text variant={'labelSmall'} className='text-slate-800'>
+                PDF
+              </Text>
+            </TouchableOpacity>
+          )}
 
           {balanceType !== 'clear' && (
             <TouchableOpacity
@@ -348,12 +370,18 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
 };
 
 /**
- * Renders an item using the provided parameters.
+ * Renders and returns a React component that represents a transaction item.
  *
- * @param {Object} item - The item to render.
- * @param {number} index - The index of the item.
- * @param {string} userId - The user ID.
- * @return {JSX.Element} The rendered item.
+ * @param {Object} options - An object containing the following properties:
+ *   - {Object} item: The transaction item to be rendered.
+ *   - {number} index: The index of the transaction item.
+ *   - {string} userId: The ID of the user.
+ *   - {boolean} isAdmin: Indicates whether the user is an admin.
+ *   - {boolean} showDelete: Indicates whether to show the delete button (default: false).
+ *   - {function} onDelete: A callback function that will be called when the delete button is clicked (default: console.log).
+ *   - {boolean} showPDF: Indicates whether to show the PDF button (default: false).
+ *   - {boolean} showCustomerName: Indicates whether to show the customer name (default: true).
+ * @return {React.Component} A React component representing the transaction item.
  */
 export const renderItem = ({
   item: transaction,
@@ -364,6 +392,8 @@ export const renderItem = ({
   onDelete = (item) => {
     console.log('Delete Item', item);
   },
+  showPDF = false,
+  showCustomerName = true,
 }) => {
   return (
     <Row
@@ -373,6 +403,8 @@ export const renderItem = ({
       isAdmin={isAdmin}
       showDelete={showDelete}
       onDelete={onDelete}
+      showPDF={showPDF}
+      showCustomerName={showCustomerName}
     />
   );
 };
@@ -380,13 +412,14 @@ export const renderItem = ({
 /**
  * Renders the header component.
  *
- * @return {ReactNode} The rendered header component.
+ * @param {object} headerTitle - The title of the header.
+ * @return {JSX.Element} The rendered header component.
  */
-export const renderHeader = () => (
+export const renderHeader = ({ headerTitle }) => (
   <View className={'flex-row justify-between px-4 py-2 space-x-2 items-center'}>
     <View className='flex-1 border-b-2 border-slate-300 w-1/3'>
       <Text variant={'bodyMedium'} className='text-left text-slate-800'>
-        Customer
+        {headerTitle !== '' ? 'Customer' : 'Type'}
       </Text>
     </View>
     <View className='flex-1 border-b-2 border-amber-400'>
@@ -438,7 +471,7 @@ export const processString = (str = null) => {
   const processedString = str.replace(/[-,\s]/g, '');
   const [, , ...remainingLetters] = processedString;
 
-  return remainingLetters.length > 7
+  return remainingLetters.length > 11
     ? remainingLetters.join('')
     : processedString;
 };

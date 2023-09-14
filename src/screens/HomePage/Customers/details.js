@@ -12,15 +12,21 @@ import {
   Share,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native';
-import { Searchbar, Text } from 'react-native-paper';
+import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
 
 import _, { isUndefined } from 'lodash';
-import { useCustomerTransactionData } from '../../../apis/useApi';
 import {
+  useCustomerTransactionData,
+  useTransactionsDelete,
+} from '../../../apis/useApi';
+import {
+  renderItem,
   formatDateForMessage,
   renderHeader,
   useAuthCompanyStore,
+  showToast,
 } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import FloatingButtons from '../../Components/FloatingButton';
@@ -83,117 +89,38 @@ Click : http://mycreditbook.com/udhaar-khata/${id}`;
   });
 };
 
-const renderItem = ({ item, index, user, customer, balance }) => {
-  let message;
-  let dateFormatted = formatDateForMessage(item?.date);
-  if (item?.transaction_type_id === 2) {
-    message = `Hi ${customer?.name},
-    
-I received payment of ${parseFloat(item?.amount).toFixed(
-      2,
-    )} ₹ on ${dateFormatted} from you.
-Total Balance: ${Math.abs(balance).toFixed(2)}₹.
-
-Thanks,
-${user?.name}
-For complete details,
-Click : http://mycreditbook.com/udhaar-khata/${customer?.id}-${user?.id}`;
-  } else {
-    message = `Hi ${customer?.name},
-I gave you credit of ${parseFloat(item?.amount).toFixed(
-      2,
-    )} ₹ on ${dateFormatted}.
-Total Balance: ${Math.abs(balance).toFixed(2)} ₹.
-
-Thanks,
-${user?.name}
-For complete details,
-Click : http://mycreditbook.com/udhaar-khata/${customer?.id}-${user?.id}`;
-  }
-
-  return (
-    <TouchableOpacity
-      className={
-        'flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200'
-      }
-      onPress={async () => {
-        await Share.share({
-          message: message,
-        });
-      }}
-    >
-      <View className='flex flex-row items-center w-1/4'>
-        <View className='mr-1'>
-          {item?.transaction_type_id === 2 ? (
-            <MaterialCommunityIcons
-              name='call-received'
-              size={14}
-              color='green'
-            />
-          ) : (
-            <MaterialIcons name='call-made' size={14} color='red' />
-          )}
-        </View>
-        <View>
-          <Text variant={'titleSmall'} className='text-slate-800'>
-            {item?.transaction_type_id === 2 ? 'Payment' : 'Credit'}
-          </Text>
-          <Text variant={'labelSmall'} className='text-slate-400'>
-            {dateFormatted}
-          </Text>
-        </View>
-      </View>
-      <View>
-        {item?.transaction_type_id === 1 ? (
-          <View className={'mr-2'}>
-            <Text variant={'bodyMedium'} className='text-slate-800 mr-2'>
-              {parseFloat(item?.amount).toFixed(2)}₹
-            </Text>
-            <Text variant={'labelSmall'} className='text-slate-400 mr-2'>
-              (Udhaar)
-            </Text>
-          </View>
-        ) : (
-          <Text variant={'bodyMedium'} className={'text-slate-400 text-center'}>
-            {' '}
-            -{' '}
-          </Text>
-        )}
-      </View>
-      <View className={'flex flex-row items-right'}>
-        <View>
-          {item?.transaction_type_id === 2 ? (
-            <View>
-              <Text variant={'bodyMedium'} className='text-slate-800'>
-                {parseFloat(item?.amount).toFixed(2)}₹
-              </Text>
-              <Text variant={'labelSmall'} className='text-slate-400'>
-                (Payment)
-              </Text>
-            </View>
-          ) : (
-            <Text
-              variant={'bodyMedium'}
-              className={'text-slate-400 text-center'}
-            >
-              {' '}
-              -{' '}
-            </Text>
-          )}
-        </View>
-        <View className='mx-2 bg-blue-50 h-8 w-8 rounded-full flex justify-center items-center'>
-          <MaterialIcons name='share' size={18} color={`dodgerblue`} />
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
 export default function Index({ navigation, route }) {
   const auth = useAuth.use?.token();
   const { mutate, data, isLoading } = useCustomerTransactionData();
+  const {
+    mutate: transactionDelRequest,
+    data: transactionDelData,
+    isLoading: transactionDelLoading,
+    isError: transactionDelError,
+    isSuccess: transactionDelSuccess,
+  } = useTransactionsDelete();
+
   const [orderedData, setOrderedData] = useState([]);
   const [filterBy, setFilteredBy] = useState('Clear');
+  const [deleteModalVisibility, setDeleteModalVisibility] = useState(null);
+  const hasRoleOneOrFour = auth?.user?.roles?.some(
+    (role) => role.id === 1 || role.id === 4,
+  );
+
+  function handleDeleteRecord(deleteModalVisibility) {
+    transactionDelRequest({
+      id: deleteModalVisibility?.id,
+      user_id: auth?.user?.id,
+    });
+    showToast('Record Deleted Successfully', 'success');
+    navigation.navigate('HomePage');
+  }
+
+  useEffect(() => {
+    if (transactionDelLoading) {
+      setDeleteModalVisibility(null);
+    }
+  }, [transactionDelLoading]);
 
   useEffect(() => {
     if (data?.data) {
@@ -288,7 +215,7 @@ export default function Index({ navigation, route }) {
                 {toReceive > toPay ? 'To Receive' : 'To Pay'}
               </Text>
               <Text variant='bodyLarge' className='text-slate-900 font-bold'>
-                {Math.abs(balance)}₹
+                {Math.abs(balance).toFixed(4)} ₹
               </Text>
             </View>
           </View>
@@ -394,12 +321,17 @@ export default function Index({ navigation, route }) {
             renderItem({
               item,
               index,
-              user: auth.user,
-              balance,
-              customer: data?.data?.customer,
+              userId: auth.user.id,
+              isAdmin: hasRoleOneOrFour,
+              showDelete: true,
+              onDelete: (item = null) => {
+                setDeleteModalVisibility(item);
+              },
+              showPDF: false,
+              showCustomerName: false,
             })
           }
-          ListHeaderComponent={renderHeader}
+          ListHeaderComponent={() => renderHeader({ headerTitle: '' })}
           estimatedItemSize={200}
           selected={selectedItem}
           showOptions={showOptions}
@@ -413,6 +345,45 @@ export default function Index({ navigation, route }) {
         navigation={navigation}
         customer={data?.data?.customer}
       />
+      <Portal>
+        <Dialog
+          visible={deleteModalVisibility !== null}
+          className={'bg-white rounded'}
+        >
+          <Dialog.Title style={{ fontSize: 14 }} className={'font-bold'}>
+            Are you sure you want to delete ?
+          </Dialog.Title>
+          <Dialog.Content style={{ minHeight: 100 }}>
+            <View className={'flex-row justify-center items-center'}>
+              <Image
+                source={{
+                  uri: 'https://assets-v2.lottiefiles.com/a/e09820ea-116b-11ee-8e93-4f2a1602d144/HdbA8EJlUN.gif',
+                  width: 100,
+                  height: 100,
+                }}
+                className={'my-2'}
+              />
+            </View>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button
+              mode={'contained'}
+              className={'px-4 rounded bg-red-500'}
+              onPress={() => handleDeleteRecord(deleteModalVisibility)}
+              loading={transactionDelLoading}
+            >
+              {transactionDelLoading ? 'Please wait' : 'Agree'}
+            </Button>
+            <Button
+              mode={'contained'}
+              className={'px-4 rounded bg-gray-800'}
+              onPress={() => setDeleteModalVisibility(null)}
+            >
+              Cancel
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 }
