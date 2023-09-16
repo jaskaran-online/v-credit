@@ -34,6 +34,7 @@ let TRANS_TYPES = [
   { id: 2, name: 'Received' },
 ];
 const EditTransaction = ({ navigation, route }) => {
+
   const auth = useAuth.use?.token();
   const {
     mutate: request,
@@ -43,6 +44,7 @@ const EditTransaction = ({ navigation, route }) => {
     isLoading: updateLoading,
     isError,
   } = useUpdatePaymentApi();
+
   const {
     mutate: productRequest,
     isLoading,
@@ -150,14 +152,16 @@ const EditTransaction = ({ navigation, route }) => {
     })();
   }, []);
 
-  useEffect(() => {
+  useEffect(function (){
     setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(4));
   }, [price, qty]);
 
-  if (isPaymentSuccess) {
-    showToast(paymentApiResponse.data.message, 'success');
-    setTimeout(() => navigation.navigate('HomePage'), 1000);
-  }
+  useEffect(() => {
+    if (isPaymentSuccess) {
+      showToast(paymentApiResponse.data.message, 'success');
+      setTimeout(() => navigation.navigate('HomePage'), 1000);
+    }
+  }, [isPaymentSuccess]);
 
   const showDialog = () => {
     setVisible(true);
@@ -202,7 +206,7 @@ const EditTransaction = ({ navigation, route }) => {
         return false;
       }
     }
-    const company = useAuthCompanyStore((state) => state.selectedCompany);
+
     const formData = new FormData();
     formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user?.cost_center_id);
@@ -301,7 +305,7 @@ const EditTransaction = ({ navigation, route }) => {
                 value={qty.toString()}
                 mode={'outlined'}
                 label={'Qty'}
-                keyboardType={'numeric'}
+                keyboardType={'decimal-pad'}
               />
               <TextInput
                 className={'bg-white flex-1 mt-2 -z-30'}
@@ -309,7 +313,7 @@ const EditTransaction = ({ navigation, route }) => {
                 value={price.toString()}
                 mode={'outlined'}
                 label={'Price'}
-                keyboardType={'numeric'}
+                keyboardType={'decimal-pad'}
               />
             </View>
           </>
@@ -320,7 +324,7 @@ const EditTransaction = ({ navigation, route }) => {
           mode={'outlined'}
           label={'Amount'}
           onChangeText={setAmount}
-          inputMode={'numeric'}
+          keyboardType={'decimal-pad'}
           editable={!inventoryChecked}
         />
         <View className={'flex flex-row w-full mt-2 -z-30'}>
