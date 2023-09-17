@@ -336,7 +336,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
               'bg-blue-50 h-14 flex-row flex py-3 justify-evenly items-center px-4'
             }
           >
-            {isEditableOrDeleteable && (
+            {(isEditableOrDeleteable || isAdmin) && (
               <>
                 <TouchableOpacity
                   className="flex items-center gap-1"
