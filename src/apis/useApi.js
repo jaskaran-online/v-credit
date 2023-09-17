@@ -1,8 +1,6 @@
 // useApi.js
-import { useQuery, useMutation, QueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { get, post, put, patch, del } from './api';
-
-const queryClient = new QueryClient();
 
 export const useCompanyProductsData = (url) => {
   return useQuery(['getData', url], () => get(url));

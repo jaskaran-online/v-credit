@@ -2,7 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View, Platform } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
 import {
   useTotalTransactionData,
@@ -21,7 +21,6 @@ import { useAuth } from '../../../hooks';
 
 export default function Index() {
   const auth = useAuth.use?.token();
-  let cardAmount = useCardAmountStore((state) => state.cardAmount);
   let setCardAmount = useCardAmountStore((state) => state.setCardAmount);
   const {
     mutate: transactionRequest,
@@ -37,9 +36,7 @@ export default function Index() {
 
   const {
     mutate: transactionDelRequest,
-    data: transactionDelData,
     isLoading: transactionDelLoading,
-    isError: transactionDelError,
     isSuccess: transactionDelSuccess,
   } = useTransactionsDelete();
 
@@ -206,7 +203,7 @@ export default function Index() {
               lineHeight: Platform.OS === 'android' ? 16 : 0,
               paddingBottom: 20,
             }}
-            placeholder='Search Name, Amount or Txn Note'
+            placeholder="Search Name, Amount or Txn Note"
             className={'bg-white border-2 border-slate-200 h-10'}
           />
         </View>
@@ -219,7 +216,7 @@ export default function Index() {
               }  rounded-full mr-2 border-2 shadow-sm`}
             >
               <MaterialCommunityIcons
-                name='account-filter'
+                name="account-filter"
                 size={22}
                 color={filterBy === 'Clear' ? 'black' : 'white'}
               />

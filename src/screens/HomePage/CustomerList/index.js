@@ -1,8 +1,4 @@
-import {
-  AntDesign,
-  Ionicons,
-  MaterialCommunityIcons,
-} from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import {
   ActivityIndicator,
   Alert,
@@ -11,7 +7,6 @@ import {
   View,
 } from 'react-native';
 import { Button, Dialog, Portal, Text, TextInput } from 'react-native-paper';
-import { useCustomersStore } from '../index';
 import { FlashList } from '@shopify/flash-list';
 import { isUndefined } from 'lodash';
 import { useEffect, useState } from 'react';
@@ -20,8 +15,12 @@ import {
   useGetCustomersList,
   useUpdateCustomer,
 } from '../../../apis/useApi';
-import { showToast } from '../GiveMoney';
-import { useAuthCompanyStore } from '../../../core/utils';
+
+import {
+  showToast,
+  useAuthCompanyStore,
+  useCustomersStore,
+} from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 
 export const sendWhatsAppMessage = (link) => {
@@ -85,12 +84,12 @@ function CardComponent({
         <View>
           {iconName === 'bank' ? (
             <MaterialCommunityIcons
-              name='bank-transfer'
+              name="bank-transfer"
               size={24}
-              color='dodgerblue'
+              color="dodgerblue"
             />
           ) : (
-            <Ionicons name={iconName} size={20} color='dodgerblue' />
+            <Ionicons name={iconName} size={20} color="dodgerblue" />
           )}
         </View>
         <View className={'ml-4'}>
@@ -103,7 +102,7 @@ function CardComponent({
       <View className={'flex flex-row gap-3'}>
         {/*Edit Button*/}
         <TouchableOpacity
-          className='bg-slate-100 p-2 rounded-full'
+          className="bg-slate-100 p-2 rounded-full"
           onPress={() =>
             editContact({
               id,
@@ -112,23 +111,23 @@ function CardComponent({
             })
           }
         >
-          <MaterialCommunityIcons name='pencil' size={18} color='gray' />
+          <MaterialCommunityIcons name="pencil" size={18} color="gray" />
         </TouchableOpacity>
 
         {/*Call Button*/}
         <TouchableOpacity
-          className='bg-blue-100 p-2 rounded-full'
+          className="bg-blue-100 p-2 rounded-full"
           onPress={makeCall}
         >
-          <MaterialCommunityIcons name='phone' size={18} color='dodgerblue' />
+          <MaterialCommunityIcons name="phone" size={18} color="dodgerblue" />
         </TouchableOpacity>
 
         {/*Whatsapp Button*/}
         <TouchableOpacity
-          className='bg-emerald-50 p-2 rounded-full'
+          className="bg-emerald-50 p-2 rounded-full"
           onPress={whatsapp}
         >
-          <MaterialCommunityIcons name='whatsapp' size={18} color='darkgreen' />
+          <MaterialCommunityIcons name="whatsapp" size={18} color="darkgreen" />
         </TouchableOpacity>
       </View>
     </View>
@@ -219,12 +218,12 @@ export default function Index({ navigation }) {
   const hideDialog = () => setVisible(false);
 
   return (
-    <View className='flex-1 justify-start bg-blue-50'>
+    <View className="flex-1 justify-start bg-blue-50">
       {isCustomerDataLoading ? (
         <ActivityIndicator />
       ) : (
         <>
-          <View className='flex flex-row justify-end items-center px-4'>
+          <View className="flex flex-row justify-end items-center px-4">
             <Button
               icon={'plus'}
               className={'w-42 flex-row justify-between items-center'}
@@ -247,7 +246,7 @@ export default function Index({ navigation }) {
                 key={index}
                 title={item.name}
                 id={item.id}
-                iconName='person'
+                iconName="person"
                 description={item.phone}
                 makeCall={() => {
                   makePhoneCall(item.phone);
@@ -297,7 +296,7 @@ export default function Index({ navigation }) {
               }}
               label={'Customer Name'}
             />
-            <View className='mt-2' />
+            <View className="mt-2" />
             <TextInput
               keyboardType={'numeric'}
               mode={'outlined'}
@@ -330,6 +329,16 @@ export default function Index({ navigation }) {
                 ) {
                   updateCustomer(selectedCustomer);
                 } else {
+                  if (selectedCustomer.title === '') {
+                    showToast('Please enter customer name', 'error');
+                    return false;
+                  }
+
+                  // if (selectedCustomer.description === '') {
+                  //   showToast('Please enter mobile number', 'error');
+                  //   return false;
+                  // }
+
                   createCustomer({
                     title: selectedCustomer.title,
                     description: selectedCustomer.description,

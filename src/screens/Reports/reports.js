@@ -18,12 +18,12 @@ function CardComponent({ title, iconName, description, onPress = () => null }) {
         <View>
           {iconName === 'bank' ? (
             <MaterialCommunityIcons
-              name='bank-transfer'
+              name="bank-transfer"
               size={24}
-              color='dodgerblue'
+              color="dodgerblue"
             />
           ) : (
-            <Ionicons name={iconName} size={20} color='dodgerblue' />
+            <Ionicons name={iconName} size={20} color="dodgerblue" />
           )}
         </View>
         <View className={'ml-4'}>
@@ -33,8 +33,8 @@ function CardComponent({ title, iconName, description, onPress = () => null }) {
           </Text>
         </View>
       </View>
-      <View className='bg-blue-100 p-2 rounded-full'>
-        <AntDesign name='right' size={18} color='dodgerblue' />
+      <View className="bg-blue-100 p-2 rounded-full">
+        <AntDesign name="right" size={18} color="dodgerblue" />
       </View>
     </TouchableOpacity>
   );
@@ -42,12 +42,12 @@ function CardComponent({ title, iconName, description, onPress = () => null }) {
 
 export default function Index({ navigation }) {
   return (
-    <View className='flex-1 justify-start bg-blue-50'>
+    <View className="flex-1 justify-start bg-blue-50">
       <CardComponent
         onPress={() => {
           navigation.navigate('DayBook');
         }}
-        iconName='calendar'
+        iconName="calendar"
         title={'Day Book'}
         description={'All Transactions for any report'}
       />
@@ -55,7 +55,7 @@ export default function Index({ navigation }) {
         onPress={() => {
           navigation.navigate('Party');
         }}
-        iconName='person'
+        iconName="person"
         title={'Party Statement'}
         description={'Txn of any party between and duration'}
       />
@@ -63,7 +63,7 @@ export default function Index({ navigation }) {
         onPress={() => {
           navigation.navigate('AllParty');
         }}
-        iconName='people'
+        iconName="people"
         title={'All Parties'}
         description={'All Your Parties and their amounts'}
       />
@@ -71,7 +71,7 @@ export default function Index({ navigation }) {
         onPress={() => {
           navigation.navigate('AllTransactions');
         }}
-        iconName='bank'
+        iconName="bank"
         title={'All Transactions'}
         description={'All Transactions between any duration'}
       />
@@ -79,7 +79,7 @@ export default function Index({ navigation }) {
         onPress={() => {
           navigation.navigate('CostCenter');
         }}
-        iconName='home'
+        iconName="home"
         title={'Cost Centre Wise Profit '}
         description={'Transaction all debit and credit '}
       />

@@ -2,7 +2,12 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  View,
+  Platform,
+} from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 import {
@@ -18,18 +23,18 @@ import { useAuthCompanyStore } from '../../../core/utils';
 
 const renderHeader = () => (
   <View className={'flex-row justify-between px-4 py-2 space-x-2 items-center'}>
-    <View className='flex-1 border-b-2 border-slate-300 w-1/3'>
-      <Text variant={'bodyMedium'} className='text-left text-slate-800'>
+    <View className="flex-1 border-b-2 border-slate-300 w-1/3">
+      <Text variant={'bodyMedium'} className="text-left text-slate-800">
         Customer
       </Text>
     </View>
-    <View className='flex-1 border-b-2 border-amber-400'>
-      <Text variant={'bodyMedium'} className='text-right text-slate-800 mr-2'>
+    <View className="flex-1 border-b-2 border-amber-400">
+      <Text variant={'bodyMedium'} className="text-right text-slate-800 mr-2">
         Given
       </Text>
     </View>
-    <View className='flex-1 border-b-2 border-blue-500'>
-      <Text variant={'bodyMedium'} className='text-right text-slate-800'>
+    <View className="flex-1 border-b-2 border-blue-500">
+      <Text variant={'bodyMedium'} className="text-right text-slate-800">
         Received
       </Text>
     </View>
@@ -48,23 +53,23 @@ const renderItem = ({ item }) => (
       })
     }
   >
-    <View className='flex flex-row items-center w-1/4'>
-      <View className='mr-1'>
+    <View className="flex flex-row items-center w-1/4">
+      <View className="mr-1">
         {item?.transaction_type_id === 2 ? (
           <MaterialCommunityIcons
-            name='call-received'
+            name="call-received"
             size={14}
-            color='green'
+            color="green"
           />
         ) : (
-          <MaterialIcons name='call-made' size={14} color='red' />
+          <MaterialIcons name="call-made" size={14} color="red" />
         )}
       </View>
       <View>
-        <Text variant={'titleSmall'} className='text-slate-800'>
+        <Text variant={'titleSmall'} className="text-slate-800">
           {item?.customer?.name}
         </Text>
-        <Text variant={'labelSmall'} className='text-slate-400'>
+        <Text variant={'labelSmall'} className="text-slate-400">
           {item?.date}
         </Text>
       </View>
@@ -72,10 +77,10 @@ const renderItem = ({ item }) => (
     <View>
       {item?.transaction_type_id === 1 ? (
         <View className={'mr-2'}>
-          <Text variant={'bodyMedium'} className='text-slate-800 mr-2'>
+          <Text variant={'bodyMedium'} className="text-slate-800 mr-2">
             {item?.amount}
           </Text>
-          <Text variant={'labelSmall'} className='text-slate-400 mr-2'>
+          <Text variant={'labelSmall'} className="text-slate-400 mr-2">
             (Udhaar)
           </Text>
         </View>
@@ -90,10 +95,10 @@ const renderItem = ({ item }) => (
       <View>
         {item?.transaction_type_id === 2 ? (
           <View>
-            <Text variant={'bodyMedium'} className='text-slate-800'>
+            <Text variant={'bodyMedium'} className="text-slate-800">
               {item?.amount}
             </Text>
-            <Text variant={'labelSmall'} className='text-slate-400'>
+            <Text variant={'labelSmall'} className="text-slate-400">
               (Payment)
             </Text>
           </View>
@@ -128,7 +133,6 @@ export default function Index() {
   const [showOptions, setShowOptions] = useState('');
   const [query, setQuery] = useState('');
   const [selectedCostCenter, setSelectedCostCenter] = useState('');
-  const [transactionType, setTransactionType] = useState(null);
   const [fromDate, setFromDate] = useState(
     new Date(new Date().setMonth(new Date().getMonth() - 1)),
   );
@@ -226,24 +230,24 @@ export default function Index() {
   return (
     <View className={'bg-white flex-1'}>
       <StatusBar animated={true} />
-      <View className='flex h-15 p-2 bg-blue-50'>
+      <View className="flex h-15 p-2 bg-blue-50">
         <View className={'flex flex-row mb-2'}>
           <DatePickerInput
-            locale='en-GB'
-            label='From'
+            locale="en-GB"
+            label="From"
             value={fromDate}
             onChange={(d) => setFromDate(d)}
-            inputMode='start'
+            inputMode="start"
             mode={'outlined'}
             className={'bg-blue-50 mx-1'}
           />
 
           <DatePickerInput
-            locale='en-GB'
-            label='To'
+            locale="en-GB"
+            label="To"
             value={toDate}
             onChange={(d) => setToDate(d)}
-            inputMode='start'
+            inputMode="start"
             mode={'outlined'}
             className={'bg-blue-50 mx-1'}
           />
@@ -252,8 +256,8 @@ export default function Index() {
           {!costCenter.isLoading && costCenter?.data?.data?.length > 0 && (
             <DropDownFlashList
               data={costCenter?.data?.data}
-              inputLabel='Select Cost Center'
-              headerTitle='Showing list of cost-center'
+              inputLabel="Select Cost Center"
+              headerTitle="Showing list of cost-center"
               onSelect={(selectedCostCenter) => {
                 setSelectedCostCenter(selectedCostCenter);
               }}
@@ -288,7 +292,7 @@ export default function Index() {
                 lineHeight: Platform.OS === 'android' ? 16 : 0,
                 paddingBottom: 20,
               }}
-              placeholder='Search Name, Amount or Txn Note'
+              placeholder="Search Name, Amount or Txn Note"
               className={'bg-white border-2 border-slate-200 h-10'}
             />
           </View>
@@ -304,6 +308,7 @@ export default function Index() {
                 onSearch={handleSearch}
                 onSelect={handleSelect}
                 selected={selectedItem}
+                refreshing={reload}
                 showOptions={showOptions}
                 options={options}
                 onOptionSelect={handleOptionSelect}

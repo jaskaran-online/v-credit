@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import { createSelectors } from '../core/utils';
-import { getToken, removeToken, setToken, setUser } from './utils';
+import { getToken, removeToken, setToken } from './utils';
 
 const _useAuth = create((set, get) => ({
   status: 'signOut',

@@ -1,5 +1,4 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { NavigationContainer } from '@react-navigation/native';
 import { COLORS } from '../../core';
 
 import Transactions from '../HomePage/Transactions';
@@ -7,7 +6,7 @@ import Customers from '../HomePage/Customers';
 
 const Tab = createMaterialTopTabNavigator();
 
-export function TabNavigator({}) {
+export function TabNavigator() {
   const screenOptions = {
     tabBarLabelStyle: {
       fontSize: 13,
@@ -34,9 +33,9 @@ export function TabNavigator({}) {
 
   return (
     <Tab.Navigator screenOptions={screenOptions}>
-      <Tab.Screen name='Customers' component={Customers} />
+      <Tab.Screen name="Customers" component={Customers} />
       <Tab.Screen
-        name='Transactions'
+        name="Transactions"
         options={{
           title: 'Credit / Udhaar',
         }}

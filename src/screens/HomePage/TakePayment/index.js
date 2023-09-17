@@ -227,7 +227,7 @@ const TakePayment = ({ navigation, route }) => {
   return (
     <View className={'flex-1 bg-white'}>
       <KeyboardAvoidingView
-        behavior='padding'
+        behavior="padding"
         className={'bg-white flex-1 px-4 pt-1'}
       >
         <View className={'mr-5 flex flex-row items-center justify-end my-1'}>
@@ -247,8 +247,8 @@ const TakePayment = ({ navigation, route }) => {
         </View>
         <DropDownFlashList
           data={contacts}
-          inputLabel='Select Customer'
-          headerTitle='Showing contact from Phone book'
+          inputLabel="Select Customer"
+          headerTitle="Showing contact from Phone book"
           onSelect={handleContactSelect}
           selectedItemName={selectedCustomer?.name}
           filterEnabled={true}
@@ -312,11 +312,12 @@ const TakePayment = ({ navigation, route }) => {
         <View className={'mt-2 -z-10'}>
           <DropDownFlashList
             data={products || []}
-            inputLabel='Select Product'
-            headerTitle='List of products'
-            onSelect={(product) =>
-              handlePriceChange(parseFloat(product?.price || 0).toFixed(4))
-            }
+            inputLabel="Select Product"
+            headerTitle="List of products"
+            onSelect={function (product) {
+              setSelectedProduct(product);
+              handlePriceChange(parseFloat(product?.price || 0).toFixed(4));
+            }}
           />
         </View>
         {inventoryChecked && (
@@ -352,11 +353,11 @@ const TakePayment = ({ navigation, route }) => {
         />
         <View className={'flex flex-row w-full mt-2 -z-30'}>
           <DatePickerInput
-            locale='en-GB'
-            label='Date'
+            locale="en-GB"
+            label="Date"
             value={inputDate}
             onChange={handleDateChange}
-            inputMode='start'
+            inputMode="start"
             mode={'outlined'}
             className={'bg-blue-50 mx-1'}
           />

@@ -48,7 +48,7 @@ export default function Index() {
       <StatusBar />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className='flex-1 items-center justify-evenly bg-white w-full z-50'
+        className="flex-1 items-center justify-evenly bg-white w-full z-50"
       >
         <View className={'h-1/2 w-full px-6 flex'}>
           <Image
@@ -77,7 +77,7 @@ export default function Index() {
                     onBlur={onBlur}
                     onChangeText={(text) => onChange(text)}
                     value={value}
-                    label='Email'
+                    label="Email"
                     className={'bg-white'}
                     mode={'outlined'}
                     placeholder={'Enter Email'}
@@ -97,8 +97,8 @@ export default function Index() {
                     }
                   />
                 )}
-                name='email'
-                defaultValue=''
+                name="email"
+                defaultValue=""
               />
               {errors?.email && (
                 <Text
@@ -119,7 +119,7 @@ export default function Index() {
                     onBlur={onBlur}
                     onChangeText={(text) => onChange(text)}
                     value={value}
-                    label='Password'
+                    label="Password"
                     placeholder={'Enter Password'}
                     mode={'outlined'}
                     className={'bg-white'}
@@ -155,8 +155,8 @@ export default function Index() {
                     }
                   />
                 )}
-                name='password'
-                defaultValue=''
+                name="password"
+                defaultValue=""
               />
               {errors?.password && (
                 <Text
@@ -173,7 +173,7 @@ export default function Index() {
               onPress={handleSubmit(onSubmit)}
               loading={isLoading}
             >
-              Login
+              <Text>Login</Text>
             </Button>
           </View>
         </View>

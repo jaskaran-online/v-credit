@@ -3,7 +3,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import _ from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Share, TouchableOpacity, View } from 'react-native';
+import { Share, TouchableOpacity, View, Platform } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { useCustomersData } from '../../../apis/useApi';
 import {
@@ -40,10 +40,10 @@ const renderItem = ({ item, index }) => {
           })
         }
       >
-        <Text variant='titleSmall' class={'text-slate-800'}>
+        <Text variant="titleSmall" class={'text-slate-800'}>
           {item?.customer?.name}
         </Text>
-        <Text variant={'labelSmall'} className='text-slate-400'>
+        <Text variant={'labelSmall'} className="text-slate-400">
           {formatedDate}
         </Text>
       </TouchableOpacity>
@@ -80,7 +80,7 @@ http://mycreditbook.com/udhaar-khata/${
           }}
         >
           <MaterialCommunityIcons
-            name='reminder'
+            name="reminder"
             size={18}
             color={`${
               toReceive < toPay && balance !== 0 ? 'dodgerblue' : 'gray'
@@ -96,7 +96,7 @@ http://mycreditbook.com/udhaar-khata/${
             })
           }
         >
-          <MaterialIcons name='picture-as-pdf' size={18} color={`tomato`} />
+          <MaterialIcons name="picture-as-pdf" size={18} color={`tomato`} />
         </TouchableOpacity>
       </View>
     </View>
@@ -182,7 +182,7 @@ export default function Index() {
               lineHeight: Platform.OS === 'android' ? 16 : 0,
               paddingBottom: 20,
             }}
-            placeholder='Search Customer Name'
+            placeholder="Search Customer Name"
             className={'bg-white border-2 border-slate-200 h-10'}
           />
         </View>

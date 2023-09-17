@@ -6,7 +6,7 @@ export default function FloatingButtons({ navigation, customer }) {
   return (
     <BlurView
       intensity={5}
-      tint='light'
+      tint="light"
       className={'h-24 pt-5 flex w-full flex-row justify-evenly space-x-2 px-4'}
     >
       <View className={'flex-1'}>

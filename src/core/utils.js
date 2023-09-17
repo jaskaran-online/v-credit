@@ -195,12 +195,11 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
   }
   const handleListExpand = () => {
     setExpanded((expanded) => !expanded);
-    if (balanceType !== 'clear' || isEditableOrDeleteable) {
-    }
+    // if (balanceType !== 'clear' || isEditableOrDeleteable) {
+    // }
   };
 
-  let color;
-  let isEven = index % 2 === 0 ? (color = 'bg-slate-50') : (color = 'bg-white');
+  let isEven = index % 2 === 0 ? 'bg-slate-50' : 'bg-white';
 
   return (
     <>
@@ -209,30 +208,30 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
         key={index}
         onPress={handleListExpand}
       >
-        <View className='flex flex-row items-center w-1/4'>
-          <View className='mr-1'>
+        <View className="flex flex-row items-center w-1/4">
+          <View className="mr-1">
             {transaction?.transaction_type_id === 2 ? (
               <MaterialCommunityIcons
-                name='call-received'
+                name="call-received"
                 size={14}
-                color='green'
+                color="green"
               />
             ) : (
-              <MaterialIcons name='call-made' size={14} color='red' />
+              <MaterialIcons name="call-made" size={14} color="red" />
             )}
           </View>
           <View>
             {showCustomerName ? (
-              <Text variant={'titleSmall'} className='text-slate-800'>
+              <Text variant={'titleSmall'} className="text-slate-800">
                 {transaction?.customer?.name}
               </Text>
             ) : (
-              <Text variant={'titleSmall'} className='text-slate-800'>
+              <Text variant={'titleSmall'} className="text-slate-800">
                 {transaction?.transaction_type_id == 2 ? 'Credit' : 'Debit'}
               </Text>
             )}
 
-            <Text variant={'labelSmall'} className='text-slate-400'>
+            <Text variant={'labelSmall'} className="text-slate-400">
               {formatDateForMessage(transaction?.date)}
             </Text>
           </View>
@@ -240,10 +239,10 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
         <View>
           {transaction?.transaction_type_id === 1 ? (
             <View className={'mr-2'}>
-              <Text variant={'bodyMedium'} className='text-slate-800 mr-2'>
+              <Text variant={'bodyMedium'} className="text-slate-800 mr-2">
                 {parseFloat(transaction?.amount).toFixed(2)} ₹
               </Text>
-              <Text variant={'labelSmall'} className='text-slate-400 mr-2'>
+              <Text variant={'labelSmall'} className="text-slate-400 mr-2">
                 (Udhaar)
               </Text>
             </View>
@@ -261,10 +260,10 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
           <View className={'flex flex-row items-center mr-8'}>
             {transaction?.transaction_type_id === 2 ? (
               <View>
-                <Text variant={'bodyMedium'} className='text-slate-800'>
+                <Text variant={'bodyMedium'} className="text-slate-800">
                   {parseFloat(transaction?.amount).toFixed(2)} ₹
                 </Text>
-                <Text variant={'labelSmall'} className='text-slate-400'>
+                <Text variant={'labelSmall'} className="text-slate-400">
                   (Payment)
                 </Text>
               </View>
@@ -281,7 +280,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
           <Octicons
             name={expanded ? 'chevron-up' : 'chevron-down'}
             size={16}
-            color='lightgray'
+            color="lightgray"
             style={{ marginRight: 5, paddingTop: 5 }}
           />
         </View>
@@ -295,7 +294,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
           {isEditableOrDeleteable && (
             <>
               <TouchableOpacity
-                className='flex items-center gap-1'
+                className="flex items-center gap-1"
                 onPress={
                   isToday(transaction?.created_at) &&
                   transaction?.user_id === userId
@@ -306,8 +305,8 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
                     : () => null
                 }
               >
-                <MaterialIcons name='edit' size={20} color='dodgerblue' />
-                <Text variant={'labelSmall'} className='text-slate-800'>
+                <MaterialIcons name="edit" size={20} color="dodgerblue" />
+                <Text variant={'labelSmall'} className="text-slate-800">
                   Edit
                 </Text>
               </TouchableOpacity>
@@ -315,7 +314,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
           )}
           {showPDF && (
             <TouchableOpacity
-              className='flex items-center gap-1'
+              className="flex items-center gap-1"
               onPress={() =>
                 navigation.navigate('DetailsPdf', {
                   id: transaction.customer?.id,
@@ -323,8 +322,8 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
                 })
               }
             >
-              <MaterialIcons name='picture-as-pdf' size={22} color='tomato' />
-              <Text variant={'labelSmall'} className='text-slate-800'>
+              <MaterialIcons name="picture-as-pdf" size={22} color="tomato" />
+              <Text variant={'labelSmall'} className="text-slate-800">
                 PDF
               </Text>
             </TouchableOpacity>
@@ -332,15 +331,15 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
 
           {balanceType !== 'clear' && (
             <TouchableOpacity
-              className='flex items-center gap-1'
+              className="flex items-center gap-1"
               onPress={async () => {
                 await Share.share({
                   message: message,
                 });
               }}
             >
-              <MaterialCommunityIcons name='whatsapp' size={22} color='green' />
-              <Text variant={'labelSmall'} className='text-slate-800'>
+              <MaterialCommunityIcons name="whatsapp" size={22} color="green" />
+              <Text variant={'labelSmall'} className="text-slate-800">
                 Share
               </Text>
             </TouchableOpacity>
@@ -348,7 +347,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
 
           {(isEditableOrDeleteable || isAdmin) && showDelete && (
             <TouchableOpacity
-              className='flex items-center gap-1'
+              className="flex items-center gap-1"
               onPress={
                 (isToday(transaction?.created_at) &&
                   transaction?.user_id === userId) ||
@@ -357,8 +356,8 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
                   : () => null
               }
             >
-              <MaterialIcons name='delete' size={20} color='red' />
-              <Text variant={'labelSmall'} className='text-slate-800'>
+              <MaterialIcons name="delete" size={20} color="red" />
+              <Text variant={'labelSmall'} className="text-slate-800">
                 Delete
               </Text>
             </TouchableOpacity>
@@ -417,18 +416,18 @@ export const renderItem = ({
  */
 export const renderHeader = ({ headerTitle }) => (
   <View className={'flex-row justify-between px-4 py-2 space-x-2 items-center'}>
-    <View className='flex-1 border-b-2 border-slate-300 w-1/3'>
-      <Text variant={'bodyMedium'} className='text-left text-slate-800'>
+    <View className="flex-1 border-b-2 border-slate-300 w-1/3">
+      <Text variant={'bodyMedium'} className="text-left text-slate-800">
         {headerTitle !== '' ? 'Customer' : 'Type'}
       </Text>
     </View>
-    <View className='flex-1 border-b-2 border-amber-400'>
-      <Text variant={'bodyMedium'} className='text-center text-slate-800 mr-2'>
+    <View className="flex-1 border-b-2 border-amber-400">
+      <Text variant={'bodyMedium'} className="text-center text-slate-800 mr-2">
         Given
       </Text>
     </View>
-    <View className='flex-1 border-b-2 border-blue-500'>
-      <Text variant={'bodyMedium'} className='text-center text-slate-800'>
+    <View className="flex-1 border-b-2 border-blue-500">
+      <Text variant={'bodyMedium'} className="text-center text-slate-800">
         Received
       </Text>
     </View>

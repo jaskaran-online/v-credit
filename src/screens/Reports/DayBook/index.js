@@ -2,7 +2,12 @@ import { Feather } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { styled } from 'nativewind';
 import { memo, useEffect, useState } from 'react';
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  View,
+  Platform,
+} from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 import { useDailyBook } from '../../../apis/useApi';
@@ -28,14 +33,14 @@ function DayBook() {
 
   function Header() {
     return (
-      <View className='bg-blue-50 h-40'>
-        <StyledView className='flex h-1/4 p-2 bg-blue-50'>
+      <View className="bg-blue-50 h-40">
+        <StyledView className="flex h-1/4 p-2 bg-blue-50">
           <DatePickerInput
-            locale='en-GB'
-            label='Date'
+            locale="en-GB"
+            label="Date"
             value={inputDate}
             onChange={(date) => setInputDate(date)}
-            inputMode='start'
+            inputMode="start"
             mode={'outlined'}
             className={'bg-blue-50 mx-1'}
           />
@@ -93,7 +98,9 @@ function DayBook() {
   ];
 
   useEffect(() => {
-    setFilteredList(dailyBookData?.data?.transactions);
+    if (dailyBookData) {
+      setFilteredList(dailyBookData?.data?.transactions);
+    }
   }, [dailyBookData]);
 
   const handleSelect = (item) => {
@@ -143,17 +150,17 @@ function DayBook() {
               lineHeight: Platform.OS === 'android' ? 16 : 0,
               paddingBottom: 20,
             }}
-            placeholder='Search Name, Amount or Txn Note'
+            placeholder="Search Name, Amount or Txn Note"
             className={'bg-white border-2 border-slate-200 h-10'}
           />
         </View>
         <View className={'flex'} style={{ width: '15%' }}>
           {options && (
             <TouchableOpacity
-              className='p-2 bg-white border-slate-900 shadow shadow-slate-300 rounded-xl w-[48] mt-1 h-[40] justify-center items-center'
+              className="p-2 bg-white border-slate-900 shadow shadow-slate-300 rounded-xl w-[48] mt-1 h-[40] justify-center items-center"
               onPress={() => handleOptionSelect(true)}
             >
-              <Feather name='filter' size={20} color='black' />
+              <Feather name="filter" size={20} color="black" />
             </TouchableOpacity>
           )}
         </View>
@@ -202,6 +209,7 @@ function DayBook() {
           estimatedItemSize={200}
           onSearch={handleSearch}
           onSelect={handleSelect}
+          refreshing={reload}
           selected={selectedItem}
           showOptions={showOptions}
           options={options}

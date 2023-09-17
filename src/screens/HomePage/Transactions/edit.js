@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
-import Toast from 'react-native-toast-message';
 import {
   useEditPaymentApi,
   useProductsApi,
@@ -34,7 +33,6 @@ let TRANS_TYPES = [
   { id: 2, name: 'Received' },
 ];
 const EditTransaction = ({ navigation, route }) => {
-
   const auth = useAuth.use?.token();
   const {
     mutate: request,
@@ -152,9 +150,12 @@ const EditTransaction = ({ navigation, route }) => {
     })();
   }, []);
 
-  useEffect(function (){
-    setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(4));
-  }, [price, qty]);
+  useEffect(
+    function () {
+      setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(4));
+    },
+    [price, qty],
+  );
 
   useEffect(() => {
     if (isPaymentSuccess) {
@@ -257,7 +258,7 @@ const EditTransaction = ({ navigation, route }) => {
   return (
     <View className={'flex-1 bg-white'}>
       <KeyboardAvoidingView
-        behavior='padding'
+        behavior="padding"
         className={'bg-white flex-1 px-4 pt-2'}
       >
         <View className={'mr-5 flex flex-row items-center justify-end my-1'}>
@@ -277,8 +278,8 @@ const EditTransaction = ({ navigation, route }) => {
         </View>
         <DropDownFlashList
           data={contacts}
-          inputLabel='Select Customer'
-          headerTitle='Showing contact from Phonebook'
+          inputLabel="Select Customer"
+          headerTitle="Showing contact from Phonebook"
           onSelect={handleContactSelect}
           selectedItemName={transaction?.customer?.name}
           enableSearch={true}
@@ -290,8 +291,8 @@ const EditTransaction = ({ navigation, route }) => {
               <View className={'mt-2 -z-10'}>
                 <DropDownFlashList
                   data={products}
-                  inputLabel='Select Product'
-                  headerTitle='List of products'
+                  inputLabel="Select Product"
+                  headerTitle="List of products"
                   onSelect={handleProductSelect}
                   selectedItemName={transaction?.product?.name}
                   enableSearch={true}
@@ -329,11 +330,11 @@ const EditTransaction = ({ navigation, route }) => {
         />
         <View className={'flex flex-row w-full mt-2 -z-30'}>
           <DatePickerInput
-            locale='en-GB'
-            label='From'
+            locale="en-GB"
+            label="From"
             value={inputDate}
             onChange={handleDateChange}
-            inputMode='start'
+            inputMode="start"
             mode={'outlined'}
             className={'bg-blue-50 mx-1'}
           />
@@ -349,8 +350,8 @@ const EditTransaction = ({ navigation, route }) => {
         <View className={'mt-2 -z-10'} />
         <DropDownFlashList
           data={TRANS_TYPES}
-          inputLabel='Transaction Type'
-          headerTitle='Transaction Type'
+          inputLabel="Transaction Type"
+          headerTitle="Transaction Type"
           onSelect={(contactObj) => {
             setTransactionType(contactObj);
           }}

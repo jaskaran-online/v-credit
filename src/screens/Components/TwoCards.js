@@ -54,7 +54,7 @@ export function TwoCards({ toReceive = 0, toPay = 0 }) {
   }, [filterByToPay]);
 
   return (
-    <StyledView className='flex flex-row items-center p-2 space-x-2 h-1/8 bg-blue-50'>
+    <StyledView className="flex flex-row items-center p-2 space-x-2 h-1/8 bg-blue-50">
       <Box
         className={` ${
           filterByToReceive ? 'bg-emerald-500' : 'bg-white'
@@ -67,7 +67,7 @@ export function TwoCards({ toReceive = 0, toPay = 0 }) {
           } p-1 rounded-full h-[40px] w-[40px] justify-center items-center`}
         >
           <MaterialCommunityIcons
-            name='call-received'
+            name="call-received"
             size={20}
             color={`${filterByToReceive ? 'green' : 'white'}`}
           />
@@ -103,7 +103,7 @@ export function TwoCards({ toReceive = 0, toPay = 0 }) {
           } p-1 rounded-full h-[40px] w-[40px] justify-center items-center`}
         >
           <MaterialIcons
-            name='call-made'
+            name="call-made"
             size={20}
             color={`${filterByToPay ? 'red' : 'white'}`}
           />

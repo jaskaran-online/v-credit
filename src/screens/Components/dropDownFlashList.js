@@ -1,7 +1,7 @@
 import { Dimensions, TouchableOpacity, View } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
-import React, { useEffect, useState, memo, useRef } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 
 function DropDownFlashList({
   data = [],

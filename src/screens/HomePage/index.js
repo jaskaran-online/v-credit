@@ -13,18 +13,14 @@ import { TwoCards } from '../Components/TwoCards';
 import { TabNavigator } from '../Components/TabNavigator';
 import FloatingButtons from '../Components/FloatingButton';
 import {
-  getItem,
-  setItem,
   useAuthCompanyStore,
   useCardAmountStore,
   useContactsStore,
-  useFilterToggleStore,
 } from '../../core/utils';
 
 const Index = ({ navigation }) => {
   const auth = useAuth.use.token(); // Destructure the token directly
   const company = useAuthCompanyStore((state) => state.selectedCompany);
-  let filterBy = useFilterToggleStore((state) => state.filterBy);
   let cardAmount = useCardAmountStore((state) => state.cardAmount);
   let setCardAmount = useCardAmountStore((state) => state.setCardAmount);
 

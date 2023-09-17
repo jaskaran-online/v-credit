@@ -58,7 +58,7 @@ export const Root = () => {
             screenOptions={{
               headerShown: false,
             }}
-            name='Auth'
+            name="Auth"
             component={AuthNavigator}
           />
         ) : (
@@ -66,7 +66,7 @@ export const Root = () => {
             {/* App Drawer Route Navigator */}
             <Stack.Screen
               options={{ headerShown: false }}
-              name='App'
+              name="App"
               component={DrawerNavigator}
             />
 
@@ -77,7 +77,7 @@ export const Root = () => {
                 headerShown: true,
                 headerTitle: 'Day Book',
               }}
-              name='DayBook'
+              name="DayBook"
               component={DayBook}
             />
 
@@ -87,7 +87,7 @@ export const Root = () => {
                 headerShown: true,
                 headerTitle: 'Party Statement',
               }}
-              name='Party'
+              name="Party"
               component={PartyStatement}
             />
 
@@ -97,7 +97,7 @@ export const Root = () => {
                 headerShown: true,
                 headerTitle: 'All Parties',
               }}
-              name='AllParty'
+              name="AllParty"
               component={AllParties}
             />
 
@@ -107,7 +107,7 @@ export const Root = () => {
                 headerShown: true,
                 headerTitle: 'All Transactions',
               }}
-              name='AllTransactions'
+              name="AllTransactions"
               component={AllTransactions}
             />
 
@@ -117,7 +117,7 @@ export const Root = () => {
                 headerShown: true,
                 headerTitle: 'Cost Centre Wise Profit',
               }}
-              name='CostCenter'
+              name="CostCenter"
               component={CostCenter}
             />
 
@@ -127,7 +127,7 @@ export const Root = () => {
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
               })}
-              name='CustomerTransactionDetails'
+              name="CustomerTransactionDetails"
               component={CustomerTransactionDetails}
             />
 
@@ -137,7 +137,7 @@ export const Root = () => {
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
               })}
-              name='DetailsPdf'
+              name="DetailsPdf"
               component={ShareScreen}
             />
 
@@ -147,7 +147,7 @@ export const Root = () => {
                 headerShown: true,
                 headerTitle: 'Take Money',
               }}
-              name='TakeMoney'
+              name="TakeMoney"
               component={TakePayment}
             />
 
@@ -157,7 +157,7 @@ export const Root = () => {
                 headerShown: true,
                 headerTitle: 'Give Money',
               }}
-              name='GiveMoney'
+              name="GiveMoney"
               component={GiveMoney}
             />
 
@@ -167,7 +167,7 @@ export const Root = () => {
                 headerShown: true,
                 headerTitle: 'Edit',
               }}
-              name='EditTransaction'
+              name="EditTransaction"
               component={EditTransaction}
             />
 
@@ -177,7 +177,7 @@ export const Root = () => {
                 headerShown: true,
                 headerTitle: 'Customers',
               }}
-              name='ViewCustomers'
+              name="ViewCustomers"
               component={CustomerList}
             />
           </Stack.Group>

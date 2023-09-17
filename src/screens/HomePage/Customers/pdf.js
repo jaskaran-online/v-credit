@@ -1,5 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Text } from 'react-native-paper';
 import HTMLCodeView from './HTMLCodeView';
 import * as Print from 'expo-print';
@@ -202,12 +207,12 @@ const ShareScreen = ({ route }) => {
   };
 
   return (
-    <View className='flex-1 bg-blue-50'>
+    <View className="flex-1 bg-blue-50">
       {isLoading ? (
         <ActivityIndicator />
       ) : (
         <>
-          <View className='flex-1 p-2'>
+          <View className="flex-1 p-2">
             <HTMLCodeView ref={htmlCodeViewRef} htmlCode={html} />
           </View>
           {Platform.OS === 'ios' && (
@@ -217,19 +222,19 @@ const ShareScreen = ({ route }) => {
               ) : null}
             </View>
           )}
-          <View className=' bg-white flex flex-row pb-10 items-center justify-evenly pt-4'>
+          <View className=" bg-white flex flex-row pb-10 items-center justify-evenly pt-4">
             <TouchableOpacity
               className={'d-flex justify-center items-center gap-2'}
               onPress={execute}
             >
-              <MaterialIcons name='share' size={24} color='dodgerblue' />
+              <MaterialIcons name="share" size={24} color="dodgerblue" />
               <Text>Share</Text>
             </TouchableOpacity>
             <TouchableOpacity
               className={'d-flex justify-center items-center gap-2'}
               onPress={print}
             >
-              <MaterialIcons name='print' size={24} color='black' />
+              <MaterialIcons name="print" size={24} color="black" />
               <Text>Print</Text>
             </TouchableOpacity>
             {Platform.OS === 'ios' && (
@@ -237,7 +242,7 @@ const ShareScreen = ({ route }) => {
                 className={'d-flex justify-center items-center gap-2'}
                 onPress={selectPrinter}
               >
-                <AntDesign name='select1' size={24} color='black' />
+                <AntDesign name="select1" size={24} color="black" />
                 <Text>Select</Text>
               </TouchableOpacity>
             )}

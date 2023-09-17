@@ -1,7 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, Platform } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 import { useAllParties, useCustomersData } from '../../../apis/useApi';
@@ -134,14 +134,14 @@ export default function Index() {
   return (
     <View className={'bg-white flex-1'}>
       <StatusBar animated={true} />
-      <View className='flex h-15 p-2 bg-blue-50'>
+      <View className="flex h-15 p-2 bg-blue-50">
         <View className={'flex flex-row my-2'}>
           <DatePickerInput
-            locale='en-GB'
-            label='From'
+            locale="en-GB"
+            label="From"
             value={inputDate}
             onChange={(d) => setInputDate(d)}
-            inputMode='start'
+            inputMode="start"
             mode={'outlined'}
             className={'bg-blue-50 mx-1 w-44'}
           />
@@ -149,8 +149,8 @@ export default function Index() {
         {customersList.length > 0 && (
           <DropDownFlashList
             data={customersList}
-            inputLabel='Parties'
-            headerTitle='Showing contact from Phonebook'
+            inputLabel="Parties"
+            headerTitle="Showing contact from Phonebook"
             onSelect={(contactObj) => {
               setCustomer(contactObj);
             }}
@@ -177,7 +177,7 @@ export default function Index() {
             lineHeight: Platform.OS === 'android' ? 16 : 0,
             paddingBottom: 20,
           }}
-          placeholder='Search Name, Amount or Txn Note'
+          placeholder="Search Name, Amount or Txn Note"
           className={'bg-white border-2 border-slate-200 h-10'}
         />
       </View>
