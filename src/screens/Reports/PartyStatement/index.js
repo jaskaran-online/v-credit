@@ -58,6 +58,7 @@ export default function Index() {
     formData.append('fromDate', fromDateStr);
     formData.append('user_id', auth.user.id);
     mutate(formData);
+    console.log(formData);
     setReload(false);
   }
 

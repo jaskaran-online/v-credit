@@ -17,7 +17,11 @@ const Box = ({ className, children, onPress, ...props }) => (
   </StyledView>
 );
 
-export function TwoCards({ toReceive = 0, toPay = 0 }) {
+export function TwoCards({
+  toReceive: propToReceive = 0,
+  toPay: propToPay = 0,
+  homePage = false,
+}) {
   let toggleFilter = useFilterToggleStore((state) => state.toggleFilter);
   let cardAmount = useCardAmountStore((state) => state.cardAmount);
   const [filterByToReceive, setFilterByToReceive] = useState(false);
@@ -87,7 +91,12 @@ export function TwoCards({ toReceive = 0, toPay = 0 }) {
               filterByToReceive ? 'text-white' : 'text-slate-700'
             } font-bold `}
           >
-            {Math.abs(parseFloat(cardAmount?.toReceive).toFixed(2))} ₹
+            {homePage
+              ? Math.abs(parseFloat(cardAmount?.toReceive).toFixed(2))
+              : propToReceive
+              ? Math.abs(parseFloat(propToReceive).toFixed(2))
+              : 0}{' '}
+            ₹
           </Text>
         </View>
       </Box>
@@ -121,7 +130,12 @@ export function TwoCards({ toReceive = 0, toPay = 0 }) {
               filterByToPay ? 'text-white' : 'text-slate-700'
             } font-bold `}
           >
-            {Math.abs(parseFloat(cardAmount?.toPay).toFixed(2))} ₹
+            {homePage
+              ? Math.abs(parseFloat(cardAmount?.toPay).toFixed(2))
+              : propToPay
+              ? Math.abs(parseFloat(propToPay).toFixed(2))
+              : 0}{' '}
+            ₹
           </Text>
         </View>
       </Box>

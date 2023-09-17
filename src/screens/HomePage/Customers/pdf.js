@@ -140,7 +140,7 @@ const ShareScreen = ({ route }) => {
           auth?.user?.company?.name
         }</p>
         <p style="font-size: 17px; margin: 5px;color: dimgrey;">${
-          customer?.phone
+          customer?.phone || ''
         }</p>
         <p style="font-size: 17px; margin: 5px;color: dimgrey;">(${formatDateForMessage(
           firstKey,

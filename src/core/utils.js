@@ -7,7 +7,7 @@ import {
 } from '@expo/vector-icons';
 import createSecureStore from '@neverdull-agency/expo-unlimited-secure-store';
 import React, { useState } from 'react';
-import { Text } from 'react-native-paper';
+import { Chip, Text } from 'react-native-paper';
 import navigation from '../navigations';
 import { create } from 'zustand';
 import Toast from 'react-native-toast-message';
@@ -81,6 +81,27 @@ export const isToday = (dateString) => {
     currentDate.getDate() === inputDate.getDate()
   );
 };
+
+export function convertTimeToPM(timeStr) {
+  // Convert the time string to a Date object.
+  const time = new Date(timeStr);
+
+  // Get the hour and minute.
+  const hour = time.getHours();
+  const minute = time.getMinutes();
+
+  // Convert the hour to 12-hour format.
+  let pmHour = hour;
+  if (pmHour >= 12) {
+    pmHour -= 12;
+  }
+
+  // Add the AM/PM suffix.
+  const suffix = pmHour >= 12 ? 'PM' : 'AM';
+
+  // Return the formatted time string.
+  return `${pmHour}:${minute} ${suffix}`;
+}
 
 /**
  * Formats a given date for displaying in a message.
@@ -286,83 +307,112 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
         </View>
       </TouchableOpacity>
       {expanded && (
-        <View
-          className={
-            'bg-blue-50 h-16 flex-row flex py-3 justify-evenly items-center px-4'
-          }
-        >
-          {isEditableOrDeleteable && (
-            <>
+        <>
+          {isAdmin && (
+            <View
+              className={`h-12 bg-blue-50 flex flex-row justify-end gap-2 items-center pb-2 px-2`}
+            >
+              <Chip
+                mode="flat"
+                icon="information"
+                onPress={() => console.log('Pressed')}
+                className={'bg-white border-2 border-slate-100'}
+              >
+                {transaction?.user?.name}{' '}
+                {userId === transaction?.user_id ? '(You)' : ''}
+              </Chip>
+              <Chip
+                mode="flat"
+                icon="clock"
+                onPress={() => console.log('Pressed')}
+                className={'bg-white border-2 border-slate-100'}
+              >
+                {convertTimeToPM(transaction?.date)}
+              </Chip>
+            </View>
+          )}
+          <View
+            className={
+              'bg-blue-50 h-14 flex-row flex py-3 justify-evenly items-center px-4'
+            }
+          >
+            {isEditableOrDeleteable && (
+              <>
+                <TouchableOpacity
+                  className="flex items-center gap-1"
+                  onPress={
+                    isToday(transaction?.created_at) &&
+                    transaction?.user_id === userId
+                      ? () =>
+                          navigation.navigate('EditTransaction', {
+                            transaction: transaction,
+                          })
+                      : () => null
+                  }
+                >
+                  <MaterialIcons name="edit" size={20} color="dodgerblue" />
+                  <Text variant={'labelSmall'} className="text-slate-800">
+                    Edit
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+            {showPDF && (
+              <TouchableOpacity
+                className="flex items-center gap-1"
+                onPress={() =>
+                  navigation.navigate('DetailsPdf', {
+                    id: transaction.customer?.id,
+                    name: transaction.customer?.name,
+                  })
+                }
+              >
+                <MaterialIcons name="picture-as-pdf" size={22} color="tomato" />
+                <Text variant={'labelSmall'} className="text-slate-800">
+                  PDF
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {balanceType !== 'clear' && (
+              <TouchableOpacity
+                className="flex items-center gap-1"
+                onPress={async () => {
+                  await Share.share({
+                    message: message,
+                  });
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="whatsapp"
+                  size={22}
+                  color="green"
+                />
+                <Text variant={'labelSmall'} className="text-slate-800">
+                  Share
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {(isEditableOrDeleteable || isAdmin) && showDelete && (
               <TouchableOpacity
                 className="flex items-center gap-1"
                 onPress={
-                  isToday(transaction?.created_at) &&
-                  transaction?.user_id === userId
-                    ? () =>
-                        navigation.navigate('EditTransaction', {
-                          transaction: transaction,
-                        })
+                  (isToday(transaction?.created_at) &&
+                    transaction?.user_id === userId) ||
+                  isAdmin
+                    ? () => onDelete(transaction)
                     : () => null
                 }
               >
-                <MaterialIcons name="edit" size={20} color="dodgerblue" />
+                <MaterialIcons name="delete" size={20} color="red" />
                 <Text variant={'labelSmall'} className="text-slate-800">
-                  Edit
+                  Delete
                 </Text>
               </TouchableOpacity>
-            </>
-          )}
-          {showPDF && (
-            <TouchableOpacity
-              className="flex items-center gap-1"
-              onPress={() =>
-                navigation.navigate('DetailsPdf', {
-                  id: transaction.customer?.id,
-                  name: transaction.customer?.name,
-                })
-              }
-            >
-              <MaterialIcons name="picture-as-pdf" size={22} color="tomato" />
-              <Text variant={'labelSmall'} className="text-slate-800">
-                PDF
-              </Text>
-            </TouchableOpacity>
-          )}
-
-          {balanceType !== 'clear' && (
-            <TouchableOpacity
-              className="flex items-center gap-1"
-              onPress={async () => {
-                await Share.share({
-                  message: message,
-                });
-              }}
-            >
-              <MaterialCommunityIcons name="whatsapp" size={22} color="green" />
-              <Text variant={'labelSmall'} className="text-slate-800">
-                Share
-              </Text>
-            </TouchableOpacity>
-          )}
-
-          {(isEditableOrDeleteable || isAdmin) && showDelete && (
-            <TouchableOpacity
-              className="flex items-center gap-1"
-              onPress={
-                (isToday(transaction?.created_at) &&
-                  transaction?.user_id === userId) ||
-                isAdmin
-                  ? () => onDelete(transaction)
-                  : () => null
-              }
-            >
-              <MaterialIcons name="delete" size={20} color="red" />
-              <Text variant={'labelSmall'} className="text-slate-800">
-                Delete
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
+            )}
+          </View>
+        </>
       )}
     </>
   );
@@ -380,7 +430,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
  *   - {function} onDelete: A callback function that will be called when the delete button is clicked (default: console.log).
  *   - {boolean} showPDF: Indicates whether to show the PDF button (default: false).
  *   - {boolean} showCustomerName: Indicates whether to show the customer name (default: true).
- * @return {React.Component} A React component representing the transaction item.
+ * @return {JSX.Element} A React component representing the transaction item.
  */
 export const renderItem = ({
   item: transaction,

@@ -173,7 +173,7 @@ export default function Index() {
               onPress={handleSubmit(onSubmit)}
               loading={isLoading}
             >
-              <Text>Login</Text>
+              Login
             </Button>
           </View>
         </View>

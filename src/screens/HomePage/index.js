@@ -128,7 +128,11 @@ const Index = ({ navigation }) => {
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar animated={true} />
-      <TwoCards toPay={cardAmount?.toPay} toReceive={cardAmount?.toReceive} />
+      <TwoCards
+        toPay={cardAmount?.toPay}
+        toReceive={cardAmount?.toReceive}
+        homePage={true}
+      />
       <View style={{ flex: 1 }}>
         <TabNavigator />
       </View>
