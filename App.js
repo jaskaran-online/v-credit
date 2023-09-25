@@ -41,11 +41,11 @@ export default function App() {
 
   useEffect(function () {
     authHydrate();
+    console.log('authHydrate');
   }, []);
 
   const [isDarkTheme] = useState(false);
   const theme = isDarkTheme ? darkTheme : lightTheme;
-
   return (
     <QueryClientProvider client={queryClient}>
       <PaperProvider theme={theme}>

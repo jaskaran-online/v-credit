@@ -25,6 +25,8 @@ import CustomerList from '../screens/HomePage/CustomerList';
 import { useAuthCompanyStore } from '../core/utils';
 
 const Stack = createNativeStackNavigator();
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 export const Root = () => {
   const status = useAuth.use.status();
@@ -36,7 +38,9 @@ export const Root = () => {
 
   useEffect(() => {
     if (status !== 'idle') {
-      hideSplash();
+      setTimeout(() => {
+        hideSplash().then((r) => null);
+      }, 1000);
       setCompany(auth?.user?.company);
     }
   }, [hideSplash, status]);
@@ -53,7 +57,7 @@ export const Root = () => {
       }}
     >
       <Stack.Group>
-        {status === 'signOut' ? (
+        {status === 'signOut' || status === 'idle' ? (
           <Stack.Screen
             screenOptions={{
               headerShown: false,

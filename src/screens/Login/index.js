@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Image, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
@@ -19,9 +19,14 @@ export default function Index() {
     isSuccess,
   } = useAuthLogin();
 
-  if (isError && error) {
-    showToast(error, 'error');
-  }
+  useEffect(
+    function () {
+      if (isError && error && !isLoading) {
+        showToast(error.message, 'error');
+      }
+    },
+    [isError],
+  );
   const {
     control,
     handleSubmit,
@@ -35,6 +40,7 @@ export default function Index() {
     formData.append('password', data.password);
     mutate(formData);
   };
+
   if (isSuccess) {
     signIn({
       access: response?.data?.accessToken,

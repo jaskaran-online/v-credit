@@ -165,6 +165,13 @@ export const useUpdatePaymentApi = () => {
   });
 };
 
+export const useVerifyUserAuthApi = () => {
+  return useMutation({
+    mutationKey: 'verifyUserAuth',
+    mutationFn: (data) => post('api/v1/check-if-active', data),
+  });
+};
+
 export const usePutData = () => {
   return useMutation((data) => put('your-put-url', data));
 };

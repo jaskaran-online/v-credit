@@ -4,7 +4,7 @@ import { createSelectors } from '../core/utils';
 import { getToken, removeToken, setToken } from './utils';
 
 const _useAuth = create((set, get) => ({
-  status: 'signOut',
+  status: 'idle',
   token: null,
   signIn: (token) => {
     setToken(token);

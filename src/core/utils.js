@@ -310,6 +310,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
         <>
           {isAdmin && (
             <View
+              key={index}
               className={`h-12 bg-blue-50 flex flex-row justify-end gap-2 items-center pb-2 px-2`}
             >
               <Chip
@@ -341,8 +342,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
                 <TouchableOpacity
                   className="flex items-center gap-1"
                   onPress={
-                    isToday(transaction?.created_at) &&
-                    transaction?.user_id === userId
+                    isEditableOrDeleteable || isAdmin
                       ? () =>
                           navigation.navigate('EditTransaction', {
                             transaction: transaction,

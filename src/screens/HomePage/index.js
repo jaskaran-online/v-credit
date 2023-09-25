@@ -8,6 +8,7 @@ import {
   useCustomersData,
   useGetCustomersList,
   useTotalTransactionData,
+  useVerifyUserAuthApi,
 } from '../../apis/useApi';
 import { TwoCards } from '../Components/TwoCards';
 import { TabNavigator } from '../Components/TabNavigator';
@@ -20,6 +21,8 @@ import {
 
 const Index = ({ navigation }) => {
   const auth = useAuth.use.token(); // Destructure the token directly
+  const signOut = useAuth?.use?.signOut();
+
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   let cardAmount = useCardAmountStore((state) => state.cardAmount);
   let setCardAmount = useCardAmountStore((state) => state.setCardAmount);
@@ -36,6 +39,28 @@ const Index = ({ navigation }) => {
     data: customersListData,
     isLoading: isCustomerLoading,
   } = useGetCustomersList();
+
+  const {
+    mutate: verifyUser,
+    isError: isVerifyUserError,
+    isLoading: isVerifyUserLoading,
+  } = useVerifyUserAuthApi();
+
+  useEffect(() => {
+    if (auth?.user) {
+      verifyUser({
+        id: auth.user.id,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isVerifyUserLoading) {
+      if (isVerifyUserError) {
+        signOut();
+      }
+    }
+  }, [isVerifyUserLoading]);
 
   // Load customer data and card totals
   const loadCustomerData = useCallback(() => {
