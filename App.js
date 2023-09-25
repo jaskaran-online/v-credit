@@ -41,7 +41,6 @@ export default function App() {
 
   useEffect(function () {
     authHydrate();
-    console.log('authHydrate');
   }, []);
 
   const [isDarkTheme] = useState(false);

@@ -12,7 +12,9 @@ import {
 import React, { useState } from 'react';
 import {
   Image,
+  Linking,
   ScrollView,
+  Share,
   StyleSheet,
   TouchableHighlight,
   useWindowDimensions,
@@ -32,6 +34,23 @@ import { useAuth } from '../hooks';
 import CustomerList from '../screens/HomePage/CustomerList';
 import { useAuthCompanyStore } from '../core/utils';
 import appJSON from '../../app.json';
+
+const openPlayStore = () => {
+  const playStoreUrl =
+    'https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook';
+
+  Linking.canOpenURL(playStoreUrl)
+    .then((supported) => {
+      if (supported) {
+        Linking.openURL(playStoreUrl);
+      } else {
+        console.log("Can't open Play Store app.");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};
 
 function CustomDrawerContent(props) {
   const signOut = useAuth?.use?.signOut();
@@ -74,7 +93,7 @@ function CustomDrawerContent(props) {
         <DrawerItem
           label="App Rating"
           labelStyle={styles.drawerItemLabel}
-          onPress={() => alert('Will be available soon!')}
+          onPress={openPlayStore}
           icon={({ size }) => (
             <Icon name="star" size={size - 5} color={COLORS.primary} />
           )}
@@ -83,7 +102,11 @@ function CustomDrawerContent(props) {
         <DrawerItem
           label="Invite Friends"
           labelStyle={styles.drawerItemLabel}
-          onPress={() => alert('Will be available soon!')}
+          onPress={async () => {
+            await Share.share({
+              message: `https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook&pcampaignid=web_share`,
+            });
+          }}
           icon={({ size }) => (
             <Icon name="share" size={size - 5} color={COLORS.primary} />
           )}
