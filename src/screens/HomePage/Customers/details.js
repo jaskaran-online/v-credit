@@ -11,7 +11,7 @@ import {
   Share,
   TouchableOpacity,
   View,
-  Image,
+  Image, ActivityIndicator,
 } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
 
@@ -189,6 +189,14 @@ export default function Index({ navigation, route }) {
   } else if (toReceive < toPay) {
     balance = toPay - toReceive;
     BgColor = 'bg-red-400';
+  }
+
+  if(isLoading){
+    return (
+      <View className={'bg-blue-50 flex-1 items-center justify-center flex'}>
+        <ActivityIndicator size={50}/>
+      </View>
+    )
   }
 
   return (

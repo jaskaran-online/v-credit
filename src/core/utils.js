@@ -96,12 +96,17 @@ export function convertTimeToPM(timeStr) {
     pmHour -= 12;
   }
 
+  // Add leading zeros to hour and minute if needed.
+  const formattedHour = pmHour.toString().padStart(2, '0');
+  const formattedMinute = minute.toString().padStart(2, '0');
+
   // Add the AM/PM suffix.
   const suffix = pmHour >= 12 ? 'PM' : 'AM';
 
   // Return the formatted time string.
-  return `${pmHour}:${minute} ${suffix}`;
+  return `${formattedHour}:${formattedMinute} ${suffix}`;
 }
+
 
 /**
  * Formats a given date for displaying in a message.
@@ -317,7 +322,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
                 mode="flat"
                 icon="information"
                 onPress={() => console.log('Pressed')}
-                className={'bg-white border-2 border-slate-100'}
+                className={'bg-white'}
               >
                 {transaction?.user?.name}{' '}
                 {userId === transaction?.user_id ? '(You)' : ''}
@@ -326,7 +331,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
                 mode="flat"
                 icon="clock"
                 onPress={() => console.log('Pressed')}
-                className={'bg-white border-2 border-slate-100'}
+                className={'bg-white'}
               >
                 {convertTimeToPM(transaction?.date)}
               </Chip>
