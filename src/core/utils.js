@@ -107,7 +107,6 @@ export function convertTimeToPM(timeStr) {
   return `${formattedHour}:${formattedMinute} ${suffix}`;
 }
 
-
 /**
  * Formats a given date for displaying in a message.
  *

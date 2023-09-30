@@ -13,7 +13,11 @@ import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../../../hooks';
 import { useCustomerTransactionData } from '../../../apis/useApi';
 import _ from 'lodash';
-import { convertTimeToPM, formatDateForMessage, useAuthCompanyStore } from '../../../core/utils';
+import {
+  convertTimeToPM,
+  formatDateForMessage,
+  useAuthCompanyStore,
+} from '../../../core/utils';
 
 const ShareScreen = ({ route }) => {
   const auth = useAuth.use?.token();
@@ -92,34 +96,38 @@ const ShareScreen = ({ route }) => {
         <td style="padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">
         <span style="max-width: 30px">${
           formatDateForMessage(transaction.date).split(' ')[0]
-        } ${formatDateForMessage(transaction.date).split(' ')[1]}  : ${convertTimeToPM(transaction.date)}</span></td>
+        } ${
+          formatDateForMessage(transaction.date).split(' ')[1]
+        }  : ${convertTimeToPM(transaction.date)}</span></td>
         <td style="padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">${
-        transaction.transaction_type_id === 1
-          ? 'Credit Given'
-          : 'Payment Received'
-      }</td>
+          transaction.transaction_type_id === 1
+            ? 'Credit Given'
+            : 'Payment Received'
+        }</td>
         <td style=" ${
-        transaction.transaction_type_id === 1
-          ? 'background-color:rgba(255,167,154,0.28);'
-          : null
-      } padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">${
-        transaction.transaction_type_id === 1 ? transactionAmount + ' ₹' : ''
-      }</td>
+          transaction.transaction_type_id === 1
+            ? 'background-color:rgba(255,167,154,0.28);'
+            : null
+        } padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">${
+          transaction.transaction_type_id === 1 ? transactionAmount + ' ₹' : ''
+        }</td>
         <td style=" ${
-        transaction.transaction_type_id === 1
-          ? null
-          : 'background-color:#DDECD9FF;'
-      }padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">${
-        transaction.transaction_type_id === 1 ? ' ' : transactionAmount + ' ₹'
-      }</td>
+          transaction.transaction_type_id === 1
+            ? null
+            : 'background-color:#DDECD9FF;'
+        }padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">${
+          transaction.transaction_type_id === 1 ? ' ' : transactionAmount + ' ₹'
+        }</td>
         <td style="padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">${
-        Math.abs(ariseBalance) + ' ₹'
-      }</td>
+          Math.abs(ariseBalance) + ' ₹'
+        }</td>
       </tr>
       <tr style="background: #eff6ff">
         <td colspan="5" style="padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">
         <div style='display: flex;justify-content: space-between'>
-          <span> ${transaction.notes ? 'Notes :'+ transaction?.notes : ''}</span>
+          <span> ${
+            transaction.notes ? 'Notes :' + transaction?.notes : ''
+          }</span>
           <span>Created By : ${transaction?.user?.name}</span>
         </div>
         </td>

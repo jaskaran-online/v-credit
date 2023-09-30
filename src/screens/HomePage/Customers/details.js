@@ -11,7 +11,8 @@ import {
   Share,
   TouchableOpacity,
   View,
-  Image, ActivityIndicator,
+  Image,
+  ActivityIndicator,
 } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
 
@@ -191,12 +192,12 @@ export default function Index({ navigation, route }) {
     BgColor = 'bg-red-400';
   }
 
-  if(isLoading){
+  if (isLoading) {
     return (
       <View className={'bg-blue-50 flex-1 items-center justify-center flex'}>
-        <ActivityIndicator size={50}/>
+        <ActivityIndicator size={50} />
       </View>
-    )
+    );
   }
 
   return (
