@@ -25,7 +25,7 @@ export default function Index() {
         showToast(error.message, 'error');
       }
     },
-    [isError],
+    [isError, error, isLoading],
   );
   const {
     control,

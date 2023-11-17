@@ -205,24 +205,24 @@ export default function Index({ navigation, route }) {
       <View className="bg-blue-50 h-28">
         <View className="mx-2 h-24 bg-white mt-1 rounded-md shadow-sm flex flex-row items-center justify-between px-4">
           <View className="flex flex-row space-x-4 items-center">
-            <View className="h-8 w-8 rounded-full overflow-hidden">
+            {/* <View className="h-8 w-8 rounded-full overflow-hidden">
               <Text
                 className={`${BgColor} p-2 text-white text-center flex-1 justify-center items-center rounded-full size-12`}
               >
                 ₹
               </Text>
-            </View>
+            </View> */}
             <View className="ml-2">
               <Text variant="bodyMedium" className="text-slate-600 ">
                 {toReceive > toPay ? 'To Receive' : 'To Pay'}
               </Text>
               <Text variant="bodyLarge" className="text-slate-900 font-bold">
-                {Math.abs(balance).toFixed(4)} ₹
+                {Math.abs(balance).toFixed(2)} ₹
               </Text>
             </View>
           </View>
 
-          <View className="flex flex-row space-x-4 pr-2 pl-8">
+          <View className="flex flex-row space-x-3 pr-2 pl-8">
             <TouchableOpacity
               className="bg-red-50 p-2 rounded-full  flex items-center"
               onPress={() =>

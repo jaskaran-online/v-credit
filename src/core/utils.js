@@ -313,28 +313,46 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
       {expanded && (
         <>
           {isAdmin && (
-            <View
-              key={index}
-              className={`h-12 bg-blue-50 flex flex-row justify-end gap-2 items-center pb-2 px-2`}
-            >
-              <Chip
-                mode="flat"
-                icon="information"
-                onPress={() => console.log('Pressed')}
-                className={'bg-white'}
+            <React.Fragment>
+              {transaction.notes && (
+                <View className="bg-blue-50 w-auto h-auto px-3 py-2">
+                  <Chip
+                    mode="flat"
+                    // icon="information"
+                    onPress={() => console.log('Pressed')}
+                    className={'bg-white'}
+                  >
+                    <Text variant="labelSmall">Note : {transaction.notes}</Text>
+                  </Chip>
+                </View>
+              )}
+              <View
+                key={index}
+                className={`h-12 bg-blue-50 flex flex-row justify-end gap-2 items-center pb-2 px-2`}
               >
-                {transaction?.user?.name}{' '}
-                {userId === transaction?.user_id ? '(You)' : ''}
-              </Chip>
-              <Chip
-                mode="flat"
-                icon="clock"
-                onPress={() => console.log('Pressed')}
-                className={'bg-white'}
-              >
-                {convertTimeToPM(transaction?.date)}
-              </Chip>
-            </View>
+                <Chip
+                  mode="flat"
+                  icon="information"
+                  onPress={() => console.log('Pressed')}
+                  className={'bg-white'}
+                >
+                  <Text variant="labelSmall">
+                    {transaction?.user?.name}{' '}
+                    {userId === transaction?.user_id ? '(You)' : ''}
+                  </Text>
+                </Chip>
+                <Chip
+                  mode="flat"
+                  icon="clock"
+                  onPress={() => console.log('Pressed')}
+                  className={'bg-white'}
+                >
+                  <Text variant="labelSmall">
+                    {convertTimeToPM(transaction?.date)}
+                  </Text>
+                </Chip>
+              </View>
+            </React.Fragment>
           )}
           <View
             className={
