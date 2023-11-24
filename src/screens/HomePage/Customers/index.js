@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Share, TouchableOpacity, View, Platform } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { useCustomersData } from '../../../apis/useApi';
+import SafeAreaView from "react-native-safe-area-view";
 import {
   formatDateForMessage,
   useAuthCompanyStore,
@@ -30,9 +31,9 @@ const renderItem = ({ item, index }) => {
   let isEven = index % 2 === 0 ? 'bg-slate-50' : 'bg-white';
   let formatedDate = formatDateForMessage(item?.last_transaction_date);
   return (
-    <View className={`${isEven} flex flex-row justify-between px-4 py-2`}>
+    <View className={`${isEven} flex flex-row justify-between py-2 px-1`}>
       <TouchableOpacity
-        className={'w-[60%]'}
+        className={'px-1'}
         onPress={() =>
           navigation.navigate('CustomerTransactionDetails', {
             id: item.customer?.id,
@@ -40,16 +41,16 @@ const renderItem = ({ item, index }) => {
           })
         }
       >
-        <Text variant="titleSmall" class={'text-slate-800'}>
+        <Text variant="bodySmall" class={'text-slate-800 font-bold'}>
           {item?.customer?.name}
         </Text>
         <Text variant={'labelSmall'} className="text-slate-400">
           {formatedDate}
         </Text>
       </TouchableOpacity>
-      <View className={'flex flex-row justify-center items-center'}>
-        <View className={'mr-3'}>
-          <Text variant={'bodyMedium'} className={`${color}`}>
+      <View className={'flex flex-row justify-center items-center mr-2'}>
+        <View className={'mr-2'}>
+          <Text variant={'bodySmall'} className={`${color}`}>
             {Math.abs(balance.toFixed(2))} ₹
           </Text>
         </View>
@@ -163,10 +164,10 @@ export default function Index() {
   };
 
   return (
-    <View className={'bg-white flex-1'}>
+    <SafeAreaView className={'bg-white flex-1'}>
       <View
         className={
-          'flex flex-row justify-between w-full px-3 items-center py-4'
+          `flex flex-row justify-between w-full px-3 items-center  ${Platform.OS === 'android' ? 'py-2' : 'pb-2' }`
         }
       >
         <View className={'flex flex-row relative'}>
@@ -187,7 +188,6 @@ export default function Index() {
           />
         </View>
       </View>
-
       <FlashList
         data={filteredList || []}
         renderItem={renderItem}
@@ -201,6 +201,6 @@ export default function Index() {
           </View>
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }

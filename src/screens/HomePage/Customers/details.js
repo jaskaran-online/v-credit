@@ -232,13 +232,13 @@ export default function Index({ navigation, route }) {
                 })
               }
             >
-              <MaterialIcons name="picture-as-pdf" size={24} color="tomato" />
+              <MaterialIcons name="picture-as-pdf" size={22} color="tomato" />
             </TouchableOpacity>
             <TouchableOpacity
               className="bg-blue-50 p-2 rounded-full  flex items-center"
               onPress={() => makePhoneCall(data?.data?.customer?.phone)}
             >
-              <MaterialIcons name="call" size={24} color="dodgerblue" />
+              <MaterialIcons name="call" size={22} color="dodgerblue" />
             </TouchableOpacity>
             <TouchableOpacity
               className="bg-blue-50 p-2 rounded-full"

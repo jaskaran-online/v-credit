@@ -264,7 +264,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
         <View>
           {transaction?.transaction_type_id === 1 ? (
             <View className={'mr-2'}>
-              <Text variant={'bodyMedium'} className="text-slate-800 mr-2">
+              <Text variant={'bodySmall'} className="text-slate-800 mr-2">
                 {parseFloat(transaction?.amount).toFixed(2)} ₹
               </Text>
               <Text variant={'labelSmall'} className="text-slate-400 mr-2">
@@ -273,7 +273,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
             </View>
           ) : (
             <Text
-              variant={'bodyMedium'}
+              variant={'bodySmall'}
               className={'text-slate-400 text-center'}
             >
               {' '}
@@ -285,7 +285,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
           <View className={'flex flex-row items-center mr-8'}>
             {transaction?.transaction_type_id === 2 ? (
               <View>
-                <Text variant={'bodyMedium'} className="text-slate-800">
+                <Text variant={'bodySmall'} className="text-slate-800">
                   {parseFloat(transaction?.amount).toFixed(2)} ₹
                 </Text>
                 <Text variant={'labelSmall'} className="text-slate-400">
@@ -294,7 +294,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
               </View>
             ) : (
               <Text
-                variant={'bodyMedium'}
+                variant={'bodySmall'}
                 className={'text-slate-400 text-center'}
               >
                 {' '}
@@ -489,17 +489,17 @@ export const renderItem = ({
 export const renderHeader = ({ headerTitle }) => (
   <View className={'flex-row justify-between px-4 py-2 space-x-2 items-center'}>
     <View className="flex-1 border-b-2 border-slate-300 w-1/3">
-      <Text variant={'bodyMedium'} className="text-left text-slate-800">
+      <Text variant={'bodySmall'} className="text-left text-slate-800">
         {headerTitle !== '' ? 'Customer' : 'Type'}
       </Text>
     </View>
     <View className="flex-1 border-b-2 border-amber-400">
-      <Text variant={'bodyMedium'} className="text-center text-slate-800 mr-2">
+      <Text variant={'bodySmall'} className="text-center text-slate-800 mr-2">
         Given
       </Text>
     </View>
     <View className="flex-1 border-b-2 border-blue-500">
-      <Text variant={'bodyMedium'} className="text-center text-slate-800">
+      <Text variant={'bodySmall'} className="text-center text-slate-800">
         Received
       </Text>
     </View>

@@ -86,7 +86,7 @@ export function TwoCards({
             To Receive
           </Text>
           <Text
-            variant={'titleMedium'}
+            variant={'titleSmall'}
             className={`${
               filterByToReceive ? 'text-white' : 'text-slate-700'
             } font-bold `}
@@ -125,7 +125,7 @@ export function TwoCards({
             To Pay
           </Text>
           <Text
-            variant={'titleMedium'}
+            variant={'titleSmall'}
             className={`${
               filterByToPay ? 'text-white' : 'text-slate-700'
             } font-bold `}
