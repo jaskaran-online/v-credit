@@ -1,4 +1,5 @@
 {
+  "cli.version": "5.9.1",
   "cli": {
     "version": ">= 3.18.3"
   },
