@@ -1,0 +1,22 @@
+meta {
+  name: Party Statement
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{ _.SERVER }}/api/v1/all-parties
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  company_id: 7
+  date: 2023-06-01
+  cost_center_id: 5
+  ~customer_id: 28
+}

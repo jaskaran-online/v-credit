@@ -1,0 +1,23 @@
+meta {
+  name: All Transactions
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{ _.LOCAL.BaseURL }}/api/v1/party-statement
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  company_id: 7
+  fromDate: 2022-06-01
+  toDate: 2024-06-15
+  cost_center_id: 5
+  user_id: 9
+}

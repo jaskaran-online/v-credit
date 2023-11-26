@@ -1,0 +1,20 @@
+meta {
+  name: Get Products
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{ _.SERVER }}/api/v1/products
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+  x-company-id: 2
+}
+
+body:multipart-form {
+  company_id: 1
+}

@@ -1,0 +1,22 @@
+meta {
+  name: check-if-active
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{ _.LOCAL.BaseURL }}/api/v1/check-if-active
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  id: 33
+  ~company_id: 1
+  ~cost_center_id: 1
+  ~customer_id: 1
+}

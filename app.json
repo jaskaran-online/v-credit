@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "jsEngine": "jsc",
@@ -26,14 +28,27 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.webcooks.mycreditbook",
-      "permissions": ["READ_CONTACTS", "WRITE_CONTACTS"],
+      "permissions": [
+        "READ_CONTACTS",
+        "WRITE_CONTACTS"
+      ],
       "versionCode": 10
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      ["expo-localization"],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "flipper": true
+          }
+        }
+      ],
+      [
+        "expo-localization"
+      ],
       [
         "expo-contacts",
         {
@@ -51,7 +66,8 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
         }
-      ]
+      ],
+      "expo-build-properties"
     ],
     "extra": {
       "eas": {

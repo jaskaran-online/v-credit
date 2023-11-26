@@ -1,0 +1,22 @@
+meta {
+  name: Day Book
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{pro}}/api/v1/daily-book
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  company_id: 7
+  date: 2023-07-16
+  cost_center_id: 5
+  ~user_id: 10
+}

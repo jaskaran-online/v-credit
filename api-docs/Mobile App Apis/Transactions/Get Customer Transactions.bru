@@ -1,0 +1,26 @@
+meta {
+  name: Get Customer Transactions
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{local}}/api/v1/get/customer/transactions?page=1
+  body: multipartForm
+  auth: none
+}
+
+query {
+  page: 1
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  company_id: 12
+  cost_center_id: 8
+  customer_id: 184
+  user_id: 16
+}

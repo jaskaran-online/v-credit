@@ -1,0 +1,26 @@
+meta {
+  name: All Parties
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{pro}}/api/v1/all-transactions
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  company_id: 10
+  fromDate: 2023-05-27
+  toDate: 2023-09-17
+  cost_center_id: 8
+  fromDate: 2023-08-17
+  user_id: 16
+  ~customer_id: 13
+  ~transaction_type_id: 1
+}

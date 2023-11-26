@@ -1,0 +1,31 @@
+meta {
+  name: -update-transactions
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{ _.SERVER }}/api/v1/update/transactions
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  company_id: 5
+  cost_center_id: 1
+  product_id: 1
+  price: 0.55
+  qty: 1
+  from_date: 08 Jun 2023 08:32 AM
+  image: 1
+  customer_name: Jaskaran
+  phone: 9530654704
+  user_id: 1
+  transaction_type_id: 1
+  customer_id: 2
+  id: 1
+}

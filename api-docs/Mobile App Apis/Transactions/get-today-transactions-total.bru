@@ -1,0 +1,21 @@
+meta {
+  name: get-today-transactions-total
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{pro}}/api/v1/get/today/transactions/total
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  company_id: 12
+  cost_center_id: 8
+  user_id: 16
+}

@@ -1,0 +1,30 @@
+meta {
+  name: Create Transaction
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{ _.LOCAL.BaseURL }}/api/v1/transactions
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  company_id: 10
+  cost_center_id: 8
+  price: 21
+  qty: 23
+  from_date: 2023-06-26 08:32:20
+  customer_name: Jaskaran
+  user_id: 23
+  transaction_type_id: 2
+  customer_id: 16
+  ~product_id: 1
+  ~image: 1
+  ~phone: 9530654704
+}

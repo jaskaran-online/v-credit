@@ -1,0 +1,22 @@
+meta {
+  name: Day Book
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{ _.SERVER }}/api/v1/get/customer/transactions
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  company_id: 1
+  cost_center_id: 1
+  customer_id: 1
+  user_id: 3
+}
