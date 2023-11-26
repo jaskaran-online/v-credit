@@ -13,7 +13,7 @@ export const useCompanyCostCenterData = (url) => {
 export const useCustomerTransactionData = () => {
   return useMutation({
     mutationKey: 'getCustomerTransactionData',
-    mutationFn: (data) => post('api/v1/get/customer/transactions', data),
+    mutationFn: (data) => post('api/v1/get/customer/transactions?page='+data.page, data),
     cacheTime: 500,
   });
 };

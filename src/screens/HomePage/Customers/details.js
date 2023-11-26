@@ -4,7 +4,7 @@ import {
   MaterialIcons,
 } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   Linking,
   Platform,
@@ -30,6 +30,8 @@ import {
 } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import FloatingButtons from '../../Components/FloatingButton';
+import { useInfiniteQuery } from "@tanstack/react-query";
+
 
 export function processString(input = null) {
   if (input == null || input === '' || input === 'null') {
@@ -90,6 +92,14 @@ Click : http://mycreditbook.com/udhaar-khata/${id}`;
 };
 
 export default function Index({ navigation, route }) {
+
+  const pageRef = useRef(1);
+  const lastPageRef = useRef(0);
+  const toPayRef = useRef(1);
+  const toReceiveRef = useRef(1);
+  const balanceRef = useRef(0.00);
+  const balanceType = useRef("");
+
   const auth = useAuth.use?.token();
   const { mutate, data, isLoading } = useCustomerTransactionData();
   const { mutate: transactionDelRequest, isLoading: transactionDelLoading } =
@@ -101,6 +111,13 @@ export default function Index({ navigation, route }) {
   const hasRoleOneOrFour = auth?.user?.roles?.some(
     (role) => role.id === 1 || role.id === 4,
   );
+
+  function handleLoadMore() {
+    pageRef.current += 1;
+    if(lastPageRef.current >= pageRef.current) {
+      loadCustomerData(pageRef.current);
+    }
+  }
 
   function handleDeleteRecord(deleteModalVisibility) {
     transactionDelRequest({
@@ -120,10 +137,11 @@ export default function Index({ navigation, route }) {
   useEffect(() => {
     if (data?.data) {
       if (filterBy === 'Clear') {
-        setOrderedData(data?.data?.transactions);
+        setOrderedData([...orderedData,...(data?.data?.customer?.transactions)]);
+        lastPageRef.current = data?.data?.paginator?.last_page;
       } else {
         const orderedArray = _.orderBy(
-          data?.data?.transactions,
+          data?.data?.customer?.transactions,
           ['transaction_type_id'],
           [filterBy === 'Payment Received' ? 'desc' : 'asc'],
         );
@@ -165,13 +183,14 @@ export default function Index({ navigation, route }) {
     // setFilteredList(filteredList);
   };
 
-  function loadCustomerData() {
+  function loadCustomerData(pageNo = 1) {
     setReload(true);
     const formData = new FormData();
     formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user.cost_center_id);
     formData.append('customer_id', route.params.id);
     formData.append('user_id', auth.user.id);
+    formData.append('page', pageNo);
     mutate(formData);
     setReload(false);
   }
@@ -179,25 +198,18 @@ export default function Index({ navigation, route }) {
     setShowOptions((show) => !show);
   };
 
-  const toPay = parseFloat((data?.data?.toPay || 0).toFixed(2));
-  const toReceive = parseFloat((data?.data?.toReceive || 0).toFixed(2));
+  toPayRef.current = parseFloat((data?.data?.customer?.totalToPay || 0).toFixed(2));
+  toReceiveRef.current = parseFloat((data?.data?.customer?.totalToReceive || 0).toFixed(2));
 
-  let balance = 0;
   let BgColor = 'bg-slate-400';
-  if (toReceive > toPay) {
-    balance = toReceive - toPay;
+  if (toReceiveRef.current > toPayRef.current) {
+    balanceRef.current = toReceiveRef.current - toPayRef.current;
     BgColor = 'bg-green-700';
-  } else if (toReceive < toPay) {
-    balance = toPay - toReceive;
+    balanceType.current = 'To Receive';
+  } else if (toReceiveRef.current < toPayRef.current) {
+    balanceRef.current = toPayRef.current - toReceiveRef.current;
     BgColor = 'bg-red-400';
-  }
-
-  if (isLoading) {
-    return (
-      <View className={'bg-blue-50 flex-1 items-center justify-center flex'}>
-        <ActivityIndicator size={50} />
-      </View>
-    );
+    balanceType.current = 'To Pay';
   }
 
   return (
@@ -205,19 +217,12 @@ export default function Index({ navigation, route }) {
       <View className="bg-blue-50 h-28">
         <View className="mx-2 h-24 bg-white mt-1 rounded-md shadow-sm flex flex-row items-center justify-between px-4">
           <View className="flex flex-row space-x-4 items-center">
-            {/* <View className="h-8 w-8 rounded-full overflow-hidden">
-              <Text
-                className={`${BgColor} p-2 text-white text-center flex-1 justify-center items-center rounded-full size-12`}
-              >
-                ₹
-              </Text>
-            </View> */}
             <View className="ml-2">
               <Text variant="bodyMedium" className="text-slate-600 ">
-                {toReceive > toPay ? 'To Receive' : 'To Pay'}
+                {balanceType.current}
               </Text>
               <Text variant="bodyLarge" className="text-slate-900 font-bold">
-                {Math.abs(balance).toFixed(2)} ₹
+                {Math.abs(balanceRef.current).toFixed(2)} ₹
               </Text>
             </View>
           </View>
@@ -334,12 +339,25 @@ export default function Index({ navigation, route }) {
             })
           }
           ListHeaderComponent={() => renderHeader({ headerTitle: '' })}
-          estimatedItemSize={200}
+          estimatedItemSize={100}
           showOptions={showOptions}
           options={options}
           refreshing={reload}
           onRefresh={loadCustomerData}
           onOptionSelect={handleOptionSelect}
+          onEndReached={handleLoadMore}
+          alwaysBounceVertical={true}
+          showsVerticalScrollIndicator={false}
+          onEndReachedThreshold={0.7}
+          ListFooterComponent={() => (
+            <View className={'mt-4'}>
+              {isLoading ? (
+                <ActivityIndicator animating={isLoading} size="small" />
+              ) : ((lastPageRef.current <= pageRef.current) && (lastPageRef.current > 1) ) && (
+                <Text variant={'labelLarge'} className={'text-center text-slate-800'}> No more data available!</Text>
+              )}
+            </View>
+          )}
         />
       )}
       <FloatingButtons

@@ -31,7 +31,7 @@ const renderItem = ({ item, index }) => {
   let isEven = index % 2 === 0 ? 'bg-slate-50' : 'bg-white';
   let formatedDate = formatDateForMessage(item?.last_transaction_date);
   return (
-    <View className={`${isEven} flex flex-row justify-between py-2 px-1`}>
+    <View className={`${isEven} flex flex-row justify-between py-4 px-1`}>
       <TouchableOpacity
         className={'px-1'}
         onPress={() =>
@@ -41,10 +41,10 @@ const renderItem = ({ item, index }) => {
           })
         }
       >
-        <Text variant="bodySmall" class={'text-slate-800 font-bold'}>
+        <Text class={'text-slate-800 font-bold'}>
           {item?.customer?.name}
         </Text>
-        <Text variant={'labelSmall'} className="text-slate-400">
+        <Text variant={'labelSmall'} className="text-slate-500">
           {formatedDate}
         </Text>
       </TouchableOpacity>

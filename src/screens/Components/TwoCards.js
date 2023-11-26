@@ -60,10 +60,6 @@ export function TwoCards({
   return (
     <StyledView className="flex flex-row items-center p-2 space-x-2 h-1/8 bg-blue-50">
       <Box
-        style={{
-          elevation: 2,
-          shadowColor: 'gray',
-        }}
         className={` ${
           filterByToReceive ? 'bg-emerald-500' : 'bg-white'
         } flex-row items-center flex-1 shadow-sm shadow-slate-200 justify-evenly`}
@@ -105,10 +101,6 @@ export function TwoCards({
         </View>
       </Box>
       <Box
-        style={{
-          elevation: 2,
-          shadowColor: 'gray',
-        }}
         className={`${
           filterByToPay ? 'bg-red-600' : 'bg-white'
         } flex-row items-center flex-1 shadow-sm shadow-slate-200 justify-evenly`}
