@@ -70,7 +70,7 @@ export const useCreateCustomer = () => {
 export const useTransactionsData = () => {
   return useMutation({
     mutationKey: 'totalAmount',
-    mutationFn: (data) => post('api/v1/get/today/transactions', data),
+    mutationFn: (data) => post('api/v1/get/today/transactions?page='+data.page, data),
     cacheTime: 500,
   });
 };

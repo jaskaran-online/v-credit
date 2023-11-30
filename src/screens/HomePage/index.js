@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
-import { View } from 'react-native';
+import { View,Text } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import * as Contacts from 'expo-contacts';
@@ -153,6 +153,9 @@ const Index = ({ navigation }) => {
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar animated={true} />
+      <View className={"bg-red-500 w-full p-2 align-middle justify-center items-center my-2"}>
+        <Text className={"text-white"}>This is developement version for testing only!</Text>
+      </View>
       <TwoCards
         toPay={cardAmount?.toPay}
         toReceive={cardAmount?.toReceive}
