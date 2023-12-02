@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_DEV_API_URL,
+  baseURL: 'https://dev.mycreditbook.com/',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'multipart/form-data',
