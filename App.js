@@ -12,9 +12,9 @@ import {
 import Toast from 'react-native-toast-message';
 import { useAuth } from './src/hooks';
 import { RootNavigator } from './src/navigations/root-navigator';
-import * as Contacts from 'expo-contacts';
-import { getItem, setItem } from './src/core/utils';
 
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 // Create a client
 const queryClient = new QueryClient();
 
@@ -46,11 +46,15 @@ export default function App() {
   const [isDarkTheme] = useState(false);
   const theme = isDarkTheme ? darkTheme : lightTheme;
   return (
-    <QueryClientProvider client={queryClient}>
-      <PaperProvider theme={theme}>
-        <RootNavigator theme={theme} />
-        <Toast />
-      </PaperProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
+        <QueryClientProvider client={queryClient}>
+          <PaperProvider theme={theme}>
+            <RootNavigator theme={theme} />
+            <Toast />
+          </PaperProvider>
+        </QueryClientProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }
