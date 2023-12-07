@@ -74,9 +74,7 @@
         "projectId": "10c44983-617a-4f18-9227-ce300c770980"
       }
     },
-    "runtimeVersion": {
-      "policy": "nativeVersion"
-    },
+    "runtimeVersion": "exposdk:49.0.0",
     "updates": {
       "url": "https://u.expo.dev/10c44983-617a-4f18-9227-ce300c770980"
     }
