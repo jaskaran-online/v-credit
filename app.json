@@ -17,12 +17,12 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "jsEngine": "jsc",
+      "jsEngine": "hermes",
       "bundleIdentifier": "com.webcooks.mycreditbook",
       "flipper": true
     },
     "android": {
-      "jsEngine": "jsc",
+      "jsEngine": "hermes",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
