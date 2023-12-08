@@ -1,7 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
 import {
-  Fontisto as Icon,
-  Ionicons,
   MaterialCommunityIcons,
   AntDesign,
   SimpleLineIcons,
@@ -323,6 +321,7 @@ export function DrawerNavigator() {
         initialRouteName="HomePage"
         allowFontScaling={false}
         animationEnabled={true}
+        backBehavior="history"
         drawerActiveBackgroundColor={'black'}
         screenOptions={() => ({
           overlayColor: 'rgba(190,190,190,0.4)',
@@ -338,7 +337,7 @@ export function DrawerNavigator() {
           headerTintColor: COLORS.darkTransparent,
           headerShadowVisible: false,
           drawerStyle: {
-            width: Dimensions.get('window').width / 1.3,
+            width: Dimensions.get('window').width / 1.2,
           },
         })}
       >

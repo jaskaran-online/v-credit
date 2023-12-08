@@ -15,6 +15,7 @@ import { RootNavigator } from './src/navigations/root-navigator';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { StatusBar } from 'react-native';
 // Create a client
 const queryClient = new QueryClient();
 
@@ -50,6 +51,11 @@ export default function App() {
       <BottomSheetModalProvider>
         <QueryClientProvider client={queryClient}>
           <PaperProvider theme={theme}>
+            <StatusBar
+              barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
+              translucent
+              animated
+            />
             <RootNavigator theme={theme} />
             <Toast />
           </PaperProvider>

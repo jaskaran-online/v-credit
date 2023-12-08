@@ -1,12 +1,20 @@
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
+import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import _ from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
-import { Share, TouchableOpacity, View, Platform } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Platform,
+  Share,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
-import { useCustomersData } from '../../../apis/useApi';
 import SafeAreaView from 'react-native-safe-area-view';
+import { useCustomersData } from '../../../apis/useApi';
+import Avatar from '../../../components/Avatar';
 import {
   formatDateForMessage,
   useAuthCompanyStore,
@@ -15,94 +23,122 @@ import {
 import { useAuth } from '../../../hooks';
 import navigation from '../../../navigations/index';
 
-const renderItem = ({ item, index }) => {
-  const toPay = parseFloat((item?.toPay || 0).toFixed(2));
-  const toReceive = parseFloat((item?.toReceive || 0).toFixed(2));
+const renderBackdropComponent = (props) => (
+  <BottomSheetBackdrop
+    {...props}
+    disappearsOnIndex={-1}
+    appearsOnIndex={0}
+    opacity={0.7}
+    pressBehavior={'close'}
+  />
+);
 
-  let balance = 0;
-  let color = 'text-slate-400';
-  if (toReceive > toPay) {
-    balance = toReceive - toPay;
-    color = 'text-green-700';
-  } else if (toReceive < toPay) {
-    balance = toPay - toReceive;
-    color = 'text-red-400';
+const sendReminder = async (item) => {
+  if (
+    item?.customer.toReceive < item?.customer.toPay &&
+    item?.customer.balance !== 0
+  ) {
+    let messageDate = formatDateForMessage(item?.last_transaction_date);
+    let message = `Hi ${item?.customer?.name},
+                      
+  This is a friendly reminder that you have to pay ${
+    item?.customer.balance
+  } ₹ to me as of ${messageDate}.
+  
+  Thanks,
+  ${item?.user?.name}
+  For complete details, Click :
+  http://mycreditbook.com/udhaar-khata/${
+    item?.customer?.id + '-' + item?.user?.id
   }
-  let isEven = index % 2 === 0 ? 'bg-slate-50' : 'bg-white';
-  let formatedDate = formatDateForMessage(item?.last_transaction_date);
-  return (
-    <View className={`${isEven} flex flex-row justify-between py-4 px-1`}>
+                  `;
+    await Share.share({
+      message: message,
+    });
+  }
+};
+
+export default function Index() {
+  // ref
+  const bottomSheetModalRef = useRef(null);
+  const sharePDF = async (item) => {
+    bottomSheetModalRef.current?.dismiss();
+
+    setTimeout(() => {
+      navigation.navigate('DetailsPdf', {
+        id: item?.customer?.id,
+        name: item?.customer?.name,
+      });
+    }, 1000);
+  };
+
+  // variables
+  const snapPoints = useMemo(() => ['40%'], []);
+
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  // callbacks
+  const handlePresentModalPress = useCallback((item) => {
+    bottomSheetModalRef.current?.present();
+    setSelectedItem(item);
+  }, []);
+
+  const handleSheetChanges = useCallback((index) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
+  const renderItem = ({ item, index }) => {
+    const toPay = parseFloat((item?.toPay || 0).toFixed(2));
+    const toReceive = parseFloat((item?.toReceive || 0).toFixed(2));
+
+    let balance = 0;
+    let color = 'text-slate-400';
+    if (toReceive > toPay) {
+      balance = toReceive - toPay;
+      color = 'text-green-700';
+    } else if (toReceive < toPay) {
+      balance = toPay - toReceive;
+      color = 'text-red-400';
+    }
+    let isEven = index % 2 === 0 ? 'bg-slate-50' : 'bg-white';
+    let formatedDate = formatDateForMessage(item?.last_transaction_date);
+    return (
       <TouchableOpacity
-        className={'px-1'}
         onPress={() =>
           navigation.navigate('CustomerTransactionDetails', {
             id: item.customer?.id,
             name: item.customer?.name,
           })
         }
+        delayLongPress={200}
+        onLongPress={() => {
+          handlePresentModalPress(item);
+        }}
+        className={`flex flex-row justify-between items-center py-4 px-2 border-b border-slate-100 `}
+        style={{ elevation: 4 }}
       >
-        <Text class={'text-slate-800 font-bold'}>{item?.customer?.name}</Text>
-        <Text variant={'labelSmall'} className="text-slate-500">
-          {formatedDate}
-        </Text>
-      </TouchableOpacity>
-      <View className={'flex flex-row justify-center items-center mr-2'}>
-        <View className={'mr-2'}>
-          <Text variant={'bodySmall'} className={`${color}`}>
-            {Math.abs(balance.toFixed(2))} ₹
-          </Text>
+        <View className={'px-1 flex flex-row items-center'}>
+          <Avatar name={item?.customer?.name} size={40} />
+          <View className={'ml-2.5'}>
+            <Text class={'text-slate-800 font-bold'}>
+              {item?.customer?.name}
+            </Text>
+            <Text variant={'labelSmall'} className="text-slate-500">
+              {formatedDate}
+            </Text>
+          </View>
         </View>
-        <TouchableOpacity
-          className={`${
-            toReceive < toPay && balance !== 0 ? 'bg-blue-50' : 'bg-slate-100'
-          } p-2 rounded-full flex items-center`}
-          onPress={async () => {
-            if (toReceive < toPay && balance !== 0) {
-              let messageDate = formatDateForMessage(
-                item?.last_transaction_date,
-              );
-              let message = `Hi ${item?.customer?.name},
-                    
-This is a friendly reminder that you have to pay ${balance} ₹ to me as of ${messageDate}.
+        <View className={'flex flex-row justify-center items-center mr-2'}>
+          <View className={'mr-2'}>
+            <Text variant={'bodySmall'} className={`${color}`}>
+              {Math.abs(balance.toFixed(2))} ₹
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
-Thanks,
-${item?.user?.name}
-For complete details, Click :
-http://mycreditbook.com/udhaar-khata/${
-                item?.customer?.id + '-' + item?.user?.id
-              }
-                `;
-              await Share.share({
-                message: message,
-              });
-            }
-          }}
-        >
-          <MaterialCommunityIcons
-            name="reminder"
-            size={18}
-            color={`${
-              toReceive < toPay && balance !== 0 ? 'dodgerblue' : 'gray'
-            }`}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          className={`ml-1 bg-red-50 p-2 rounded-full flex items-center`}
-          onPress={() =>
-            navigation.navigate('DetailsPdf', {
-              id: item?.customer?.id,
-              name: item?.customer?.name,
-            })
-          }
-        >
-          <MaterialIcons name="picture-as-pdf" size={18} color={`tomato`} />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-export default function Index() {
   const {
     mutate: customerDataRequest,
     data: customerData,
@@ -186,6 +222,7 @@ export default function Index() {
           />
         </View>
       </View>
+
       <FlashList
         data={filteredList || []}
         renderItem={renderItem}
@@ -199,6 +236,129 @@ export default function Index() {
           </View>
         }
       />
+
+      <BottomSheetModal
+        ref={bottomSheetModalRef}
+        index={0}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        backdropComponent={renderBackdropComponent}
+        handleIndicatorStyle={{
+          backgroundColor: 'lightgray',
+        }}
+      >
+        <View style={styles.contentContainer}>
+          <View>
+            <View className="flex flex-row items-center">
+              <Avatar name={selectedItem?.customer?.name} size={40} />
+              <View className="ml-3">
+                <Text variant="titleMedium">
+                  {selectedItem?.customer?.name}
+                </Text>
+                <Text>
+                  {formatDateForMessage(selectedItem?.last_transaction_date)}
+                </Text>
+              </View>
+            </View>
+            <View className="mt-3 border-b border-slate-200" />
+            <View className="mt-2">
+              <View className="flex flex-row justify-between mt-3">
+                <Text variant="titleSmall" className="text-slate-700 ">
+                  Paid
+                </Text>
+                <Text variant="titleSmall" className="text-slate-700">
+                  {' '}
+                  {selectedItem?.toPay}{' '}
+                  <FontAwesome name="rupee" size={14} color="black" />
+                </Text>
+              </View>
+
+              <View className="flex flex-row justify-between mt-3">
+                <Text variant="titleSmall" className="text-slate-700 ">
+                  Received
+                </Text>
+                <Text variant="titleSmall" className="text-slate-700">
+                  {selectedItem?.toReceive}{' '}
+                  <FontAwesome name="rupee" size={14} color="black" />
+                </Text>
+              </View>
+
+              <View className="flex flex-row justify-between mt-3">
+                <Text variant="titleSmall" className="text-slate-700 ">
+                  {selectedItem?.type === 1
+                    ? 'Advance '
+                    : selectedItem?.type === 2
+                    ? 'Clear '
+                    : 'Balance'}
+                </Text>
+                <Text
+                  variant="titleMedium"
+                  className={
+                    selectedItem?.type === 1
+                      ? 'text-green-600'
+                      : selectedItem?.type === 2
+                      ? 'text-slate-500'
+                      : 'text-red-500'
+                  }
+                >
+                  {selectedItem?.balance}{' '}
+                  <FontAwesome
+                    name="rupee"
+                    size={14}
+                    color={
+                      selectedItem?.type === 1
+                        ? 'green'
+                        : selectedItem?.type === 2
+                        ? 'gray'
+                        : 'red'
+                    }
+                  />
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View className={`flex flex-row justify-center items-center gap-16`}>
+            <View>
+              <TouchableOpacity
+                className={`flex items-center`}
+                onPress={() => {
+                  bottomSheetModalRef.current?.close();
+                  sendReminder(selectedItem);
+                }}
+              >
+                <Ionicons name="alarm-outline" size={28} color="black" />
+              </TouchableOpacity>
+              <Text variant={'bodyMedium'} className="mt-2 text-slate-900">
+                Reminder
+              </Text>
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  bottomSheetModalRef.current?.close();
+                  sharePDF(selectedItem);
+                }}
+                className={`flex items-center`}
+              >
+                <AntDesign name="pdffile1" size={26} color="black" />
+              </TouchableOpacity>
+              <Text variant={'bodyMedium'} className="mt-2 text-slate-900">
+                Share PDF
+              </Text>
+            </View>
+          </View>
+        </View>
+      </BottomSheetModal>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    flex: 0.88,
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+});

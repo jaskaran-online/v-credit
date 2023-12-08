@@ -152,10 +152,6 @@ const Index = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar animated={true} />
-      <View className={"bg-red-500 w-full p-2 align-middle justify-center items-center my-2"}>
-        <Text className={"text-white"}>This is developement version for testing only!</Text>
-      </View>
       <TwoCards
         toPay={cardAmount?.toPay}
         toReceive={cardAmount?.toReceive}
