@@ -126,6 +126,7 @@ function CustomDrawerContent(props) {
             />
           )}
         />
+        <View className="border-slate-300 border-[0.5px] my-8 w-[250px]" />
       </DrawerContentScrollView>
 
       <View style={styles.footerButtonContainer}>
