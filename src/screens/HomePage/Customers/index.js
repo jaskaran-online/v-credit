@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Share, TouchableOpacity, View, Platform } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { useCustomersData } from '../../../apis/useApi';
-import SafeAreaView from "react-native-safe-area-view";
+import SafeAreaView from 'react-native-safe-area-view';
 import {
   formatDateForMessage,
   useAuthCompanyStore,
@@ -41,9 +41,7 @@ const renderItem = ({ item, index }) => {
           })
         }
       >
-        <Text class={'text-slate-800 font-bold'}>
-          {item?.customer?.name}
-        </Text>
+        <Text class={'text-slate-800 font-bold'}>{item?.customer?.name}</Text>
         <Text variant={'labelSmall'} className="text-slate-500">
           {formatedDate}
         </Text>
@@ -166,9 +164,9 @@ export default function Index() {
   return (
     <SafeAreaView className={'bg-white flex-1'}>
       <View
-        className={
-          `flex flex-row justify-between w-full px-3 items-center  ${Platform.OS === 'android' ? 'py-2' : 'pb-2' }`
-        }
+        className={`flex flex-row justify-between w-full px-3 items-center  ${
+          Platform.OS === 'android' ? 'py-2' : 'pb-2'
+        }`}
       >
         <View className={'flex flex-row relative'}>
           <Searchbar

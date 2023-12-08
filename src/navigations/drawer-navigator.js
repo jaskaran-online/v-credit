@@ -21,6 +21,7 @@ import {
   Share,
   StyleSheet,
   TouchableHighlight,
+  TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -39,6 +40,7 @@ import CustomerList from '../screens/HomePage/CustomerList';
 import { useAuthCompanyStore } from '../core/utils';
 import appJSON from '../../app.json';
 import { ProfitLoss } from '../screens';
+import AccordionItem from '../components/AccordionItem';
 const openPlayStore = () => {
   const playStoreUrl =
     'https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook';
@@ -102,7 +104,7 @@ function CustomDrawerContent(props) {
           icon={({ size }) => (
             <AntDesign
               name="staro"
-              size={size - 5}
+              size={size - 3}
               color={COLORS.darkTransparent}
             />
           )}
@@ -119,7 +121,7 @@ function CustomDrawerContent(props) {
           icon={({ size }) => (
             <AntDesign
               name="sharealt"
-              size={size - 5}
+              size={size - 3}
               color={COLORS.darkTransparent}
             />
           )}
@@ -127,25 +129,48 @@ function CustomDrawerContent(props) {
       </DrawerContentScrollView>
 
       <View style={styles.footerButtonContainer}>
-        <Button
-          mode="contained"
-          compact={true}
-          onPress={() => signOut()}
-          icon={'door'}
-        >
-          Logout
-        </Button>
-        <Button
-          mode="contained"
-          compact={true}
-          onPress={() => setDeleteModalVisibility(true)}
-          icon={'delete'}
-          className={'mt-2 mb-1 bg-red-500'}
-        >
-          Delete Account
-        </Button>
+        <AccordionItem title={'Settings'}>
+          <View className={'ml-2'}>
+            <TouchableOpacity
+              onPress={() => signOut()}
+              className={'flex-row items-center gap-x-8 mt-6'}
+            >
+              <AntDesign
+                name="enter"
+                size={22}
+                color={COLORS.darkTransparent}
+              />
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: 500,
+                }}
+              >
+                Logout
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setDeleteModalVisibility(true)}
+              className={'flex-row items-center gap-x-8 mt-6'}
+            >
+              <AntDesign
+                name="delete"
+                size={22}
+                color={COLORS.darkTransparent}
+              />
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: 500,
+                }}
+              >
+                Delete Account
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </AccordionItem>
         <View style={styles.footerVersionTextContainer} className={'mb-2'}>
-          <Text className={'text-slate-600 font-bold'} variant="bodyMedium">
+          <Text className={'text-slate-600 '} variant="bodyMedium">
             Version : {appJSON.expo.version}
           </Text>
         </View>
@@ -283,11 +308,10 @@ export function DrawerNavigator() {
   const hasRoleOneOrFour = auth?.user?.roles?.some(
     (role) => role.id === 1 || role.id === 4,
   );
-  const dimensions = useWindowDimensions();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const drawerLabelStyleCustom = {
     fontSize: 15,
-    fontWeight: 600,
+    fontWeight: 500,
     color: COLORS.darkTransparent,
   };
 
@@ -331,7 +355,7 @@ export function DrawerNavigator() {
                 style={{
                   color: focused ? COLORS.primary : COLORS.darkTransparent,
                   fontSize: 15,
-                  fontWeight: 600,
+                  fontWeight: 500,
                 }}
               >
                 {company?.name || 'Home'}
@@ -341,7 +365,7 @@ export function DrawerNavigator() {
             drawerIcon: ({ focused, size }) => (
               <AntDesign
                 name="home"
-                size={size - 5}
+                size={size - 3}
                 color={focused ? COLORS.primary : COLORS.darkTransparent}
               />
             ),
@@ -360,7 +384,7 @@ export function DrawerNavigator() {
                 style={{
                   color: focused ? COLORS.primary : COLORS.darkTransparent,
                   fontSize: 15,
-                  fontWeight: 600,
+                  fontWeight: 500,
                 }}
               >
                 Profit and Loss
@@ -370,7 +394,7 @@ export function DrawerNavigator() {
             drawerIcon: ({ focused, size }) => (
               <AntDesign
                 name="barschart"
-                size={size - 5}
+                size={size - 3}
                 color={focused ? COLORS.primary : COLORS.darkTransparent}
               />
             ),
@@ -389,7 +413,7 @@ export function DrawerNavigator() {
                   style={{
                     color: focused ? COLORS.primary : COLORS.darkTransparent,
                     fontSize: 15,
-                    fontWeight: 600,
+                    fontWeight: 500,
                   }}
                 >
                   Reports
@@ -401,7 +425,7 @@ export function DrawerNavigator() {
               drawerIcon: ({ focused, size }) => (
                 <AntDesign
                   name="linechart"
-                  size={size - 5}
+                  size={size - 3}
                   color={focused ? COLORS.primary : COLORS.darkTransparent}
                 />
               ),
@@ -420,7 +444,7 @@ export function DrawerNavigator() {
             drawerIcon: ({ focused, size }) => (
               <SimpleLineIcons
                 name="people"
-                size={size - 5}
+                size={size - 3}
                 color={focused ? COLORS.primary : COLORS.darkTransparent}
               />
             ),
@@ -445,14 +469,14 @@ const styles = StyleSheet.create({
   drawerItemLabel: {
     color: COLORS.darkTransparent,
     fontSize: 15,
-    fontWeight: 600,
+    fontWeight: 500,
   },
   footerButtonContainer: {
-    bottom: 0,
-    left: 0,
-    padding: 20,
+    bottom: 5,
+    left: -10,
+    padding: 10,
     position: 'absolute',
-    right: 20,
+    right: 10,
   },
   footerVersionTextContainer: {
     alignItems: 'center',
