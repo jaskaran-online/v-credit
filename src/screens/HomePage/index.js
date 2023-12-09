@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
-import { View } from 'react-native';
+import { View,Text } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import * as Contacts from 'expo-contacts';
@@ -151,8 +151,7 @@ const Index = ({ navigation }) => {
   }, [cardData, isCardLoading]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <StatusBar animated={true} />
+    <View style={{ flex: 1 }}>
       <TwoCards
         toPay={cardAmount?.toPay}
         toReceive={cardAmount?.toReceive}

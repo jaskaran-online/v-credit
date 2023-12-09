@@ -11,6 +11,8 @@ import {
   DayBook,
   PartyStatement,
 } from '../screens/Reports';
+import { Balance, Purchase } from '../screens/index';
+
 import { AuthNavigator } from './auth-navigator';
 import { DrawerNavigator } from './drawer-navigator';
 import { NavigationContainer } from './navigation-container';
@@ -183,6 +185,26 @@ export const Root = () => {
               }}
               name="ViewCustomers"
               component={CustomerList}
+            />
+
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerShown: true,
+                headerTitle: 'Balance',
+              }}
+              name="Balance"
+              component={Balance}
+            />
+
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerShown: true,
+                headerTitle: 'Purchase',
+              }}
+              name="Purchase"
+              component={Purchase}
             />
           </Stack.Group>
         )}

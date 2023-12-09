@@ -34,6 +34,7 @@ const ShareScreen = ({ route }) => {
     formData.append('cost_center_id', auth.user.cost_center_id);
     formData.append('customer_id', route.params.id);
     formData.append('user_id', auth.user.id);
+    formData.append('page', 'all');
     mutate(formData);
   }
 
@@ -42,11 +43,11 @@ const ShareScreen = ({ route }) => {
   }, []);
 
   const customer = data?.customer;
-  let transactionsData = data?.transactions || [];
+  let transactionsData = data?.customer?.transactions || [];
   const htmlCodeViewRef = useRef(null);
   const [selectedPrinter, setSelectedPrinter] = React.useState();
-  const toPay = parseFloat((data?.toPay || 0).toFixed(2));
-  const toReceive = parseFloat((data?.toReceive || 0).toFixed(2));
+  const toPay = parseFloat((data?.customer?.totalToPay || 0).toFixed(2));
+  const toReceive = parseFloat((data?.customer?.totalToReceive || 0).toFixed(2));
 
   transactionsData = transactionsData.map((item) => {
     return {

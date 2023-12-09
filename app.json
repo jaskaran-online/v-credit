@@ -1,9 +1,9 @@
 {
   "expo": {
     "experiments.turboModules": true,
-    "name": "My Credit Book",
+    "name": "My Credit Book DEV",
     "slug": "CASPRO",
-    "version": "10.0.0",
+    "version": "11.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,10 +12,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "jsEngine": "jsc",
+      "jsEngine": "hermes",
       "bundleIdentifier": "com.webcooks.mycreditbook",
       "flipper": true
     },
@@ -26,14 +28,27 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.webcooks.mycreditbook",
-      "permissions": ["READ_CONTACTS", "WRITE_CONTACTS"],
-      "versionCode": 10
+      "permissions": [
+        "READ_CONTACTS",
+        "WRITE_CONTACTS"
+      ],
+      "versionCode": 11
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      ["expo-localization"],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "flipper": true
+          }
+        }
+      ],
+      [
+        "expo-localization"
+      ],
       [
         "expo-contacts",
         {
@@ -51,16 +66,15 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
         }
-      ]
+      ],
+      "expo-build-properties"
     ],
     "extra": {
       "eas": {
         "projectId": "10c44983-617a-4f18-9227-ce300c770980"
       }
     },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    },
+    "runtimeVersion": "exposdk:49.0.0",
     "updates": {
       "url": "https://u.expo.dev/10c44983-617a-4f18-9227-ce300c770980"
     }

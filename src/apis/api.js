@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://mycreditbook.com/',
+  baseURL: 'https://dev.mycreditbook.com/',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'multipart/form-data',

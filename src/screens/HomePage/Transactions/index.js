@@ -1,8 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Image, TouchableOpacity, View, Platform } from 'react-native';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { Image, TouchableOpacity, View, Platform, ActivityIndicator } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
 import {
   useTotalTransactionData,
@@ -20,6 +20,10 @@ import {
 import { useAuth } from '../../../hooks';
 
 export default function Index() {
+
+  const currentPageRef = useRef(0);
+  const lastPageRef = useRef(1);
+
   const auth = useAuth.use?.token();
   let setCardAmount = useCardAmountStore((state) => state.setCardAmount);
   const {
@@ -56,8 +60,9 @@ export default function Index() {
   }, [transactionDelLoading]);
 
   useEffect(() => {
-    if (transactionData?.data) {
-      let orderedArray = [...transactionData.data]; // Create a copy of the array
+    lastPageRef.current = transactionData?.transactions?.last_page;
+    if (transactionData?.transactions) {
+      let orderedArray = [...transactionData?.transactions?.data, ...orderedData]; // Create a copy of the array
 
       switch (filterBy) {
         case 'Clear':
@@ -115,12 +120,13 @@ export default function Index() {
     getCardTotals();
   }, [transactionDelSuccess]);
 
-  function loadTransactions() {
+  function loadTransactions(page = 1) {
     setReload(true);
     const formData = new FormData();
     formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user.cost_center_id);
     formData.append('user_id', auth.user.id);
+    formData.append('page', page);
     transactionRequest(formData);
     setReload(false);
     toggleFilter('none');
@@ -172,6 +178,13 @@ export default function Index() {
     });
     showToast('Record Deleted Successfully', 'success');
     toggleFilter('none');
+  }
+
+  function handleLoadMore(){
+    currentPageRef.current = currentPageRef.current + 1
+    if(lastPageRef.current >= currentPageRef.current){
+      loadTransactions(currentPageRef.current);
+    }
   }
 
   useEffect(() => {
@@ -275,7 +288,17 @@ export default function Index() {
         showOptions={showOptions}
         options={options}
         onOptionSelect={handleOptionSelect}
-        ListFooterComponent={<View style={{ height: 100 }} />}
+        onEndReachedThreshold={0.7}
+        ListFooterComponent={() => (
+          <View className={'mt-4'}>
+            {isLoading ? (
+              <ActivityIndicator animating={isLoading} size="small" />
+            ) : ((lastPageRef.current <= currentPageRef.current) && (lastPageRef.current > 1) ) && (
+              <Text variant={'labelLarge'} className={'text-center text-slate-800'}> No more data available!</Text>
+            )}
+          </View>
+        )}
+        onEndReached={handleLoadMore}
         ListEmptyComponent={
           <View className={'flex-1 d-flex justify-center items-center h-16'}>
             <Text variant={'bodyMedium'}>No Records Available!</Text>

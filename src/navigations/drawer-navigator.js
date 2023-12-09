@@ -1,7 +1,8 @@
+/* eslint-disable react/no-unstable-nested-components */
 import {
-  Fontisto as Icon,
-  Ionicons,
   MaterialCommunityIcons,
+  AntDesign,
+  SimpleLineIcons,
 } from '@expo/vector-icons';
 import {
   createDrawerNavigator,
@@ -11,12 +12,14 @@ import {
 } from '@react-navigation/drawer';
 import React, { useState } from 'react';
 import {
+  Dimensions,
   Image,
   Linking,
   ScrollView,
   Share,
   StyleSheet,
   TouchableHighlight,
+  TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -34,7 +37,8 @@ import { useAuth } from '../hooks';
 import CustomerList from '../screens/HomePage/CustomerList';
 import { useAuthCompanyStore } from '../core/utils';
 import appJSON from '../../app.json';
-
+import { ProfitLoss } from '../screens';
+import AccordionItem from '../components/AccordionItem';
 const openPlayStore = () => {
   const playStoreUrl =
     'https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook';
@@ -68,26 +72,27 @@ function CustomDrawerContent(props) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.white, marginLeft: 20 }}>
       <DrawerContentScrollView {...props}>
         <View style={styles.drawerHeaderContainer}>
           <View style={styles.drawerHeaderInnerContainer}>
             <View>
-              <Text variant={'titleMedium'}>
+              <Avatar.Text
+                size={40}
+                color="white"
+                labelStyle={{ fontSize: 15 }}
+                label="US"
+              />
+              <Text variant={'titleMedium'} className="mt-3">
                 {auth?.user?.name || 'User Name'}
               </Text>
               <Text variant={'bodySmall'} className={'text-slate-600'}>
                 {auth?.user?.email}
               </Text>
             </View>
-            <Avatar.Text
-              size={50}
-              color="white"
-              labelStyle={{ fontSize: 20 }}
-              label="US"
-            />
           </View>
         </View>
+
         <DrawerItemList {...props} />
 
         <DrawerItem
@@ -95,7 +100,11 @@ function CustomDrawerContent(props) {
           labelStyle={styles.drawerItemLabel}
           onPress={openPlayStore}
           icon={({ size }) => (
-            <Icon name="star" size={size - 5} color={COLORS.primary} />
+            <AntDesign
+              name="staro"
+              size={size - 3}
+              color={COLORS.darkTransparent}
+            />
           )}
         />
 
@@ -108,31 +117,59 @@ function CustomDrawerContent(props) {
             });
           }}
           icon={({ size }) => (
-            <Icon name="share" size={size - 5} color={COLORS.primary} />
+            <AntDesign
+              name="sharealt"
+              size={size - 3}
+              color={COLORS.darkTransparent}
+            />
           )}
         />
+        <View className="border-slate-300 border-[0.5px] my-8 w-[250px]" />
       </DrawerContentScrollView>
 
       <View style={styles.footerButtonContainer}>
-        <Button
-          mode="contained"
-          compact={true}
-          onPress={() => signOut()}
-          icon={'door'}
-        >
-          Logout
-        </Button>
-        <Button
-          mode="contained"
-          compact={true}
-          onPress={() => setDeleteModalVisibility(true)}
-          icon={'delete'}
-          className={'mt-2 mb-1 bg-red-500'}
-        >
-          Delete Account
-        </Button>
+        <AccordionItem title={'Settings'}>
+          <View className={'ml-2'}>
+            <TouchableOpacity
+              onPress={() => signOut()}
+              className={'flex-row items-center gap-x-8 mt-6'}
+            >
+              <AntDesign
+                name="enter"
+                size={22}
+                color={COLORS.darkTransparent}
+              />
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: 500,
+                }}
+              >
+                Logout
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setDeleteModalVisibility(true)}
+              className={'flex-row items-center gap-x-8 mt-6'}
+            >
+              <AntDesign
+                name="delete"
+                size={22}
+                color={COLORS.darkTransparent}
+              />
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: 500,
+                }}
+              >
+                Delete Account
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </AccordionItem>
         <View style={styles.footerVersionTextContainer} className={'mb-2'}>
-          <Text className={'text-slate-500'} variant="bodySmall">
+          <Text className={'text-slate-600 '} variant="bodyMedium">
             Version : {appJSON.expo.version}
           </Text>
         </View>
@@ -199,6 +236,7 @@ const CompanySwitch = () => {
   const hideCompanySwitchModalHandler = () => {
     setShowCompanySwitchModal(false);
   };
+
   return (
     <>
       <Button
@@ -269,106 +307,158 @@ export function DrawerNavigator() {
   const hasRoleOneOrFour = auth?.user?.roles?.some(
     (role) => role.id === 1 || role.id === 4,
   );
-  const dimensions = useWindowDimensions();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
+  const drawerLabelStyleCustom = {
+    fontSize: 15,
+    fontWeight: 500,
+    color: COLORS.darkTransparent,
+  };
 
   return (
-    <Drawer.Navigator
-      drawerContent={CustomDrawerContent}
-      initialRouteName="HomePage"
-      allowFontScaling={false}
-      animationEnabled
-      drawerActiveBackgroundColor={'black'}
-      screenOptions={() => ({
-        drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
-        headerShown: true,
-        headerTitleAlign: 'center',
-        headerStyle: {
-          backgroundColor: COLORS.white,
-        },
-        headerTitleStyle: {
-          color: COLORS.darkTransparent,
-        },
-        headerTintColor: COLORS.darkTransparent,
-        headerShadowVisible: false,
-      })}
-    >
-      <Drawer.Screen
-        name="HomePage"
-        component={HomePage}
-        options={{
+    <React.Fragment>
+      <Drawer.Navigator
+        drawerContent={CustomDrawerContent}
+        initialRouteName="HomePage"
+        allowFontScaling={false}
+        animationEnabled={true}
+        backBehavior="history"
+        drawerActiveBackgroundColor={'black'}
+        screenOptions={() => ({
+          overlayColor: 'rgba(190,190,190,0.4)',
+          drawerType: '',
           headerShown: true,
-          drawerActiveTintColor: COLORS.white,
-          drawerActiveBackgroundColor: COLORS.primary,
-          headerStyle: { backgroundColor: '#eff6ff' },
-          title: company?.name || 'Home',
-          headerRight: () => <CompanySwitch />,
-          drawerIcon: ({ focused, size }) => (
-            <Icon
-              name="home"
-              size={size - 5}
-              color={focused ? COLORS.white : COLORS.primary}
-            />
-          ),
-        }}
-      />
-      {hasRoleOneOrFour && (
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: COLORS.white,
+          },
+          headerTitleStyle: {
+            color: COLORS.darkTransparent,
+          },
+          headerTintColor: COLORS.darkTransparent,
+          headerShadowVisible: false,
+          drawerStyle: {
+            width: Dimensions.get('window').width / 1.2,
+          },
+        })}
+      >
         <Drawer.Screen
-          name="Reports"
-          component={Reports}
+          name="HomePage"
+          component={HomePage}
           options={{
             headerShown: true,
-            headerTitle: 'Reports',
+            drawerActiveBackgroundColor: 'transparent',
+            drawerActiveTintColor: COLORS.primary,
+            drawerLabelStyle: drawerLabelStyleCustom,
             headerStyle: { backgroundColor: '#eff6ff' },
             title: ({ focused }) => (
               <Text
                 style={{
-                  color: focused ? COLORS.white : COLORS.darkTransparent,
+                  color: focused ? COLORS.primary : COLORS.darkTransparent,
+                  fontSize: 15,
+                  fontWeight: 500,
                 }}
               >
-                Reports
+                {company?.name || 'Home'}
               </Text>
             ),
-            drawerActiveTintColor: COLORS.white,
-            drawerActiveBackgroundColor: COLORS.primary,
+            headerRight: () => <CompanySwitch />,
             drawerIcon: ({ focused, size }) => (
-              <Icon
-                name="nav-icon-list-a"
-                size={size - 5}
-                color={focused ? COLORS.white : COLORS.primary}
+              <AntDesign
+                name="home"
+                size={size - 3}
+                color={focused ? COLORS.primary : COLORS.darkTransparent}
               />
             ),
           }}
         />
-      )}
-      <Drawer.Screen
-        name="Customers"
-        component={CustomerList}
-        options={{
-          headerShown: true,
-          drawerActiveTintColor: COLORS.white,
-          drawerActiveBackgroundColor: COLORS.primary,
-          headerStyle: { backgroundColor: '#eff6ff' },
-          drawerIcon: ({ focused, size }) => (
-            <Ionicons
-              name="people"
-              size={size - 5}
-              color={focused ? COLORS.white : COLORS.primary}
-            />
-          ),
-        }}
-      />
-    </Drawer.Navigator>
+        <Drawer.Screen
+          name="Profit and Loss"
+          component={ProfitLoss}
+          options={{
+            headerShown: true,
+            headerTitle: 'Profit and Loss',
+            headerStyle: { backgroundColor: '#eff6ff' },
+            drawerLabelStyle: drawerLabelStyleCustom,
+            title: ({ focused }) => (
+              <Text
+                style={{
+                  color: focused ? COLORS.primary : COLORS.darkTransparent,
+                  fontSize: 15,
+                  fontWeight: 500,
+                }}
+              >
+                Profit and Loss
+              </Text>
+            ),
+            drawerActiveBackgroundColor: 'transparent',
+            drawerIcon: ({ focused, size }) => (
+              <AntDesign
+                name="barschart"
+                size={size - 3}
+                color={focused ? COLORS.primary : COLORS.darkTransparent}
+              />
+            ),
+          }}
+        />
+        {hasRoleOneOrFour && (
+          <Drawer.Screen
+            name="Reports"
+            component={Reports}
+            options={{
+              headerShown: true,
+              headerTitle: 'Reports',
+              headerStyle: { backgroundColor: '#eff6ff' },
+              title: ({ focused }) => (
+                <Text
+                  style={{
+                    color: focused ? COLORS.primary : COLORS.darkTransparent,
+                    fontSize: 15,
+                    fontWeight: 500,
+                  }}
+                >
+                  Reports
+                </Text>
+              ),
+              drawerActiveBackgroundColor: 'transparent',
+              drawerActiveTintColor: COLORS.primary,
+              drawerLabelStyle: drawerLabelStyleCustom,
+              drawerIcon: ({ focused, size }) => (
+                <AntDesign
+                  name="linechart"
+                  size={size - 3}
+                  color={focused ? COLORS.primary : COLORS.darkTransparent}
+                />
+              ),
+            }}
+          />
+        )}
+        <Drawer.Screen
+          name="Customers"
+          component={CustomerList}
+          options={{
+            headerShown: true,
+            drawerActiveBackgroundColor: 'transparent',
+            drawerLabelStyle: drawerLabelStyleCustom,
+            drawerActiveTintColor: COLORS.primary,
+            headerStyle: { backgroundColor: '#eff6ff' },
+            drawerIcon: ({ focused, size }) => (
+              <SimpleLineIcons
+                name="people"
+                size={size - 3}
+                color={focused ? COLORS.primary : COLORS.darkTransparent}
+              />
+            ),
+          }}
+        />
+      </Drawer.Navigator>
+    </React.Fragment>
   );
 }
 
 const styles = StyleSheet.create({
   drawerHeaderContainer: {
-    borderBottomColor: COLORS.gray,
-    borderBottomWidth: 0.5,
-    marginBottom: 20,
     paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingVertical: 15,
   },
   drawerHeaderInnerContainer: {
     alignItems: 'center',
@@ -378,14 +468,15 @@ const styles = StyleSheet.create({
   },
   drawerItemLabel: {
     color: COLORS.darkTransparent,
-    fontSize: 13,
+    fontSize: 15,
+    fontWeight: 500,
   },
   footerButtonContainer: {
-    bottom: 0,
-    left: 0,
-    padding: 20,
+    bottom: 5,
+    left: -10,
+    padding: 10,
     position: 'absolute',
-    right: 0,
+    right: 10,
   },
   footerVersionTextContainer: {
     alignItems: 'center',

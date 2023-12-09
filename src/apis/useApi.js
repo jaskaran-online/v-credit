@@ -1,6 +1,6 @@
 // useApi.js
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { get, post, put, patch, del } from './api';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { del, get, patch, post, put } from './api';
 
 export const useCompanyProductsData = (url) => {
   return useQuery(['getData', url], () => get(url));
@@ -10,10 +10,14 @@ export const useCompanyCostCenterData = (url) => {
   return useQuery(['getCostCenters', url], () => get(url));
 };
 
+export const useItemsData = () => {
+  return useQuery(['getItems'], () => get('api/v1/get/items/company/13/cost-center/13'));
+};
+
 export const useCustomerTransactionData = () => {
   return useMutation({
     mutationKey: 'getCustomerTransactionData',
-    mutationFn: (data) => post('api/v1/get/customer/transactions', data),
+    mutationFn: (data) => post('api/v1/get/customer/transactions?page=' + data.page, data),
     cacheTime: 500,
   });
 };
@@ -25,7 +29,6 @@ export const useCustomersData = () => {
     cacheTime: 500,
   });
 };
-
 export const useGetCustomersList = () => {
   return useMutation({
     mutationKey: 'getCustomersList',
@@ -49,12 +52,12 @@ export const useCreateCustomer = () => {
   return useMutation({
     mutationKey: 'createCustomer',
     mutationFn: ({
-      title,
-      description,
-      company_id,
-      cost_center_id,
-      user_id,
-    }) => {
+                   title,
+                   description,
+                   company_id,
+                   cost_center_id,
+                   user_id,
+                 }) => {
       return post(`/api/v1/create/customer`, {
         title,
         description,
@@ -70,7 +73,7 @@ export const useCreateCustomer = () => {
 export const useTransactionsData = () => {
   return useMutation({
     mutationKey: 'totalAmount',
-    mutationFn: (data) => post('api/v1/get/today/transactions', data),
+    mutationFn: (data) => post('api/v1/get/today/transactions?page=' + data.page, data),
     cacheTime: 500,
   });
 };
