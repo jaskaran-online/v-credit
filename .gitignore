@@ -19,3 +19,4 @@ web-build/
 .env
 
 android/app/*
+.vscode/

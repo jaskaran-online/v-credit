@@ -51,11 +51,7 @@ export default function App() {
       <BottomSheetModalProvider>
         <QueryClientProvider client={queryClient}>
           <PaperProvider theme={theme}>
-            <StatusBar
-              barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
-              translucent
-              animated
-            />
+            <StatusBar translucent animated />
             <RootNavigator theme={theme} />
             <Toast />
           </PaperProvider>

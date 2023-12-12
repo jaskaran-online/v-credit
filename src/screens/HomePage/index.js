@@ -1,23 +1,22 @@
-import React, { useEffect, useCallback } from 'react';
-import { View,Text } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import * as Contacts from 'expo-contacts';
-import { useAuth } from '../../hooks';
+import React, { useCallback, useEffect } from 'react';
+import { View } from 'react-native';
 import {
   useCustomersData,
   useGetCustomersList,
   useTotalTransactionData,
   useVerifyUserAuthApi,
 } from '../../apis/useApi';
-import { TwoCards } from '../Components/TwoCards';
-import { TabNavigator } from '../Components/TabNavigator';
-import FloatingButtons from '../Components/FloatingButton';
 import {
   useAuthCompanyStore,
   useCardAmountStore,
   useContactsStore,
 } from '../../core/utils';
+import { useAuth } from '../../hooks';
+import FloatingButtons from '../Components/FloatingButton';
+import { TabNavigator } from '../Components/TabNavigator';
+import { TwoCards } from '../Components/TwoCards';
 
 const Index = ({ navigation }) => {
   const auth = useAuth.use.token(); // Destructure the token directly

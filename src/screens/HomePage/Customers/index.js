@@ -28,7 +28,7 @@ const renderBackdropComponent = (props) => (
     {...props}
     disappearsOnIndex={-1}
     appearsOnIndex={0}
-    opacity={0.7}
+    opacity={0.4}
     pressBehavior={'close'}
   />
 );
@@ -73,7 +73,7 @@ export default function Index() {
   };
 
   // variables
-  const snapPoints = useMemo(() => ['40%'], []);
+  const snapPoints = useMemo(() => ['45%'], []);
 
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -100,7 +100,7 @@ export default function Index() {
       balance = toPay - toReceive;
       color = 'text-red-400';
     }
-    let isEven = index % 2 === 0 ? 'bg-slate-50' : 'bg-white';
+
     let formatedDate = formatDateForMessage(item?.last_transaction_date);
     return (
       <TouchableOpacity
@@ -115,7 +115,6 @@ export default function Index() {
           handlePresentModalPress(item);
         }}
         className={`flex flex-row justify-between items-center py-4 px-2 border-b border-slate-100 `}
-        style={{ elevation: 4 }}
       >
         <View className={'px-1 flex flex-row items-center'}>
           <Avatar name={item?.customer?.name} size={40} />
@@ -356,9 +355,9 @@ export default function Index() {
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 0.88,
-    paddingHorizontal: 16,
-    paddingTop: 20,
     flexDirection: 'column',
     justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 20,
   },
 });

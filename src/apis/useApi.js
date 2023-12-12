@@ -11,13 +11,16 @@ export const useCompanyCostCenterData = (url) => {
 };
 
 export const useItemsData = () => {
-  return useQuery(['getItems'], () => get('api/v1/get/items/company/13/cost-center/13'));
+  return useQuery(['getItems'], () =>
+    get('api/v1/get/items/company/13/cost-center/13'),
+  );
 };
 
 export const useCustomerTransactionData = () => {
   return useMutation({
     mutationKey: 'getCustomerTransactionData',
-    mutationFn: (data) => post('api/v1/get/customer/transactions?page=' + data.page, data),
+    mutationFn: (data) =>
+      post('api/v1/get/customer/transactions?page=' + data.page, data),
     cacheTime: 500,
   });
 };
@@ -52,12 +55,12 @@ export const useCreateCustomer = () => {
   return useMutation({
     mutationKey: 'createCustomer',
     mutationFn: ({
-                   title,
-                   description,
-                   company_id,
-                   cost_center_id,
-                   user_id,
-                 }) => {
+      title,
+      description,
+      company_id,
+      cost_center_id,
+      user_id,
+    }) => {
       return post(`/api/v1/create/customer`, {
         title,
         description,
@@ -73,7 +76,8 @@ export const useCreateCustomer = () => {
 export const useTransactionsData = () => {
   return useMutation({
     mutationKey: 'totalAmount',
-    mutationFn: (data) => post('api/v1/get/today/transactions?page=' + data.page, data),
+    mutationFn: (data) =>
+      post('api/v1/get/today/transactions?page=' + data.page, data),
     cacheTime: 500,
   });
 };
@@ -172,6 +176,20 @@ export const useVerifyUserAuthApi = () => {
   return useMutation({
     mutationKey: 'verifyUserAuth',
     mutationFn: (data) => post('api/v1/check-if-active', data),
+  });
+};
+
+export const useCreatePurchaseApi = () => {
+  return useMutation({
+    mutationKey: 'createPurchase',
+    mutationFn: (data) => post('api/v1/purchase/create', data),
+  });
+};
+
+export const useCreateBalanceApi = () => {
+  return useMutation({
+    mutationKey: 'createBalance',
+    mutationFn: (data) => post('api/v1/balance/create', data),
   });
 };
 

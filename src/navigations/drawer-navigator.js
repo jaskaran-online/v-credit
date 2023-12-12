@@ -23,14 +23,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import {
-  Avatar,
-  Button,
-  Dialog,
-  Portal,
-  RadioButton,
-  Text,
-} from 'react-native-paper';
+import { Button, Dialog, Portal, RadioButton, Text } from 'react-native-paper';
 import { COLORS } from '../core';
 import { HomePage, Reports } from '../screens';
 import { useAuth } from '../hooks';
@@ -39,6 +32,7 @@ import { useAuthCompanyStore } from '../core/utils';
 import appJSON from '../../app.json';
 import { ProfitLoss } from '../screens';
 import AccordionItem from '../components/AccordionItem';
+import Avatar from '../components/Avatar';
 const openPlayStore = () => {
   const playStoreUrl =
     'https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook';
@@ -77,13 +71,12 @@ function CustomDrawerContent(props) {
         <View style={styles.drawerHeaderContainer}>
           <View style={styles.drawerHeaderInnerContainer}>
             <View>
-              <Avatar.Text
-                size={40}
-                color="white"
-                labelStyle={{ fontSize: 15 }}
-                label="US"
+              <Avatar
+                size={50}
+                name={auth?.user?.name}
+                color={COLORS.primary}
               />
-              <Text variant={'titleMedium'} className="mt-3">
+              <Text variant={'titleMedium'} className="mt-1">
                 {auth?.user?.name || 'User Name'}
               </Text>
               <Text variant={'bodySmall'} className={'text-slate-600'}>
