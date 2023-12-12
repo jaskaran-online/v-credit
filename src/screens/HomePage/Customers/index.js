@@ -108,6 +108,15 @@ export default function Index() {
           navigation.navigate('CustomerTransactionDetails', {
             id: item.customer?.id,
             name: item.customer?.name,
+            toPay: item?.toPay,
+            toReceive: item?.toReceive,
+            balance: item?.balance,
+            balanceType:
+              item?.type === 1
+                ? 'Advance '
+                : item?.type === 2
+                ? 'Clear '
+                : 'Balance',
           })
         }
         delayLongPress={200}

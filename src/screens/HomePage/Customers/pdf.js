@@ -1,3 +1,7 @@
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import _ from 'lodash';
 import React, { useEffect, useRef } from 'react';
 import {
   ActivityIndicator,
@@ -6,18 +10,15 @@ import {
   View,
 } from 'react-native';
 import { Text } from 'react-native-paper';
-import HTMLCodeView from './HTMLCodeView';
-import * as Print from 'expo-print';
-import * as Sharing from 'expo-sharing';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { useAuth } from '../../../hooks';
 import { useCustomerTransactionData } from '../../../apis/useApi';
-import _ from 'lodash';
 import {
   convertTimeToPM,
   formatDateForMessage,
   useAuthCompanyStore,
 } from '../../../core/utils';
+import { useAuth } from '../../../hooks';
+import HTMLCodeView from './HTMLCodeView';
+import Animated, { FadeInDown, SlideInRight } from 'react-native-reanimated';
 
 const ShareScreen = ({ route }) => {
   const auth = useAuth.use?.token();
@@ -47,7 +48,9 @@ const ShareScreen = ({ route }) => {
   const htmlCodeViewRef = useRef(null);
   const [selectedPrinter, setSelectedPrinter] = React.useState();
   const toPay = parseFloat((data?.customer?.totalToPay || 0).toFixed(2));
-  const toReceive = parseFloat((data?.customer?.totalToReceive || 0).toFixed(2));
+  const toReceive = parseFloat(
+    (data?.customer?.totalToReceive || 0).toFixed(2),
+  );
 
   transactionsData = transactionsData.map((item) => {
     return {
@@ -243,7 +246,11 @@ const ShareScreen = ({ route }) => {
               ) : null}
             </View>
           )}
-          <View className=" bg-white flex flex-row pb-10 items-center justify-evenly pt-4">
+          <Animated.View
+            animated
+            entering={FadeInDown.easing(0.5).springify().duration(300)}
+            className=" bg-white flex flex-row pb-10 items-center justify-evenly pt-4"
+          >
             <TouchableOpacity
               className={'d-flex justify-center items-center gap-2'}
               onPress={execute}
@@ -267,7 +274,7 @@ const ShareScreen = ({ route }) => {
                 <Text>Select</Text>
               </TouchableOpacity>
             )}
-          </View>
+          </Animated.View>
         </>
       )}
     </View>

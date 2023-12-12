@@ -30,8 +30,7 @@ import {
 } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import FloatingButtons from '../../Components/FloatingButton';
-import { useInfiniteQuery } from "@tanstack/react-query";
-
+import Animated, { FadeInDown, FadeInLeft } from 'react-native-reanimated';
 
 export function processString(input = null) {
   if (input == null || input === '' || input === 'null') {
@@ -92,13 +91,12 @@ Click : http://mycreditbook.com/udhaar-khata/${id}`;
 };
 
 export default function Index({ navigation, route }) {
-
   const pageRef = useRef(1);
   const lastPageRef = useRef(0);
-  const toPayRef = useRef(1);
-  const toReceiveRef = useRef(1);
-  const balanceRef = useRef(0.00);
-  const balanceType = useRef("");
+  const toPayRef = useRef(route.params?.toPay);
+  const toReceiveRef = useRef(route.params?.toReceive);
+  const balanceRef = useRef(route.params?.balance);
+  const balanceType = useRef(route.params?.balanceType);
 
   const auth = useAuth.use?.token();
   const { mutate, data, isLoading } = useCustomerTransactionData();
@@ -114,7 +112,7 @@ export default function Index({ navigation, route }) {
 
   function handleLoadMore() {
     pageRef.current += 1;
-    if(lastPageRef.current >= pageRef.current) {
+    if (lastPageRef.current >= pageRef.current) {
       loadCustomerData(pageRef.current);
     }
   }
@@ -137,7 +135,7 @@ export default function Index({ navigation, route }) {
   useEffect(() => {
     if (data?.data) {
       if (filterBy === 'Clear') {
-        setOrderedData([...orderedData,...(data?.data?.customer?.transactions)]);
+        setOrderedData([...orderedData, ...data?.data?.customer?.transactions]);
         lastPageRef.current = data?.data?.paginator?.last_page;
       } else {
         const orderedArray = _.orderBy(
@@ -198,36 +196,52 @@ export default function Index({ navigation, route }) {
     setShowOptions((show) => !show);
   };
 
-  toPayRef.current = parseFloat((data?.data?.customer?.totalToPay || 0).toFixed(2));
-  toReceiveRef.current = parseFloat((data?.data?.customer?.totalToReceive || 0).toFixed(2));
+  toPayRef.current = parseFloat(
+    (data?.data?.customer?.totalToPay || 0).toFixed(2),
+  );
+  toReceiveRef.current = parseFloat(
+    (data?.data?.customer?.totalToReceive || 0).toFixed(2),
+  );
 
-  let BgColor = 'bg-slate-400';
-  if (toReceiveRef.current > toPayRef.current) {
-    balanceRef.current = toReceiveRef.current - toPayRef.current;
-    BgColor = 'bg-green-700';
-    balanceType.current = 'To Receive';
-  } else if (toReceiveRef.current < toPayRef.current) {
-    balanceRef.current = toPayRef.current - toReceiveRef.current;
-    BgColor = 'bg-red-400';
-    balanceType.current = 'To Pay';
-  }
+  // let BgColor = 'bg-slate-400';
+  // if (toReceiveRef.current > toPayRef.current) {
+  //   balanceRef.current = toReceiveRef.current - toPayRef.current;
+  //   BgColor = 'bg-green-700';
+  //   balanceType.current = 'Advance';
+  // } else if (toReceiveRef.current < toPayRef.current) {
+  //   balanceRef.current = toPayRef.current - toReceiveRef.current;
+  //   BgColor = 'bg-red-400';
+  //   balanceType.current = 'Balance';
+  // }
 
   return (
     <View className={'bg-white flex-1'}>
       <View className="bg-blue-50 h-28">
         <View className="mx-2 h-24 bg-white mt-1 rounded-md shadow-sm flex flex-row items-center justify-between px-4">
           <View className="flex flex-row space-x-4 items-center">
-            <View className="ml-2">
+            <Animated.View
+              entering={FadeInLeft.easing(0.5)
+                .springify()
+                .duration(300)
+                .delay(200)}
+              className="ml-2"
+            >
               <Text variant="bodyMedium" className="text-slate-600 ">
                 {balanceType.current}
               </Text>
               <Text variant="bodyLarge" className="text-slate-900 font-bold">
                 {Math.abs(balanceRef.current).toFixed(2)} ₹
               </Text>
-            </View>
+            </Animated.View>
           </View>
 
-          <View className="flex flex-row space-x-3 pr-2 pl-8">
+          <Animated.View
+            entering={FadeInDown.easing(0.5)
+              .springify()
+              .duration(300)
+              .delay(100)}
+            className="flex flex-row space-x-3 pr-2 pl-8"
+          >
             <TouchableOpacity
               className="bg-red-50 p-2 rounded-full  flex items-center"
               onPress={() =>
@@ -256,7 +270,7 @@ export default function Index({ navigation, route }) {
             >
               <MaterialCommunityIcons name="whatsapp" size={26} color="green" />
             </TouchableOpacity>
-          </View>
+          </Animated.View>
         </View>
       </View>
       <View
@@ -353,8 +367,17 @@ export default function Index({ navigation, route }) {
             <View className={'mt-4'}>
               {isLoading ? (
                 <ActivityIndicator animating={isLoading} size="small" />
-              ) : ((lastPageRef.current <= pageRef.current) && (lastPageRef.current > 1) ) && (
-                <Text variant={'labelLarge'} className={'text-center text-slate-800'}> No more data available!</Text>
+              ) : (
+                lastPageRef.current <= pageRef.current &&
+                lastPageRef.current > 1 && (
+                  <Text
+                    variant={'labelLarge'}
+                    className={'text-center text-slate-800'}
+                  >
+                    {' '}
+                    No more data available!
+                  </Text>
+                )
               )}
             </View>
           )}

@@ -4,6 +4,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import { useCardAmountStore, useFilterToggleStore } from '../../core/utils';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const StyledView = styled(TouchableOpacity);
 
@@ -76,16 +77,18 @@ export function TwoCards({
             color={`${filterByToReceive ? 'green' : 'white'}`}
           />
         </View>
-        <View>
-          <Text
+        <Animated.View entering={FadeInDown.delay(300).duration(300)}>
+          <Animated.Text
+            entering={FadeInDown.delay(300).duration(300)}
             variant={'bodyMedium'}
             className={`${
               filterByToReceive ? 'text-slate-100' : 'text-slate-500'
             }`}
           >
             To Receive
-          </Text>
-          <Text
+          </Animated.Text>
+          <Animated.Text
+            entering={FadeInDown.delay(300).duration(300)}
             variant={'titleSmall'}
             className={`${
               filterByToReceive ? 'text-white' : 'text-slate-700'
@@ -97,8 +100,8 @@ export function TwoCards({
               ? Math.abs(parseFloat(propToReceive).toFixed(2))
               : 0}{' '}
             ₹
-          </Text>
-        </View>
+          </Animated.Text>
+        </Animated.View>
       </Box>
       <Box
         className={`${
