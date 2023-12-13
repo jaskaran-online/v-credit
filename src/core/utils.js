@@ -11,7 +11,6 @@ import { Chip, Text } from 'react-native-paper';
 import navigation from '../navigations';
 import { create } from 'zustand';
 import Toast from 'react-native-toast-message';
-import Animated, { FadeIn, FadeInDown, FadeOut, FadeOutDown } from 'react-native-reanimated';
 
 const SecureStore = createSecureStore();
 
@@ -312,7 +311,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
         </View>
       </TouchableOpacity>
       {expanded && (
-        <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+        <>
           {isAdmin && (
             <React.Fragment>
               {transaction.notes && (
@@ -435,7 +434,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
               </TouchableOpacity>
             )}
           </View>
-        </Animated.View>
+        </>
       )}
     </>
   );
