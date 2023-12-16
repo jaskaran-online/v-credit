@@ -7,7 +7,7 @@ import { Image, Keyboard, KeyboardAvoidingView, TouchableOpacity, View } from 'r
 import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
-import { usePaymentApi, useProductsApi } from '../../../apis/useApi';
+import { usePaymentApi, useProductsApi } from '../../../apis/use-api';
 import {
   convertDateFormat,
   processString,
@@ -16,7 +16,7 @@ import {
   useContactsStore,
 } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
-import DropDownFlashList from '../../Components/dropDownFlashList';
+import DropDownFlashList from '../../Components/drop-down-flash-list';
 
 const GiveMoney = ({ navigation, route }) => {
   const auth = useAuth.use?.token();

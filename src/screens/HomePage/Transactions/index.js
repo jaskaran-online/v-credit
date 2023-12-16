@@ -9,7 +9,7 @@ import {
   useTotalTransactionData,
   useTransactionsData,
   useTransactionsDelete,
-} from '../../../apis/useApi';
+} from '../../../apis/use-api';
 import {
   renderHeader,
   renderItem,

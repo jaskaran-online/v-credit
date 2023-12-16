@@ -6,11 +6,11 @@ import { ActivityIndicator, Platform, TouchableOpacity, View } from 'react-nativ
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
-import { useCustomersData, usePartyStatement } from '../../../apis/useApi';
+import { useCustomersData, usePartyStatement } from '../../../apis/use-api';
 import { renderHeader, renderItem, useAuthCompanyStore } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
-import { TwoCards } from '../../Components/TwoCards';
-import DropDownFlashList from '../../Components/dropDownFlashList';
+import DropDownFlashList from '../../Components/drop-down-flash-list';
+import { TwoCards } from '../../Components/two-cards';
 
 export default function Index() {
   const auth = useAuth.use?.token();

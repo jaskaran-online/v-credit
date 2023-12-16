@@ -8,12 +8,12 @@ import {
   useGetCustomersList,
   useTotalTransactionData,
   useVerifyUserAuthApi,
-} from '../../apis/useApi';
+} from '../../apis/use-api';
 import { useAuthCompanyStore, useCardAmountStore, useContactsStore } from '../../core/utils';
 import { useAuth } from '../../hooks';
-import FloatingButtons from '../Components/FloatingButton';
-import { TabNavigator } from '../Components/TabNavigator';
-import { TwoCards } from '../Components/TwoCards';
+import FloatingButtons from '../Components/floating-button';
+import { TabNavigator } from '../Components/tab-navigator';
+import { TwoCards } from '../Components/two-cards';
 
 const Index = ({ navigation }) => {
   const auth = useAuth.use.token(); // Destructure the token directly

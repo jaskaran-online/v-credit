@@ -8,7 +8,7 @@ import { Image, Keyboard, KeyboardAvoidingView, TouchableOpacity, View } from 'r
 import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
-import { useEditPaymentApi, useProductsApi, useUpdatePaymentApi } from '../../../apis/useApi';
+import { useEditPaymentApi, useProductsApi, useUpdatePaymentApi } from '../../../apis/use-api';
 import {
   convertDateFormat,
   getItem,
@@ -17,7 +17,7 @@ import {
   useAuthCompanyStore,
 } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
-import DropDownFlashList from '../../Components/dropDownFlashList';
+import DropDownFlashList from '../../Components/drop-down-flash-list';
 
 const TRANS_TYPES = [
   { id: 1, name: 'Given' },

@@ -6,10 +6,10 @@ import { ActivityIndicator, Platform, TouchableOpacity, View } from 'react-nativ
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
-import { useDailyBook } from '../../../apis/useApi';
+import { useDailyBook } from '../../../apis/use-api';
 import { renderHeader, renderItem, useAuthCompanyStore } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
-import { TwoCards } from '../../Components/TwoCards';
+import { TwoCards } from '../../Components/two-cards';
 
 const StyledView = styled(TouchableOpacity);
 function DayBook() {

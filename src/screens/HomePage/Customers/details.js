@@ -14,7 +14,7 @@ import {
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
 import Animated, { FadeInDown, FadeInLeft } from 'react-native-reanimated';
 
-import { useCustomerTransactionData, useTransactionsDelete } from '../../../apis/useApi';
+import { useCustomerTransactionData, useTransactionsDelete } from '../../../apis/use-api';
 import {
   formatDateForMessage,
   renderHeader,
@@ -23,7 +23,7 @@ import {
   useAuthCompanyStore,
 } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
-import FloatingButtons from '../../Components/FloatingButton';
+import FloatingButtons from '../../Components/floating-button';
 
 export function processString(input = null) {
   if (input == null || input === '' || input === 'null') {

@@ -10,12 +10,12 @@ import {
   useAllTransactions,
   useCompanyCostCenterData,
   useCustomersData,
-} from '../../../apis/useApi';
+} from '../../../apis/use-api';
 import { useAuthCompanyStore } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import navigation from '../../../navigations';
-import { TwoCards } from '../../Components/TwoCards';
-import DropDownFlashList from '../../Components/dropDownFlashList';
+import DropDownFlashList from '../../Components/drop-down-flash-list';
+import { TwoCards } from '../../Components/two-cards';
 
 const renderHeader = () => (
   <View className="flex-row items-center justify-between space-x-2 px-4 py-2">

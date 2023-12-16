@@ -1,4 +1,4 @@
-// useApi.js
+// use-api.js
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { del, get, patch, post, put } from './api';

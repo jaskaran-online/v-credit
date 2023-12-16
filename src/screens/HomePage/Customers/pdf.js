@@ -7,8 +7,8 @@ import { ActivityIndicator, Platform, TouchableOpacity, View } from 'react-nativ
 import { Text } from 'react-native-paper';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
-import HTMLCodeView from './HTMLCodeView';
-import { useCustomerTransactionData } from '../../../apis/useApi';
+import HtmlCodeView from './html-code-view';
+import { useCustomerTransactionData } from '../../../apis/use-api';
 import { convertTimeToPM, formatDateForMessage, useAuthCompanyStore } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 
@@ -204,7 +204,7 @@ const ShareScreen = ({ route }) => {
       ) : (
         <>
           <View className="flex-1 p-2">
-            <HTMLCodeView ref={htmlCodeViewRef} htmlCode={html} />
+            <HtmlCodeView ref={htmlCodeViewRef} htmlCode={html} />
           </View>
           {Platform.OS === 'ios' && (
             <View>

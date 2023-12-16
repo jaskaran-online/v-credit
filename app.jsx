@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   MD3DarkTheme as DarkTheme,
@@ -40,15 +40,17 @@ const darkTheme = {
 
 export default function App() {
   const authHydrate = useAuth.use.hydrate();
-
-  useEffect(function () {
-    authHydrate();
-  }, []);
+  useEffect(
+    function () {
+      authHydrate();
+    },
+    [authHydrate],
+  );
 
   const [isDarkTheme] = useState(false);
   const theme = isDarkTheme ? darkTheme : lightTheme;
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
         <QueryClientProvider client={queryClient}>
           <PaperProvider theme={theme}>
@@ -61,3 +63,9 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

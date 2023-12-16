@@ -1,8 +1,8 @@
 import React from 'react';
 import { WebView } from 'react-native-webview';
 
-const HTMLCodeView = ({ htmlCode }) => {
+const HtmlCodeView = ({ htmlCode }) => {
   return <WebView source={{ html: htmlCode }} originWhitelist={['*']} useWebView2 />;
 };
 
-export default HTMLCodeView;
+export default HtmlCodeView;

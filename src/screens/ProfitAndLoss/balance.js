@@ -5,9 +5,9 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 import { Keyboard, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 
-import { useCreatePurchaseApi, useItemsData } from '../../apis/useApi';
+import { useCreateBalanceApi, useItemsData } from '../../apis/use-api';
 import { showToast, useAuthCompanyStore } from '../../core/utils';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/use-auth';
 
 function ListHeaderComponent() {
   return (
@@ -17,10 +17,10 @@ function ListHeaderComponent() {
   );
 }
 
-function Purchase() {
+function Balance() {
   const bottomSheetModalRef = useRef(null);
   const [isSheetOpen, setSheetOpen] = useState(false);
-  const [amount, setAmount] = useState(false);
+  const [coins, setCoins] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -29,24 +29,24 @@ function Purchase() {
   const company = useAuthCompanyStore((state) => state.selectedCompany);
 
   const {
-    mutate: createPurchase,
-    isLoading: isCreatePurchase,
-    data: createPurchaseData,
-  } = useCreatePurchaseApi();
+    mutate: createBalance,
+    isLoading: isCreateBalance,
+    data: createBalanceData,
+  } = useCreateBalanceApi();
 
   useEffect(() => {
-    if (createPurchaseData) {
-      if (createPurchaseData?.status) {
-        showToast('Purchase created successfully');
+    if (createBalanceData) {
+      if (createBalanceData?.status) {
+        showToast('Balance created successfully');
       } else {
-        showToast('Failed to create purchase', 'error');
+        showToast('Failed to create Balance', 'error');
       }
     }
     setSelectedItem(null);
-    setAmount(false);
+    setCoins(false);
     setSelectedDate(new Date());
     setSheetOpen(false);
-  }, [createPurchaseData]);
+  }, [createBalanceData]);
 
   const { data: itemsData } = useItemsData();
 
@@ -59,8 +59,8 @@ function Purchase() {
       return;
     }
 
-    if (!amount) {
-      showToast('Please enter amount', 'error');
+    if (!coins) {
+      showToast('Please enter coins', 'error');
       return;
     }
 
@@ -77,8 +77,8 @@ function Purchase() {
         selectedDate.getDate(),
     );
     formData.append('item_id', selectedItem?.id);
-    formData.append('amount', amount);
-    createPurchase(formData);
+    formData.append('coins', coins);
+    createBalance(formData);
   };
 
   const showDatePicker = () => {
@@ -149,14 +149,14 @@ function Purchase() {
         />
       )}
 
-      {/* Amount Input */}
+      {/* coins Input */}
       <TextInput
         className="mt-2 h-14 rounded-sm bg-white"
         mode="outlined"
-        label="Amount"
+        label="Coins"
         keyboardType="decimal-pad"
-        value={amount}
-        onChangeText={(text) => setAmount(text)}
+        value={coins}
+        onChangeText={(text) => setCoins(text)}
       />
 
       {/* Save Button */}
@@ -164,8 +164,8 @@ function Purchase() {
         mode="contained"
         onPress={handleFormSubmit}
         className="mt-4 py-2"
-        loading={isCreatePurchase}>
-        {isCreatePurchase ? 'Saving...' : 'Save'}
+        loading={isCreateBalance}>
+        {isCreateBalance ? 'Saving...' : 'Save'}
       </Button>
 
       {/* Bottom Sheet */}
@@ -201,7 +201,7 @@ function Purchase() {
   );
 }
 
-export default memo(Purchase);
+export default memo(Balance);
 
 const styles = StyleSheet.create({
   container: {

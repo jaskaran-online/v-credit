@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Linking, TouchableOpacity, View } from 'react-native';
 import { Button, Dialog, Portal, Text, TextInput } from 'react-native-paper';
 
-import { useCreateCustomer, useGetCustomersList, useUpdateCustomer } from '../../../apis/useApi';
+import { useCreateCustomer, useGetCustomersList, useUpdateCustomer } from '../../../apis/use-api';
 import { showToast, useAuthCompanyStore, useCustomersStore } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 

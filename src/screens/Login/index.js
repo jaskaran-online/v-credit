@@ -5,7 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { Image, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 
-import { useAuthLogin } from '../../apis/useApi';
+import { useAuthLogin } from '../../apis/use-api';
 import { COLORS } from '../../core';
 import { showToast } from '../../core/utils';
 import { useAuth } from '../../hooks';

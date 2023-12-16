@@ -10,6 +10,7 @@ module.exports = {
         endOfLine: 'auto',
       },
     ],
+    'react/react-in-jsx-scope': 'off',
     'unicorn/filename-case': [
       'error',
       {
@@ -38,7 +39,7 @@ module.exports = {
         ],
         'react/react-in-jsx-scope': 'off',
         'max-params': ['error', 3], // Limit the number of parameters in a function to use object instead
-        'max-lines-per-function': ['error', 70],
+        'max-lines-per-function': ['error', 200],
         'react/destructuring-assignment': 'off', // Vscode doesn't support automatically destructuring, it's a pain to add a new variable
         'react/require-default-props': 'off', // Allow non-defined react props as undefined
         'import/prefer-default-export': 'off', // Named export is easier to refactor automatically

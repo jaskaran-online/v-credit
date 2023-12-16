@@ -5,10 +5,10 @@ import { ActivityIndicator, Platform, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
-import { useAllParties, useCustomersData } from '../../../apis/useApi';
+import { useAllParties, useCustomersData } from '../../../apis/use-api';
 import { renderHeader, renderItem, useAuthCompanyStore } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
-import DropDownFlashList from '../../Components/dropDownFlashList';
+import DropDownFlashList from '../../Components/drop-down-flash-list';
 
 export default function Index() {
   const auth = useAuth.use?.token();

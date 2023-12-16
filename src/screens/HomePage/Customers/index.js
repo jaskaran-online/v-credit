@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 
-import { useCustomersData } from '../../../apis/useApi';
+import { useCustomersData } from '../../../apis/use-api';
 import Avatar from '../../../components/Avatar';
 import {
   formatDateForMessage,
