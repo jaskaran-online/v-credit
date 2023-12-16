@@ -343,7 +343,7 @@ export function DrawerNavigator() {
             drawerActiveTintColor: COLORS.primary,
             drawerLabelStyle: drawerLabelStyleCustom,
             headerStyle: { backgroundColor: '#eff6ff' },
-            title: ({ focused }) => (
+            headerTitle: ({ focused }) => (
               <Text
                 style={{
                   color: focused ? COLORS.primary : COLORS.darkTransparent,
@@ -369,10 +369,9 @@ export function DrawerNavigator() {
           component={ProfitLoss}
           options={{
             headerShown: true,
-            headerTitle: 'Profit and Loss',
             headerStyle: { backgroundColor: '#eff6ff' },
             drawerLabelStyle: drawerLabelStyleCustom,
-            title: ({ focused }) => (
+            headerTitle: ({ focused }) => (
               <Text
                 style={{
                   color: focused ? COLORS.primary : COLORS.darkTransparent,
@@ -399,9 +398,8 @@ export function DrawerNavigator() {
             component={Reports}
             options={{
               headerShown: true,
-              headerTitle: 'Reports',
               headerStyle: { backgroundColor: '#eff6ff' },
-              title: ({ focused }) => (
+              headerTitle: ({ focused }) => (
                 <Text
                   style={{
                     color: focused ? COLORS.primary : COLORS.darkTransparent,

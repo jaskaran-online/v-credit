@@ -12,7 +12,6 @@ import {
   View,
 } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
-import SafeAreaView from 'react-native-safe-area-view';
 import { useCustomersData } from '../../../apis/useApi';
 import Avatar from '../../../components/Avatar';
 import {
@@ -206,7 +205,7 @@ export default function Index() {
   };
 
   return (
-    <SafeAreaView className={'bg-white flex-1'}>
+    <View className={'bg-white flex-1'}>
       <View
         className={`flex flex-row justify-between w-full px-3 items-center  ${
           Platform.OS === 'android' ? 'py-2' : 'pb-2'
@@ -357,7 +356,7 @@ export default function Index() {
           </View>
         </View>
       </BottomSheetModal>
-    </SafeAreaView>
+    </View>
   );
 }
 
