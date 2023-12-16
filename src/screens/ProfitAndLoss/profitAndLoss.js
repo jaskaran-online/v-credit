@@ -1,37 +1,25 @@
-import {
-  AntDesign,
-  Ionicons,
-  MaterialCommunityIcons,
-} from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
-
 
 function CardComponent({ title, iconName, description, onPress = () => null }) {
   return (
     <TouchableOpacity
-      className={
-        'bg-white flex h-16 shadow-sm shadow-slate-200 mx-2 flex-row justify-between items-center px-4 mt-3 rounded-2xl'
-      }
-      onPress={onPress}
-    >
-      <View className={'flex flex-row justify-start items-center'}>
+      className="mx-2 mt-3 flex h-16 flex-row items-center justify-between rounded-2xl bg-white px-4 shadow-sm shadow-slate-200"
+      onPress={onPress}>
+      <View className="flex flex-row items-center justify-start">
         <View>
           {iconName === 'bank' ? (
-            <MaterialCommunityIcons
-              name="bank-transfer"
-              size={24}
-              color="dodgerblue"
-            />
+            <MaterialCommunityIcons name="bank-transfer" size={24} color="dodgerblue" />
           ) : (
             <Ionicons name={iconName} size={20} color="dodgerblue" />
           )}
         </View>
-        <View className={'ml-4'}>
-          <Text variant={'titleSmall'}>{title}</Text>
+        <View className="ml-4">
+          <Text variant="titleSmall">{title}</Text>
         </View>
       </View>
-      <View className="bg-blue-100 p-2 rounded-full">
+      <View className="rounded-full bg-blue-100 p-2">
         <AntDesign name="right" size={18} color="dodgerblue" />
       </View>
     </TouchableOpacity>
@@ -46,14 +34,14 @@ export default function Index({ navigation }) {
           navigation.navigate('Purchase');
         }}
         iconName="person"
-        title={'Purchase'}
+        title="Purchase"
       />
       <CardComponent
         onPress={() => {
           navigation.navigate('Balance');
         }}
         iconName="people"
-        title={'Balance'}
+        title="Balance"
       />
     </View>
   );

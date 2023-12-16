@@ -1,29 +1,17 @@
-import React, {
-  useRef,
-  useMemo,
-  useCallback,
-  useState,
-  memo,
-  useEffect,
-} from 'react';
-import { Keyboard, StyleSheet, TouchableOpacity, View } from 'react-native';
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetFlatList,
-  BottomSheetModal,
-} from '@gorhom/bottom-sheet';
-import { Button, Text } from 'react-native-paper';
-import { useCreatePurchaseApi, useItemsData } from '../../apis/useApi';
-import { TextInput } from 'react-native-paper';
-import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
-
+import { Entypo } from '@expo/vector-icons';
+import { BottomSheetBackdrop, BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useAuth } from '../../hooks/useAuth';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Keyboard, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Button, Text, TextInput } from 'react-native-paper';
+
+import { useCreatePurchaseApi, useItemsData } from '../../apis/useApi';
 import { showToast, useAuthCompanyStore } from '../../core/utils';
+import { useAuth } from '../../hooks/useAuth';
 
 function ListHeaderComponent() {
   return (
-    <View className="flex-1 items-center justify-center bg-white py-2 mb-2">
+    <View className="mb-2 flex-1 items-center justify-center bg-white py-2">
       <Text variant="titleMedium">Select an item</Text>
     </View>
   );
@@ -140,13 +128,8 @@ function Purchase() {
   return (
     <View style={styles.container}>
       {/* Item Selector */}
-      <TouchableOpacity
-        style={styles.itemSelector}
-        onPress={() => handleSnapPress(1)}
-      >
-        <Text style={styles.itemText}>
-          {!selectedItem ? 'Select Item' : selectedItem.name}
-        </Text>
+      <TouchableOpacity style={styles.itemSelector} onPress={() => handleSnapPress(1)}>
+        <Text style={styles.itemText}>{!selectedItem ? 'Select Item' : selectedItem.name}</Text>
         <Entypo name="chevron-down" size={22} color="gray" />
       </TouchableOpacity>
 
@@ -168,7 +151,7 @@ function Purchase() {
 
       {/* Amount Input */}
       <TextInput
-        className={'h-14 rounded-sm mt-2 bg-white'}
+        className="mt-2 h-14 rounded-sm bg-white"
         mode="outlined"
         label="Amount"
         keyboardType="decimal-pad"
@@ -181,8 +164,7 @@ function Purchase() {
         mode="contained"
         onPress={handleFormSubmit}
         className="mt-4 py-2"
-        loading={isCreatePurchase}
-      >
+        loading={isCreatePurchase}>
         {isCreatePurchase ? 'Saving...' : 'Save'}
       </Button>
 
@@ -198,8 +180,7 @@ function Purchase() {
         }}
         onDismiss={() => {
           setSheetOpen(false);
-        }}
-      >
+        }}>
         <BottomSheetFlatList
           data={itemsData?.data || []}
           keyExtractor={(i) => i}
@@ -210,11 +191,8 @@ function Purchase() {
                 bottomSheetModalRef.current?.close();
                 setSelectedItem(item);
               }}
-              className={
-                'flex-row justify-between px-2 space-x-2 items-center py-3 border-b mx-4 border-slate-200'
-              }
-            >
-              <Text className={' text-slate-800'}>{item.name}</Text>
+              className="mx-4 flex-row items-center justify-between space-x-2 border-b border-slate-200 px-2 py-3">
+              <Text className=" text-slate-800">{item.name}</Text>
             </TouchableOpacity>
           )}
         />

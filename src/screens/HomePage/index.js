@@ -2,17 +2,14 @@ import { useFocusEffect } from '@react-navigation/native';
 import * as Contacts from 'expo-contacts';
 import React, { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
+
 import {
   useCustomersData,
   useGetCustomersList,
   useTotalTransactionData,
   useVerifyUserAuthApi,
 } from '../../apis/useApi';
-import {
-  useAuthCompanyStore,
-  useCardAmountStore,
-  useContactsStore,
-} from '../../core/utils';
+import { useAuthCompanyStore, useCardAmountStore, useContactsStore } from '../../core/utils';
 import { useAuth } from '../../hooks';
 import FloatingButtons from '../Components/FloatingButton';
 import { TabNavigator } from '../Components/TabNavigator';
@@ -23,8 +20,8 @@ const Index = ({ navigation }) => {
   const signOut = useAuth?.use?.signOut();
 
   const company = useAuthCompanyStore((state) => state.selectedCompany);
-  let cardAmount = useCardAmountStore((state) => state.cardAmount);
-  let setCardAmount = useCardAmountStore((state) => state.setCardAmount);
+  const cardAmount = useCardAmountStore((state) => state.cardAmount);
+  const setCardAmount = useCardAmountStore((state) => state.setCardAmount);
 
   // Use object destructuring for more concise code
   const {
@@ -101,9 +98,7 @@ const Index = ({ navigation }) => {
           imageAvailable: false,
         }));
 
-        const newArray = contactsArray.filter((obj) =>
-          obj.hasOwnProperty('phoneNumbers'),
-        );
+        const newArray = contactsArray.filter((obj) => obj.hasOwnProperty('phoneNumbers'));
 
         useContactsStore.setState({
           contactsList: [...filteredContacts, ...newArray],
@@ -124,13 +119,7 @@ const Index = ({ navigation }) => {
         company_id: company?.id,
         cost_center_id: auth.user.cost_center_id,
       });
-    }, [
-      auth.user,
-      company,
-      getCardTotals,
-      loadCustomerData,
-      getCustomerRequest,
-    ]),
+    }, [auth.user, company, getCardTotals, loadCustomerData, getCustomerRequest]),
   );
 
   // useEffect to load contacts when customer data is loaded
@@ -151,11 +140,7 @@ const Index = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <TwoCards
-        toPay={cardAmount?.toPay}
-        toReceive={cardAmount?.toReceive}
-        homePage={true}
-      />
+      <TwoCards toPay={cardAmount?.toPay} toReceive={cardAmount?.toReceive} homePage />
       <View style={{ flex: 1 }}>
         <TabNavigator />
       </View>

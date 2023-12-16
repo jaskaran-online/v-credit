@@ -1,36 +1,29 @@
-import {
-  Feather,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
-import { useEffect, useState, useRef } from 'react';
+import _ from 'lodash';
+import { useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
+  Image,
   Linking,
   Platform,
   Share,
   TouchableOpacity,
   View,
-  Image,
-  ActivityIndicator,
 } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
+import Animated, { FadeInDown, FadeInLeft } from 'react-native-reanimated';
 
-import _ from 'lodash';
+import { useCustomerTransactionData, useTransactionsDelete } from '../../../apis/useApi';
 import {
-  useCustomerTransactionData,
-  useTransactionsDelete,
-} from '../../../apis/useApi';
-import {
-  renderItem,
   formatDateForMessage,
   renderHeader,
-  useAuthCompanyStore,
+  renderItem,
   showToast,
+  useAuthCompanyStore,
 } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import FloatingButtons from '../../Components/FloatingButton';
-import Animated, { FadeInDown, FadeInLeft } from 'react-native-reanimated';
 
 export function processString(input = null) {
   if (input == null || input === '' || input === 'null') {
@@ -60,7 +53,7 @@ const sendWhatsApp = async (
   { to_pay_balance, to_receive_balance, name, balance, id },
   { date },
 ) => {
-  let messageDate = formatDateForMessage(date);
+  const messageDate = formatDateForMessage(date);
   let message = `Hi ${name}`;
 
   if (to_receive_balance < to_pay_balance && balance !== 0) {
@@ -86,7 +79,7 @@ For complete details,
 Click : http://mycreditbook.com/udhaar-khata/${id}`;
   }
   await Share.share({
-    message: message,
+    message,
   });
 };
 
@@ -106,9 +99,7 @@ export default function Index({ navigation, route }) {
   const [orderedData, setOrderedData] = useState([]);
   const [filterBy, setFilteredBy] = useState('Clear');
   const [deleteModalVisibility, setDeleteModalVisibility] = useState(null);
-  const hasRoleOneOrFour = auth?.user?.roles?.some(
-    (role) => role.id === 1 || role.id === 4,
-  );
+  const hasRoleOneOrFour = auth?.user?.roles?.some((role) => role.id === 1 || role.id === 4);
 
   function handleLoadMore() {
     pageRef.current += 1;
@@ -196,12 +187,8 @@ export default function Index({ navigation, route }) {
     setShowOptions((show) => !show);
   };
 
-  toPayRef.current = parseFloat(
-    (data?.data?.customer?.totalToPay || 0).toFixed(2),
-  );
-  toReceiveRef.current = parseFloat(
-    (data?.data?.customer?.totalToReceive || 0).toFixed(2),
-  );
+  toPayRef.current = parseFloat((data?.data?.customer?.totalToPay || 0).toFixed(2));
+  toReceiveRef.current = parseFloat((data?.data?.customer?.totalToReceive || 0).toFixed(2));
 
   // let BgColor = 'bg-slate-400';
   // if (toReceiveRef.current > toPayRef.current) {
@@ -215,70 +202,52 @@ export default function Index({ navigation, route }) {
   // }
 
   return (
-    <View className={'bg-white flex-1'}>
-      <View className="bg-blue-50 h-28">
-        <View className="mx-2 h-24 bg-white mt-1 rounded-md shadow-sm flex flex-row items-center justify-between px-4">
-          <View className="flex flex-row space-x-4 items-center">
+    <View className="flex-1 bg-white">
+      <View className="h-28 bg-blue-50">
+        <View className="mx-2 mt-1 flex h-24 flex-row items-center justify-between rounded-md bg-white px-4 shadow-sm">
+          <View className="flex flex-row items-center space-x-4">
             <Animated.View
-              entering={FadeInLeft.easing(0.5)
-                .springify()
-                .duration(300)
-                .delay(200)}
-              className="ml-2"
-            >
+              entering={FadeInLeft.easing(0.5).springify().duration(300).delay(200)}
+              className="ml-2">
               <Text variant="bodyMedium" className="text-slate-600 ">
                 {balanceType.current}
               </Text>
-              <Text variant="bodyLarge" className="text-slate-900 font-bold">
+              <Text variant="bodyLarge" className="font-bold text-slate-900">
                 {Math.abs(balanceRef.current).toFixed(2)} ₹
               </Text>
             </Animated.View>
           </View>
 
           <Animated.View
-            entering={FadeInDown.easing(0.5)
-              .springify()
-              .duration(300)
-              .delay(100)}
-            className="flex flex-row space-x-3 pr-2 pl-8"
-          >
+            entering={FadeInDown.easing(0.5).springify().duration(300).delay(100)}
+            className="flex flex-row space-x-3 pl-8 pr-2">
             <TouchableOpacity
-              className="bg-red-50 p-2 rounded-full  flex items-center"
+              className="flex items-center rounded-full  bg-red-50 p-2"
               onPress={() =>
                 navigation.navigate('DetailsPdf', {
                   id: data?.data?.customer?.id,
                   name: data?.data?.customer?.name,
                 })
-              }
-            >
+              }>
               <MaterialIcons name="picture-as-pdf" size={22} color="tomato" />
             </TouchableOpacity>
             <TouchableOpacity
-              className="bg-blue-50 p-2 rounded-full  flex items-center"
-              onPress={() => makePhoneCall(data?.data?.customer?.phone)}
-            >
+              className="flex items-center rounded-full  bg-blue-50 p-2"
+              onPress={() => makePhoneCall(data?.data?.customer?.phone)}>
               <MaterialIcons name="call" size={22} color="dodgerblue" />
             </TouchableOpacity>
             <TouchableOpacity
-              className="bg-blue-50 p-2 rounded-full"
+              className="rounded-full bg-blue-50 p-2"
               onPress={() =>
-                sendWhatsApp(
-                  data?.data?.customer,
-                  filteredList[filteredList.length - 1],
-                )
-              }
-            >
+                sendWhatsApp(data?.data?.customer, filteredList[filteredList.length - 1])
+              }>
               <MaterialCommunityIcons name="whatsapp" size={26} color="green" />
             </TouchableOpacity>
           </Animated.View>
         </View>
       </View>
-      <View
-        className={
-          'flex flex-row justify-between w-full px-3 items-center py-4'
-        }
-      >
-        <View className={'flex flex-row relative'} style={{ width: '80%' }}>
+      <View className="flex w-full flex-row items-center justify-between px-3 py-4">
+        <View className="relative flex flex-row" style={{ width: '80%' }}>
           <Searchbar
             onChangeText={(text) => handleSearch(text)}
             value={query.toString()}
@@ -292,15 +261,14 @@ export default function Index({ navigation, route }) {
               paddingBottom: 20,
             }}
             placeholder="Search Amount or Txn Note"
-            className={'bg-white border-2 border-slate-200 h-10'}
+            className="h-10 border-2 border-slate-200 bg-white"
           />
         </View>
-        <View className={'flex'} style={{ width: '15%' }}>
+        <View className="flex" style={{ width: '15%' }}>
           {options && (
             <TouchableOpacity
-              className="p-2 bg-white border-slate-900 shadow shadow-slate-300 rounded-xl w-[48] mt-1 h-[40] justify-center items-center"
-              onPress={() => handleOptionSelect(true)}
-            >
+              className="mt-1 h-[40] w-[48] items-center justify-center rounded-xl border-slate-900 bg-white p-2 shadow shadow-slate-300"
+              onPress={() => handleOptionSelect(true)}>
               <Feather name="filter" size={20} color="black" />
             </TouchableOpacity>
           )}
@@ -314,20 +282,14 @@ export default function Index({ navigation, route }) {
             zIndex: 9999999,
             backgroundColor: 'white',
           }}
-          className={
-            'border-2 border-slate-100 shadow-black shadow-lg right-10 top-14'
-          }
-        >
+          className="right-10 top-14 border-2 border-slate-100 shadow-lg shadow-black">
           {options.map((value, index) => {
             return (
               <TouchableOpacity
                 key={index}
                 onPress={value.onPress}
-                className={
-                  value.label === filterBy ? 'bg-slate-200' : 'bg-white'
-                }
-              >
-                <Text variant={'labelLarge'} className={'pl-2 pr-4 py-2'}>
+                className={value.label === filterBy ? 'bg-slate-200' : 'bg-white'}>
+                <Text variant="labelLarge" className="py-2 pl-2 pr-4">
                   {value.label}
                 </Text>
               </TouchableOpacity>
@@ -360,20 +322,17 @@ export default function Index({ navigation, route }) {
           onRefresh={loadCustomerData}
           onOptionSelect={handleOptionSelect}
           onEndReached={handleLoadMore}
-          alwaysBounceVertical={true}
+          alwaysBounceVertical
           showsVerticalScrollIndicator={false}
           onEndReachedThreshold={0.7}
           ListFooterComponent={() => (
-            <View className={'mt-4'}>
+            <View className="mt-4">
               {isLoading ? (
                 <ActivityIndicator animating={isLoading} size="small" />
               ) : (
                 lastPageRef.current <= pageRef.current &&
                 lastPageRef.current > 1 && (
-                  <Text
-                    variant={'labelLarge'}
-                    className={'text-center text-slate-800'}
-                  >
+                  <Text variant="labelLarge" className="text-center text-slate-800">
                     {' '}
                     No more data available!
                   </Text>
@@ -383,44 +342,36 @@ export default function Index({ navigation, route }) {
           )}
         />
       )}
-      <FloatingButtons
-        navigation={navigation}
-        customer={data?.data?.customer}
-      />
+      <FloatingButtons navigation={navigation} customer={data?.data?.customer} />
       <Portal>
-        <Dialog
-          visible={deleteModalVisibility !== null}
-          className={'bg-white rounded'}
-        >
-          <Dialog.Title style={{ fontSize: 14 }} className={'font-bold'}>
+        <Dialog visible={deleteModalVisibility !== null} className="rounded bg-white">
+          <Dialog.Title style={{ fontSize: 14 }} className="font-bold">
             Are you sure you want to delete ?
           </Dialog.Title>
           <Dialog.Content style={{ minHeight: 100 }}>
-            <View className={'flex-row justify-center items-center'}>
+            <View className="flex-row items-center justify-center">
               <Image
                 source={{
                   uri: 'https://assets-v2.lottiefiles.com/a/e09820ea-116b-11ee-8e93-4f2a1602d144/HdbA8EJlUN.gif',
                   width: 100,
                   height: 100,
                 }}
-                className={'my-2'}
+                className="my-2"
               />
             </View>
           </Dialog.Content>
           <Dialog.Actions>
             <Button
-              mode={'contained'}
-              className={'px-4 rounded bg-red-500'}
+              mode="contained"
+              className="rounded bg-red-500 px-4"
               onPress={() => handleDeleteRecord(deleteModalVisibility)}
-              loading={transactionDelLoading}
-            >
+              loading={transactionDelLoading}>
               {transactionDelLoading ? 'Please wait' : 'Agree'}
             </Button>
             <Button
-              mode={'contained'}
-              className={'px-4 rounded bg-gray-800'}
-              onPress={() => setDeleteModalVisibility(null)}
-            >
+              mode="contained"
+              className="rounded bg-gray-800 px-4"
+              onPress={() => setDeleteModalVisibility(null)}>
               Cancel
             </Button>
           </Dialog.Actions>

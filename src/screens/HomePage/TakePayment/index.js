@@ -3,18 +3,11 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
-import {
-  Image,
-  Keyboard,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, Keyboard, KeyboardAvoidingView, TouchableOpacity, View } from 'react-native';
 import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
+
 import { usePaymentApi, useProductsApi } from '../../../apis/useApi';
-import { useAuth } from '../../../hooks';
-import DropDownFlashList from '../../Components/dropDownFlashList';
 import {
   convertDateFormat,
   processString,
@@ -22,6 +15,8 @@ import {
   useAuthCompanyStore,
   useContactsStore,
 } from '../../../core/utils';
+import { useAuth } from '../../../hooks';
+import DropDownFlashList from '../../Components/dropDownFlashList';
 
 const TakePayment = ({ navigation, route }) => {
   const auth = useAuth.use?.token();
@@ -41,9 +36,7 @@ const TakePayment = ({ navigation, route }) => {
   const [note, setNote] = useState('');
   const [price, setPrice] = useState(1);
   const [qty, setQty] = useState(1);
-  const [selectedCustomer, setSelectedCustomer] = useState(
-    route.params?.customer || null,
-  );
+  const [selectedCustomer, setSelectedCustomer] = useState(route.params?.customer || null);
   const contacts = useContactsStore((state) => state.contactsList);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [visible, setVisible] = useState(false);
@@ -57,8 +50,9 @@ const TakePayment = ({ navigation, route }) => {
         ]
       : [],
   );
-  const [contactSelectedMobileNumber, setContactSelectedMobileNumber] =
-    useState(route?.params?.customer?.phone || undefined);
+  const [contactSelectedMobileNumber, setContactSelectedMobileNumber] = useState(
+    route?.params?.customer?.phone || undefined,
+  );
 
   useEffect(() => {
     const formData = new FormData();
@@ -69,15 +63,11 @@ const TakePayment = ({ navigation, route }) => {
   useEffect(() => {
     if (selectedCustomer) {
       if (selectedCustomer?.phoneNumbers) {
-        setContactSelectedMobileNumber(
-          processString(selectedCustomer?.phoneNumbers[0]?.numbers),
-        );
+        setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
         const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
           return {
             ...obj,
-            name: obj.digits
-              ? processString(obj.digits)
-              : processString(obj.number),
+            name: obj.digits ? processString(obj.digits) : processString(obj.number),
           };
         });
         setContactMobileNumbers(updatedData);
@@ -88,13 +78,9 @@ const TakePayment = ({ navigation, route }) => {
   useEffect(() => {
     if (contactMobileNumbers.length === 1) {
       if (contactMobileNumbers[0]?.digits) {
-        setContactSelectedMobileNumber(
-          processString(contactMobileNumbers[0]?.digits),
-        );
+        setContactSelectedMobileNumber(processString(contactMobileNumbers[0]?.digits));
       } else {
-        setContactSelectedMobileNumber(
-          processString(contactMobileNumbers[0]?.number),
-        );
+        setContactSelectedMobileNumber(processString(contactMobileNumbers[0]?.number));
       }
     }
   }, [contactMobileNumbers]);
@@ -122,8 +108,7 @@ const TakePayment = ({ navigation, route }) => {
   const hideDialog = () => setVisible(false);
 
   const handleCameraCapture = async () => {
-    const { status: cameraStatus } =
-      await Camera.requestCameraPermissionsAsync();
+    const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync();
     if (cameraStatus === 'granted') {
       const photo = await ImagePicker.launchCameraAsync();
       if (!photo?.cancelled) {
@@ -134,7 +119,7 @@ const TakePayment = ({ navigation, route }) => {
   };
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
@@ -225,12 +210,9 @@ const TakePayment = ({ navigation, route }) => {
   }, [inventoryChecked]);
 
   return (
-    <View className={'flex-1 bg-white'}>
-      <KeyboardAvoidingView
-        behavior="padding"
-        className={'bg-white flex-1 px-4 pt-1'}
-      >
-        <View className={'mr-5 flex flex-row items-center justify-end my-1'}>
+    <View className="flex-1 bg-white">
+      <KeyboardAvoidingView behavior="padding" className="flex-1 bg-white px-4 pt-1">
+        <View className="my-1 mr-5 flex flex-row items-center justify-end">
           <Checkbox
             status={inventoryChecked ? 'checked' : 'unchecked'}
             onPress={() => {
@@ -240,8 +222,7 @@ const TakePayment = ({ navigation, route }) => {
           <TouchableOpacity
             onPress={() => {
               setInventoryChecked(!inventoryChecked);
-            }}
-          >
+            }}>
             <Text>Inventory</Text>
           </TouchableOpacity>
         </View>
@@ -251,7 +232,7 @@ const TakePayment = ({ navigation, route }) => {
           headerTitle="Showing contact from Phone book"
           onSelect={handleContactSelect}
           selectedItemName={selectedCustomer?.name}
-          filterEnabled={true}
+          filterEnabled
         />
         {selectedCustomer && (
           <>
@@ -260,24 +241,18 @@ const TakePayment = ({ navigation, route }) => {
             route?.params?.customer?.phone === null ||
             contactSelectedMobileNumber === undefined ? (
               <TextInput
-                className={'bg-white mt-2 -z-30'}
-                onChangeText={(mobile) =>
-                  setContactSelectedMobileNumber(mobile)
-                }
-                value={
-                  contactSelectedMobileNumber == 'null'
-                    ? ''
-                    : contactSelectedMobileNumber
-                }
-                mode={'outlined'}
-                keyboardType={'phone-pad'}
-                label={'Mobile Number'}
+                className="-z-30 mt-2 bg-white"
+                onChangeText={(mobile) => setContactSelectedMobileNumber(mobile)}
+                value={contactSelectedMobileNumber == 'null' ? '' : contactSelectedMobileNumber}
+                mode="outlined"
+                keyboardType="phone-pad"
+                label="Mobile Number"
               />
             ) : (
               <>
                 {route?.params?.customer?.phone ||
                   (contactMobileNumbers && (
-                    <View className={'mt-2 -z-10'}>
+                    <View className="-z-10 mt-2">
                       <DropDownFlashList
                         data={contactMobileNumbers}
                         inputLabel={
@@ -285,9 +260,7 @@ const TakePayment = ({ navigation, route }) => {
                             ? 'Selected Mobile Number'
                             : 'Select Mobile Number'
                         }
-                        selectedItemName={processString(
-                          selectedCustomer?.phoneNumbers[0]?.number,
-                        )}
+                        selectedItemName={processString(selectedCustomer?.phoneNumbers[0]?.number)}
                         selectedItemDigits={processString(
                           selectedCustomer?.phoneNumbers[0]?.digits,
                         )}
@@ -298,8 +271,8 @@ const TakePayment = ({ navigation, route }) => {
                             contact?.digits
                               ? processString(contact?.digits)
                               : contact?.number
-                              ? processString(contact?.number)
-                              : null,
+                                ? processString(contact?.number)
+                                : null,
                           );
                         }}
                       />
@@ -309,7 +282,7 @@ const TakePayment = ({ navigation, route }) => {
             )}
           </>
         )}
-        <View className={'mt-2 -z-10'}>
+        <View className="-z-10 mt-2">
           <DropDownFlashList
             data={products || []}
             inputLabel="Select Product"
@@ -322,76 +295,69 @@ const TakePayment = ({ navigation, route }) => {
         </View>
         {inventoryChecked && (
           <>
-            <View className={'flex flex-row gap-2 mt-0 -z-30'}>
+            <View className="-z-30 mt-0 flex flex-row gap-2">
               <TextInput
-                className={'bg-white flex-1 mt-2 -z-30'}
+                className="-z-30 mt-2 flex-1 bg-white"
                 onChangeText={handleQtyChange}
                 value={qty.toString()}
-                mode={'outlined'}
-                label={'Qty'}
-                keyboardType={'decimal-pad'}
+                mode="outlined"
+                label="Qty"
+                keyboardType="decimal-pad"
               />
               <TextInput
-                className={'bg-white flex-1 mt-2 -z-30'}
+                className="-z-30 mt-2 flex-1 bg-white"
                 onChangeText={handlePriceChange}
                 value={price.toString()}
-                mode={'outlined'}
-                label={'Price'}
-                keyboardType={'decimal-pad'}
+                mode="outlined"
+                label="Price"
+                keyboardType="decimal-pad"
               />
             </View>
           </>
         )}
         <TextInput
-          className={'bg-white mt-2 -z-30'}
+          className="-z-30 mt-2 bg-white"
           value={amount.toString()}
           onChangeText={setAmount}
-          mode={'outlined'}
-          label={'Amount'}
-          keyboardType={'decimal-pad'}
+          mode="outlined"
+          label="Amount"
+          keyboardType="decimal-pad"
           editable={!inventoryChecked}
         />
-        <View className={'flex flex-row w-full mt-2 -z-30'}>
+        <View className="-z-30 mt-2 flex w-full flex-row">
           <DatePickerInput
             locale="en-GB"
             label="Date"
             value={inputDate}
             onChange={handleDateChange}
             inputMode="start"
-            mode={'outlined'}
-            className={'bg-blue-50 mx-1'}
+            mode="outlined"
+            className="mx-1 bg-blue-50"
           />
           <TouchableOpacity
             onPress={showDialog}
-            className={
-              'flex items-center justify-center px-4 bg-blue-50 shadow-sm border border-blue-100 rounded-lg my-[4px] mx-3'
-            }
-          >
-            <MaterialCommunityIcons name={'camera'} size={30} color={'black'} />
+            className="mx-3 my-[4px] flex items-center justify-center rounded-lg border border-blue-100 bg-blue-50 px-4 shadow-sm">
+            <MaterialCommunityIcons name="camera" size={30} color="black" />
           </TouchableOpacity>
         </View>
         <TextInput
-          className={'bg-white mt-2 -z-30'}
+          className="-z-30 mt-2 bg-white"
           onChangeText={(text) => setNote(text)}
           value={note}
-          mode={'outlined'}
-          label={'Notes (Optional)'}
-          inputMode={'text'}
+          mode="outlined"
+          label="Notes (Optional)"
+          inputMode="text"
         />
         <>
           {imageUri && (
             <Image
               source={{ uri: imageUri, width: 150, height: 150 }}
-              resizeMethod={'auto'}
-              className={'mt-4'}
+              resizeMethod="auto"
+              className="mt-4"
             />
           )}
         </>
-        <Button
-          mode={'contained'}
-          className={'mt-4 py-1 -z-50'}
-          onPress={() => onFormSubmit()}
-        >
+        <Button mode="contained" className="-z-50 mt-4 py-1" onPress={() => onFormSubmit()}>
           Submit
         </Button>
       </KeyboardAvoidingView>
@@ -399,40 +365,29 @@ const TakePayment = ({ navigation, route }) => {
       <Dialog
         visible={visible}
         onDismiss={hideDialog}
-        dismissable={true}
+        dismissable
         style={{ backgroundColor: 'white' }}
-        dismissableBackButton={true}
-      >
+        dismissableBackButton>
         <Dialog.Title style={{ fontSize: 18 }}>Select</Dialog.Title>
         <Dialog.Content>
-          <View className={'flex flex-row justify-evenly mb-10 mt-5'}>
-            <View className={'flex gap-2 items-center'}>
+          <View className="mb-10 mt-5 flex flex-row justify-evenly">
+            <View className="flex items-center gap-2">
               <TouchableOpacity
                 onPress={handleCameraCapture}
-                className={
-                  'flex justify-center items-center shadow-md bg-blue-500 p-4 rounded-3xl'
-                }
-              >
-                <MaterialCommunityIcons
-                  name={'camera'}
-                  size={30}
-                  color={'white'}
-                />
+                className="flex items-center justify-center rounded-3xl bg-blue-500 p-4 shadow-md">
+                <MaterialCommunityIcons name="camera" size={30} color="white" />
               </TouchableOpacity>
-              <Text variant={'titleMedium'} className={'text-stone-600'}>
+              <Text variant="titleMedium" className="text-stone-600">
                 Camera
               </Text>
             </View>
-            <View className={'flex gap-2 items-center'}>
+            <View className="flex items-center gap-2">
               <TouchableOpacity
                 onPress={pickImage}
-                className={
-                  'flex justify-center items-center shadow-md bg-green-600 p-4 rounded-3xl'
-                }
-              >
-                <MaterialIcons name={'photo'} size={30} color={'white'} />
+                className="flex items-center justify-center rounded-3xl bg-green-600 p-4 shadow-md">
+                <MaterialIcons name="photo" size={30} color="white" />
               </TouchableOpacity>
-              <Text variant={'titleMedium'} className={'text-stone-600'}>
+              <Text variant="titleMedium" className="text-stone-600">
                 Gallery
               </Text>
             </View>

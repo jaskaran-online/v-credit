@@ -4,14 +4,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  Platform,
-  Share,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Platform, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
+
 import { useCustomersData } from '../../../apis/useApi';
 import Avatar from '../../../components/Avatar';
 import {
@@ -28,17 +23,14 @@ const renderBackdropComponent = (props) => (
     disappearsOnIndex={-1}
     appearsOnIndex={0}
     opacity={0.4}
-    pressBehavior={'close'}
+    pressBehavior="close"
   />
 );
 
 const sendReminder = async (item) => {
-  if (
-    item?.customer.toReceive < item?.customer.toPay &&
-    item?.customer.balance !== 0
-  ) {
-    let messageDate = formatDateForMessage(item?.last_transaction_date);
-    let message = `Hi ${item?.customer?.name},
+  if (item?.customer.toReceive < item?.customer.toPay && item?.customer.balance !== 0) {
+    const messageDate = formatDateForMessage(item?.last_transaction_date);
+    const message = `Hi ${item?.customer?.name},
                       
   This is a friendly reminder that you have to pay ${
     item?.customer.balance
@@ -47,12 +39,10 @@ const sendReminder = async (item) => {
   Thanks,
   ${item?.user?.name}
   For complete details, Click :
-  http://mycreditbook.com/udhaar-khata/${
-    item?.customer?.id + '-' + item?.user?.id
-  }
+  http://mycreditbook.com/udhaar-khata/${item?.customer?.id + '-' + item?.user?.id}
                   `;
     await Share.share({
-      message: message,
+      message,
     });
   }
 };
@@ -100,7 +90,7 @@ export default function Index() {
       color = 'text-red-400';
     }
 
-    let formatedDate = formatDateForMessage(item?.last_transaction_date);
+    const formatedDate = formatDateForMessage(item?.last_transaction_date);
     return (
       <TouchableOpacity
         onPress={() =>
@@ -110,34 +100,26 @@ export default function Index() {
             toPay: item?.toPay,
             toReceive: item?.toReceive,
             balance: item?.balance,
-            balanceType:
-              item?.type === 1
-                ? 'Advance '
-                : item?.type === 2
-                ? 'Clear '
-                : 'Balance',
+            balanceType: item?.type === 1 ? 'Advance ' : item?.type === 2 ? 'Clear ' : 'Balance',
           })
         }
         delayLongPress={200}
         onLongPress={() => {
           handlePresentModalPress(item);
         }}
-        className={`flex flex-row justify-between items-center py-4 px-2 border-b border-slate-100 `}
-      >
-        <View className={'px-1 flex flex-row items-center'}>
+        className={`flex flex-row items-center justify-between border-b border-slate-100 px-2 py-4 `}>
+        <View className="flex flex-row items-center px-1">
           <Avatar name={item?.customer?.name} size={40} />
-          <View className={'ml-2.5'}>
-            <Text class={'text-slate-800 font-bold'}>
-              {item?.customer?.name}
-            </Text>
-            <Text variant={'labelSmall'} className="text-slate-500">
+          <View className="ml-2.5">
+            <Text class="font-bold text-slate-800">{item?.customer?.name}</Text>
+            <Text variant="labelSmall" className="text-slate-500">
               {formatedDate}
             </Text>
           </View>
         </View>
-        <View className={'flex flex-row justify-center items-center mr-2'}>
-          <View className={'mr-2'}>
-            <Text variant={'bodySmall'} className={`${color}`}>
+        <View className="mr-2 flex flex-row items-center justify-center">
+          <View className="mr-2">
+            <Text variant="bodySmall" className={`${color}`}>
               {Math.abs(balance.toFixed(2))} ₹
             </Text>
           </View>
@@ -146,11 +128,7 @@ export default function Index() {
     );
   };
 
-  const {
-    mutate: customerDataRequest,
-    data: customerData,
-    isLoading,
-  } = useCustomersData();
+  const { mutate: customerDataRequest, data: customerData, isLoading } = useCustomersData();
   const [reload, setReload] = useState(false);
   const auth = useAuth?.use?.token();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
@@ -205,13 +183,12 @@ export default function Index() {
   };
 
   return (
-    <View className={'bg-white flex-1'}>
+    <View className="flex-1 bg-white">
       <View
-        className={`flex flex-row justify-between w-full px-3 items-center  ${
+        className={`flex w-full flex-row items-center justify-between px-3  ${
           Platform.OS === 'android' ? 'py-2' : 'pb-2'
-        }`}
-      >
-        <View className={'flex flex-row relative'}>
+        }`}>
+        <View className="relative flex flex-row">
           <Searchbar
             onChangeText={handleSearch}
             value={query.toString()}
@@ -225,7 +202,7 @@ export default function Index() {
               paddingBottom: 20,
             }}
             placeholder="Search Customer Name"
-            className={'bg-white border-2 border-slate-200 h-10'}
+            className="h-10 border-2 border-slate-200 bg-white"
           />
         </View>
       </View>
@@ -238,8 +215,8 @@ export default function Index() {
         onRefresh={getCustomerData}
         ListFooterComponent={<View style={{ height: 100 }} />}
         ListEmptyComponent={
-          <View className={'flex-1 d-flex justify-center items-center h-16'}>
-            <Text variant={'bodyMedium'}>No Records Available!</Text>
+          <View className="d-flex h-16 flex-1 items-center justify-center">
+            <Text variant="bodyMedium">No Records Available!</Text>
           </View>
         }
       />
@@ -252,51 +229,44 @@ export default function Index() {
         backdropComponent={renderBackdropComponent}
         handleIndicatorStyle={{
           backgroundColor: 'lightgray',
-        }}
-      >
+        }}>
         <View style={styles.contentContainer}>
           <View>
             <View className="flex flex-row items-center">
               <Avatar name={selectedItem?.customer?.name} size={40} />
               <View className="ml-3">
-                <Text variant="titleMedium">
-                  {selectedItem?.customer?.name}
-                </Text>
-                <Text>
-                  {formatDateForMessage(selectedItem?.last_transaction_date)}
-                </Text>
+                <Text variant="titleMedium">{selectedItem?.customer?.name}</Text>
+                <Text>{formatDateForMessage(selectedItem?.last_transaction_date)}</Text>
               </View>
             </View>
             <View className="mt-3 border-b border-slate-200" />
             <View className="mt-2">
-              <View className="flex flex-row justify-between mt-3">
+              <View className="mt-3 flex flex-row justify-between">
                 <Text variant="titleSmall" className="text-slate-700 ">
                   Paid
                 </Text>
                 <Text variant="titleSmall" className="text-slate-700">
                   {' '}
-                  {selectedItem?.toPay}{' '}
-                  <FontAwesome name="rupee" size={14} color="black" />
+                  {selectedItem?.toPay} <FontAwesome name="rupee" size={14} color="black" />
                 </Text>
               </View>
 
-              <View className="flex flex-row justify-between mt-3">
+              <View className="mt-3 flex flex-row justify-between">
                 <Text variant="titleSmall" className="text-slate-700 ">
                   Received
                 </Text>
                 <Text variant="titleSmall" className="text-slate-700">
-                  {selectedItem?.toReceive}{' '}
-                  <FontAwesome name="rupee" size={14} color="black" />
+                  {selectedItem?.toReceive} <FontAwesome name="rupee" size={14} color="black" />
                 </Text>
               </View>
 
-              <View className="flex flex-row justify-between mt-3">
+              <View className="mt-3 flex flex-row justify-between">
                 <Text variant="titleSmall" className="text-slate-700 ">
                   {selectedItem?.type === 1
                     ? 'Advance '
                     : selectedItem?.type === 2
-                    ? 'Clear '
-                    : 'Balance'}
+                      ? 'Clear '
+                      : 'Balance'}
                 </Text>
                 <Text
                   variant="titleMedium"
@@ -304,38 +274,32 @@ export default function Index() {
                     selectedItem?.type === 1
                       ? 'text-green-600'
                       : selectedItem?.type === 2
-                      ? 'text-slate-500'
-                      : 'text-red-500'
-                  }
-                >
+                        ? 'text-slate-500'
+                        : 'text-red-500'
+                  }>
                   {selectedItem?.balance}{' '}
                   <FontAwesome
                     name="rupee"
                     size={14}
                     color={
-                      selectedItem?.type === 1
-                        ? 'green'
-                        : selectedItem?.type === 2
-                        ? 'gray'
-                        : 'red'
+                      selectedItem?.type === 1 ? 'green' : selectedItem?.type === 2 ? 'gray' : 'red'
                     }
                   />
                 </Text>
               </View>
             </View>
           </View>
-          <View className={`flex flex-row justify-center items-center gap-16`}>
+          <View className="flex flex-row items-center justify-center gap-16">
             <View>
               <TouchableOpacity
-                className={`flex items-center`}
+                className="flex items-center"
                 onPress={() => {
                   bottomSheetModalRef.current?.close();
                   sendReminder(selectedItem);
-                }}
-              >
+                }}>
                 <Ionicons name="alarm-outline" size={28} color="black" />
               </TouchableOpacity>
-              <Text variant={'bodyMedium'} className="mt-2 text-slate-900">
+              <Text variant="bodyMedium" className="mt-2 text-slate-900">
                 Reminder
               </Text>
             </View>
@@ -345,11 +309,10 @@ export default function Index() {
                   bottomSheetModalRef.current?.close();
                   sharePDF(selectedItem);
                 }}
-                className={`flex items-center`}
-              >
+                className="flex items-center">
                 <AntDesign name="pdffile1" size={26} color="black" />
               </TouchableOpacity>
-              <Text variant={'bodyMedium'} className="mt-2 text-slate-900">
+              <Text variant="bodyMedium" className="mt-2 text-slate-900">
                 Share PDF
               </Text>
             </View>

@@ -1,6 +1,7 @@
+import 'react-native-gesture-handler';
+
 import { registerRootComponent } from 'expo';
 import { LogBox, Text, TextInput } from 'react-native';
-import 'react-native-gesture-handler';
 import { enGB, registerTranslation } from 'react-native-paper-dates';
 
 import App from './App';

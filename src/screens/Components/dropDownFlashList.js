@@ -1,7 +1,7 @@
+import { FlashList } from '@shopify/flash-list';
+import React, { memo, useEffect, useState } from 'react';
 import { Dimensions, TouchableOpacity, View } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
-import { FlashList } from '@shopify/flash-list';
-import React, { useEffect, useState, memo } from 'react';
 
 function DropDownFlashList({
   data = [],
@@ -29,7 +29,7 @@ function DropDownFlashList({
   const [value, setValue] = useState(selectedItemName);
 
   const renderSeparator = () => {
-    return <View className={'border border-slate-100'} />;
+    return <View className="border border-slate-100" />;
   };
 
   const searchItems = (text) => {
@@ -44,8 +44,8 @@ function DropDownFlashList({
 
   const renderHeader = () => {
     return (
-      <View className={'bg-slate-100 p-2 rounded-t-2xl py-3'}>
-        <Text className={'text-slate-600'}>{headerTitle}</Text>
+      <View className="rounded-t-2xl bg-slate-100 p-2 py-3">
+        <Text className="text-slate-600">{headerTitle}</Text>
       </View>
     );
   };
@@ -63,22 +63,20 @@ function DropDownFlashList({
 
     return (
       <TouchableOpacity
-        className={'w-full z-50'}
+        className="z-50 w-full"
         onPress={() => {
           setValue(item.name);
           onSelect(item);
           setIsDropDownOpen(false);
         }}
-        style={{ padding: 10 }}
-      >
+        style={{ padding: 10 }}>
         {enableSearch ? (
           <Text>
             {start}
             <Text
               style={{
                 color: enableSearch ? 'dodgerblue' : 'black',
-              }}
-            >
+              }}>
               {highlight}
             </Text>
             {end}
@@ -90,8 +88,7 @@ function DropDownFlashList({
     );
   };
 
-  let flashListHeight =
-    filteredContacts?.length === 1 ? 100 : filteredContacts?.length * 70;
+  let flashListHeight = filteredContacts?.length === 1 ? 100 : filteredContacts?.length * 70;
   if (flashListHeight > Dimensions.get('screen').height) {
     flashListHeight = Dimensions.get('screen').height - 400;
   }
@@ -107,7 +104,7 @@ function DropDownFlashList({
         }}
         onFocus={() => setIsDropDownOpen(true)}
         value={value}
-        mode={'outlined'}
+        mode="outlined"
         label={inputLabel}
         right={
           !isReadOnly && (
@@ -134,10 +131,7 @@ function DropDownFlashList({
           style={{
             height: flashListHeight,
           }}
-          className={
-            'bg-white border border-slate-200 shadow-md shadow-slate-400 mt-1 rounded-b-lg rounded-t-2xl z-50'
-          }
-        >
+          className="z-50 mt-1 rounded-b-lg rounded-t-2xl border border-slate-200 bg-white shadow-md shadow-slate-400">
           <FlashList
             data={filteredContacts}
             estimatedItemSize={200}
@@ -149,10 +143,8 @@ function DropDownFlashList({
             ItemSeparatorComponent={renderSeparator}
             ListHeaderComponent={renderHeader}
             ListEmptyComponent={
-              <View
-                className={'flex-1 d-flex justify-center items-center h-16'}
-              >
-                <Text variant={'bodyMedium'}>No Records Available!</Text>
+              <View className="d-flex h-16 flex-1 items-center justify-center">
+                <Text variant="bodyMedium">No Records Available!</Text>
               </View>
             }
           />

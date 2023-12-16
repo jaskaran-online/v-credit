@@ -1,9 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
-import {
-  MaterialCommunityIcons,
-  AntDesign,
-  SimpleLineIcons,
-} from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -20,22 +16,20 @@ import {
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
-  useWindowDimensions,
   View,
 } from 'react-native';
 import { Button, Dialog, Portal, RadioButton, Text } from 'react-native-paper';
-import { COLORS } from '../core';
-import { HomePage, Reports } from '../screens';
-import { useAuth } from '../hooks';
-import CustomerList from '../screens/HomePage/CustomerList';
-import { useAuthCompanyStore } from '../core/utils';
+
 import appJSON from '../../app.json';
-import { ProfitLoss } from '../screens';
 import AccordionItem from '../components/AccordionItem';
 import Avatar from '../components/Avatar';
+import { COLORS } from '../core';
+import { useAuthCompanyStore } from '../core/utils';
+import { useAuth } from '../hooks';
+import { HomePage, ProfitLoss, Reports } from '../screens';
+import CustomerList from '../screens/HomePage/CustomerList';
 const openPlayStore = () => {
-  const playStoreUrl =
-    'https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook';
+  const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook';
 
   Linking.canOpenURL(playStoreUrl)
     .then((supported) => {
@@ -71,15 +65,11 @@ function CustomDrawerContent(props) {
         <View style={styles.drawerHeaderContainer}>
           <View style={styles.drawerHeaderInnerContainer}>
             <View>
-              <Avatar
-                size={50}
-                name={auth?.user?.name}
-                color={COLORS.primary}
-              />
-              <Text variant={'titleMedium'} className="mt-1">
+              <Avatar size={50} name={auth?.user?.name} color={COLORS.primary} />
+              <Text variant="titleMedium" className="mt-1">
                 {auth?.user?.name || 'User Name'}
               </Text>
-              <Text variant={'bodySmall'} className={'text-slate-600'}>
+              <Text variant="bodySmall" className="text-slate-600">
                 {auth?.user?.email}
               </Text>
             </View>
@@ -93,11 +83,7 @@ function CustomDrawerContent(props) {
           labelStyle={styles.drawerItemLabel}
           onPress={openPlayStore}
           icon={({ size }) => (
-            <AntDesign
-              name="staro"
-              size={size - 3}
-              color={COLORS.darkTransparent}
-            />
+            <AntDesign name="staro" size={size - 3} color={COLORS.darkTransparent} />
           )}
         />
 
@@ -110,102 +96,81 @@ function CustomDrawerContent(props) {
             });
           }}
           icon={({ size }) => (
-            <AntDesign
-              name="sharealt"
-              size={size - 3}
-              color={COLORS.darkTransparent}
-            />
+            <AntDesign name="sharealt" size={size - 3} color={COLORS.darkTransparent} />
           )}
         />
-        <View className="border-slate-300 border-[0.5px] my-8 w-[250px]" />
+        <View className="my-8 w-[250px] border-[0.5px] border-slate-300" />
       </DrawerContentScrollView>
 
       <View style={styles.footerButtonContainer}>
-        <AccordionItem title={'Settings'}>
-          <View className={'ml-2'}>
+        <AccordionItem title="Settings">
+          <View className="ml-2">
             <TouchableOpacity
               onPress={() => signOut()}
-              className={'flex-row items-center gap-x-8 mt-6'}
-            >
-              <AntDesign
-                name="enter"
-                size={22}
-                color={COLORS.darkTransparent}
-              />
+              className="mt-6 flex-row items-center gap-x-8">
+              <AntDesign name="enter" size={22} color={COLORS.darkTransparent} />
               <Text
                 style={{
                   fontSize: 15,
                   fontWeight: 500,
-                }}
-              >
+                }}>
                 Logout
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setDeleteModalVisibility(true)}
-              className={'flex-row items-center gap-x-8 mt-6'}
-            >
-              <AntDesign
-                name="delete"
-                size={22}
-                color={COLORS.darkTransparent}
-              />
+              className="mt-6 flex-row items-center gap-x-8">
+              <AntDesign name="delete" size={22} color={COLORS.darkTransparent} />
               <Text
                 style={{
                   fontSize: 15,
                   fontWeight: 500,
-                }}
-              >
+                }}>
                 Delete Account
               </Text>
             </TouchableOpacity>
           </View>
         </AccordionItem>
-        <View style={styles.footerVersionTextContainer} className={'mb-2'}>
-          <Text className={'text-slate-600 '} variant="bodyMedium">
+        <View style={styles.footerVersionTextContainer} className="mb-2">
+          <Text className="text-slate-600 " variant="bodyMedium">
             Version : {appJSON.expo.version}
           </Text>
         </View>
       </View>
 
       <Portal>
-        <Dialog visible={deleteModalVisibility} className={'bg-white rounded'}>
-          <Dialog.Title style={{ fontSize: 14 }} className={'font-bold'}>
+        <Dialog visible={deleteModalVisibility} className="rounded bg-white">
+          <Dialog.Title style={{ fontSize: 14 }} className="font-bold">
             Are you sure you want to delete account ?
           </Dialog.Title>
           <Dialog.Content style={{ minHeight: 100 }}>
-            <View className={'flex-row justify-center items-center'}>
+            <View className="flex-row items-center justify-center">
               <Image
                 source={{
                   uri: 'https://assets-v2.lottiefiles.com/a/e09820ea-116b-11ee-8e93-4f2a1602d144/HdbA8EJlUN.gif',
                   width: 100,
                   height: 100,
                 }}
-                className={'my-2'}
+                className="my-2"
               />
             </View>
-            <Text
-              variant={'bodyMedium'}
-              className={'mb-1 text-red-600 font-semibold'}
-            >
+            <Text variant="bodyMedium" className="mb-1 font-semibold text-red-600">
               {' '}
               You cannot undo this action afterwards!{' '}
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button
-              mode={'contained'}
-              className={'px-4 rounded bg-red-500'}
+              mode="contained"
+              className="rounded bg-red-500 px-4"
               onPress={() => toggleDeleteModalHandler()}
-              loading={deleteAccountLoading}
-            >
+              loading={deleteAccountLoading}>
               {deleteAccountLoading ? 'Please wait' : 'Agree'}
             </Button>
             <Button
-              mode={'contained'}
-              className={'px-4 rounded bg-gray-800'}
-              onPress={() => setDeleteModalVisibility(false)}
-            >
+              mode="contained"
+              className="rounded bg-gray-800 px-4"
+              onPress={() => setDeleteModalVisibility(false)}>
               Cancel
             </Button>
           </Dialog.Actions>
@@ -234,22 +199,16 @@ const CompanySwitch = () => {
     <>
       <Button
         onPress={showCompanySwitchModalHandler}
-        className={'bg-white rounded-full mr-2 border-2 shadow-sm'}
-      >
-        <MaterialCommunityIcons
-          name={'account-switch'}
-          size={20}
-          color={COLORS.primary}
-        />
+        className="mr-2 rounded-full border-2 bg-white shadow-sm">
+        <MaterialCommunityIcons name="account-switch" size={20} color={COLORS.primary} />
       </Button>
 
       <Portal>
         <Dialog
           visible={showCompanySwitchModal}
           onDismiss={hideCompanySwitchModalHandler}
-          className={'bg-white rounded'}
-        >
-          <Dialog.Title style={{ fontSize: 18 }} className={'font-semibold'}>
+          className="rounded bg-white">
+          <Dialog.Title style={{ fontSize: 18 }} className="font-semibold">
             Please select company
           </Dialog.Title>
           <Dialog.Content style={{ minHeight: 100 }}>
@@ -259,18 +218,15 @@ const CompanySwitch = () => {
                   <View key={companyItem.id}>
                     <TouchableHighlight
                       activeOpacity={1}
-                      underlayColor={'#eff6ff'}
+                      underlayColor="#eff6ff"
                       onPress={() => {
                         setChecked(companyItem.id);
                         setCompany(companyItem);
-                      }}
-                    >
-                      <View className={'flex-row items-center gap-x-1 ml-1'}>
+                      }}>
+                      <View className="ml-1 flex-row items-center gap-x-1">
                         <RadioButton
                           value={companyItem.id}
-                          status={
-                            checked === companyItem.id ? 'checked' : 'unchecked'
-                          }
+                          status={checked === companyItem.id ? 'checked' : 'unchecked'}
                         />
                         <Text>{companyItem.name}</Text>
                       </View>
@@ -282,10 +238,9 @@ const CompanySwitch = () => {
           </Dialog.Content>
           <Dialog.Actions>
             <Button
-              mode={'contained'}
-              className={'px-4 rounded bg-blue-800'}
-              onPress={hideCompanySwitchModalHandler}
-            >
+              mode="contained"
+              className="rounded bg-blue-800 px-4"
+              onPress={hideCompanySwitchModalHandler}>
               Done
             </Button>
           </Dialog.Actions>
@@ -297,9 +252,7 @@ const CompanySwitch = () => {
 
 export function DrawerNavigator() {
   const auth = useAuth.use?.token();
-  const hasRoleOneOrFour = auth?.user?.roles?.some(
-    (role) => role.id === 1 || role.id === 4,
-  );
+  const hasRoleOneOrFour = auth?.user?.roles?.some((role) => role.id === 1 || role.id === 4);
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const drawerLabelStyleCustom = {
     fontSize: 15,
@@ -308,14 +261,14 @@ export function DrawerNavigator() {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Drawer.Navigator
         drawerContent={CustomDrawerContent}
         initialRouteName="HomePage"
         allowFontScaling={false}
-        animationEnabled={true}
+        animationEnabled
         backBehavior="history"
-        drawerActiveBackgroundColor={'black'}
+        drawerActiveBackgroundColor="black"
         screenOptions={() => ({
           overlayColor: 'rgba(190,190,190,0.4)',
           drawerType: '',
@@ -332,8 +285,7 @@ export function DrawerNavigator() {
           drawerStyle: {
             width: Dimensions.get('window').width / 1.2,
           },
-        })}
-      >
+        })}>
         <Drawer.Screen
           name="HomePage"
           component={HomePage}
@@ -349,8 +301,7 @@ export function DrawerNavigator() {
                   color: focused ? COLORS.primary : COLORS.darkTransparent,
                   fontSize: 15,
                   fontWeight: 500,
-                }}
-              >
+                }}>
                 {company?.name || 'Home'}
               </Text>
             ),
@@ -377,8 +328,7 @@ export function DrawerNavigator() {
                   color: focused ? COLORS.primary : COLORS.darkTransparent,
                   fontSize: 15,
                   fontWeight: 500,
-                }}
-              >
+                }}>
                 Profit and Loss
               </Text>
             ),
@@ -405,8 +355,7 @@ export function DrawerNavigator() {
                     color: focused ? COLORS.primary : COLORS.darkTransparent,
                     fontSize: 15,
                     fontWeight: 500,
-                  }}
-                >
+                  }}>
                   Reports
                 </Text>
               ),
@@ -442,7 +391,7 @@ export function DrawerNavigator() {
           }}
         />
       </Drawer.Navigator>
-    </React.Fragment>
+    </>
   );
 }
 

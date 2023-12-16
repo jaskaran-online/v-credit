@@ -5,11 +5,4 @@ import DayBook from './DayBook';
 import PartyStatement from './PartyStatement';
 import AllReports from './reports';
 
-export {
-  AllParties,
-  AllReports,
-  AllTransactions,
-  CostCenter,
-  DayBook,
-  PartyStatement,
-};
+export { AllParties, AllReports, AllTransactions, CostCenter, DayBook, PartyStatement };

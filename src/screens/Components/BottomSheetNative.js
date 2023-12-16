@@ -1,6 +1,6 @@
-import React, { useCallback, useRef, useMemo } from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { useCallback, useMemo, useRef } from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
 
 const BottomSheetCustom = () => {
   // hooks
@@ -29,11 +29,7 @@ const BottomSheetCustom = () => {
       <Button title="Snap To 50%" onPress={() => handleSnapPress(1)} />
       <Button title="Snap To 25%" onPress={() => handleSnapPress(0)} />
       <Button title="Close" onPress={() => handleClosePress()} />
-      <BottomSheet
-        ref={sheetRef}
-        snapPoints={snapPoints}
-        onChange={handleSheetChange}
-      >
+      <BottomSheet ref={sheetRef} snapPoints={snapPoints} onChange={handleSheetChange}>
         <BottomSheetView>
           <Text>Awesome 🔥</Text>
         </BottomSheetView>

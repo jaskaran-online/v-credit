@@ -15,13 +15,7 @@ const randomDarkColor = () => {
   return `#${red}${green}${blue}`;
 };
 
-const Avatar = ({
-  name,
-  color = randomDarkColor(),
-  size,
-  fontStyle = {},
-  containerStyle = {},
-}) => {
+const Avatar = ({ name, color = randomDarkColor(), size, fontStyle = {}, containerStyle = {} }) => {
   const initials = name
     .split(' ')
     .map((n) => n[0])
@@ -37,8 +31,7 @@ const Avatar = ({
           width: size,
         },
         containerStyle,
-      ]}
-    >
+      ]}>
       <Text
         className="text-white"
         variant="labelLarge"
@@ -49,8 +42,7 @@ const Avatar = ({
             fontSize: size / 2.8,
           },
           fontStyle,
-        ]}
-      >
+        ]}>
         {initials}
       </Text>
     </View>

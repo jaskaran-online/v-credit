@@ -8,9 +8,7 @@ const fontCalculation = (height, width, val) => {
   const widthDimension = height > width ? width : height;
   const aspectRatioBasedHeight = (16 / 9) * widthDimension;
   return percentageCalculation(
-    Math.sqrt(
-      Math.pow(aspectRatioBasedHeight, 2) + Math.pow(widthDimension, 2),
-    ),
+    Math.sqrt(Math.pow(aspectRatioBasedHeight, 2) + Math.pow(widthDimension, 2)),
     val,
   );
 };

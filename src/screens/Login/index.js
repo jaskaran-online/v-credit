@@ -4,20 +4,14 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Image, KeyboardAvoidingView, Platform, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
+
 import { useAuthLogin } from '../../apis/useApi';
 import { COLORS } from '../../core';
-import { useAuth } from '../../hooks';
 import { showToast } from '../../core/utils';
+import { useAuth } from '../../hooks';
 
 export default function Index() {
-  const {
-    mutate,
-    data: response,
-    isLoading,
-    error,
-    isError,
-    isSuccess,
-  } = useAuthLogin();
+  const { mutate, data: response, isLoading, error, isError, isSuccess } = useAuthLogin();
 
   useEffect(
     function () {
@@ -50,24 +44,17 @@ export default function Index() {
   }
 
   return (
-    <View className={'flex-1'}>
+    <View className="flex-1">
       <StatusBar />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1 items-center justify-evenly bg-white w-full z-50"
-      >
-        <View className={'h-1/2 w-full px-6 flex'}>
-          <Image
-            source={require('../../../assets/logo.png')}
-            className={'w-[150] h-[150] m-auto'}
-          />
-          <Text
-            variant={'titleLarge'}
-            className={'mb-2 text-3xl text-slate-900'}
-          >
+        className="z-50 w-full flex-1 items-center justify-evenly bg-white">
+        <View className="flex h-1/2 w-full px-6">
+          <Image source={require('../../../assets/logo.png')} className="m-auto h-[150] w-[150]" />
+          <Text variant="titleLarge" className="mb-2 text-3xl text-slate-900">
             Login
           </Text>
-          <View className={'w-full flex-1'}>
+          <View className="w-full flex-1">
             <>
               <Controller
                 control={control}
@@ -84,21 +71,17 @@ export default function Index() {
                     onChangeText={(text) => onChange(text)}
                     value={value}
                     label="Email"
-                    className={'bg-white'}
-                    mode={'outlined'}
-                    placeholder={'Enter Email'}
+                    className="bg-white"
+                    mode="outlined"
+                    placeholder="Enter Email"
                     placeholderTextColor={COLORS.darkGray}
-                    activeOutlineColor={'darkgreen'}
+                    activeOutlineColor="darkgreen"
                     left={
                       <TextInput.Icon
                         onPress={() => {
-                          isPasswordSecure
-                            ? setIsPasswordSecure(false)
-                            : setIsPasswordSecure(true);
+                          isPasswordSecure ? setIsPasswordSecure(false) : setIsPasswordSecure(true);
                         }}
-                        icon={() => (
-                          <MaterialCommunityIcons name={'email'} size={20} />
-                        )}
+                        icon={() => <MaterialCommunityIcons name="email" size={20} />}
                       />
                     }
                   />
@@ -107,14 +90,11 @@ export default function Index() {
                 defaultValue=""
               />
               {errors?.email && (
-                <Text
-                  variant={'bodySmall'}
-                  className={'text-amber-700 font-bold mt-1'}
-                >
+                <Text variant="bodySmall" className="mt-1 font-bold text-amber-700">
                   *{errors?.email?.message}
                 </Text>
               )}
-              <View className={'mb-4 '} />
+              <View className="mb-4 " />
               <Controller
                 control={control}
                 rules={{
@@ -126,18 +106,16 @@ export default function Index() {
                     onChangeText={(text) => onChange(text)}
                     value={value}
                     label="Password"
-                    placeholder={'Enter Password'}
-                    mode={'outlined'}
-                    className={'bg-white'}
+                    placeholder="Enter Password"
+                    mode="outlined"
+                    className="bg-white"
                     secureTextEntry={isPasswordSecure}
                     placeholderTextColor={COLORS.darkGray}
-                    activeOutlineColor={'darkgreen'}
+                    activeOutlineColor="darkgreen"
                     right={
                       <TextInput.Icon
                         onPress={() => {
-                          isPasswordSecure
-                            ? setIsPasswordSecure(false)
-                            : setIsPasswordSecure(true);
+                          isPasswordSecure ? setIsPasswordSecure(false) : setIsPasswordSecure(true);
                         }}
                         icon={() => (
                           <MaterialCommunityIcons
@@ -150,13 +128,9 @@ export default function Index() {
                     left={
                       <TextInput.Icon
                         onPress={() => {
-                          isPasswordSecure
-                            ? setIsPasswordSecure(false)
-                            : setIsPasswordSecure(true);
+                          isPasswordSecure ? setIsPasswordSecure(false) : setIsPasswordSecure(true);
                         }}
-                        icon={() => (
-                          <MaterialCommunityIcons name={'key'} size={20} />
-                        )}
+                        icon={() => <MaterialCommunityIcons name="key" size={20} />}
                       />
                     }
                   />
@@ -165,20 +139,16 @@ export default function Index() {
                 defaultValue=""
               />
               {errors?.password && (
-                <Text
-                  variant={'bodySmall'}
-                  className={'text-amber-700 font-bold mt-1'}
-                >
+                <Text variant="bodySmall" className="mt-1 font-bold text-amber-700">
                   *{errors?.password?.message}
                 </Text>
               )}
             </>
             <Button
-              mode={'contained'}
-              className={'bg-emerald-900 rounded-md mt-4 h-12 justify-center'}
+              mode="contained"
+              className="mt-4 h-12 justify-center rounded-md bg-emerald-900"
               onPress={handleSubmit(onSubmit)}
-              loading={isLoading}
-            >
+              loading={isLoading}>
               Login
             </Button>
           </View>

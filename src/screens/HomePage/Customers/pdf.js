@@ -3,32 +3,20 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import _ from 'lodash';
 import React, { useEffect, useRef } from 'react';
-import {
-  ActivityIndicator,
-  Platform,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Platform, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { useCustomerTransactionData } from '../../../apis/useApi';
-import {
-  convertTimeToPM,
-  formatDateForMessage,
-  useAuthCompanyStore,
-} from '../../../core/utils';
-import { useAuth } from '../../../hooks';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+
 import HTMLCodeView from './HTMLCodeView';
-import Animated, { FadeInDown, SlideInRight } from 'react-native-reanimated';
+import { useCustomerTransactionData } from '../../../apis/useApi';
+import { convertTimeToPM, formatDateForMessage, useAuthCompanyStore } from '../../../core/utils';
+import { useAuth } from '../../../hooks';
 
 const ShareScreen = ({ route }) => {
   const auth = useAuth.use?.token();
-  const {
-    mutate,
-    data: customerData,
-    isLoading,
-  } = useCustomerTransactionData();
+  const { mutate, data: customerData, isLoading } = useCustomerTransactionData();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
-  let data = customerData?.data;
+  const data = customerData?.data;
   function loadCustomerData() {
     const formData = new FormData();
     formData.append('company_id', company?.id);
@@ -48,9 +36,7 @@ const ShareScreen = ({ route }) => {
   const htmlCodeViewRef = useRef(null);
   const [selectedPrinter, setSelectedPrinter] = React.useState();
   const toPay = parseFloat((data?.customer?.totalToPay || 0).toFixed(2));
-  const toReceive = parseFloat(
-    (data?.customer?.totalToReceive || 0).toFixed(2),
-  );
+  const toReceive = parseFloat((data?.customer?.totalToReceive || 0).toFixed(2));
 
   transactionsData = transactionsData.map((item) => {
     return {
@@ -59,10 +45,7 @@ const ShareScreen = ({ route }) => {
     };
   });
 
-  let transactionsGroupBy = _.groupBy(
-    _.sortBy(transactionsData, ['dateOnly']),
-    'dateOnly',
-  );
+  const transactionsGroupBy = _.groupBy(_.sortBy(transactionsData, ['dateOnly']), 'dateOnly');
 
   let balance = 0;
   let color = 'gray';
@@ -86,8 +69,8 @@ const ShareScreen = ({ route }) => {
             )}</span>
         </td>
         </tr>`;
-    for (let transaction of transactions) {
-      let transactionAmount = transaction.amount;
+    for (const transaction of transactions) {
+      const transactionAmount = transaction.amount;
       if (transaction.transaction_type_id === 1) {
         ariseBalance += transactionAmount;
       } else {
@@ -98,27 +81,19 @@ const ShareScreen = ({ route }) => {
     <td colspan="5">
         <tr style="background: ${index % 2 === 0 ? 'white' : 'white'}">
         <td style="padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">
-        <span style="max-width: 30px">${
-          formatDateForMessage(transaction.date).split(' ')[0]
-        } ${
+        <span style="max-width: 30px">${formatDateForMessage(transaction.date).split(' ')[0]} ${
           formatDateForMessage(transaction.date).split(' ')[1]
         }  : ${convertTimeToPM(transaction.date)}</span></td>
         <td style="padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">${
-          transaction.transaction_type_id === 1
-            ? 'Credit Given'
-            : 'Payment Received'
+          transaction.transaction_type_id === 1 ? 'Credit Given' : 'Payment Received'
         }</td>
         <td style=" ${
-          transaction.transaction_type_id === 1
-            ? 'background-color:rgba(255,167,154,0.28);'
-            : null
+          transaction.transaction_type_id === 1 ? 'background-color:rgba(255,167,154,0.28);' : null
         } padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">${
           transaction.transaction_type_id === 1 ? transactionAmount + ' ₹' : ''
         }</td>
         <td style=" ${
-          transaction.transaction_type_id === 1
-            ? null
-            : 'background-color:#DDECD9FF;'
+          transaction.transaction_type_id === 1 ? null : 'background-color:#DDECD9FF;'
         }padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">${
           transaction.transaction_type_id === 1 ? ' ' : transactionAmount + ' ₹'
         }</td>
@@ -129,9 +104,7 @@ const ShareScreen = ({ route }) => {
       <tr style="background: #eff6ff">
         <td colspan="5" style="padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">
         <div style='display: flex;justify-content: space-between'>
-          <span> ${
-            transaction.notes ? 'Notes :' + transaction?.notes : ''
-          }</span>
+          <span> ${transaction.notes ? 'Notes :' + transaction?.notes : ''}</span>
           <span>Created By : ${transaction?.user?.name}</span>
         </div>
         </td>
@@ -157,15 +130,9 @@ const ShareScreen = ({ route }) => {
     </header>
     <div style="margin: 0 auto; padding: 20px;  border-radius: 5px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
       <div style="text-align: center; margin-bottom: 20px; margin-top: 20px;">
-        <p style="font-size: 30px; margin: 0;font-weight: bold;">${
-          customer?.name
-        }</p>
-        <p style="font-size: 17px; margin: 5px;color: dimgrey;">${
-          auth?.user?.company?.name
-        }</p>
-        <p style="font-size: 17px; margin: 5px;color: dimgrey;">${
-          customer?.phone || ''
-        }</p>
+        <p style="font-size: 30px; margin: 0;font-weight: bold;">${customer?.name}</p>
+        <p style="font-size: 17px; margin: 5px;color: dimgrey;">${auth?.user?.company?.name}</p>
+        <p style="font-size: 17px; margin: 5px;color: dimgrey;">${customer?.phone || ''}</p>
         <p style="font-size: 17px; margin: 5px;color: dimgrey;">(${formatDateForMessage(
           firstKey,
         )} - ${formatDateForMessage(lastKey)})</p>
@@ -241,35 +208,27 @@ const ShareScreen = ({ route }) => {
           </View>
           {Platform.OS === 'ios' && (
             <View>
-              {selectedPrinter ? (
-                <Text>{`Selected printer: ${selectedPrinter.name}`}</Text>
-              ) : null}
+              {selectedPrinter ? <Text>{`Selected printer: ${selectedPrinter.name}`}</Text> : null}
             </View>
           )}
           <Animated.View
             animated
             entering={FadeInDown.easing(0.5).springify().duration(300)}
-            className=" bg-white flex flex-row pb-10 items-center justify-evenly pt-4"
-          >
+            className=" flex flex-row items-center justify-evenly bg-white pb-10 pt-4">
             <TouchableOpacity
-              className={'d-flex justify-center items-center gap-2'}
-              onPress={execute}
-            >
+              className="d-flex items-center justify-center gap-2"
+              onPress={execute}>
               <MaterialIcons name="share" size={24} color="dodgerblue" />
               <Text>Share</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              className={'d-flex justify-center items-center gap-2'}
-              onPress={print}
-            >
+            <TouchableOpacity className="d-flex items-center justify-center gap-2" onPress={print}>
               <MaterialIcons name="print" size={24} color="black" />
               <Text>Print</Text>
             </TouchableOpacity>
             {Platform.OS === 'ios' && (
               <TouchableOpacity
-                className={'d-flex justify-center items-center gap-2'}
-                onPress={selectPrinter}
-              >
+                className="d-flex items-center justify-center gap-2"
+                onPress={selectPrinter}>
                 <AntDesign name="select1" size={24} color="black" />
                 <Text>Select</Text>
               </TouchableOpacity>

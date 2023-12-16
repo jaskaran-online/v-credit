@@ -2,20 +2,12 @@ import { Feather } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { styled } from 'nativewind';
 import { memo, useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  TouchableOpacity,
-  View,
-  Platform,
-} from 'react-native';
+import { ActivityIndicator, Platform, TouchableOpacity, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
+
 import { useDailyBook } from '../../../apis/useApi';
-import {
-  renderHeader,
-  renderItem,
-  useAuthCompanyStore,
-} from '../../../core/utils';
+import { renderHeader, renderItem, useAuthCompanyStore } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import { TwoCards } from '../../Components/TwoCards';
 
@@ -33,16 +25,16 @@ function DayBook() {
 
   function Header() {
     return (
-      <View className="bg-blue-50 h-40">
-        <StyledView className="flex h-1/4 p-2 bg-blue-50">
+      <View className="h-40 bg-blue-50">
+        <StyledView className="flex h-1/4 bg-blue-50 p-2">
           <DatePickerInput
             locale="en-GB"
             label="Date"
             value={inputDate}
             onChange={(date) => setInputDate(date)}
             inputMode="start"
-            mode={'outlined'}
-            className={'bg-blue-50 mx-1'}
+            mode="outlined"
+            className="mx-1 bg-blue-50"
           />
           <TwoCards
             toReceive={dailyBookData?.data?.totalOfTransactions?.toReceive}
@@ -125,19 +117,13 @@ function DayBook() {
     setSelectedItem(null);
   };
 
-  const hasRoleOneOrFour = auth?.user?.roles?.some(
-    (role) => role.id === 1 || role.id === 4,
-  );
+  const hasRoleOneOrFour = auth?.user?.roles?.some((role) => role.id === 1 || role.id === 4);
 
   return (
-    <View className={'bg-white flex-1'}>
+    <View className="flex-1 bg-white">
       <Header />
-      <View
-        className={
-          'flex flex-row justify-between w-full px-3 items-center py-4'
-        }
-      >
-        <View className={'flex flex-row relative'} style={{ width: '80%' }}>
+      <View className="flex w-full flex-row items-center justify-between px-3 py-4">
+        <View className="relative flex flex-row" style={{ width: '80%' }}>
           <Searchbar
             onChangeText={handleSearch}
             value={query.toString()}
@@ -151,15 +137,14 @@ function DayBook() {
               paddingBottom: 20,
             }}
             placeholder="Search Name, Amount or Txn Note"
-            className={'bg-white border-2 border-slate-200 h-10'}
+            className="h-10 border-2 border-slate-200 bg-white"
           />
         </View>
-        <View className={'flex'} style={{ width: '15%' }}>
+        <View className="flex" style={{ width: '15%' }}>
           {options && (
             <TouchableOpacity
-              className="p-2 bg-white border-slate-900 shadow shadow-slate-300 rounded-xl w-[48] mt-1 h-[40] justify-center items-center"
-              onPress={() => handleOptionSelect(true)}
-            >
+              className="mt-1 h-[40] w-[48] items-center justify-center rounded-xl border-slate-900 bg-white p-2 shadow shadow-slate-300"
+              onPress={() => handleOptionSelect(true)}>
               <Feather name="filter" size={20} color="black" />
             </TouchableOpacity>
           )}
@@ -173,20 +158,14 @@ function DayBook() {
             zIndex: 9999999,
             backgroundColor: 'white',
           }}
-          className={
-            'border-2 border-slate-100 shadow-black shadow-lg right-10 top-14'
-          }
-        >
+          className="right-10 top-14 border-2 border-slate-100 shadow-lg shadow-black">
           {options.map((value, index) => {
             return (
               <TouchableOpacity
                 key={index}
                 onPress={value.onPress}
-                className={
-                  value.label === 'Clear' ? 'bg-slate-200' : 'bg-white'
-                }
-              >
-                <Text variant={'labelLarge'} className={'pl-2 pr-4 py-2'}>
+                className={value.label === 'Clear' ? 'bg-slate-200' : 'bg-white'}>
+                <Text variant="labelLarge" className="py-2 pl-2 pr-4">
                   {value.label}
                 </Text>
               </TouchableOpacity>
@@ -216,13 +195,13 @@ function DayBook() {
           onOptionSelect={handleOptionSelect}
           ListFooterComponent={<View style={{ height: 100 }} />}
           ListEmptyComponent={
-            <View className={'flex-1 d-flex justify-center items-center h-16'}>
-              <Text variant={'bodyMedium'}>No Records Available!</Text>
+            <View className="d-flex h-16 flex-1 items-center justify-center">
+              <Text variant="bodyMedium">No Records Available!</Text>
             </View>
           }
         />
       ) : (
-        <ActivityIndicator className={'mt-24'} />
+        <ActivityIndicator className="mt-24" />
       )}
     </View>
   );

@@ -1,9 +1,16 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
-import { useAuth } from '../hooks';
-import { navigationRef } from './index';
 
+import { AuthNavigator } from './auth-navigator';
+import { useAuthCompanyStore } from '../core/utils';
+import { useAuth } from '../hooks';
+import { Balance, EditTransaction, Purchase } from '../screens';
+import CustomerList from '../screens/HomePage/CustomerList';
+import CustomerTransactionDetails from '../screens/HomePage/Customers/details';
+import ShareScreen from '../screens/HomePage/Customers/pdf';
+import GiveMoney from '../screens/HomePage/GiveMoney';
+import TakePayment from '../screens/HomePage/TakePayment';
 import {
   AllParties,
   AllTransactions,
@@ -11,20 +18,9 @@ import {
   DayBook,
   PartyStatement,
 } from '../screens/Reports';
-import { Balance, Purchase } from '../screens/index';
-
-import { AuthNavigator } from './auth-navigator';
 import { DrawerNavigator } from './drawer-navigator';
+import { navigationRef } from './index';
 import { NavigationContainer } from './navigation-container';
-
-import CustomerTransactionDetails from '../screens/HomePage/Customers/details';
-import ShareScreen from '../screens/HomePage/Customers/pdf';
-
-import { EditTransaction } from '../screens';
-import GiveMoney from '../screens/HomePage/GiveMoney';
-import TakePayment from '../screens/HomePage/TakePayment';
-import CustomerList from '../screens/HomePage/CustomerList';
-import { useAuthCompanyStore } from '../core/utils';
 
 const Stack = createNativeStackNavigator();
 // Keep the splash screen visible while we fetch resources
@@ -56,8 +52,7 @@ export const Root = () => {
         gestureEnabled: false,
         animation: 'flip',
         headerShadowVisible: false, // applied here
-      }}
-    >
+      }}>
       <Stack.Group>
         {status === 'signOut' || status === 'idle' ? (
           <Stack.Screen
@@ -70,11 +65,7 @@ export const Root = () => {
         ) : (
           <Stack.Group>
             {/* App Drawer Route Navigator */}
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="App"
-              component={DrawerNavigator}
-            />
+            <Stack.Screen options={{ headerShown: false }} name="App" component={DrawerNavigator} />
 
             {/* Report Screens */}
             <Stack.Screen

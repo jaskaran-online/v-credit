@@ -1,15 +1,12 @@
 import { FlashList } from '@shopify/flash-list';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, View, Platform } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
+
 import { useAllTransactions, useCustomersData } from '../../../apis/useApi';
-import {
-  renderHeader,
-  renderItem,
-  useAuthCompanyStore,
-} from '../../../core/utils';
+import { renderHeader, renderItem, useAuthCompanyStore } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import { TwoCards } from '../../Components/TwoCards';
 import DropDownFlashList from '../../Components/dropDownFlashList';
@@ -39,7 +36,7 @@ export default function Index() {
 
   useEffect(() => {
     if (customersData?.data) {
-      let customers = (customersData?.data).map((item) => item.customer);
+      const customers = (customersData?.data).map((item) => item.customer);
       setCustomersList(customers);
     }
   }, [customersData]);
@@ -136,23 +133,21 @@ export default function Index() {
     setSelectedItem(null);
   };
 
-  const hasRoleOneOrFour = auth?.user?.roles?.some(
-    (role) => role.id === 1 || role.id === 4,
-  );
+  const hasRoleOneOrFour = auth?.user?.roles?.some((role) => role.id === 1 || role.id === 4);
 
   return (
-    <View className={'bg-white flex-1'}>
-      <StatusBar animated={true} />
-      <View className="flex h-15 p-2 bg-blue-50">
-        <View className={'flex flex-row mb-2'}>
+    <View className="flex-1 bg-white">
+      <StatusBar animated />
+      <View className="h-15 flex bg-blue-50 p-2">
+        <View className="mb-2 flex flex-row">
           <DatePickerInput
             locale="en-GB"
             label="From"
             value={fromDate}
             onChange={(d) => setFromDate(d)}
             inputMode="start"
-            mode={'outlined'}
-            className={'bg-blue-50 mx-1'}
+            mode="outlined"
+            className="mx-1 bg-blue-50"
           />
 
           <DatePickerInput
@@ -161,8 +156,8 @@ export default function Index() {
             value={toDate}
             onChange={(d) => setToDate(d)}
             inputMode="start"
-            mode={'outlined'}
-            className={'bg-blue-50 mx-1'}
+            mode="outlined"
+            className="mx-1 bg-blue-50"
           />
         </View>
         <View>
@@ -174,12 +169,12 @@ export default function Index() {
               onSelect={(contactObj) => {
                 setCustomer(contactObj);
               }}
-              isTransparent={true}
-              filterEnabled={true}
+              isTransparent
+              filterEnabled
               selectedItemName={customer?.name || ''}
             />
           )}
-          <View className={'mt-2'} />
+          <View className="mt-2" />
           <DropDownFlashList
             data={[
               { id: 0, name: 'All' },
@@ -191,8 +186,8 @@ export default function Index() {
             onSelect={(contactObj) => {
               setTransactionType(contactObj?.id);
             }}
-            isTransparent={true}
-            filterEnabled={true}
+            isTransparent
+            filterEnabled
             enableSearch={false}
             selectedItemName={transactionType?.name || ''}
           />
@@ -204,11 +199,7 @@ export default function Index() {
       </View>
       {transactionsData?.data ? (
         <>
-          <View
-            className={
-              'flex flex-row justify-between w-full px-3 items-center py-4'
-            }
-          >
+          <View className="flex w-full flex-row items-center justify-between px-3 py-4">
             <Searchbar
               onChangeText={handleSearch}
               value={query.toString()}
@@ -222,7 +213,7 @@ export default function Index() {
                 paddingBottom: 20,
               }}
               placeholder="Search Name, Amount or Txn Note"
-              className={'bg-white border-2 border-slate-200 h-10'}
+              className="h-10 border-2 border-slate-200 bg-white"
             />
           </View>
           <View style={{ flex: 1, height: '100%' }}>
@@ -250,10 +241,8 @@ export default function Index() {
                 onOptionSelect={handleOptionSelect}
                 ListFooterComponent={<View style={{ height: 100 }} />}
                 ListEmptyComponent={
-                  <View
-                    className={'flex-1 d-flex justify-center items-center h-16'}
-                  >
-                    <Text variant={'bodyMedium'}>No Records Available!</Text>
+                  <View className="d-flex h-16 flex-1 items-center justify-center">
+                    <Text variant="bodyMedium">No Records Available!</Text>
                   </View>
                 }
               />
@@ -261,7 +250,7 @@ export default function Index() {
           </View>
         </>
       ) : (
-        <ActivityIndicator className={'mt-24'} />
+        <ActivityIndicator className="mt-24" />
       )}
     </View>
   );

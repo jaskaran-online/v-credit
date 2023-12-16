@@ -1,9 +1,10 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { Image, TouchableOpacity, View, Platform, ActivityIndicator } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Image, Platform, TouchableOpacity, View } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
+
 import {
   useTotalTransactionData,
   useTransactionsData,
@@ -20,17 +21,12 @@ import {
 import { useAuth } from '../../../hooks';
 
 export default function Index() {
-
   const currentPageRef = useRef(0);
   const lastPageRef = useRef(1);
 
   const auth = useAuth.use?.token();
-  let setCardAmount = useCardAmountStore((state) => state.setCardAmount);
-  const {
-    mutate: transactionRequest,
-    data: transactionData,
-    isLoading,
-  } = useTransactionsData();
+  const setCardAmount = useCardAmountStore((state) => state.setCardAmount);
+  const { mutate: transactionRequest, data: transactionData, isLoading } = useTransactionsData();
   // Use object destructuring for more concise code
   const {
     mutate: cardRequest,
@@ -80,9 +76,7 @@ export default function Index() {
           setShowOptions(false);
           break;
         case 'Show My Records':
-          orderedArray = orderedArray.filter(
-            (item) => item.user_id === auth?.user?.id,
-          );
+          orderedArray = orderedArray.filter((item) => item.user_id === auth?.user?.id);
           setOrderedData([...orderedArray]); // Update the state with the filtered array
           setShowOptions(false);
           break;
@@ -113,7 +107,7 @@ export default function Index() {
     }
   }, [auth.user, company, cardRequest, transactionDelSuccess]);
 
-  let toggleFilter = useFilterToggleStore((state) => state.toggleFilter);
+  const toggleFilter = useFilterToggleStore((state) => state.toggleFilter);
 
   useEffect(() => {
     loadTransactions();
@@ -167,9 +161,7 @@ export default function Index() {
     setShowOptions((show) => !show);
   };
 
-  const hasRoleOneOrFour = auth?.user?.roles?.some(
-    (role) => role.id === 1 || role.id === 4,
-  );
+  const hasRoleOneOrFour = auth?.user?.roles?.some((role) => role.id === 1 || role.id === 4);
 
   function handleDeleteRecord(deleteModalVisibility) {
     transactionDelRequest({
@@ -180,9 +172,9 @@ export default function Index() {
     toggleFilter('none');
   }
 
-  function handleLoadMore(){
-    currentPageRef.current = currentPageRef.current + 1
-    if(lastPageRef.current >= currentPageRef.current){
+  function handleLoadMore() {
+    currentPageRef.current = currentPageRef.current + 1;
+    if (lastPageRef.current >= currentPageRef.current) {
       loadTransactions(currentPageRef.current);
     }
   }
@@ -197,13 +189,9 @@ export default function Index() {
   }, [cardData, isCardLoading]);
 
   return (
-    <View className={'bg-white flex-1'}>
-      <View
-        className={
-          'flex flex-row justify-between w-full px-3 items-center py-4'
-        }
-      >
-        <View className={'flex flex-row relative'} style={{ width: '80%' }}>
+    <View className="flex-1 bg-white">
+      <View className="flex w-full flex-row items-center justify-between px-3 py-4">
+        <View className="relative flex flex-row" style={{ width: '80%' }}>
           <Searchbar
             onChangeText={handleSearch}
             value={query.toString()}
@@ -217,17 +205,16 @@ export default function Index() {
               paddingBottom: 20,
             }}
             placeholder="Search Name, Amount or Txn Note"
-            className={'bg-white border-2 border-slate-200 h-10'}
+            className="h-10 border-2 border-slate-200 bg-white"
           />
         </View>
-        <View className={'flex'} style={{ width: '15%', marginRight: 10 }}>
+        <View className="flex" style={{ width: '15%', marginRight: 10 }}>
           {options && (
             <Button
               onPress={() => handleOptionSelect(true)}
               className={`${
                 filterBy === 'Clear' ? 'bg-white' : 'bg-blue-600'
-              }  rounded-full mr-2 border-2 shadow-sm`}
-            >
+              }  mr-2 rounded-full border-2 shadow-sm`}>
               <MaterialCommunityIcons
                 name="account-filter"
                 size={22}
@@ -245,20 +232,14 @@ export default function Index() {
             zIndex: 9999999,
             backgroundColor: 'white',
           }}
-          className={
-            'border-2 border-slate-100 shadow-black shadow-lg right-10 top-14'
-          }
-        >
+          className="right-10 top-14 border-2 border-slate-100 shadow-lg shadow-black">
           {options.map((value, index) => {
             return (
               <TouchableOpacity
                 key={index}
                 onPress={value.onPress}
-                className={
-                  value.label === filterBy ? 'bg-slate-200' : 'bg-white'
-                }
-              >
-                <Text variant={'labelLarge'} className={'pl-2 pr-4 py-2'}>
+                className={value.label === filterBy ? 'bg-slate-200' : 'bg-white'}>
+                <Text variant="labelLarge" className="py-2 pl-2 pr-4">
                   {value.label}
                 </Text>
               </TouchableOpacity>
@@ -290,56 +271,57 @@ export default function Index() {
         onOptionSelect={handleOptionSelect}
         onEndReachedThreshold={0.7}
         ListFooterComponent={() => (
-          <View className={'mt-4'}>
+          <View className="mt-4">
             {isLoading ? (
               <ActivityIndicator animating={isLoading} size="small" />
-            ) : ((lastPageRef.current <= currentPageRef.current) && (lastPageRef.current > 1) ) && (
-              <Text variant={'labelLarge'} className={'text-center text-slate-800'}> No more data available!</Text>
+            ) : (
+              lastPageRef.current <= currentPageRef.current &&
+              lastPageRef.current > 1 && (
+                <Text variant="labelLarge" className="text-center text-slate-800">
+                  {' '}
+                  No more data available!
+                </Text>
+              )
             )}
           </View>
         )}
         onEndReached={handleLoadMore}
         ListEmptyComponent={
-          <View className={'flex-1 d-flex justify-center items-center h-16'}>
-            <Text variant={'bodyMedium'}>No Records Available!</Text>
+          <View className="d-flex h-16 flex-1 items-center justify-center">
+            <Text variant="bodyMedium">No Records Available!</Text>
           </View>
         }
       />
 
       <Portal>
-        <Dialog
-          visible={deleteModalVisibility !== null}
-          className={'bg-white rounded'}
-        >
-          <Dialog.Title style={{ fontSize: 14 }} className={'font-bold'}>
+        <Dialog visible={deleteModalVisibility !== null} className="rounded bg-white">
+          <Dialog.Title style={{ fontSize: 14 }} className="font-bold">
             Are you sure you want to delete ?
           </Dialog.Title>
           <Dialog.Content style={{ minHeight: 100 }}>
-            <View className={'flex-row justify-center items-center'}>
+            <View className="flex-row items-center justify-center">
               <Image
                 source={{
                   uri: 'https://assets-v2.lottiefiles.com/a/e09820ea-116b-11ee-8e93-4f2a1602d144/HdbA8EJlUN.gif',
                   width: 100,
                   height: 100,
                 }}
-                className={'my-2'}
+                className="my-2"
               />
             </View>
           </Dialog.Content>
           <Dialog.Actions>
             <Button
-              mode={'contained'}
-              className={'px-4 rounded bg-red-500'}
+              mode="contained"
+              className="rounded bg-red-500 px-4"
               onPress={() => handleDeleteRecord(deleteModalVisibility)}
-              loading={transactionDelLoading}
-            >
+              loading={transactionDelLoading}>
               {transactionDelLoading ? 'Please wait' : 'Agree'}
             </Button>
             <Button
-              mode={'contained'}
-              className={'px-4 rounded bg-gray-800'}
-              onPress={() => setDeleteModalVisibility(null)}
-            >
+              mode="contained"
+              className="rounded bg-gray-800 px-4"
+              onPress={() => setDeleteModalVisibility(null)}>
               Cancel
             </Button>
           </Dialog.Actions>

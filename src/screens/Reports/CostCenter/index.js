@@ -2,39 +2,35 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  TouchableOpacity,
-  View,
-  Platform,
-} from 'react-native';
+import { ActivityIndicator, Platform, TouchableOpacity, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
+
 import {
   useAllTransactions,
   useCompanyCostCenterData,
   useCustomersData,
 } from '../../../apis/useApi';
+import { useAuthCompanyStore } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import navigation from '../../../navigations';
 import { TwoCards } from '../../Components/TwoCards';
 import DropDownFlashList from '../../Components/dropDownFlashList';
-import { useAuthCompanyStore } from '../../../core/utils';
 
 const renderHeader = () => (
-  <View className={'flex-row justify-between px-4 py-2 space-x-2 items-center'}>
-    <View className="flex-1 border-b-2 border-slate-300 w-1/3">
-      <Text variant={'bodyMedium'} className="text-left text-slate-800">
+  <View className="flex-row items-center justify-between space-x-2 px-4 py-2">
+    <View className="w-1/3 flex-1 border-b-2 border-slate-300">
+      <Text variant="bodyMedium" className="text-left text-slate-800">
         Customer
       </Text>
     </View>
     <View className="flex-1 border-b-2 border-amber-400">
-      <Text variant={'bodyMedium'} className="text-right text-slate-800 mr-2">
+      <Text variant="bodyMedium" className="mr-2 text-right text-slate-800">
         Given
       </Text>
     </View>
     <View className="flex-1 border-b-2 border-blue-500">
-      <Text variant={'bodyMedium'} className="text-right text-slate-800">
+      <Text variant="bodyMedium" className="text-right text-slate-800">
         Received
       </Text>
     </View>
@@ -43,67 +39,60 @@ const renderHeader = () => (
 
 const renderItem = ({ item }) => (
   <TouchableOpacity
-    className={
-      'flex flex-row justify-between items-center px-1.5 py-2 border-b-2 border-slate-200'
-    }
+    className="flex flex-row items-center justify-between border-b-2 border-slate-200 px-1.5 py-2"
     onPress={() =>
       navigation.navigate('CustomerTransactionDetails', {
         id: item?.customer_id,
         name: item?.name,
       })
-    }
-  >
-    <View className="flex flex-row items-center w-1/4">
+    }>
+    <View className="flex w-1/4 flex-row items-center">
       <View className="mr-1">
         {item?.transaction_type_id === 2 ? (
-          <MaterialCommunityIcons
-            name="call-received"
-            size={14}
-            color="green"
-          />
+          <MaterialCommunityIcons name="call-received" size={14} color="green" />
         ) : (
           <MaterialIcons name="call-made" size={14} color="red" />
         )}
       </View>
       <View>
-        <Text variant={'titleSmall'} className="text-slate-800">
+        <Text variant="titleSmall" className="text-slate-800">
           {item?.customer?.name}
         </Text>
-        <Text variant={'labelSmall'} className="text-slate-400">
+        <Text variant="labelSmall" className="text-slate-400">
           {item?.date}
         </Text>
       </View>
     </View>
     <View>
       {item?.transaction_type_id === 1 ? (
-        <View className={'mr-2'}>
-          <Text variant={'bodyMedium'} className="text-slate-800 mr-2">
+        <View className="mr-2">
+          <Text variant="bodyMedium" className="mr-2 text-slate-800">
             {item?.amount}
           </Text>
-          <Text variant={'labelSmall'} className="text-slate-400 mr-2">
+          <Text variant="labelSmall" className="mr-2 text-slate-400">
             (Udhaar)
           </Text>
         </View>
       ) : (
-        <Text variant={'bodyMedium'} className={'text-slate-400 text-center'}>
+        <Text variant="bodyMedium" className="text-center text-slate-400">
           {' '}
           -{' '}
         </Text>
       )}
     </View>
-    <View className={'flex flex-row items-right'}>
+    <View className="items-right flex flex-row">
       <View>
         {item?.transaction_type_id === 2 ? (
           <View>
-            <Text variant={'bodyMedium'} className="text-slate-800">
+            <Text variant="bodyMedium" className="text-slate-800">
               {item?.amount}
             </Text>
-            <Text variant={'labelSmall'} className="text-slate-400">
+            <Text variant="labelSmall" className="text-slate-400">
               (Payment)
             </Text>
           </View>
         ) : (
-          <Text variant={'bodyMedium'} className={'text-slate-400 text-center'}>
+          <Text variant="bodyMedium" className="text-center text-slate-400">
             {' '}
             -{' '}
           </Text>
@@ -228,18 +217,18 @@ export default function Index() {
   };
 
   return (
-    <View className={'bg-white flex-1'}>
-      <StatusBar animated={true} />
-      <View className="flex h-15 p-2 bg-blue-50">
-        <View className={'flex flex-row mb-2'}>
+    <View className="flex-1 bg-white">
+      <StatusBar animated />
+      <View className="h-15 flex bg-blue-50 p-2">
+        <View className="mb-2 flex flex-row">
           <DatePickerInput
             locale="en-GB"
             label="From"
             value={fromDate}
             onChange={(d) => setFromDate(d)}
             inputMode="start"
-            mode={'outlined'}
-            className={'bg-blue-50 mx-1'}
+            mode="outlined"
+            className="mx-1 bg-blue-50"
           />
 
           <DatePickerInput
@@ -248,8 +237,8 @@ export default function Index() {
             value={toDate}
             onChange={(d) => setToDate(d)}
             inputMode="start"
-            mode={'outlined'}
-            className={'bg-blue-50 mx-1'}
+            mode="outlined"
+            className="mx-1 bg-blue-50"
           />
         </View>
         <View>
@@ -261,12 +250,12 @@ export default function Index() {
               onSelect={(selectedCostCenter) => {
                 setSelectedCostCenter(selectedCostCenter);
               }}
-              isTransparent={true}
+              isTransparent
               filterEnabled={false}
               selectedItemName={selectedCostCenter?.name || ''}
             />
           )}
-          <View className={'mt-2'} />
+          <View className="mt-2" />
         </View>
         <TwoCards
           toReceive={transactionsData?.data?.totalOfTransactions?.toReceive}
@@ -275,11 +264,7 @@ export default function Index() {
       </View>
       {transactionsData?.data ? (
         <>
-          <View
-            className={
-              'flex flex-row justify-between w-full px-3 items-center py-4'
-            }
-          >
+          <View className="flex w-full flex-row items-center justify-between px-3 py-4">
             <Searchbar
               onChangeText={handleSearch}
               value={query.toString()}
@@ -293,7 +278,7 @@ export default function Index() {
                 paddingBottom: 20,
               }}
               placeholder="Search Name, Amount or Txn Note"
-              className={'bg-white border-2 border-slate-200 h-10'}
+              className="h-10 border-2 border-slate-200 bg-white"
             />
           </View>
           <View style={{ flex: 1, height: '100%', width: '100%' }}>
@@ -314,10 +299,8 @@ export default function Index() {
                 onOptionSelect={handleOptionSelect}
                 ListFooterComponent={<View style={{ height: 100 }} />}
                 ListEmptyComponent={
-                  <View
-                    className={'flex-1 d-flex justify-center items-center h-16'}
-                  >
-                    <Text variant={'bodyMedium'}>No Records Available!</Text>
+                  <View className="d-flex h-16 flex-1 items-center justify-center">
+                    <Text variant="bodyMedium">No Records Available!</Text>
                   </View>
                 }
               />
@@ -325,7 +308,7 @@ export default function Index() {
           </View>
         </>
       ) : (
-        <ActivityIndicator className={'mt-24'} />
+        <ActivityIndicator className="mt-24" />
       )}
     </View>
   );

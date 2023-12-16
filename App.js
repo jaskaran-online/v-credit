@@ -1,21 +1,22 @@
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import {
   DarkTheme as NavigationDarkTheme,
   DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { StatusBar } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   MD3DarkTheme as DarkTheme,
   MD3LightTheme as LightTheme,
   Provider as PaperProvider,
 } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
+
 import { useAuth } from './src/hooks';
 import { RootNavigator } from './src/navigations/root-navigator';
 
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { StatusBar } from 'react-native';
 // Create a client
 const queryClient = new QueryClient();
 

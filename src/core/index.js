@@ -1,7 +1,7 @@
-import icons from './icons';
-import images from './images';
 import animations from './animations';
 import config from './config';
+import icons from './icons';
+import images from './images';
 import theme, {
   COLORS,
   FONTS,
@@ -12,15 +12,15 @@ import theme, {
 } from './theme';
 
 export {
+  animations,
+  COLORS,
+  config,
+  FONTS,
   icons,
   images,
-  animations,
-  theme,
-  COLORS,
-  SIZES,
-  FONTS,
-  responsiveWidth,
-  responsiveHeight,
   responsiveFontSize,
-  config,
+  responsiveHeight,
+  responsiveWidth,
+  SIZES,
+  theme,
 };

@@ -1,12 +1,9 @@
+import { AntDesign, Entypo } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+
 import { COLORS } from '../core';
-import { AntDesign, Entypo } from '@expo/vector-icons';
 
 const AccordionItem = ({ title, children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,17 +30,12 @@ const AccordionItem = ({ title, children }) => {
               fontSize: 16,
               fontWeight: 500,
               color: COLORS.darkTransparent,
-            }}
-          >
+            }}>
             {title}
           </Text>
         </View>
         <Animated.View
-          style={[
-            styles.icon,
-            { transform: [{ rotate: isOpen ? '180deg' : '0deg' }] },
-          ]}
-        >
+          style={[styles.icon, { transform: [{ rotate: isOpen ? '180deg' : '0deg' }] }]}>
           {isOpen ? (
             <Entypo name="chevron-small-down" size={24} color="black" />
           ) : (
@@ -51,9 +43,7 @@ const AccordionItem = ({ title, children }) => {
           )}
         </Animated.View>
       </TouchableOpacity>
-      <Animated.View style={[styles.content, getHeightStyle]}>
-        {isOpen && children}
-      </Animated.View>
+      <Animated.View style={[styles.content, getHeightStyle]}>{isOpen && children}</Animated.View>
     </View>
   );
 };
@@ -62,7 +52,7 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 0,
     padding: 10,
-    paddingTop: 15
+    paddingTop: 15,
   },
   header: {
     flexDirection: 'row',

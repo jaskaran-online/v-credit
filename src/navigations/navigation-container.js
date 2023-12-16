@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export const NavigationContainer = ({ theme, navigationRef, children }) => {
   return (
-    <SafeAreaProvider className="bg-white flex-1">
+    <SafeAreaProvider className="flex-1 bg-white">
       <RNNavigationContainer theme={theme} ref={navigationRef}>
         {children}
       </RNNavigationContainer>

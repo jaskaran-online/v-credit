@@ -1,26 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import {
-  ActivityIndicator,
-  Alert,
-  Linking,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { Button, Dialog, Portal, Text, TextInput } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
 import { isUndefined } from 'lodash';
 import { useEffect, useState } from 'react';
-import {
-  useCreateCustomer,
-  useGetCustomersList,
-  useUpdateCustomer,
-} from '../../../apis/useApi';
+import { ActivityIndicator, Alert, Linking, TouchableOpacity, View } from 'react-native';
+import { Button, Dialog, Portal, Text, TextInput } from 'react-native-paper';
 
-import {
-  showToast,
-  useAuthCompanyStore,
-  useCustomersStore,
-} from '../../../core/utils';
+import { useCreateCustomer, useGetCustomersList, useUpdateCustomer } from '../../../apis/useApi';
+import { showToast, useAuthCompanyStore, useCustomersStore } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 
 export const sendWhatsAppMessage = (link) => {
@@ -28,9 +14,7 @@ export const sendWhatsAppMessage = (link) => {
     Linking.canOpenURL(link)
       .then((supported) => {
         if (!supported) {
-          Alert.alert(
-            'Please install whats app to send direct message to students via whatsapp',
-          );
+          Alert.alert('Please install whats app to send direct message to students via whatsapp');
         } else {
           return Linking.openURL(link);
         }
@@ -75,58 +59,43 @@ function CardComponent({
   editContact = () => null,
 }) {
   return (
-    <View
-      className={
-        'bg-white flex h-16 shadow-sm shadow-slate-200 mx-2 flex-row justify-between items-center px-4 mt-2 rounded-2xl'
-      }
-    >
-      <View className={'flex flex-row justify-start items-center'}>
+    <View className="mx-2 mt-2 flex h-16 flex-row items-center justify-between rounded-2xl bg-white px-4 shadow-sm shadow-slate-200">
+      <View className="flex flex-row items-center justify-start">
         <View>
           {iconName === 'bank' ? (
-            <MaterialCommunityIcons
-              name="bank-transfer"
-              size={24}
-              color="dodgerblue"
-            />
+            <MaterialCommunityIcons name="bank-transfer" size={24} color="dodgerblue" />
           ) : (
             <Ionicons name={iconName} size={20} color="dodgerblue" />
           )}
         </View>
-        <View className={'ml-4'}>
-          <Text variant={'titleSmall'}>{title}</Text>
-          <Text variant={'bodySmall'} className={'text-slate-500'}>
+        <View className="ml-4">
+          <Text variant="titleSmall">{title}</Text>
+          <Text variant="bodySmall" className="text-slate-500">
             {description}
           </Text>
         </View>
       </View>
-      <View className={'flex flex-row gap-3'}>
+      <View className="flex flex-row gap-3">
         {/*Edit Button*/}
         <TouchableOpacity
-          className="bg-slate-100 p-2 rounded-full"
+          className="rounded-full bg-slate-100 p-2"
           onPress={() =>
             editContact({
               id,
               title,
               description,
             })
-          }
-        >
+          }>
           <MaterialCommunityIcons name="pencil" size={18} color="gray" />
         </TouchableOpacity>
 
         {/*Call Button*/}
-        <TouchableOpacity
-          className="bg-blue-100 p-2 rounded-full"
-          onPress={makeCall}
-        >
+        <TouchableOpacity className="rounded-full bg-blue-100 p-2" onPress={makeCall}>
           <MaterialCommunityIcons name="phone" size={18} color="dodgerblue" />
         </TouchableOpacity>
 
         {/*Whatsapp Button*/}
-        <TouchableOpacity
-          className="bg-emerald-50 p-2 rounded-full"
-          onPress={whatsapp}
-        >
+        <TouchableOpacity className="rounded-full bg-emerald-50 p-2" onPress={whatsapp}>
           <MaterialCommunityIcons name="whatsapp" size={18} color="darkgreen" />
         </TouchableOpacity>
       </View>
@@ -135,8 +104,8 @@ function CardComponent({
 }
 
 export default function Index({ navigation }) {
-  let customerList = useCustomersStore((state) => state.customersList);
-  let setCustomerList = useCustomersStore((state) => state.setCustomers);
+  const customerList = useCustomersStore((state) => state.customersList);
+  const setCustomerList = useCustomersStore((state) => state.setCustomers);
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const auth = useAuth.use?.token();
 
@@ -168,18 +137,11 @@ export default function Index({ navigation }) {
       company_id: company?.id,
       cost_center_id: auth.user.cost_center_id,
     });
-  }, [
-    isCustomerLoading,
-    customerUpdateData,
-    customerCreateData,
-    isCustomerCreateLoading,
-  ]);
+  }, [isCustomerLoading, customerUpdateData, customerCreateData, isCustomerCreateLoading]);
 
   useEffect(() => {
     if (selectedCustomer) {
-      let index = customerList.findIndex(
-        (customer) => customer.id === selectedCustomer.id,
-      );
+      const index = customerList.findIndex((customer) => customer.id === selectedCustomer.id);
       customerList[index] = {
         ...customerList[index],
         name: selectedCustomer.title,
@@ -223,20 +185,19 @@ export default function Index({ navigation }) {
         <ActivityIndicator />
       ) : (
         <>
-          <View className="flex flex-row justify-end items-center px-4">
+          <View className="flex flex-row items-center justify-end px-4">
             <Button
-              icon={'plus'}
-              className={'w-42 flex-row justify-between items-center'}
-              mode={'contained'}
+              icon="plus"
+              className="w-42 flex-row items-center justify-between"
+              mode="contained"
               onPress={() => {
                 setSelectedCustomer({
                   title: '',
                   description: '',
                 });
                 showDialog();
-              }}
-            >
-              <Text className={'text-white ml-2'}>Create</Text>
+              }}>
+              <Text className="ml-2 text-white">Create</Text>
             </Button>
           </View>
           <FlashList
@@ -252,9 +213,7 @@ export default function Index({ navigation }) {
                   makePhoneCall(item.phone);
                 }}
                 whatsapp={() => {
-                  sendWhatsAppMessage(
-                    `https://wa.me/91${item.phone}?text=Hello`,
-                  );
+                  sendWhatsAppMessage(`https://wa.me/91${item.phone}?text=Hello`);
                 }}
                 editContact={(item) => {
                   showDialog();
@@ -264,29 +223,23 @@ export default function Index({ navigation }) {
             )}
             estimatedItemSize={100}
             ListEmptyComponent={
-              <View
-                className={'flex-1 d-flex justify-center items-center h-16'}
-              >
-                <Text variant={'bodyMedium'}>No Records Available!</Text>
+              <View className="d-flex h-16 flex-1 items-center justify-center">
+                <Text variant="bodyMedium">No Records Available!</Text>
               </View>
             }
-            ListFooterComponent={<View className={'h-16'} />}
+            ListFooterComponent={<View className="h-16" />}
           />
         </>
       )}
       <Portal>
-        <Dialog
-          visible={visible}
-          onDismiss={hideDialog}
-          className={'bg-white rounded'}
-        >
-          <Dialog.Title style={{ fontSize: 18 }} className={'font-semibold'}>
+        <Dialog visible={visible} onDismiss={hideDialog} className="rounded bg-white">
+          <Dialog.Title style={{ fontSize: 18 }} className="font-semibold">
             {selectedCustomer.id ? 'Edit Customer Details' : 'Create Customer'}
           </Dialog.Title>
           <Dialog.Content>
             <TextInput
-              mode={'outlined'}
-              className={'bg-white'}
+              mode="outlined"
+              className="bg-white"
               value={selectedCustomer?.title}
               onChangeText={(text) => {
                 setSelectedCustomer({
@@ -294,13 +247,13 @@ export default function Index({ navigation }) {
                   title: text,
                 });
               }}
-              label={'Customer Name'}
+              label="Customer Name"
             />
             <View className="mt-2" />
             <TextInput
-              keyboardType={'numeric'}
-              mode={'outlined'}
-              className={'bg-white'}
+              keyboardType="numeric"
+              mode="outlined"
+              className="bg-white"
               value={selectedCustomer?.description}
               onChangeText={(text) => {
                 setSelectedCustomer({
@@ -308,25 +261,17 @@ export default function Index({ navigation }) {
                   description: text,
                 });
               }}
-              label={'Mobile Number'}
+              label="Mobile Number"
             />
           </Dialog.Content>
           <Dialog.Actions>
             <Button
-              mode={'contained'}
-              className={'px-6 rounded'}
-              loading={
-                selectedCustomer.id
-                  ? isCustomerLoading
-                  : isCustomerCreateLoading
-              }
+              mode="contained"
+              className="rounded px-6"
+              loading={selectedCustomer.id ? isCustomerLoading : isCustomerCreateLoading}
               onPress={() => {
                 hideDialog();
-                if (
-                  selectedCustomer &&
-                  selectedCustomer.title !== '' &&
-                  selectedCustomer.id
-                ) {
+                if (selectedCustomer && selectedCustomer.title !== '' && selectedCustomer.id) {
                   updateCustomer(selectedCustomer);
                 } else {
                   if (selectedCustomer.title === '') {
@@ -347,8 +292,7 @@ export default function Index({ navigation }) {
                     user_id: auth.user.id,
                   });
                 }
-              }}
-            >
+              }}>
               {selectedCustomer.id ? 'Update' : 'Create'}
             </Button>
           </Dialog.Actions>
