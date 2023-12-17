@@ -1,5 +1,5 @@
 import BottomSheetCustom from './bottom-sheet-native';
-import FlashListFooter from './components/flash-list-footer';
+import FlashListFooter from './flash-list-footer';
 import DetailCards from './detail-cards';
 import DropDownFlashList from './drop-down-flash-list';
 import EmptyList from './empty-flatlist';
