@@ -4,8 +4,8 @@ const { width, height } = Dimensions.get('window');
 
 const percentageCalculation = (max, val) => max * (val / 100);
 
-const fontCalculation = (height, width, val) => {
-  const widthDimension = height > width ? width : height;
+const fontCalculation = (h, w, val) => {
+  const widthDimension = h > w ? w : h;
   const aspectRatioBasedHeight = (16 / 9) * widthDimension;
   return percentageCalculation(
     Math.sqrt(Math.pow(aspectRatioBasedHeight, 2) + Math.pow(widthDimension, 2)),
@@ -14,17 +14,14 @@ const fontCalculation = (height, width, val) => {
 };
 
 export function responsiveFontSize(f) {
-  const { height, width } = Dimensions.get('window');
   return fontCalculation(height, width, f);
 }
 
 export function responsiveHeight(h) {
-  const { height } = Dimensions.get('window');
   return height * (h / 100);
 }
 
 export function responsiveWidth(w) {
-  const { width } = Dimensions.get('window');
   return width * (w / 100);
 }
 
@@ -59,7 +56,6 @@ export const COLORS = {
   gray: '#e9e9e9',
 
   darkgray: '#0007',
-  darkGray: '#0007',
   transparent: 'transparent',
 
   seagreen: '#20b2aa',

@@ -1,12 +1,12 @@
-import HomePage from './HomePage';
-import Customers from './HomePage/Customers';
-import Transactions from './HomePage/Transactions';
-import EditTransaction from './HomePage/Transactions/edit';
-import Login from './Login';
-import Balance from './ProfitAndLoss/balance';
-import ProfitLoss from './ProfitAndLoss/profit-and-loss';
-import Purchase from './ProfitAndLoss/purchase';
-import Reports from './Reports/reports';
+import Login from './auth/login';
+import HomePage from './dashboard';
+import Customers from './dashboard/customers';
+import Transactions from './dashboard/transactions';
+import EditTransaction from './dashboard/transactions/edit';
+import Balance from './profit-loss/balance';
+import ProfitLoss from './profit-loss/profit-and-loss';
+import Purchase from './profit-loss/purchase';
+import Reports from './reports/reports';
 
 export {
   Balance,
