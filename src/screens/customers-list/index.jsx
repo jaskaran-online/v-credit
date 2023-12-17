@@ -6,8 +6,9 @@ import { ActivityIndicator, Alert, Linking, TouchableOpacity, View } from 'react
 import { Button, Dialog, Portal, Text, TextInput } from 'react-native-paper';
 
 import { useCreateCustomer, useGetCustomersList, useUpdateCustomer } from '../../apis/use-api';
-import { showToast, useAuthCompanyStore, useCustomersStore } from '../../core/utils';
+import { showToast } from '../../core/utils';
 import { useAuth } from '../../hooks';
+import { useAuthCompanyStore, useCustomersStore } from '../../hooks/zustand-store';
 
 export const sendWhatsAppMessage = (link) => {
   if (!isUndefined(link)) {
@@ -26,7 +27,7 @@ export const sendWhatsAppMessage = (link) => {
 };
 
 export function processString(input = null) {
-  if (input == null || input === '' || input === 'null') {
+  if (input === null || input === '' || input === 'null') {
     return '';
   }
   // Remove "-", ",", and spaces from the string

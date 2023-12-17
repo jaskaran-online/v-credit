@@ -8,15 +8,10 @@ import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
 import { usePaymentApi, useProductsApi } from '../../apis/use-api';
-import {
-  convertDateFormat,
-  processString,
-  showToast,
-  useAuthCompanyStore,
-  useContactsStore,
-} from '../../core/utils';
+import { convertDateFormat, processString, showToast } from '../../core/utils';
 import { useAuth } from '../../hooks';
-import DropDownFlashList from '../components/drop-down-flash-list';
+import { useAuthCompanyStore, useContactsStore } from '../../hooks/zustand-store';
+import { DropDownFlashList } from '../components';
 
 const TakePayment = ({ navigation, route }) => {
   const auth = useAuth.use?.token();
@@ -139,19 +134,6 @@ const TakePayment = ({ navigation, route }) => {
       return false;
     }
 
-    // if (!selectedCustomer?.phoneNumbers && phoneNumber === null) {
-    //   showToast(
-    //     "The contact you selected doesn't have a mobile number!",
-    //     'error',
-    //   );
-    //   return false;
-    // }
-    //
-    // if (contactSelectedMobileNumber === undefined) {
-    //   showToast('Please enter customer mobile number!', 'error');
-    //   return false;
-    // }
-    //
     if (phoneNumber === null) {
       phoneNumber = contactSelectedMobileNumber;
     }

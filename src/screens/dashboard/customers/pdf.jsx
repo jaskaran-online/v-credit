@@ -9,8 +9,9 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import HtmlCodeView from './html-code-view';
 import { useCustomerTransactionData } from '../../../apis/use-api';
-import { convertTimeToPM, formatDateForMessage, useAuthCompanyStore } from '../../../core/utils';
+import { convertTimeToPM, formatDateForMessage } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
+import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 
 const ShareScreen = ({ route }) => {
   const auth = useAuth.use?.token();

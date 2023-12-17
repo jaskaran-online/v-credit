@@ -1,11 +1,11 @@
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { styled } from 'nativewind';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
-import { useCardAmountStore, useFilterToggleStore } from '../../core/utils';
+import { useCardAmountStore, useFilterToggleStore } from '../../hooks/zustand-store';
 
 const StyledView = styled(TouchableOpacity);
 
@@ -18,11 +18,7 @@ const Box = ({ className, children, onPress, ...props }) => (
   </StyledView>
 );
 
-export function DetailCards({
-  toReceive: propToReceive = 0,
-  toPay: propToPay = 0,
-  homePage = false,
-}) {
+const DetailCards = ({ toReceive: propToReceive = 0, toPay: propToPay = 0, homePage = false }) => {
   const toggleFilter = useFilterToggleStore((state) => state.toggleFilter);
   const cardAmount = useCardAmountStore((state) => state.cardAmount);
   const [filterByToReceive, setFilterByToReceive] = useState(false);
@@ -126,4 +122,6 @@ export function DetailCards({
       </Box>
     </StyledView>
   );
-}
+};
+
+export default memo(DetailCards);

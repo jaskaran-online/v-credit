@@ -6,8 +6,9 @@ import { Keyboard, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 
 import { useCreateBalanceApi, useItemsData } from '../../apis/use-api';
-import { showToast, useAuthCompanyStore } from '../../core/utils';
+import { showToast } from '../../core/utils';
 import { useAuth } from '../../hooks/use-auth';
+import { useAuthCompanyStore } from '../../hooks/zustand-store';
 
 function ListHeaderComponent() {
   return (

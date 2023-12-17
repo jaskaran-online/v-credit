@@ -1,8 +1,9 @@
 import { BlurView } from 'expo-blur';
+import { memo } from 'react';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
 
-export default function FloatingButtons({ navigation, customer }) {
+const FloatingButtons = ({ navigation, customer }) => {
   return (
     <BlurView
       intensity={5}
@@ -26,4 +27,6 @@ export default function FloatingButtons({ navigation, customer }) {
       </View>
     </BlurView>
   );
-}
+};
+
+export default memo(FloatingButtons);

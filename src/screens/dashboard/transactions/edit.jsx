@@ -9,15 +9,10 @@ import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
 import { useEditPaymentApi, useProductsApi, useUpdatePaymentApi } from '../../../apis/use-api';
-import {
-  convertDateFormat,
-  getItem,
-  setItem,
-  showToast,
-  useAuthCompanyStore,
-} from '../../../core/utils';
+import { convertDateFormat, getItem, setItem, showToast } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
-import DropDownFlashList from '../../components/drop-down-flash-list';
+import { useAuthCompanyStore } from '../../../hooks/zustand-store';
+import { DropDownFlashList } from '../../components';
 
 const TRANS_TYPES = [
   { id: 1, name: 'Given' },
@@ -183,7 +178,7 @@ const EditTransaction = ({ navigation, route }) => {
       return false;
     }
     if (inventoryChecked) {
-      if (price == 0 || qty == 0) {
+      if (price === 0 || qty === 0) {
         showToast('Please check price and qty', 'error');
         return false;
       }

@@ -17,7 +17,7 @@ if (Text.defaultProps == null) {
   Text.defaultProps.allowFontScaling = false;
 }
 
-if (TextInput.defaultProps == null) {
+if (TextInput.defaultProps === null) {
   TextInput.defaultProps = {};
   TextInput.defaultProps.allowFontScaling = false;
 }

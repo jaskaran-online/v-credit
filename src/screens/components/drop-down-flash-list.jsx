@@ -3,7 +3,7 @@ import React, { memo, useEffect, useState } from 'react';
 import { Dimensions, TouchableOpacity, View } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 
-function DropDownFlashList({
+const DropDownFlashList = ({
   data = [],
   onSelect = () => null,
   onChangeInput = () => null,
@@ -16,7 +16,7 @@ function DropDownFlashList({
   enableSearch = true,
   isReadOnly = false,
   width = 'w-full',
-}) {
+}) => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(closeDropDown);
   const [filteredContacts, setFilteredContacts] = useState(data);
 
@@ -152,6 +152,6 @@ function DropDownFlashList({
       )}
     </View>
   );
-}
+};
 
 export default memo(DropDownFlashList);

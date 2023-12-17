@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 
-import { getToken, removeToken, setToken } from './utils';
-import { createSelectors } from '../core/utils';
+import { createSelectors, getToken, removeToken, setToken } from '../core/utils';
 
 const _useAuth = create((set, get) => ({
   status: 'idle',

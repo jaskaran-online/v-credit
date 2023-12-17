@@ -6,14 +6,12 @@ import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
-import { EmptyList, FlashListFooter } from './components';
-import styles from './styles';
 import { useAllTransactions, useCompanyCostCenterData, useCustomersData } from '../../apis/use-api';
-import { useAuthCompanyStore } from '../../core/utils';
 import { useAuth } from '../../hooks';
+import { useAuthCompanyStore } from '../../hooks/zustand-store';
 import navigation from '../../navigations';
-import { DetailCards } from '../components/detail-cards';
-import DropDownFlashList from '../components/drop-down-flash-list';
+import { EmptyList, FlashListFooter, DetailCards, DropDownFlashList } from '../components';
+import styles from '../styles';
 
 const renderHeader = () => (
   <View className="flex-row items-center justify-between space-x-2 px-4 py-2">

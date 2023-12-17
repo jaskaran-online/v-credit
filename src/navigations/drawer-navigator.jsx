@@ -23,8 +23,8 @@ import appJSON from '../../app.json';
 import AccordionItem from '../components/accordion-item';
 import Avatar from '../components/avatar';
 import { COLORS } from '../core';
-import { useAuthCompanyStore } from '../core/utils';
 import { useAuth } from '../hooks';
+import { useAuthCompanyStore } from '../hooks/zustand-store';
 import { HomePage, ProfitLoss, Reports } from '../screens';
 import CustomerList from '../screens/customers-list';
 const openPlayStore = () => {

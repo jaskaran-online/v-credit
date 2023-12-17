@@ -10,23 +10,23 @@ import {
   useTransactionsData,
   useTransactionsDelete,
 } from '../../../apis/use-api';
+import { renderHeader, renderItem } from '../../../components/list-components';
+import { showToast } from '../../../core/utils';
+import { useAuth } from '../../../hooks';
 import {
-  renderHeader,
-  renderItem,
-  showToast,
   useAuthCompanyStore,
   useCardAmountStore,
   useFilterToggleStore,
-} from '../../../core/utils';
-import { useAuth } from '../../../hooks';
+} from '../../../hooks/zustand-store';
 
-export default function Index() {
+export default function Transactions() {
   const currentPageRef = useRef(0);
   const lastPageRef = useRef(1);
 
   const auth = useAuth.use?.token();
   const setCardAmount = useCardAmountStore((state) => state.setCardAmount);
   const { mutate: transactionRequest, data: transactionData, isLoading } = useTransactionsData();
+
   // Use object destructuring for more concise code
   const {
     mutate: cardRequest,
@@ -233,10 +233,10 @@ export default function Index() {
             backgroundColor: 'white',
           }}
           className="right-10 top-14 border-2 border-slate-100 shadow-lg shadow-black">
-          {options.map((value, index) => {
+          {options.map((value, key) => {
             return (
               <TouchableOpacity
-                key={index}
+                key={key}
                 onPress={value.onPress}
                 className={value.label === filterBy ? 'bg-slate-200' : 'bg-white'}>
                 <Text variant="labelLarge" className="py-2 pl-2 pr-4">

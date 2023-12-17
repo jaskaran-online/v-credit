@@ -1,8 +1,8 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
+import Customers from './customers';
+import Transactions from './transactions/transactions';
 import { COLORS } from '../../core';
-import Customers from '../dashboard/customers';
-import Transactions from '../dashboard/transactions';
 
 const Tab = createMaterialTopTabNavigator();
 

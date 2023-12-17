@@ -15,18 +15,14 @@ import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
 import Animated, { FadeInDown, FadeInLeft } from 'react-native-reanimated';
 
 import { useCustomerTransactionData, useTransactionsDelete } from '../../../apis/use-api';
-import {
-  formatDateForMessage,
-  renderHeader,
-  renderItem,
-  showToast,
-  useAuthCompanyStore,
-} from '../../../core/utils';
+import { renderHeader, renderItem } from '../../../components/list-components';
+import { formatDateForMessage, showToast } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
+import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 import FloatingButtons from '../../components/floating-button';
 
 export function processString(input = null) {
-  if (input == null || input === '' || input === 'null') {
+  if (input === null || input === '' || input === 'null') {
     return '';
   }
   // Remove "-", ",", and spaces from the string

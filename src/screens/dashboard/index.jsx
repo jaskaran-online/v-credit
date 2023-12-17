@@ -3,17 +3,17 @@ import * as Contacts from 'expo-contacts';
 import React, { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 
+import { TabNavigator } from './tab-navigator';
 import {
   useCustomersData,
   useGetCustomersList,
   useTotalTransactionData,
   useVerifyUserAuthApi,
 } from '../../apis/use-api';
-import { useAuthCompanyStore, useCardAmountStore, useContactsStore } from '../../core/utils';
 import { useAuth } from '../../hooks';
-import { DetailCards } from '../components/detail-cards';
-import FloatingButtons from '../components/floating-button';
-import { TabNavigator } from '../components/tab-navigator';
+import useLoadContacts from '../../hooks/use-load-contacts';
+import { useAuthCompanyStore, useCardAmountStore } from '../../hooks/zustand-store';
+import { FloatingButtons, DetailCards } from '../components/floating-button';
 
 const Index = ({ navigation }) => {
   const auth = useAuth.use.token(); // Destructure the token directly
@@ -41,6 +41,9 @@ const Index = ({ navigation }) => {
     isError: isVerifyUserError,
     isLoading: isVerifyUserLoading,
   } = useVerifyUserAuthApi();
+
+  // Load contacts from device
+  useLoadContacts(customersListData, isCustomerLoading);
 
   useEffect(() => {
     if (auth?.user) {
@@ -79,37 +82,6 @@ const Index = ({ navigation }) => {
     }
   }, [auth.user, company, cardRequest]);
 
-  // Load contacts from device and update Zustand store
-  const loadContactsFromDevice = async () => {
-    const { status: contactStatus } = await Contacts.requestPermissionsAsync();
-
-    if (contactStatus === 'granted' && customersListData?.data) {
-      try {
-        const { data: contactsArray } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.PhoneNumbers],
-        });
-
-        const filteredContacts = customersListData.data.map((obj) => ({
-          id: obj.id,
-          name: obj.name,
-          digits: obj.phone,
-          contactType: 'person',
-          phoneNumbers: obj.phone ? [{ digits: obj.phone }] : [],
-          imageAvailable: false,
-        }));
-
-        const newArray = contactsArray.filter((obj) => obj.hasOwnProperty('phoneNumbers'));
-
-        useContactsStore.setState({
-          contactsList: [...filteredContacts, ...newArray],
-        });
-      } catch (error) {
-        console.error(error);
-        // Handle error gracefully if needed
-      }
-    }
-  };
-
   // Use useFocusEffect to handle component focus
   useFocusEffect(
     useCallback(() => {
@@ -122,13 +94,6 @@ const Index = ({ navigation }) => {
     }, [auth.user, company, getCardTotals, loadCustomerData, getCustomerRequest]),
   );
 
-  // useEffect to load contacts when customer data is loaded
-  useEffect(() => {
-    if (!isCustomerLoading) {
-      loadContactsFromDevice().then((r) => null);
-    }
-  }, [isCustomerLoading]);
-
   useEffect(() => {
     if (cardData?.data) {
       setCardAmount({
@@ -139,9 +104,9 @@ const Index = ({ navigation }) => {
   }, [cardData, isCardLoading]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View className="flex-1">
       <DetailCards toPay={cardAmount?.toPay} toReceive={cardAmount?.toReceive} homePage />
-      <View style={{ flex: 1 }}>
+      <View className="flex-1">
         <TabNavigator />
       </View>
       <FloatingButtons navigation={navigation} />

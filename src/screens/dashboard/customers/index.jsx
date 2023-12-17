@@ -9,12 +9,9 @@ import { Searchbar, Text } from 'react-native-paper';
 
 import { useCustomersData } from '../../../apis/use-api';
 import Avatar from '../../../components/avatar';
-import {
-  formatDateForMessage,
-  useAuthCompanyStore,
-  useFilterToggleStore,
-} from '../../../core/utils';
+import { formatDateForMessage } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
+import { useAuthCompanyStore, useFilterToggleStore } from '../../../hooks/zustand-store';
 import navigation from '../../../navigations/index';
 
 const renderBackdropComponent = (props) => (

@@ -5,13 +5,12 @@ import { ActivityIndicator, View } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
-import { EmptyList, FlashListFooter } from './components';
-import styles from './styles';
 import { useAllTransactions, useCustomersData } from '../../apis/use-api';
-import { renderHeader, renderItem, useAuthCompanyStore } from '../../core/utils';
+import { renderHeader, renderItem } from '../../components/list-components';
 import { useAuth } from '../../hooks';
-import { DetailCards } from '../components/detail-cards';
-import DropDownFlashList from '../components/drop-down-flash-list';
+import { useAuthCompanyStore } from '../../hooks/zustand-store';
+import { EmptyList, FlashListFooter, DetailCards, DropDownFlashList } from '../components';
+import styles from '../styles';
 
 export default function AllTransactions() {
   const auth = useAuth.use?.token();

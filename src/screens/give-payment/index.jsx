@@ -8,15 +8,10 @@ import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
 import { usePaymentApi, useProductsApi } from '../../apis/use-api';
-import {
-  convertDateFormat,
-  processString,
-  showToast,
-  useAuthCompanyStore,
-  useContactsStore,
-} from '../../core/utils';
+import { convertDateFormat, processString, showToast } from '../../core/utils';
 import { useAuth } from '../../hooks';
-import DropDownFlashList from '../components/drop-down-flash-list';
+import { useAuthCompanyStore, useContactsStore } from '../../hooks/zustand-store';
+import { DropDownFlashList } from '../components';
 
 const GiveMoney = ({ navigation, route }) => {
   const auth = useAuth.use?.token();
@@ -153,11 +148,11 @@ const GiveMoney = ({ navigation, route }) => {
     //   return false;
     // }
     //
-    if (phoneNumber == null) {
+    if (phoneNumber === null) {
       phoneNumber = contactSelectedMobileNumber;
     }
 
-    if (price == 0 || qty == 0) {
+    if (price === 0 || qty === 0) {
       showToast('Please check price and qty', 'error');
       return false;
     }
@@ -244,7 +239,7 @@ const GiveMoney = ({ navigation, route }) => {
               <TextInput
                 className="-z-30 mt-2 bg-white"
                 onChangeText={(mobile) => setContactSelectedMobileNumber(mobile)}
-                value={contactSelectedMobileNumber == 'null' ? '' : contactSelectedMobileNumber}
+                value={contactSelectedMobileNumber === 'null' ? '' : contactSelectedMobileNumber}
                 mode="outlined"
                 label="Mobile Number"
                 keyboardType="phone-pad"
