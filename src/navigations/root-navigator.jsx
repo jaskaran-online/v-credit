@@ -1,6 +1,8 @@
+/* eslint-disable react/no-unstable-nested-components */
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
+import { Text } from 'react-native-paper';
 
 import { AuthNavigator } from './auth-navigator';
 import { DrawerNavigator } from './drawer-navigator';
@@ -12,6 +14,7 @@ import { Balance, EditTransaction, Purchase } from '../screens';
 import CustomerList from '../screens/customers-list';
 import CustomerTransactionDetails from '../screens/dashboard/customers/details';
 import ShareScreen from '../screens/dashboard/customers/pdf';
+import AttachedImage from '../screens/dashboard/transactions/attached-image';
 import GiveMoney from '../screens/give-payment';
 import {
   AllParties,
@@ -21,7 +24,6 @@ import {
   PartyStatements,
 } from '../screens/reports';
 import TakePayment from '../screens/take-payment';
-import AttachedImage from '../screens/dashboard/transactions/attached-image';
 
 const Stack = createNativeStackNavigator();
 // Keep the splash screen visible while we fetch resources
@@ -73,7 +75,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'Day Book',
+                headerTitle: () => <Text variant="titleMedium">Day Book</Text>,
               }}
               name="DayBook"
               component={DayBook}
@@ -83,7 +85,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'Party Statement',
+                headerTitle: () => <Text variant="titleMedium">Party Statement</Text>,
               }}
               name="Party"
               component={PartyStatements}
@@ -93,7 +95,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'All Parties',
+                headerTitle: () => <Text variant="titleMedium">All Parties</Text>,
               }}
               name="AllParty"
               component={AllParties}
@@ -103,7 +105,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'All transactions',
+                headerTitle: () => <Text variant="titleMedium">All transactions</Text>,
               }}
               name="AllTransactions"
               component={AllTransactions}
@@ -113,7 +115,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'Cost Centre Wise Profit',
+                headerTitle: () => <Text variant="titleMedium">Cost Centre Wise Profit</Text>,
               }}
               name="CostCenter"
               component={CostCenter}
@@ -121,7 +123,11 @@ export const Root = () => {
 
             <Stack.Screen
               options={({ route }) => ({
-                title: route?.params?.name ? route?.params?.name : 'Details',
+                headerTitle: () => (
+                  <Text variant="titleMedium">
+                    {route?.params?.name ? route?.params?.name : 'Details'}
+                  </Text>
+                ),
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
               })}
@@ -131,7 +137,11 @@ export const Root = () => {
 
             <Stack.Screen
               options={({ route }) => ({
-                title: route?.params?.name ? route?.params?.name : 'Details',
+                headerTitle: () => (
+                  <Text variant="titleMedium">
+                    {route?.params?.name ? route?.params?.name : 'Details'}
+                  </Text>
+                ),
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
               })}
@@ -143,7 +153,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'Take Money',
+                headerTitle: () => <Text variant="titleMedium">Take Money</Text>,
               }}
               name="TakeMoney"
               component={TakePayment}
@@ -153,7 +163,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'Give Money',
+                headerTitle: () => <Text variant="titleMedium">Give Money</Text>,
               }}
               name="GiveMoney"
               component={GiveMoney}
@@ -163,7 +173,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'Edit',
+                headerTitle: () => <Text variant="titleMedium">Edit</Text>,
               }}
               name="EditTransaction"
               component={EditTransaction}
@@ -173,7 +183,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'customers',
+                headerTitle: () => <Text variant="titleMedium">Customers</Text>,
               }}
               name="ViewCustomers"
               component={CustomerList}
@@ -183,7 +193,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'Balance',
+                headerTitle: () => <Text variant="titleMedium">Balance</Text>,
               }}
               name="Balance"
               component={Balance}
@@ -193,7 +203,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'Purchase',
+                headerTitle: () => <Text variant="titleMedium">Purchase</Text>,
               }}
               name="Purchase"
               component={Purchase}
@@ -203,7 +213,7 @@ export const Root = () => {
               options={{
                 headerStyle: headerBackgroundColor,
                 headerShown: true,
-                headerTitle: 'ViewImage',
+                headerTitle: () => <Text variant="titleMedium">View Image</Text>,
               }}
               name="ViewImage"
               component={AttachedImage}

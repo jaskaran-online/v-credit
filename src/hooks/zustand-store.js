@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export const useAuthCompanyStore = create(
   persist(
@@ -10,7 +10,7 @@ export const useAuthCompanyStore = create(
     }),
     {
       name: 'auth-company-store', // unique name for this store
-      getStorage: () => AsyncStorage, // use AsyncStorage for React Native
+      storage: createJSONStorage(() => AsyncStorage), // <==  pay attention
     }
   )
 );

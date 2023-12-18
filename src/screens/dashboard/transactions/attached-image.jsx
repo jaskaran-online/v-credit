@@ -1,16 +1,17 @@
+import { Feather } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import React, { useRef } from 'react';
 import { Image, View, Dimensions, StyleSheet } from 'react-native';
-import { ENV } from '../../../../env.config';
 import { PanGestureHandler, PinchGestureHandler, State } from 'react-native-gesture-handler';
+import { Button, Text } from 'react-native-paper';
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { BlurView } from 'expo-blur';
-import { Button, Text } from 'react-native-paper';
-import { Feather } from '@expo/vector-icons';
+
+import { ENV } from '../../../../env.config';
 
 export default function AttachedImage(props) {
   const scale = useSharedValue(1);
@@ -96,24 +97,24 @@ export default function AttachedImage(props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
-  imageContainer: {
-    flex: 9,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
   buttonContainer: {
+    alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center',
-    width: '100%',
     paddingBottom: 10,
+    width: '100%',
+  },
+  container: {
+    alignItems: 'center',
+    backgroundColor: 'white',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  imageContainer: {
+    alignItems: 'center',
+    flex: 9,
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
 });

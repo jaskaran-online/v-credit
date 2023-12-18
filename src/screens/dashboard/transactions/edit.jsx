@@ -1,15 +1,14 @@
 // noinspection JSValidateTypes
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
-import * as Contacts from 'expo-contacts';
 import * as ImagePicker from 'expo-image-picker';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Image, Keyboard, KeyboardAvoidingView, TouchableOpacity, View } from 'react-native';
 import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
 import { useEditPaymentApi, useProductsApi, useUpdatePaymentApi } from '../../../apis/use-api';
-import { convertDateFormat, getItem, setItem, showToast } from '../../../core/utils';
+import { convertDateFormat, showToast } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 import { DropDownFlashList } from '../../components';
@@ -19,6 +18,8 @@ const TRANS_TYPES = [
   { id: 2, name: 'Received' },
 ];
 const EditTransaction = ({ navigation, route }) => {
+  const transaction = route?.params?.transaction;
+
   const auth = useAuth.use?.token();
   const {
     mutate: request,
@@ -37,32 +38,32 @@ const EditTransaction = ({ navigation, route }) => {
     isLoading: loadingTransactionData,
   } = useEditPaymentApi();
 
-  const [amount, setAmount] = useState(0);
-  const [contacts, setContacts] = useState([]);
+  const [amount, setAmount] = useState(transaction?.amount || 0);
   const [imageUri, setImageUri] = useState(null);
   const [inputDate, setInputDate] = useState(new Date());
   const [note, setNote] = useState('');
   const [price, setPrice] = useState(1);
   const [qty, setQty] = useState(1);
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [visible, setVisible] = useState(false);
   const [transactionType, setTransactionType] = useState(null);
   const [inventoryChecked, setInventoryChecked] = React.useState(false);
   const company = useAuthCompanyStore((state) => state.selectedCompany);
 
-  const transaction = route?.params?.transaction;
-
-  useEffect(() => {
-    setSelectedProduct(transaction?.product);
-    setSelectedCustomer(transaction?.customer);
-    // let imageURI = `http://mycreditbook.com/images/${transaction?.image}`;
-    // setImageUri(imageURI)
-    const transactionType = TRANS_TYPES.filter((x) => x.id === transaction.transaction_type_id);
-    setTransactionType(transactionType[0]);
-    setInputDate(new Date(transaction.date));
-    loadTransactionData();
-  }, [route.params?.transaction]);
+  const loadTransactionData = useCallback(() => {
+    const formData = new FormData();
+    formData.append('cost_center_id', auth.user.cost_center_id);
+    formData.append('company_id', company?.id);
+    formData.append('user_id', auth.user.id);
+    formData.append('id', route?.params?.transaction?.id);
+    editApiRequest(formData);
+  }, [
+    auth.user.cost_center_id,
+    auth.user.id,
+    company?.id,
+    editApiRequest,
+    route?.params?.transaction?.id,
+  ]);
 
   useEffect(() => {
     if (!loadingTransactionData) {
@@ -70,68 +71,34 @@ const EditTransaction = ({ navigation, route }) => {
         setInventoryChecked(transactionData?.data?.qty > 0 && transactionData?.data?.price > 0);
         setPrice(transactionData?.data?.price || 0);
         setQty(transactionData?.data?.qty || 0);
-        setAmount(parseFloat(transactionData?.data?.amount).toFixed(4) || 0);
+        setAmount(parseFloat(transactionData?.data?.amount).toFixed(2) || 0);
         setNote(transactionData?.data?.notes || '');
+        setTransactionType(transactionData?.data?.transaction_type);
       }
     }
-  }, [loadingTransactionData]);
+  }, [loadingTransactionData, transactionData]);
 
-  function loadTransactionData() {
-    const formData = new FormData();
-    formData.append('cost_center_id', auth.user.cost_center_id);
-    formData.append('company_id', company?.id);
-    formData.append('user_id', auth.user.id);
-    formData.append('id', route?.params?.transaction?.id);
-    editApiRequest(formData);
-  }
+  useEffect(() => {
+    loadTransactionData();
+  }, [loadTransactionData]);
 
   useEffect(() => {
     const formData = new FormData();
     formData.append('company_id', company?.id);
     productRequest(formData);
-  }, []);
+  }, [company?.id, productRequest]);
 
   useEffect(() => {
     if (isError) {
       showToast(paymentError.message, 'error');
     }
-  }, [isError]);
-
-  useEffect(() => {
-    (async () => {
-      const { status: contactStatus } = await Contacts.requestPermissionsAsync();
-      if (contactStatus === 'granted') {
-        try {
-          const localContacts = await getItem('contacts');
-          if (localContacts) {
-            setContacts(localContacts);
-          } else {
-            const { data: contactsArray } = await Contacts.getContactsAsync({
-              fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-            });
-            if (contactsArray.length > 0) {
-              setContacts(contactsArray);
-              setItem('contacts', contactsArray).then((r) => null);
-            }
-          }
-        } catch (error) {
-          const { data: contactsArray } = await Contacts.getContactsAsync({
-            fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
-          });
-          if (contactsArray.length > 0) {
-            setContacts(contactsArray);
-            setItem('contacts', contactsArray).then((r) => null);
-          }
-        }
-      }
-    })();
-  }, []);
+  }, [isError, paymentError]);
 
   useEffect(
     function () {
-      setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(4));
+      setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(2));
     },
-    [price, qty]
+    [price, qty],
   );
 
   useEffect(() => {
@@ -139,16 +106,16 @@ const EditTransaction = ({ navigation, route }) => {
       showToast(paymentApiResponse.data.message, 'success');
       setTimeout(() => navigation.navigate('HomePage'), 1000);
     }
-  }, [isPaymentSuccess]);
+  }, [isPaymentSuccess, navigation, paymentApiResponse]);
 
-  const showDialog = () => {
+  const showDialog = useCallback(() => {
     setVisible(true);
     Keyboard.dismiss();
-  };
+  }, []);
 
-  const hideDialog = () => setVisible(false);
+  const hideDialog = useCallback(() => setVisible(false), []);
 
-  const handleCameraCapture = async () => {
+  const handleCameraCapture = useCallback(async () => {
     const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync();
     if (cameraStatus === 'granted') {
       const photo = await ImagePicker.launchCameraAsync();
@@ -157,9 +124,9 @@ const EditTransaction = ({ navigation, route }) => {
         hideDialog();
       }
     }
-  };
+  }, [hideDialog]);
 
-  const pickImage = async () => {
+  const pickImage = useCallback(async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -171,12 +138,8 @@ const EditTransaction = ({ navigation, route }) => {
       setImageUri(result.uri);
       hideDialog();
     }
-  };
-  const onFormSubmit = () => {
-    if (selectedCustomer === null) {
-      showToast('Please Select Customer', 'error');
-      return false;
-    }
+  }, [hideDialog]);
+  const onFormSubmit = useCallback(() => {
     if (inventoryChecked) {
       if (price === 0 || qty === 0) {
         showToast('Please check price and qty', 'error');
@@ -187,7 +150,7 @@ const EditTransaction = ({ navigation, route }) => {
     const formData = new FormData();
     formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user?.cost_center_id);
-    // formData.append("customer_name", selectedCustomer?.name);
+
     formData.append('from_date', convertDateFormat(inputDate.toString()));
     if (imageUri) {
       formData.append('image', {
@@ -197,8 +160,6 @@ const EditTransaction = ({ navigation, route }) => {
       });
     }
     formData.append('notes', note);
-    // formData.append("phone", selectedCustomer?.phoneNumbers ? selectedCustomer?.phoneNumbers[0]?.digits : selectedCustomer?.phone || null);
-    // formData.append("phone_id", selectedCustomer?.id);
     if (inventoryChecked) {
       if (selectedProduct) {
         formData.append('product_id', selectedProduct?.id);
@@ -211,26 +172,37 @@ const EditTransaction = ({ navigation, route }) => {
     formData.append('user_id', auth?.user?.id);
     formData.append('id', transaction?.id);
     request(formData);
-  };
+  }, [
+    amount,
+    auth,
+    company,
+    imageUri,
+    inputDate,
+    inventoryChecked,
+    note,
+    price,
+    qty,
+    request,
+    selectedProduct,
+    transaction,
+    transactionType,
+  ]);
 
-  const handlePriceChange = (inputPrice) => {
+  const handlePriceChange = useCallback((inputPrice) => {
     setPrice(inputPrice);
-  };
+  }, []);
 
-  const handleQtyChange = (inputQty) => {
+  const handleQtyChange = useCallback((inputQty) => {
     setQty(inputQty);
-  };
+  }, []);
 
-  const handleContactSelect = (contactObj) => {
-    setSelectedCustomer(contactObj);
-  };
-
-  const handleProductSelect = (product) => {
+  const handleProductSelect = useCallback((product) => {
     setSelectedProduct(product);
     setPrice(product.price);
-  };
+  }, []);
 
-  const handleDateChange = (d) => setInputDate(d);
+  const handleDateChange = useCallback((d) => setInputDate(d), []);
+
   return (
     <View className="flex-1 bg-white">
       <KeyboardAvoidingView behavior="padding" className="flex-1 bg-white px-4 pt-2">
@@ -248,14 +220,11 @@ const EditTransaction = ({ navigation, route }) => {
             <Text>Inventory</Text>
           </TouchableOpacity>
         </View>
-        <DropDownFlashList
-          data={contacts}
-          inputLabel="Select Customer"
-          headerTitle="Showing contact from Phonebook"
-          onSelect={handleContactSelect}
-          selectedItemName={transaction?.customer?.name}
-          enableSearch
-          isReadOnly
+        <TextInput
+          value={transaction?.customer?.name}
+          onChangeText={() => null}
+          mode="outlined"
+          label="Selected Customer"
         />
         {inventoryChecked && (
           <>
@@ -299,6 +268,7 @@ const EditTransaction = ({ navigation, route }) => {
           onChangeText={setAmount}
           keyboardType="decimal-pad"
           editable={!inventoryChecked}
+          loading={loadingTransactionData}
         />
         <View className="-z-30 mt-2 flex w-full flex-row">
           <DatePickerInput
@@ -336,6 +306,9 @@ const EditTransaction = ({ navigation, route }) => {
           mode="outlined"
           label="Notes (Optional)"
           inputMode="text"
+          multiline
+          numberOfLines={4}
+          loading={loadingTransactionData}
         />
         <>
           {imageUri && (
