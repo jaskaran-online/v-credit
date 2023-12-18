@@ -54,18 +54,18 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 15,
   },
+  content: {
+    overflow: 'hidden',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   icon: {
-    width: 20,
+    alignItems: 'center',
     height: 20,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  content: {
-    overflow: 'hidden',
+    width: 20,
   },
 });
 

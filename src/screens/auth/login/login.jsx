@@ -20,7 +20,7 @@ export default function Login() {
         showToast(error.message, 'error');
       }
     },
-    [isError, error, isLoading],
+    [isError, error, isLoading]
   );
   const {
     control,

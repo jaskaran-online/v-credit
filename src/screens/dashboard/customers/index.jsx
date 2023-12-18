@@ -143,7 +143,7 @@ export default function Index() {
         setOrderedData(
           _.filter(customerData?.data, {
             type: filterBy === 'toReceive' ? 1 : 0,
-          }),
+          })
         );
       }
     }
@@ -168,13 +168,13 @@ export default function Index() {
   useFocusEffect(
     useCallback(() => {
       getCustomerData();
-    }, [company]),
+    }, [company])
   );
 
   const handleSearch = (text) => {
     setQuery(text);
     const filtered = orderedData.filter((item) =>
-      item?.customer?.name?.toLowerCase().includes(text.toLowerCase()),
+      item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredList(filtered);
   };

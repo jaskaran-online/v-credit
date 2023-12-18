@@ -9,7 +9,7 @@ const useLoadContacts = (customersListData, isCustomerLoading) => {
     if (customersListData?.data && !isCustomerLoading) {
       try {
         const contactsOnlyWithPhoneNumbers = existingContacts.filter((obj) =>
-          obj.hasOwnProperty('phoneNumbers'),
+          obj.hasOwnProperty('phoneNumbers')
         );
 
         const serverContacts = customersListData.data.map((obj) => ({

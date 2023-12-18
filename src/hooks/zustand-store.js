@@ -11,8 +11,8 @@ export const useAuthCompanyStore = create(
     {
       name: 'auth-company-store', // unique name for this store
       getStorage: () => AsyncStorage, // use AsyncStorage for React Native
-    },
-  ),
+    }
+  )
 );
 
 export const useContactsStore = create((set) => ({

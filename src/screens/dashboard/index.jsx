@@ -91,7 +91,7 @@ const Index = ({ navigation }) => {
         company_id: company?.id,
         cost_center_id: auth.user.cost_center_id,
       });
-    }, [auth.user, company, getCardTotals, loadCustomerData, getCustomerRequest]),
+    }, [auth.user, company, getCardTotals, loadCustomerData, getCustomerRequest])
   );
 
   useEffect(() => {

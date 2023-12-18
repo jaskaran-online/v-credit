@@ -94,7 +94,7 @@ export default function Transactions() {
   useFocusEffect(
     useCallback(() => {
       loadTransactions();
-    }, [company, transactionDelSuccess]),
+    }, [company, transactionDelSuccess])
   );
 
   const getCardTotals = useCallback(() => {
@@ -152,7 +152,7 @@ export default function Transactions() {
   const handleSearch = (text) => {
     setQuery(text);
     const filtered = orderedData.filter((item) =>
-      item?.customer?.name?.toLowerCase().includes(text.toLowerCase()),
+      item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredList(filtered);
   };

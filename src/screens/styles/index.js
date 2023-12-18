@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  flashListContainer: { flex: 1, height: '100%', width: '100%' },
   listFooter: {
     height: 100,
   },
@@ -13,9 +14,8 @@ export const styles = StyleSheet.create({
     lineHeight: Platform.OS === 'android' ? 16 : 0,
     paddingBottom: 20,
   },
-  flashListContainer: { flex: 1, height: '100%', width: '100%' },
   searchBarStyle: {
-    width: '100%',
     backgroundColor: 'transparent',
+    width: '100%',
   },
 });

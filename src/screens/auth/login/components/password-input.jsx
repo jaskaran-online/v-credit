@@ -10,7 +10,7 @@ const PasswordInput = ({ control, errors, isPasswordSecure, setIsPasswordSecure 
     () => ({
       required: 'Password is required',
     }),
-    [],
+    []
   );
   return (
     <Controller

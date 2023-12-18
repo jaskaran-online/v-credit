@@ -47,7 +47,7 @@ const makePhoneCall = (phoneNumber) => {
 
 const sendWhatsApp = async (
   { to_pay_balance, to_receive_balance, name, balance, id },
-  { date },
+  { date }
 ) => {
   const messageDate = formatDateForMessage(date);
   let message = `Hi ${name}`;
@@ -56,7 +56,7 @@ const sendWhatsApp = async (
     message = `Hi ${name},
           
 This is a friendly reminder that you have to pay ${Math.abs(balance).toFixed(
-      2,
+      2
     )} ₹ to me as of ${messageDate}.
 
 Thanks,
@@ -128,7 +128,7 @@ export default function Index({ navigation, route }) {
         const orderedArray = _.orderBy(
           data?.data?.customer?.transactions,
           ['transaction_type_id'],
-          [filterBy === 'Payment Received' ? 'desc' : 'asc'],
+          [filterBy === 'Payment Received' ? 'desc' : 'asc']
         );
         setOrderedData(orderedArray);
       }

@@ -75,7 +75,7 @@ function Balance() {
         '-' +
         (selectedDate.getMonth() + 1) +
         '-' +
-        selectedDate.getDate(),
+        selectedDate.getDate()
     );
     formData.append('item_id', selectedItem?.id);
     formData.append('coins', coins);
@@ -123,7 +123,7 @@ function Balance() {
         disappearsOnIndex={-1}
       />
     ),
-    [],
+    []
   );
 
   return (

@@ -14,7 +14,7 @@ const EmailInput = ({ control, errors, togglePasswordVisibility }) => {
         message: 'Invalid email address',
       },
     }),
-    [],
+    []
   );
   return (
     <Controller

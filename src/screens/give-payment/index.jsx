@@ -44,10 +44,10 @@ const GiveMoney = ({ navigation, route }) => {
             digits: route?.params?.customer?.phone,
           },
         ]
-      : [],
+      : []
   );
   const [contactSelectedMobileNumber, setContactSelectedMobileNumber] = useState(
-    route?.params?.customer?.phone || undefined,
+    route?.params?.customer?.phone || undefined
   );
 
   useEffect(() => {
@@ -258,7 +258,7 @@ const GiveMoney = ({ navigation, route }) => {
                         }
                         selectedItemName={processString(selectedCustomer?.phoneNumbers[0]?.number)}
                         selectedItemDigits={processString(
-                          selectedCustomer?.phoneNumbers[0]?.digits,
+                          selectedCustomer?.phoneNumbers[0]?.digits
                         )}
                         enableSearch={false}
                         headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
@@ -268,7 +268,7 @@ const GiveMoney = ({ navigation, route }) => {
                               ? processString(contact?.digits)
                               : contact?.number
                                 ? processString(contact?.number)
-                                : null,
+                                : null
                           );
                         }}
                       />

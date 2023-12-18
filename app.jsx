@@ -48,7 +48,7 @@ export default function App() {
     function () {
       authHydrate();
     },
-    [authHydrate],
+    [authHydrate]
   );
 
   // Load contacts

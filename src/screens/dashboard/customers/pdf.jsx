@@ -66,7 +66,7 @@ const ShareScreen = ({ route }) => {
     tableRows += `<tr style="background: #ffffff" >
         <td colspan="5" style="padding: 10px 8px; text-align: left; border-bottom: 1px solid #ddd;">
             <span style="font-size: 10px;max-width: 30px;font-weight: bold;">${formatDateForMessage(
-              date,
+              date
             )}</span>
         </td>
         </tr>`;
@@ -135,7 +135,7 @@ const ShareScreen = ({ route }) => {
         <p style="font-size: 17px; margin: 5px;color: dimgrey;">${auth?.user?.company?.name}</p>
         <p style="font-size: 17px; margin: 5px;color: dimgrey;">${customer?.phone || ''}</p>
         <p style="font-size: 17px; margin: 5px;color: dimgrey;">(${formatDateForMessage(
-          firstKey,
+          firstKey
         )} - ${formatDateForMessage(lastKey)})</p>
       </div>
       <div style="margin-bottom: 30px;">
