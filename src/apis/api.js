@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ENV } from '../../env.config';
 
 const axiosInstance = axios.create({
-  baseURL: ENV.DEV.BASE_URL,
+  baseURL: ENV.PRO.BASE_URL,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'multipart/form-data',
