@@ -21,6 +21,7 @@ import {
   PartyStatements,
 } from '../screens/reports';
 import TakePayment from '../screens/take-payment';
+import AttachedImage from '../screens/dashboard/transactions/attached-image';
 
 const Stack = createNativeStackNavigator();
 // Keep the splash screen visible while we fetch resources
@@ -41,7 +42,7 @@ export const Root = () => {
       }, 1000);
       setCompany(auth?.user?.company);
     }
-  }, [hideSplash, status]);
+  }, [auth?.user?.company, hideSplash, setCompany, status]);
 
   const headerBackgroundColor = { backgroundColor: '#eff6ff' };
 
@@ -196,6 +197,16 @@ export const Root = () => {
               }}
               name="Purchase"
               component={Purchase}
+            />
+
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerShown: true,
+                headerTitle: 'ViewImage',
+              }}
+              name="ViewImage"
+              component={AttachedImage}
             />
           </Stack.Group>
         )}

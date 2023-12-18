@@ -307,6 +307,16 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${tran
                 </Text>
               </TouchableOpacity>
             )}
+            {transaction?.image && (
+              <TouchableOpacity
+                className="flex items-center gap-1"
+                onPress={() => navigation.navigate('ViewImage', { image: transaction?.image })}>
+                <MaterialIcons name="image" size={20} color="black" />
+                <Text variant="labelSmall" className="text-slate-800">
+                  Image
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </Animated.View>
       )}
