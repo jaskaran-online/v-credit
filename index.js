@@ -12,17 +12,16 @@ import App from './app';
 registerRootComponent(App);
 registerTranslation('en-GB', enGB);
 
-if (Text.defaultProps == null) {
+// For Text component
+if (Text.defaultProps === undefined) {
   Text.defaultProps = {};
-  Text.defaultProps.allowFontScaling = false;
 }
-
-if (TextInput.defaultProps === null) {
-  TextInput.defaultProps = {};
-  TextInput.defaultProps.allowFontScaling = false;
-}
-
 Text.defaultProps.allowFontScaling = false;
+
+// For TextInput component
+if (TextInput.defaultProps === undefined) {
+  TextInput.defaultProps = {};
+}
 TextInput.defaultProps.allowFontScaling = false;
 
 LogBox.ignoreLogs(['Reanimated 2']);

@@ -13,7 +13,7 @@ import {
 import { useAuth } from '../../hooks';
 import useLoadContacts from '../../hooks/use-load-contacts';
 import { useAuthCompanyStore, useCardAmountStore } from '../../hooks/zustand-store';
-import { FloatingButtons, DetailCards } from '../components/floating-button';
+import { FloatingButtons, DetailCards } from '../components';
 
 const Index = ({ navigation }) => {
   const auth = useAuth.use.token(); // Destructure the token directly

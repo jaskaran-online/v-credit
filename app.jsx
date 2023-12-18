@@ -15,8 +15,9 @@ import {
 import Toast from 'react-native-toast-message';
 
 import { useAuth } from './src/hooks';
+import { useContactsStore } from './src/hooks/zustand-store';
 import { RootNavigator } from './src/navigations/root-navigator';
-
+import { loadContacts } from './src/service/contactService';
 // Create a client
 const queryClient = new QueryClient();
 
@@ -39,7 +40,10 @@ const darkTheme = {
 };
 
 export default function App() {
+  const { contactsList: contacts, setContacts } = useContactsStore();
   const authHydrate = useAuth.use.hydrate();
+
+  // Hydrate auth
   useEffect(
     function () {
       authHydrate();
@@ -47,8 +51,23 @@ export default function App() {
     [authHydrate],
   );
 
+  // Load contacts
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const contacts = await loadContacts();
+        setContacts(contacts);
+      } catch (error) {
+        console.error('Failed to load contacts:', error);
+      }
+    };
+
+    fetchContacts();
+  }, []);
+
   const [isDarkTheme] = useState(false);
   const theme = isDarkTheme ? darkTheme : lightTheme;
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>

@@ -1,12 +1,19 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-/* The code is creating multiple custom hooks using the `create` function from the `zustand` library.
-Each custom hook represents a separate store with its own state and setter function. */
-
-export const useAuthCompanyStore = create((set) => ({
-  selectedCompany: null,
-  setCompany: (newCompany) => set({ selectedCompany: newCompany }),
-}));
+export const useAuthCompanyStore = create(
+  persist(
+    (set) => ({
+      selectedCompany: null,
+      setCompany: (newCompany) => set({ selectedCompany: newCompany }),
+    }),
+    {
+      name: 'auth-company-store', // unique name for this store
+      getStorage: () => AsyncStorage, // use AsyncStorage for React Native
+    },
+  ),
+);
 
 export const useContactsStore = create((set) => ({
   contactsList: [],
