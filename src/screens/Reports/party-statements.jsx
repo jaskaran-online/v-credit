@@ -25,7 +25,7 @@ export default function PartyStatements() {
   const [showOptions, setShowOptions] = useState('');
   const [query, setQuery] = useState('');
   const [fromDate, setFromDate] = useState(
-    new Date(new Date().setMonth(new Date().getMonth() - 1)),
+    new Date(new Date().setMonth(new Date().getMonth() - 1))
   );
   const [toDate, setToDate] = useState(new Date());
   const [customersList, setCustomersList] = useState([]);
@@ -85,7 +85,7 @@ export default function PartyStatements() {
   const handleSearch = (text) => {
     setQuery(text);
     const filtered = (dailyBookData?.data?.transactions).filter((item) =>
-      item?.customer?.name?.toLowerCase().includes(text.toLowerCase()),
+      item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredList(filtered);
   };

@@ -30,7 +30,7 @@ export default function AllTransactions() {
   const [customer, setCustomer] = useState('');
   const [transactionType, setTransactionType] = useState(null);
   const [fromDate, setFromDate] = useState(
-    new Date(new Date().setMonth(new Date().getMonth() - 1)),
+    new Date(new Date().setMonth(new Date().getMonth() - 1))
   );
   const [toDate, setToDate] = useState(new Date());
   const [customersList, setCustomersList] = useState([]);
@@ -115,7 +115,7 @@ export default function AllTransactions() {
   const handleSearch = (text) => {
     setQuery(text);
     const filtered = (transactionsData?.data?.transactions).filter((item) =>
-      item?.customer?.name?.toLowerCase().includes(text.toLowerCase()),
+      item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredList(filtered);
   };

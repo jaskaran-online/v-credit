@@ -67,13 +67,13 @@ export default function DayBook() {
     function () {
       loadCustomerData();
     },
-    [inputDate],
+    [inputDate]
   );
 
   const handleSearch = (text) => {
     setQuery(text);
     const filtered = (dailyBookData?.data?.transactions).filter((item) =>
-      item?.customer?.name?.toLowerCase().includes(text.toLowerCase()),
+      item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredList(filtered);
   };

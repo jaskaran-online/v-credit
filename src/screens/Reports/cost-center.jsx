@@ -102,7 +102,7 @@ export default function CostCenter() {
   const auth = useAuth.use?.token();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const costCenter = useCompanyCostCenterData(
-    'api/v1/get/cost-center/' + auth?.user.cost_center_id,
+    'api/v1/get/cost-center/' + auth?.user.cost_center_id
   );
   const { mutate: customerMutate } = useCustomersData();
   const {
@@ -119,7 +119,7 @@ export default function CostCenter() {
   const [query, setQuery] = useState('');
   const [selectedCostCenter, setSelectedCostCenter] = useState('');
   const [fromDate, setFromDate] = useState(
-    new Date(new Date().setMonth(new Date().getMonth() - 1)),
+    new Date(new Date().setMonth(new Date().getMonth() - 1))
   );
   const [toDate, setToDate] = useState(new Date());
   function fetchCustomers() {

@@ -107,7 +107,7 @@ export default function AllParties() {
   const handleSearch = (text) => {
     setQuery(text);
     const filtered = (allPartiesData?.data?.transactions).filter((item) =>
-      item?.customer?.name?.toLowerCase().includes(text.toLowerCase()),
+      item?.customer?.name?.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredList(filtered);
   };
