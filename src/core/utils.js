@@ -1,18 +1,15 @@
-import { Linking, Share, TouchableOpacity, View } from 'react-native';
 // import * as SecureStore from 'expo-secure-store';
-import {
-  MaterialCommunityIcons,
-  MaterialIcons,
-  Octicons,
-} from '@expo/vector-icons';
 import createSecureStore from '@neverdull-agency/expo-unlimited-secure-store';
-import React, { useState } from 'react';
-import { Chip, Text } from 'react-native-paper';
-import navigation from '../navigations';
-import { create } from 'zustand';
+import { Linking } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 const SecureStore = createSecureStore();
+
+const TOKEN = 'token';
+export const getToken = () => getItem(TOKEN);
+export const removeToken = () => removeItem(TOKEN);
+export const setToken = (value) => setItem(TOKEN, value);
+export const setUser = (value) => setItem('user', value);
 
 /**
  * Retrieves an item from the SecureStore given a key.
@@ -57,9 +54,9 @@ export function openLinkInBrowser(url) {
 }
 
 export const createSelectors = (_store) => {
-  let store = _store;
+  const store = _store;
   store.use = {};
-  for (let k of Object.keys(store.getState())) {
+  for (const k of Object.keys(store.getState())) {
     store.use[k] = () => store((s) => s[k]);
   }
   return store;
@@ -159,359 +156,6 @@ export function formatDateForMessage(inputDate) {
 }
 
 /**
- * Render a row component for displaying a transaction.
- *
- * @param {Object} transaction - The transaction object.
- * @param {number} index - The index of the transaction.
- * @param {string} userId - The ID of the user.
- * @param {boolean} isAdmin - Flag indicating if the user is an admin.
- * @param {boolean} showDelete - Flag indicating if the delete button should be shown.
- * @param {function} onDelete - Function to handle the delete action.
- * @param {boolean} showPDF - Flag indicating if the PDF button should be shown.
- * @param {boolean} showCustomerName - Flag indicating if the customer name should be shown.
- * @return {JSX.Element} The rendered row component.
- */
-const Row = ({
-  transaction,
-  index,
-  userId,
-  isAdmin,
-  showDelete,
-  onDelete,
-  showPDF = false,
-  showCustomerName,
-}) => {
-  const [expanded, setExpanded] = useState(false);
-
-  let message;
-  let balance = parseFloat(transaction?.customer?.balance);
-  let balanceType = transaction?.customer?.balance_type;
-  let isEditableOrDeleteable =
-    isToday(transaction?.created_at) && transaction?.user_id === userId;
-  let dateFormatted = formatDateForMessage(transaction?.date);
-  if (transaction?.transaction_type_id === 2) {
-    message = `Hi ${transaction?.customer?.name},
-        
-I received payment of ${parseFloat(transaction?.amount).toFixed(
-      2,
-    )} ₹ on ${dateFormatted} from you.
-Total Balance: ${Math.abs(balance).toFixed(2)} ₹ ${balanceType}.
-    
-Thanks,
-${transaction?.user?.name}
-For complete details,
-Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
-      transaction?.user_id
-    }`;
-  } else {
-    message = `Hi ${transaction?.customer?.name},
-        
-I gave you credit of ${parseFloat(transaction?.amount).toFixed(
-      2,
-    )} ₹ on ${dateFormatted}.
-Total Balance: ${Math.abs(balance).toFixed(2)} ₹ ${balanceType}.
-
-Thanks,
-${transaction?.user?.name}
-For complete details,
-Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${
-      transaction?.user_id
-    }`;
-  }
-  const handleListExpand = () => {
-    setExpanded((expanded) => !expanded);
-    // if (balanceType !== 'clear' || isEditableOrDeleteable) {
-    // }
-  };
-
-  let isEven = index % 2 === 0 ? 'bg-slate-50' : 'bg-white';
-
-  return (
-    <>
-      <TouchableOpacity
-        className={`${isEven} flex flex-row justify-between px-4 py-2`}
-        key={index}
-        onPress={handleListExpand}
-      >
-        <View className="flex flex-row items-center w-1/4">
-          <View className="mr-1">
-            {transaction?.transaction_type_id === 2 ? (
-              <MaterialCommunityIcons
-                name="call-received"
-                size={14}
-                color="green"
-              />
-            ) : (
-              <MaterialIcons name="call-made" size={14} color="red" />
-            )}
-          </View>
-          <View>
-            {showCustomerName ? (
-              <Text variant={'titleSmall'} className="text-slate-800">
-                {transaction?.customer?.name}
-              </Text>
-            ) : (
-              <Text variant={'titleSmall'} className="text-slate-800">
-                {transaction?.transaction_type_id == 2 ? 'Credit' : 'Debit'}
-              </Text>
-            )}
-
-            <Text variant={'labelSmall'} className="text-slate-400">
-              {formatDateForMessage(transaction?.date)}
-            </Text>
-          </View>
-        </View>
-        <View>
-          {transaction?.transaction_type_id === 1 ? (
-            <View className={'mr-2'}>
-              <Text variant={'bodySmall'} className="text-slate-800 mr-2">
-                {parseFloat(transaction?.amount).toFixed(2)} ₹
-              </Text>
-              <Text variant={'labelSmall'} className="text-slate-400 mr-2">
-                (Udhaar)
-              </Text>
-            </View>
-          ) : (
-            <Text
-              variant={'bodySmall'}
-              className={'text-slate-400 text-center'}
-            >
-              {' '}
-              -{' '}
-            </Text>
-          )}
-        </View>
-        <View className={'flex flex-row items-right'}>
-          <View className={'flex flex-row items-center mr-8'}>
-            {transaction?.transaction_type_id === 2 ? (
-              <View>
-                <Text variant={'bodySmall'} className="text-slate-800">
-                  {parseFloat(transaction?.amount).toFixed(2)} ₹
-                </Text>
-                <Text variant={'labelSmall'} className="text-slate-400">
-                  (Payment)
-                </Text>
-              </View>
-            ) : (
-              <Text
-                variant={'bodySmall'}
-                className={'text-slate-400 text-center'}
-              >
-                {' '}
-                -{' '}
-              </Text>
-            )}
-          </View>
-          <Octicons
-            name={expanded ? 'chevron-up' : 'chevron-down'}
-            size={16}
-            color="lightgray"
-            style={{ marginRight: 5, paddingTop: 5 }}
-          />
-        </View>
-      </TouchableOpacity>
-      {expanded && (
-        <>
-          {isAdmin && (
-            <React.Fragment>
-              {transaction.notes && (
-                <View className="bg-blue-50 w-auto h-auto px-3 py-2">
-                  <Chip
-                    mode="flat"
-                    // icon="information"
-                    onPress={() => console.log('Pressed')}
-                    className={'bg-white'}
-                  >
-                    <Text variant="labelSmall">Note : {transaction.notes}</Text>
-                  </Chip>
-                </View>
-              )}
-              <View
-                key={index}
-                className={`h-12 bg-blue-50 flex flex-row justify-end gap-2 items-center pb-2 px-2`}
-              >
-                <Chip
-                  mode="flat"
-                  icon="information"
-                  onPress={() => console.log('Pressed')}
-                  className={'bg-white'}
-                >
-                  <Text variant="labelSmall">
-                    {transaction?.user?.name}{' '}
-                    {userId === transaction?.user_id ? '(You)' : ''}
-                  </Text>
-                </Chip>
-                <Chip
-                  mode="flat"
-                  icon="clock"
-                  onPress={() => console.log('Pressed')}
-                  className={'bg-white'}
-                >
-                  <Text variant="labelSmall">
-                    {convertTimeToPM(transaction?.date)}
-                  </Text>
-                </Chip>
-              </View>
-            </React.Fragment>
-          )}
-          <View
-            className={
-              'bg-blue-50 h-14 flex-row flex py-3 justify-evenly items-center px-4'
-            }
-          >
-            {(isEditableOrDeleteable || isAdmin) && (
-              <>
-                <TouchableOpacity
-                  className="flex items-center gap-1"
-                  onPress={
-                    isEditableOrDeleteable || isAdmin
-                      ? () =>
-                          navigation.navigate('EditTransaction', {
-                            transaction: transaction,
-                          })
-                      : () => null
-                  }
-                >
-                  <MaterialIcons name="edit" size={20} color="dodgerblue" />
-                  <Text variant={'labelSmall'} className="text-slate-800">
-                    Edit
-                  </Text>
-                </TouchableOpacity>
-              </>
-            )}
-            {showPDF && (
-              <TouchableOpacity
-                className="flex items-center gap-1"
-                onPress={() =>
-                  navigation.navigate('DetailsPdf', {
-                    id: transaction.customer?.id,
-                    name: transaction.customer?.name,
-                  })
-                }
-              >
-                <MaterialIcons name="picture-as-pdf" size={22} color="tomato" />
-                <Text variant={'labelSmall'} className="text-slate-800">
-                  PDF
-                </Text>
-              </TouchableOpacity>
-            )}
-
-            {balanceType !== 'clear' && (
-              <TouchableOpacity
-                className="flex items-center gap-1"
-                onPress={async () => {
-                  await Share.share({
-                    message: message,
-                  });
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="whatsapp"
-                  size={22}
-                  color="green"
-                />
-                <Text variant={'labelSmall'} className="text-slate-800">
-                  Share
-                </Text>
-              </TouchableOpacity>
-            )}
-
-            {(isEditableOrDeleteable || isAdmin) && showDelete && (
-              <TouchableOpacity
-                className="flex items-center gap-1"
-                onPress={
-                  (isToday(transaction?.created_at) &&
-                    transaction?.user_id === userId) ||
-                  isAdmin
-                    ? () => onDelete(transaction)
-                    : () => null
-                }
-              >
-                <MaterialIcons name="delete" size={20} color="red" />
-                <Text variant={'labelSmall'} className="text-slate-800">
-                  Delete
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </>
-      )}
-    </>
-  );
-};
-
-/**
- * Renders and returns a React component that represents a transaction item.
- *
- * @param {Object} options - An object containing the following properties:
- *   - {Object} item: The transaction item to be rendered.
- *   - {number} index: The index of the transaction item.
- *   - {string} userId: The ID of the user.
- *   - {boolean} isAdmin: Indicates whether the user is an admin.
- *   - {boolean} showDelete: Indicates whether to show the delete button (default: false).
- *   - {function} onDelete: A callback function that will be called when the delete button is clicked (default: console.log).
- *   - {boolean} showPDF: Indicates whether to show the PDF button (default: false).
- *   - {boolean} showCustomerName: Indicates whether to show the customer name (default: true).
- * @return {JSX.Element} A React component representing the transaction item.
- */
-export const renderItem = ({
-  item: transaction,
-  index,
-  userId,
-  isAdmin,
-  showDelete = false,
-  onDelete = (item) => {
-    console.log('Delete Item', item);
-  },
-  showPDF = false,
-  showCustomerName = true,
-}) => {
-  return (
-    <Row
-      transaction={transaction}
-      userId={userId}
-      index={index}
-      isAdmin={isAdmin}
-      showDelete={showDelete}
-      onDelete={onDelete}
-      showPDF={showPDF}
-      showCustomerName={showCustomerName}
-    />
-  );
-};
-
-/**
- * Renders the header component.
- *
- * @param {object} headerTitle - The title of the header.
- * @return {JSX.Element} The rendered header component.
- */
-export const renderHeader = ({ headerTitle }) => (
-  <View className={'flex-row justify-between px-4 py-2 space-x-2 items-center'}>
-    <View className="flex-1 border-b-2 border-slate-300 w-1/3">
-      <Text variant={'bodySmall'} className="text-left text-slate-800">
-        {headerTitle !== '' ? 'Customer' : 'Type'}
-      </Text>
-    </View>
-    <View className="flex-1 border-b-2 border-amber-400">
-      <Text variant={'bodySmall'} className="text-center text-slate-800 mr-2">
-        Given
-      </Text>
-    </View>
-    <View className="flex-1 border-b-2 border-blue-500">
-      <Text variant={'bodySmall'} className="text-center text-slate-800">
-        Received
-      </Text>
-    </View>
-  </View>
-);
-
-export const useAuthCompanyStore = create((set) => ({
-  selectedCompany: null,
-  setCompany: (newState) => set((state) => ({ selectedCompany: newState })),
-}));
-
-/**
  * Displays a toast message with the given message and type.
  *
  * @param {string} message - The message to display in the toast.
@@ -542,9 +186,7 @@ export const processString = (str = null) => {
   const processedString = str.replace(/[-,\s]/g, '');
   const [, , ...remainingLetters] = processedString;
 
-  return remainingLetters.length > 11
-    ? remainingLetters.join('')
-    : processedString;
+  return remainingLetters.length > 11 ? remainingLetters.join('') : processedString;
 };
 
 /**
@@ -561,26 +203,3 @@ export const convertDateFormat = (dateString) => {
 
   return `${convertedDate} ${convertedTime}`;
 };
-
-// Create Zustand stores
-export const useContactsStore = create((set) => ({
-  contactsList: [],
-  setContacts: (newState) => set({ contactsList: newState }),
-}));
-
-export const useCustomersStore = create((set) => ({
-  customersList: [],
-  setCustomers: (newState) => set({ customersList: newState }),
-}));
-export const useFilterToggleStore = create((set) => ({
-  filterBy: 'none',
-  toggleFilter: (newState) => set((state) => ({ filterBy: newState })),
-}));
-
-export const useCardAmountStore = create((set) => ({
-  cardAmount: {
-    toReceive: 0,
-    toPay: 0,
-  },
-  setCardAmount: (newState) => set((state) => ({ cardAmount: newState })),
-}));

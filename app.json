@@ -1,7 +1,7 @@
 {
   "expo": {
     "experiments.turboModules": true,
-    "name": "My Credit Book DEV",
+    "name": "My Credit Book",
     "slug": "CASPRO",
     "version": "11.0.0",
     "orientation": "portrait",
@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "jsEngine": "hermes",
@@ -28,10 +26,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.webcooks.mycreditbook",
-      "permissions": [
-        "READ_CONTACTS",
-        "WRITE_CONTACTS"
-      ],
+      "permissions": ["READ_CONTACTS", "WRITE_CONTACTS"],
       "versionCode": 11
     },
     "web": {
@@ -46,9 +41,7 @@
           }
         }
       ],
-      [
-        "expo-localization"
-      ],
+      ["expo-localization"],
       [
         "expo-contacts",
         {

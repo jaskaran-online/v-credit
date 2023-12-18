@@ -1,15 +1,7 @@
-import AllParties from './AllParties';
-import AllTransactions from './AllTransactions';
-import CostCenter from './CostCenter';
-import DayBook from './DayBook';
-import PartyStatement from './PartyStatement';
-import AllReports from './reports';
+import AllParties from './all-parties';
+import AllTransactions from './all-transactions';
+import CostCenter from './cost-center';
+import DayBook from './day-book';
+import PartyStatements from './party-statements';
 
-export {
-  AllParties,
-  AllReports,
-  AllTransactions,
-  CostCenter,
-  DayBook,
-  PartyStatement,
-};
+export { AllParties, AllTransactions, CostCenter, DayBook, PartyStatements };

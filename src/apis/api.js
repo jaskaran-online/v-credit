@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+import { ENV } from '../../env.config';
+
 const axiosInstance = axios.create({
-  baseURL: 'https://dev.mycreditbook.com/',
+  baseURL: ENV.PRO.BASE_URL,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'multipart/form-data',

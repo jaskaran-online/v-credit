@@ -1,11 +1,21 @@
-import Login from './Login';
-import HomePage from './HomePage';
-import Reports from './Reports/reports';
-import Customers from './HomePage/Customers';
-import Transactions from './HomePage/Transactions';
-import EditTransaction from './HomePage/Transactions/edit';
-import ProfitLoss from './ProfitAndLoss/profitAndLoss';
-import Balance from './ProfitAndLoss/Balance';
-import Purchase from './ProfitAndLoss/Purchase';
+import Login from './auth/login/login';
+import HomePage from './dashboard';
+import Customers from './dashboard/customers';
+import EditTransaction from './dashboard/transactions/edit';
+import Transactions from './dashboard/transactions/transactions';
+import Balance from './profit-loss/balance';
+import ProfitLoss from './profit-loss/profit-and-loss';
+import Purchase from './profit-loss/purchase';
+import Reports from './reports/reports';
 
-export { Customers, Login, HomePage, Reports, Transactions, EditTransaction, ProfitLoss, Balance, Purchase };
+export {
+  Balance,
+  Customers,
+  EditTransaction,
+  HomePage,
+  Login,
+  ProfitLoss,
+  Purchase,
+  Reports,
+  Transactions,
+};

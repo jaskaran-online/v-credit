@@ -19,3 +19,5 @@ web-build/
 .env
 
 android/app/*
+.vscode/
+# env.config.js
