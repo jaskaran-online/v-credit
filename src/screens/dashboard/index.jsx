@@ -1,98 +1,42 @@
 import { useFocusEffect } from '@react-navigation/native';
-import * as Contacts from 'expo-contacts';
 import React, { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
+import { Text } from 'react-native-paper';
 
 import { TabNavigator } from './tab-navigator';
-import {
-  useCustomersData,
-  useGetCustomersList,
-  useTotalTransactionData,
-  useVerifyUserAuthApi,
-} from '../../apis/use-api';
+import { useTotalTransactionData } from '../../apis/use-api';
+import SkeletonPlaceholder from '../../components/skeleton-placeholder ';
 import { useAuth } from '../../hooks';
-import useLoadContacts from '../../hooks/use-load-contacts';
-import { useAuthCompanyStore, useCardAmountStore } from '../../hooks/zustand-store';
+import {
+  useAuthCompanyStore,
+  useCardAmountStore,
+  useContactsStore,
+} from '../../hooks/zustand-store';
+import { loadContacts } from '../../service/contactService';
 import { FloatingButtons, DetailCards } from '../components';
 
-const Index = ({ navigation }) => {
-  const auth = useAuth.use.token(); // Destructure the token directly
-  const signOut = useAuth?.use?.signOut();
+function Header() {
+  const auth = useAuth.use.token();
+  const { selectedCompany: company } = useAuthCompanyStore();
+  const { setCardAmount, cardAmount } = useCardAmountStore();
 
-  const company = useAuthCompanyStore((state) => state.selectedCompany);
-  const cardAmount = useCardAmountStore((state) => state.cardAmount);
-  const setCardAmount = useCardAmountStore((state) => state.setCardAmount);
+  // Load customer data and card totals
+  const loadCustomerData = () => {
+    if (company && auth?.user) {
+      const cardForm = new FormData();
+      cardForm.append('company_id', company?.id);
+      cardForm.append('cost_center_id', auth.user.cost_center_id);
+      cardForm.append('user_id', auth.user.id);
+      cardRequest(cardForm);
+    }
+    console.log('loadCustomerData');
+  };
 
-  // Use object destructuring for more concise code
   const {
     mutate: cardRequest,
     data: cardData,
     isLoading: isCardLoading,
   } = useTotalTransactionData();
-  const { mutate: customerRequest } = useCustomersData();
-  const {
-    mutate: getCustomerRequest,
-    data: customersListData,
-    isLoading: isCustomerLoading,
-  } = useGetCustomersList();
-
-  const {
-    mutate: verifyUser,
-    isError: isVerifyUserError,
-    isLoading: isVerifyUserLoading,
-  } = useVerifyUserAuthApi();
-
-  // Load contacts from device
-  useLoadContacts(customersListData, isCustomerLoading);
-
-  useEffect(() => {
-    if (auth?.user) {
-      verifyUser({
-        id: auth.user.id,
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!isVerifyUserLoading) {
-      if (isVerifyUserError) {
-        signOut();
-      }
-    }
-  }, [isVerifyUserLoading]);
-
-  // Load customer data and card totals
-  const loadCustomerData = useCallback(() => {
-    if (company && auth?.user) {
-      const customerFormData = new FormData();
-      customerFormData.append('cost_center_id', auth.user.cost_center_id);
-      customerFormData.append('company_id', company?.id);
-      customerFormData.append('user_id', auth.user.id);
-      customerRequest(customerFormData);
-    }
-  }, [auth.user, company, customerRequest]);
-
-  const getCardTotals = useCallback(() => {
-    if (company && auth?.user) {
-      const formData = new FormData();
-      formData.append('company_id', company?.id);
-      formData.append('cost_center_id', auth.user.cost_center_id);
-      formData.append('user_id', auth.user.id);
-      cardRequest(formData);
-    }
-  }, [auth.user, company, cardRequest]);
-
-  // Use useFocusEffect to handle component focus
-  useFocusEffect(
-    useCallback(() => {
-      getCardTotals();
-      loadCustomerData();
-      getCustomerRequest({
-        company_id: company?.id,
-        cost_center_id: auth.user.cost_center_id,
-      });
-    }, [auth.user, company, getCardTotals, loadCustomerData, getCustomerRequest])
-  );
 
   useEffect(() => {
     if (cardData?.data) {
@@ -101,12 +45,48 @@ const Index = ({ navigation }) => {
         toPay: cardData?.data?.toPay,
       });
     }
-  }, [cardData, isCardLoading]);
+  }, [cardData, setCardAmount]);
+
+  // Use useFocusEffect to handle component focus
+  useFocusEffect(
+    useCallback(() => {
+      loadCustomerData();
+    }, [company])
+  );
+
+  if (isCardLoading) {
+    return (
+      <View className="flex-row items-center justify-between p-2 bg-white">
+        <SkeletonPlaceholder borderRadius={10} height={80} width="49%" />
+        <SkeletonPlaceholder borderRadius={10} height={80} width="49%" />
+      </View>
+    );
+  }
+  return <DetailCards toPay={cardAmount?.toPay} toReceive={cardAmount?.toReceive} />;
+}
+
+const Index = ({ navigation }) => {
+  const { contactsList, setContacts } = useContactsStore();
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      console.log('fetchContacts');
+      try {
+        const contacts = await loadContacts();
+        setContacts(contacts);
+      } catch (error) {
+        console.error('Failed to load contacts:', error);
+      }
+    };
+    if (contactsList.length === 0) {
+      fetchContacts();
+    }
+  }, [setContacts, contactsList]);
 
   return (
-    <View className="flex-1">
-      <DetailCards toPay={cardAmount?.toPay} toReceive={cardAmount?.toReceive} homePage />
-      <View className="flex-1">
+    <View style={{ flex: 1 }}>
+      <Header />
+      <View style={{ flex: 1 }}>
         <TabNavigator />
       </View>
       <FloatingButtons navigation={navigation} />

@@ -18,6 +18,7 @@ import { useAuth } from './src/hooks';
 import { useContactsStore } from './src/hooks/zustand-store';
 import { RootNavigator } from './src/navigations/root-navigator';
 import { loadContacts } from './src/service/contactService';
+import { useVerifyUserAuthApi } from './src/apis/use-api';
 // Create a client
 const queryClient = new QueryClient();
 
@@ -40,9 +41,9 @@ const darkTheme = {
 };
 
 export default function App() {
-  const { contactsList: contacts, setContacts } = useContactsStore();
   const authHydrate = useAuth.use.hydrate();
 
+  console.log('authHydrate');
   // Hydrate auth
   useEffect(
     function () {
@@ -50,20 +51,6 @@ export default function App() {
     },
     [authHydrate]
   );
-
-  // Load contacts
-  useEffect(() => {
-    const fetchContacts = async () => {
-      try {
-        const contacts = await loadContacts();
-        setContacts(contacts);
-      } catch (error) {
-        console.error('Failed to load contacts:', error);
-      }
-    };
-
-    fetchContacts();
-  }, []);
 
   const [isDarkTheme] = useState(false);
   const theme = isDarkTheme ? darkTheme : lightTheme;

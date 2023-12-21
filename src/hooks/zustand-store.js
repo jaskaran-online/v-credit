@@ -9,8 +9,8 @@ export const useAuthCompanyStore = create(
       setCompany: (newCompany) => set({ selectedCompany: newCompany }),
     }),
     {
-      name: 'auth-company-store', // unique name for this store
-      storage: createJSONStorage(() => AsyncStorage), // <==  pay attention
+      name: 'auth-company-store',
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );

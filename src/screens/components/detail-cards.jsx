@@ -3,7 +3,7 @@ import { styled } from 'nativewind';
 import { useEffect, useState, memo } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { FadeInDown } from 'react-native-reanimated';
 
 import { useCardAmountStore, useFilterToggleStore } from '../../hooks/zustand-store';
 
@@ -71,14 +71,13 @@ const DetailCards = ({ toReceive: propToReceive = 0, toPay: propToPay = 0, homeP
             color={`${filterByToReceive ? 'green' : 'white'}`}
           />
         </View>
-        <Animated.View entering={FadeInDown.delay(300).duration(300)}>
-          <Animated.Text
-            entering={FadeInDown.delay(300).duration(300)}
+        <View>
+          <Text
             variant="bodyMedium"
             className={`${filterByToReceive ? 'text-slate-100' : 'text-slate-500'}`}>
             To Receive
-          </Animated.Text>
-          <Animated.Text
+          </Text>
+          <Text
             entering={FadeInDown.delay(300).duration(300)}
             variant="titleSmall"
             className={`${filterByToReceive ? 'text-white' : 'text-slate-700'} font-bold `}>
@@ -88,8 +87,8 @@ const DetailCards = ({ toReceive: propToReceive = 0, toPay: propToPay = 0, homeP
                 ? Math.abs(parseFloat(propToReceive).toFixed(2))
                 : 0}{' '}
             ₹
-          </Animated.Text>
-        </Animated.View>
+          </Text>
+        </View>
       </Box>
       <Box
         className={`${
@@ -124,4 +123,4 @@ const DetailCards = ({ toReceive: propToReceive = 0, toPay: propToPay = 0, homeP
   );
 };
 
-export default memo(DetailCards);
+export default DetailCards;

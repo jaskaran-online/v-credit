@@ -24,6 +24,7 @@ import {
   PartyStatements,
 } from '../screens/reports';
 import TakePayment from '../screens/take-payment';
+import { useVerifyUserAuthApi } from '../apis/use-api';
 
 const Stack = createNativeStackNavigator();
 // Keep the splash screen visible while we fetch resources
@@ -225,8 +226,10 @@ export const Root = () => {
   );
 };
 
-export const RootNavigator = ({ theme }) => (
-  <NavigationContainer theme={theme} navigationRef={navigationRef}>
-    <Root />
-  </NavigationContainer>
-);
+export const RootNavigator = ({ theme }) => {
+  return (
+    <NavigationContainer theme={theme} navigationRef={navigationRef}>
+      <Root />
+    </NavigationContainer>
+  );
+};

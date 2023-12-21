@@ -20,6 +20,7 @@ import { formatDateForMessage, showToast } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 import FloatingButtons from '../../components/floating-button';
+import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
 
 export function processString(input = null) {
   if (input === null || input === '' || input === 'null') {
@@ -295,20 +296,27 @@ export default function Index({ navigation, route }) {
       )}
       {filteredList && (
         <FlashList
-          data={filteredList}
-          renderItem={({ item, index }) =>
-            renderItem({
-              item,
-              index,
-              userId: auth.user.id,
-              isAdmin: hasRoleOneOrFour,
-              showDelete: true,
-              onDelete: (item = null) => {
-                setDeleteModalVisibility(item);
-              },
-              showPDF: false,
-              showCustomerName: false,
-            })
+          data={isLoading ? Array.from({ length: 6 }, (_, index) => index + 1) : filteredList || []}
+          renderItem={
+            isLoading
+              ? () => (
+                  <View className="mb-2 flex-1 items-center justify-center bg-white pt-[2px] px-2">
+                    <SkeletonPlaceholder borderRadius={10} height={80} width="100%" />
+                  </View>
+                )
+              : ({ item, index }) =>
+                  renderItem({
+                    item,
+                    index,
+                    userId: auth.user.id,
+                    isAdmin: hasRoleOneOrFour,
+                    showDelete: true,
+                    onDelete: (item = null) => {
+                      setDeleteModalVisibility(item);
+                    },
+                    showPDF: false,
+                    showCustomerName: false,
+                  })
           }
           ListHeaderComponent={() => renderHeader({ headerTitle: '' })}
           estimatedItemSize={100}

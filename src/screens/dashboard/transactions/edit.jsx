@@ -98,7 +98,7 @@ const EditTransaction = ({ navigation, route }) => {
     function () {
       setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(2));
     },
-    [price, qty],
+    [price, qty]
   );
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import {
   DrawerItem,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -27,6 +27,7 @@ import { useAuth } from '../hooks';
 import { useAuthCompanyStore } from '../hooks/zustand-store';
 import { HomePage, ProfitLoss, Reports } from '../screens';
 import CustomerList from '../screens/customers-list';
+import { useVerifyUserAuthApi } from '../apis/use-api';
 const openPlayStore = () => {
   const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook';
 
@@ -258,6 +259,30 @@ export function DrawerNavigator() {
     fontWeight: 500,
     color: COLORS.darkTransparent,
   };
+
+  const signOut = useAuth?.use?.signOut();
+
+  const {
+    mutate: verifyUser,
+    isError: isVerifyUserError,
+    isLoading: isVerifyUserLoading,
+  } = useVerifyUserAuthApi();
+
+  useEffect(() => {
+    if (auth?.user) {
+      verifyUser({
+        id: auth.user.id,
+      });
+    }
+  }, [auth, verifyUser]);
+
+  useEffect(() => {
+    if (!isVerifyUserLoading) {
+      if (isVerifyUserError) {
+        signOut();
+      }
+    }
+  }, [isVerifyUserError, isVerifyUserLoading, signOut]);
 
   return (
     <>

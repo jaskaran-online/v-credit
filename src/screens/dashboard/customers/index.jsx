@@ -13,6 +13,8 @@ import { formatDateForMessage } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import { useAuthCompanyStore, useFilterToggleStore } from '../../../hooks/zustand-store';
 import navigation from '../../../navigations/index';
+import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
+import { array } from 'zod';
 
 const renderBackdropComponent = (props) => (
   <BottomSheetBackdrop
@@ -205,8 +207,16 @@ export default function Index() {
       </View>
 
       <FlashList
-        data={filteredList || []}
-        renderItem={renderItem}
+        data={isLoading ? Array.from({ length: 6 }, (_, index) => index + 1) : filteredList || []}
+        renderItem={
+          isLoading
+            ? () => (
+                <View className="mb-2 flex-1 items-center justify-center bg-white pt-[2px] px-2">
+                  <SkeletonPlaceholder borderRadius={10} height={80} width="100%" />
+                </View>
+              )
+            : renderItem
+        }
         estimatedItemSize={200}
         refreshing={reload}
         onRefresh={getCustomerData}

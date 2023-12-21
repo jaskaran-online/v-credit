@@ -11,6 +11,7 @@ import {
   useTransactionsDelete,
 } from '../../../apis/use-api';
 import { renderHeader, renderItem } from '../../../components/list-components';
+import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
 import { showToast } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import {
@@ -188,6 +189,22 @@ export default function Transactions() {
     }
   }, [cardData, isCardLoading]);
 
+  // if (isLoading) {
+  //   return (
+  //     <View className="flex-1 flex bg-white p-2 ">
+  //       <FlashList
+  //         data={Array.from({ length: 6 }, (_, index) => index + 1)}
+  //         renderItem={() => (
+  //           <View className="mb-2 flex-1 items-center justify-center bg-white pt-[2px]">
+  //             <SkeletonPlaceholder borderRadius={10} height={80} width="100%" />
+  //           </View>
+  //         )}
+  //         estimatedItemSize={200}
+  //       />
+  //     </View>
+  //   );
+  // }
+
   return (
     <View className="flex-1 bg-white">
       <View className="flex w-full flex-row items-center justify-between px-3 py-4">
@@ -248,21 +265,28 @@ export default function Transactions() {
         </View>
       )}
       <FlashList
-        data={filteredList || []}
-        renderItem={({ item, index }) =>
-          renderItem({
-            item,
-            index,
-            userId: auth.user.id,
-            isAdmin: hasRoleOneOrFour,
-            showDelete: true,
-            onDelete: (item = null) => {
-              setDeleteModalVisibility(item);
-            },
-          })
+        data={isLoading ? Array.from({ length: 6 }, (_, index) => index + 1) : filteredList || []}
+        renderItem={
+          isLoading
+            ? () => (
+                <View className="mb-2 flex-1 items-center justify-center bg-white pt-[2px] px-2">
+                  <SkeletonPlaceholder borderRadius={10} height={80} width="100%" />
+                </View>
+              )
+            : ({ item, index }) =>
+                renderItem({
+                  item,
+                  index,
+                  userId: auth.user.id,
+                  isAdmin: hasRoleOneOrFour,
+                  showDelete: true,
+                  onDelete: (item = null) => {
+                    setDeleteModalVisibility(item);
+                  },
+                })
         }
         ListHeaderComponent={renderHeader}
-        estimatedItemSize={200}
+        estimatedItemSize={600}
         refreshing={reload}
         onRefresh={loadTransactions}
         onSearch={handleSearch}
