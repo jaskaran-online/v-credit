@@ -269,8 +269,20 @@ export default function Transactions() {
         renderItem={
           isLoading
             ? () => (
-                <View className="mb-2 flex-1 items-center justify-center bg-white pt-[2px] px-2">
-                  <SkeletonPlaceholder borderRadius={10} height={80} width="100%" />
+                <View className="flex flex-row items-center justify-between mb-4 pt-[6px] px-3">
+                  <View className="flex-1 flex-row items-center gap-2">
+                    <View>
+                      <SkeletonPlaceholder borderRadius={100} height={25} width={25} />
+                    </View>
+                    <View>
+                      <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
+                      <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
+                    </View>
+                  </View>
+                  <View className="mr-2">
+                    <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
+                    <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
+                  </View>
                 </View>
               )
             : ({ item, index }) =>

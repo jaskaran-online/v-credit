@@ -54,15 +54,13 @@ function Header() {
     }, [company])
   );
 
-  if (isCardLoading) {
-    return (
-      <View className="flex-row items-center justify-between p-2 bg-white">
-        <SkeletonPlaceholder borderRadius={10} height={80} width="49%" />
-        <SkeletonPlaceholder borderRadius={10} height={80} width="49%" />
-      </View>
-    );
-  }
-  return <DetailCards toPay={cardAmount?.toPay} toReceive={cardAmount?.toReceive} />;
+  return (
+    <DetailCards
+      toPay={cardAmount?.toPay}
+      toReceive={cardAmount?.toReceive}
+      isCardLoading={isCardLoading}
+    />
+  );
 }
 
 const Index = ({ navigation }) => {

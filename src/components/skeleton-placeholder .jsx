@@ -9,7 +9,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-const SkeletonPlaceholder = ({ width, height, borderRadius = 0 }) => {
+const SkeletonPlaceholder = ({ width, height, borderRadius = 0, className = '' }) => {
   const animatedValue = useSharedValue(-100);
 
   React.useEffect(() => {
@@ -35,10 +35,11 @@ const SkeletonPlaceholder = ({ width, height, borderRadius = 0 }) => {
     borderRadius: borderRadius || 10,
     backgroundColor: '#e1e1e1',
     overflow: 'hidden',
+    marginVertical: 5,
   };
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View style={[styles.container, containerStyle]} className={className}>
       <Animated.View style={[styles.gradientContainer, animatedStyle]}>
         <LinearGradient
           colors={['#e1e1e1', '#f9f9f9', '#e1e1e1']}

@@ -11,7 +11,7 @@ import { useAuth } from '../../hooks';
 import { useAuthCompanyStore } from '../../hooks/zustand-store';
 import navigation from '../../navigations';
 import { EmptyList, FlashListFooter, DetailCards, DropDownFlashList } from '../components';
-import styles from '../styles';
+import { styles } from '../styles';
 
 const renderHeader = () => (
   <View className="flex-row items-center justify-between space-x-2 px-4 py-2">

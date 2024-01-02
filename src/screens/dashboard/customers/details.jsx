@@ -16,11 +16,11 @@ import Animated, { FadeInDown, FadeInLeft } from 'react-native-reanimated';
 
 import { useCustomerTransactionData, useTransactionsDelete } from '../../../apis/use-api';
 import { renderHeader, renderItem } from '../../../components/list-components';
+import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
 import { formatDateForMessage, showToast } from '../../../core/utils';
 import { useAuth } from '../../../hooks';
 import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 import FloatingButtons from '../../components/floating-button';
-import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
 
 export function processString(input = null) {
   if (input === null || input === '' || input === 'null') {
@@ -300,8 +300,20 @@ export default function Index({ navigation, route }) {
           renderItem={
             isLoading
               ? () => (
-                  <View className="mb-2 flex-1 items-center justify-center bg-white pt-[2px] px-2">
-                    <SkeletonPlaceholder borderRadius={10} height={80} width="100%" />
+                  <View className="flex flex-row items-center justify-between mb-4 pt-[6px] px-3">
+                    <View className="flex-1 flex-row items-center gap-2">
+                      <View>
+                        <SkeletonPlaceholder borderRadius={100} height={25} width={25} />
+                      </View>
+                      <View>
+                        <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
+                        <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
+                      </View>
+                    </View>
+                    <View className="mr-2">
+                      <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
+                      <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
+                    </View>
                   </View>
                 )
               : ({ item, index }) =>
@@ -332,7 +344,21 @@ export default function Index({ navigation, route }) {
           ListFooterComponent={() => (
             <View className="mt-4">
               {isLoading ? (
-                <ActivityIndicator animating={isLoading} size="small" />
+                <View className="flex flex-row items-center justify-between mb-4 pt-[6px] px-3">
+                  <View className="flex-1 flex-row items-center gap-2">
+                    <View>
+                      <SkeletonPlaceholder borderRadius={100} height={25} width={25} />
+                    </View>
+                    <View>
+                      <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
+                      <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
+                    </View>
+                  </View>
+                  <View className="mr-2">
+                    <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
+                    <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
+                  </View>
+                </View>
               ) : (
                 lastPageRef.current <= pageRef.current &&
                 lastPageRef.current > 1 && (

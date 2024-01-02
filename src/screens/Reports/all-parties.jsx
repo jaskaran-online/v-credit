@@ -10,7 +10,7 @@ import { renderHeader, renderItem } from '../../components/list-components';
 import { useAuth } from '../../hooks';
 import { useAuthCompanyStore } from '../../hooks/zustand-store';
 import { FlashListFooter, EmptyList, DropDownFlashList } from '../components';
-import styles from '../styles';
+import { styles } from '../styles';
 
 export default function AllParties() {
   const auth = useAuth.use?.token();

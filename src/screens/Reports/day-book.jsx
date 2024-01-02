@@ -11,7 +11,7 @@ import { renderHeader, renderItem } from '../../components/list-components';
 import { useAuth } from '../../hooks';
 import { useAuthCompanyStore } from '../../hooks/zustand-store';
 import { FlashListFooter, EmptyList, DetailCards } from '../components';
-import styles from '../styles';
+import { styles } from '../styles';
 
 const StyledView = styled(TouchableOpacity);
 export default function DayBook() {
