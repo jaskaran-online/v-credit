@@ -7,7 +7,7 @@ import { Button, Dialog, Portal, Text, TextInput } from 'react-native-paper';
 
 import { useCreateCustomer, useGetCustomersList, useUpdateCustomer } from '../../apis/use-api';
 import { showToast } from '../../core/utils';
-import { useAuth } from '../../hooks';
+import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore, useCustomersStore } from '../../hooks/zustand-store';
 
 export const sendWhatsAppMessage = (link) => {
@@ -108,7 +108,7 @@ export default function Index({ navigation }) {
   const customerList = useCustomersStore((state) => state.customersList);
   const setCustomerList = useCustomersStore((state) => state.setCustomers);
   const company = useAuthCompanyStore((state) => state.selectedCompany);
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
 
   const [visible, setVisible] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState({

@@ -25,6 +25,7 @@ import Avatar from '../components/avatar';
 import { COLORS } from '../core';
 import { useAuth } from '../hooks';
 import { useAuthCompanyStore } from '../hooks/zustand-store';
+import { useAuthStore } from '../hooks/auth-store';
 import { HomePage, ProfitLoss, Reports } from '../screens';
 import CustomerList from '../screens/customers-list';
 import { useVerifyUserAuthApi } from '../apis/use-api';
@@ -45,8 +46,7 @@ const openPlayStore = () => {
 };
 
 function CustomDrawerContent(props) {
-  const signOut = useAuth?.use?.signOut();
-  const auth = useAuth.use?.token();
+  const { user: auth, logout: signOut } = useAuthStore();
 
   const [deleteModalVisibility, setDeleteModalVisibility] = useState(false);
   const [deleteAccountLoading, setLoadingDeleteAccount] = useState(false);
@@ -183,7 +183,7 @@ function CustomDrawerContent(props) {
 const Drawer = createDrawerNavigator();
 
 const CompanySwitch = () => {
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const setCompany = useAuthCompanyStore((state) => state.setCompany);
   const [showCompanySwitchModal, setShowCompanySwitchModal] = useState(false);
   const [checked, setChecked] = useState(auth?.user?.company?.id);
@@ -251,7 +251,7 @@ const CompanySwitch = () => {
 };
 
 export function DrawerNavigator() {
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const hasRoleOneOrFour = auth?.user?.roles?.some((role) => role.id === 1 || role.id === 4);
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const drawerLabelStyleCustom = {

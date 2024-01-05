@@ -7,7 +7,7 @@ import { Button, Text, TextInput } from 'react-native-paper';
 
 import { useCreatePurchaseApi, useItemsData } from '../../apis/use-api';
 import { showToast } from '../../core/utils';
-import { useAuth } from '../../hooks/use-auth';
+import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../hooks/zustand-store';
 
 function ListHeaderComponent() {
@@ -26,7 +26,7 @@ function Purchase() {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
 
   const {

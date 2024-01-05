@@ -12,7 +12,7 @@ import { useCustomersData } from '../../../apis/use-api';
 import Avatar from '../../../components/avatar';
 import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
 import { formatDateForMessage } from '../../../core/utils';
-import { useAuth } from '../../../hooks';
+import { useAuthStore } from '../../../hooks/auth-store';
 import { useAuthCompanyStore, useFilterToggleStore } from '../../../hooks/zustand-store';
 import navigation from '../../../navigations/index';
 
@@ -129,7 +129,7 @@ export default function Index() {
 
   const { mutate: customerDataRequest, data: customerData, isLoading } = useCustomersData();
   const [reload, setReload] = useState(false);
-  const auth = useAuth?.use?.token();
+  const { user: auth } = useAuthStore();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
 
   const filterBy = useFilterToggleStore((state) => state.filterBy);

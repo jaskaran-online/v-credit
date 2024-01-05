@@ -1,16 +1,8 @@
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import _ from 'lodash';
-import { useEffect, useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  Linking,
-  Platform,
-  Share,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { Image, Linking, Platform, Share, TouchableOpacity, View } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
 import Animated, { FadeInDown, FadeInLeft } from 'react-native-reanimated';
 
@@ -18,7 +10,7 @@ import { useCustomerTransactionData, useTransactionsDelete } from '../../../apis
 import { renderHeader, renderItem } from '../../../components/list-components';
 import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
 import { formatDateForMessage, showToast } from '../../../core/utils';
-import { useAuth } from '../../../hooks';
+import { useAuthStore } from '../../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 import FloatingButtons from '../../components/floating-button';
 
@@ -88,7 +80,7 @@ export default function Index({ navigation, route }) {
   const balanceRef = useRef(route.params?.balance);
   const balanceType = useRef(route.params?.balanceType);
 
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const { mutate, data, isLoading } = useCustomerTransactionData();
   const { mutate: transactionDelRequest, isLoading: transactionDelLoading } =
     useTransactionsDelete();
@@ -169,17 +161,21 @@ export default function Index({ navigation, route }) {
     // setFilteredList(filteredList);
   };
 
-  function loadCustomerData(pageNo = 1) {
-    setReload(true);
-    const formData = new FormData();
-    formData.append('company_id', company?.id);
-    formData.append('cost_center_id', auth.user.cost_center_id);
-    formData.append('customer_id', route.params.id);
-    formData.append('user_id', auth.user.id);
-    formData.append('page', pageNo);
-    mutate(formData);
-    setReload(false);
-  }
+  const loadCustomerData = useCallback(
+    (pageNo = 1) => {
+      setReload(true);
+      const formData = new FormData();
+      formData.append('company_id', company?.id);
+      formData.append('cost_center_id', auth.user.cost_center_id);
+      formData.append('customer_id', route.params.id);
+      formData.append('user_id', auth.user.id);
+      formData.append('page', pageNo);
+      mutate({ formData, page: pageNo });
+      setReload(false);
+    },
+    [auth, company, route.params.id, mutate]
+  );
+
   const handleOptionSelect = () => {
     setShowOptions((show) => !show);
   };

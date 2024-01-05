@@ -7,13 +7,13 @@ import { DatePickerInput } from 'react-native-paper-dates';
 
 import { useAllTransactions, useCustomersData } from '../../apis/use-api';
 import { renderHeader, renderItem } from '../../components/list-components';
-import { useAuth } from '../../hooks';
+import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../hooks/zustand-store';
 import { EmptyList, FlashListFooter, DetailCards, DropDownFlashList } from '../components';
 import { styles } from '../styles';
 
 export default function AllTransactions() {
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const { mutate: customerMutate, data: customersData } = useCustomersData();
   const {

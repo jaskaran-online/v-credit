@@ -9,7 +9,7 @@ import { Logo } from './components/logo';
 import PasswordInput from './components/password-input';
 import { useAuthLogin } from '../../../apis/use-api';
 import { showToast } from '../../../core/utils';
-import { useAuth } from '../../../hooks';
+import { useAuthStore } from '../../../hooks/auth-store';
 
 export default function Login() {
   const { mutate, data: response, isLoading, error, isError, isSuccess } = useAuthLogin();
@@ -22,13 +22,13 @@ export default function Login() {
     },
     [isError, error, isLoading]
   );
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
-  const signIn = useAuth.use.signIn();
   const togglePasswordVisibility = () => setIsPasswordSecure(!isPasswordSecure);
 
   const onSubmit = (data) => {
@@ -37,14 +37,17 @@ export default function Login() {
     formData.append('password', data.password);
     mutate(formData);
   };
+  const { login } = useAuthStore();
 
-  if (isSuccess) {
-    signIn({
-      access: response?.data?.accessToken,
-      refresh: response?.data?.accessToken,
-      user: response?.data?.user,
-    });
-  }
+  useEffect(() => {
+    if (isSuccess) {
+      login({
+        access: response?.data?.accessToken,
+        refresh: response?.data?.accessToken,
+        user: response?.data?.user,
+      });
+    }
+  }, [isSuccess, response, login]);
 
   return (
     <View className="flex-1">

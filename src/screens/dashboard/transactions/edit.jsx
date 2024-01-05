@@ -9,7 +9,7 @@ import { DatePickerInput } from 'react-native-paper-dates';
 
 import { useEditPaymentApi, useProductsApi, useUpdatePaymentApi } from '../../../apis/use-api';
 import { convertDateFormat, showToast } from '../../../core/utils';
-import { useAuth } from '../../../hooks';
+import { useAuthStore } from '../../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 import { DropDownFlashList } from '../../components';
 
@@ -20,7 +20,7 @@ const TRANS_TYPES = [
 const EditTransaction = ({ navigation, route }) => {
   const transaction = route?.params?.transaction;
 
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const {
     mutate: request,
     data: paymentApiResponse,

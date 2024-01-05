@@ -8,14 +8,14 @@ import { DatePickerInput } from 'react-native-paper-dates';
 
 import { useDailyBook } from '../../apis/use-api';
 import { renderHeader, renderItem } from '../../components/list-components';
-import { useAuth } from '../../hooks';
+import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../hooks/zustand-store';
 import { FlashListFooter, EmptyList, DetailCards } from '../components';
 import { styles } from '../styles';
 
 const StyledView = styled(TouchableOpacity);
 export default function DayBook() {
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const { mutate, data: dailyBookData, isLoading } = useDailyBook();
   const [reload, setReload] = useState(false);

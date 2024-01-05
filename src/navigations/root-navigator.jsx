@@ -25,27 +25,26 @@ import {
 } from '../screens/reports';
 import TakePayment from '../screens/take-payment';
 import { useVerifyUserAuthApi } from '../apis/use-api';
+import { useAuthStore } from '../hooks/auth-store';
 
 const Stack = createNativeStackNavigator();
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 export const Root = () => {
+  const { user } = useAuthStore();
   const status = useAuth.use.status();
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const setCompany = useAuthCompanyStore((state) => state.setCompany);
   const hideSplash = React.useCallback(async () => {
     await SplashScreen.hideAsync();
   }, []);
 
   useEffect(() => {
-    if (status !== 'idle') {
-      setTimeout(() => {
-        hideSplash().then((r) => null);
-      }, 1000);
-      setCompany(auth?.user?.company);
+    if (user) {
+      setCompany(user?.user?.company);
     }
-  }, [auth?.user?.company, hideSplash, setCompany, status]);
+  }, [user]);
 
   const headerBackgroundColor = { backgroundColor: '#eff6ff' };
 
@@ -58,7 +57,7 @@ export const Root = () => {
         headerShadowVisible: false, // applied here
       }}>
       <Stack.Group>
-        {status === 'signOut' || status === 'idle' ? (
+        {!user ? (
           <Stack.Screen
             screenOptions={{
               headerShown: false,

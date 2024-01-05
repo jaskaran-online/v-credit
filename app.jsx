@@ -4,7 +4,7 @@ import {
   DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
@@ -19,6 +19,8 @@ import { useContactsStore } from './src/hooks/zustand-store';
 import { RootNavigator } from './src/navigations/root-navigator';
 import { loadContacts } from './src/service/contactService';
 import { useVerifyUserAuthApi } from './src/apis/use-api';
+import { useAuthStore } from './src/hooks/auth-store';
+import * as SplashScreen from 'expo-splash-screen';
 // Create a client
 const queryClient = new QueryClient();
 
@@ -41,16 +43,23 @@ const darkTheme = {
 };
 
 export default function App() {
-  const authHydrate = useAuth.use.hydrate();
+  const { initialize, loading, updateUserActivity, checkAutoLogout } = useAuthStore();
 
-  console.log('authHydrate');
-  // Hydrate auth
-  useEffect(
-    function () {
-      authHydrate();
-    },
-    [authHydrate]
-  );
+  const hideSplash = useCallback(async () => {
+    await SplashScreen.hideAsync();
+  }, []);
+
+  useEffect(() => {
+    initialize(); // Initialize the auth state on app start
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      hideSplash();
+      updateUserActivity();
+      checkAutoLogout();
+    }
+  }, [loading, hideSplash, updateUserActivity, checkAutoLogout]);
 
   const [isDarkTheme] = useState(false);
   const theme = isDarkTheme ? darkTheme : lightTheme;

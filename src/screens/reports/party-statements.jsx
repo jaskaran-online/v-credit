@@ -8,13 +8,13 @@ import { DatePickerInput } from 'react-native-paper-dates';
 
 import { useCustomersData, usePartyStatement } from '../../apis/use-api';
 import { renderHeader, renderItem } from '../../components/list-components';
-import { useAuth } from '../../hooks';
+import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../hooks/zustand-store';
 import { FlashListFooter, EmptyList, DetailCards, DropDownFlashList } from '../components';
 import { styles } from '../styles';
 
 export default function PartyStatements() {
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const { mutate, data: dailyBookData, isLoading } = usePartyStatement();
   const { mutate: customerMutate, data: customersData } = useCustomersData();
@@ -51,7 +51,6 @@ export default function PartyStatements() {
     formData.append('fromDate', fromDateStr);
     formData.append('user_id', auth.user.id);
     mutate(formData);
-    console.log(formData);
     setReload(false);
   }
 

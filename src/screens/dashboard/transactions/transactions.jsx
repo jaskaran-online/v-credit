@@ -13,7 +13,7 @@ import {
 import { renderHeader, renderItem } from '../../../components/list-components';
 import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
 import { showToast } from '../../../core/utils';
-import { useAuth } from '../../../hooks';
+import { useAuthStore } from '../../../hooks/auth-store';
 import {
   useAuthCompanyStore,
   useCardAmountStore,
@@ -24,7 +24,7 @@ export default function Transactions() {
   const currentPageRef = useRef(0);
   const lastPageRef = useRef(1);
 
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const setCardAmount = useCardAmountStore((state) => state.setCardAmount);
   const { mutate: transactionRequest, data: transactionData, isLoading } = useTransactionsData();
 
@@ -122,7 +122,7 @@ export default function Transactions() {
     formData.append('cost_center_id', auth.user.cost_center_id);
     formData.append('user_id', auth.user.id);
     formData.append('page', page);
-    transactionRequest(formData);
+    transactionRequest({ formData, page });
     setReload(false);
     toggleFilter('none');
   }

@@ -10,22 +10,23 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import HtmlCodeView from './html-code-view';
 import { useCustomerTransactionData } from '../../../apis/use-api';
 import { convertTimeToPM, formatDateForMessage } from '../../../core/utils';
-import { useAuth } from '../../../hooks';
+import { useAuthStore } from '../../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 
 const ShareScreen = ({ route }) => {
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const { mutate, data: customerData, isLoading } = useCustomerTransactionData();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const data = customerData?.data;
   function loadCustomerData() {
     const formData = new FormData();
+
     formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user.cost_center_id);
     formData.append('customer_id', route.params.id);
     formData.append('user_id', auth.user.id);
     formData.append('page', 'all');
-    mutate(formData);
+    mutate({ formData });
   }
 
   useEffect(() => {

@@ -7,7 +7,7 @@ import { Searchbar, Text } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
 import { useAllTransactions, useCompanyCostCenterData, useCustomersData } from '../../apis/use-api';
-import { useAuth } from '../../hooks';
+import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../hooks/zustand-store';
 import navigation from '../../navigations';
 import { EmptyList, FlashListFooter, DetailCards, DropDownFlashList } from '../components';
@@ -99,7 +99,7 @@ const renderItem = ({ item }) => (
 );
 
 export default function CostCenter() {
-  const auth = useAuth.use?.token();
+  const { user: auth } = useAuthStore();
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const costCenter = useCompanyCostCenterData(
     'api/v1/get/cost-center/' + auth?.user.cost_center_id

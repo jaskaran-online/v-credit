@@ -18,8 +18,9 @@ export const useItemsData = () => {
 export const useCustomerTransactionData = () => {
   return useMutation({
     mutationKey: 'getCustomerTransactionData',
-    mutationFn: (data) => post('api/v1/get/customer/transactions?page=' + data.page, data),
-    cacheTime: 500,
+    mutationFn: ({ formData, page }) =>
+      post('api/v1/get/customer/transactions?page=' + page, formData),
+    cacheTime: 1000,
   });
 };
 
@@ -68,7 +69,9 @@ export const useCreateCustomer = () => {
 export const useTransactionsData = () => {
   return useMutation({
     mutationKey: 'totalAmount',
-    mutationFn: (data) => post('api/v1/get/today/transactions?page=' + data.page, data),
+    mutationFn: ({ formData, page }) => {
+      return post('api/v1/get/today/transactions?page=' + page, formData);
+    },
     cacheTime: 500,
   });
 };

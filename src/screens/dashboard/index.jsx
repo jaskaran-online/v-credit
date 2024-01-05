@@ -1,12 +1,10 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
-import { Text } from 'react-native-paper';
 
 import { TabNavigator } from './tab-navigator';
 import { useTotalTransactionData } from '../../apis/use-api';
-import SkeletonPlaceholder from '../../components/skeleton-placeholder ';
-import { useAuth } from '../../hooks';
+import { useAuthStore } from '../../hooks/auth-store';
 import {
   useAuthCompanyStore,
   useCardAmountStore,
@@ -16,12 +14,12 @@ import { loadContacts } from '../../service/contactService';
 import { FloatingButtons, DetailCards } from '../components';
 
 function Header() {
-  const auth = useAuth.use.token();
+  const { user: auth } = useAuthStore();
   const { selectedCompany: company } = useAuthCompanyStore();
   const { setCardAmount, cardAmount } = useCardAmountStore();
 
   // Load customer data and card totals
-  const loadCustomerData = () => {
+  const loadCustomerData = useCallback(() => {
     if (company && auth?.user) {
       const cardForm = new FormData();
       cardForm.append('company_id', company?.id);
@@ -29,8 +27,7 @@ function Header() {
       cardForm.append('user_id', auth.user.id);
       cardRequest(cardForm);
     }
-    console.log('loadCustomerData');
-  };
+  }, [auth?.user, cardRequest, company]);
 
   const {
     mutate: cardRequest,
@@ -51,7 +48,7 @@ function Header() {
   useFocusEffect(
     useCallback(() => {
       loadCustomerData();
-    }, [company])
+    }, [loadCustomerData])
   );
 
   return (
