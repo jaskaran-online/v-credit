@@ -20,15 +20,15 @@ import {
 import { Button, Dialog, Portal, RadioButton, Text } from 'react-native-paper';
 
 import appJSON from '../../app.json';
+import { useVerifyUserAuthApi } from '../apis/use-api';
 import AccordionItem from '../components/accordion-item';
 import Avatar from '../components/avatar';
 import { COLORS } from '../core';
 import { useAuth } from '../hooks';
-import { useAuthCompanyStore } from '../hooks/zustand-store';
 import { useAuthStore } from '../hooks/auth-store';
+import { useAuthCompanyStore } from '../hooks/zustand-store';
 import { HomePage, ProfitLoss, Reports } from '../screens';
 import CustomerList from '../screens/customers-list';
-import { useVerifyUserAuthApi } from '../apis/use-api';
 const openPlayStore = () => {
   const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook';
 
@@ -99,7 +99,6 @@ function CustomDrawerContent(props) {
             <AntDesign name="sharealt" size={size - 3} color={COLORS.darkTransparent} />
           )}
         />
-        <View className="my-8 w-[250px] border-[0.5px] border-slate-300" />
       </DrawerContentScrollView>
 
       <View style={styles.footerButtonContainer}>

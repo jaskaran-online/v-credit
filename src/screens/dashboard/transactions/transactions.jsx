@@ -265,37 +265,18 @@ export default function Transactions() {
         </View>
       )}
       <FlashList
-        data={isLoading ? Array.from({ length: 6 }, (_, index) => index + 1) : filteredList || []}
-        renderItem={
-          isLoading
-            ? () => (
-                <View className="flex flex-row items-center justify-between mb-4 pt-[6px] px-3">
-                  <View className="flex-1 flex-row items-center gap-2">
-                    <View>
-                      <SkeletonPlaceholder borderRadius={100} height={25} width={25} />
-                    </View>
-                    <View>
-                      <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
-                      <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
-                    </View>
-                  </View>
-                  <View className="mr-2">
-                    <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
-                    <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
-                  </View>
-                </View>
-              )
-            : ({ item, index }) =>
-                renderItem({
-                  item,
-                  index,
-                  userId: auth.user.id,
-                  isAdmin: hasRoleOneOrFour,
-                  showDelete: true,
-                  onDelete: (item = null) => {
-                    setDeleteModalVisibility(item);
-                  },
-                })
+        data={filteredList || []}
+        renderItem={({ item, index }) =>
+          renderItem({
+            item,
+            index,
+            userId: auth.user.id,
+            isAdmin: hasRoleOneOrFour,
+            showDelete: true,
+            onDelete: (item = null) => {
+              setDeleteModalVisibility(item);
+            },
+          })
         }
         ListHeaderComponent={renderHeader}
         estimatedItemSize={600}
@@ -309,7 +290,21 @@ export default function Transactions() {
         ListFooterComponent={() => (
           <View className="mt-4">
             {isLoading ? (
-              <ActivityIndicator animating={isLoading} size="small" />
+              <View className="flex flex-row items-center justify-between mb-4 pt-[6px] px-3">
+                <View className="flex-1 flex-row items-center gap-2">
+                  <View>
+                    <SkeletonPlaceholder borderRadius={100} height={25} width={25} />
+                  </View>
+                  <View>
+                    <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
+                    <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
+                  </View>
+                </View>
+                <View className="mr-2">
+                  <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
+                  <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
+                </View>
+              </View>
             ) : (
               lastPageRef.current <= currentPageRef.current &&
               lastPageRef.current > 1 && (

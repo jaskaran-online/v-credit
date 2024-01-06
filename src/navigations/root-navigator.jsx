@@ -8,7 +8,7 @@ import { AuthNavigator } from './auth-navigator';
 import { DrawerNavigator } from './drawer-navigator';
 import { navigationRef } from './index';
 import { NavigationContainer } from './navigation-container';
-import { useAuth } from '../hooks';
+import { useAuthStore } from '../hooks/auth-store';
 import { useAuthCompanyStore } from '../hooks/zustand-store';
 import { Balance, EditTransaction, Purchase } from '../screens';
 import CustomerList from '../screens/customers-list';
@@ -24,27 +24,18 @@ import {
   PartyStatements,
 } from '../screens/reports';
 import TakePayment from '../screens/take-payment';
-import { useVerifyUserAuthApi } from '../apis/use-api';
-import { useAuthStore } from '../hooks/auth-store';
 
 const Stack = createNativeStackNavigator();
-// Keep the splash screen visible while we fetch resources
-SplashScreen.preventAutoHideAsync();
 
 export const Root = () => {
-  const { user } = useAuthStore();
-  const status = useAuth.use.status();
   const { user: auth } = useAuthStore();
   const setCompany = useAuthCompanyStore((state) => state.setCompany);
-  const hideSplash = React.useCallback(async () => {
-    await SplashScreen.hideAsync();
-  }, []);
 
   useEffect(() => {
-    if (user) {
-      setCompany(user?.user?.company);
+    if (auth) {
+      setCompany(auth?.user?.company);
     }
-  }, [user]);
+  }, [auth, setCompany]);
 
   const headerBackgroundColor = { backgroundColor: '#eff6ff' };
 
@@ -57,7 +48,7 @@ export const Root = () => {
         headerShadowVisible: false, // applied here
       }}>
       <Stack.Group>
-        {!user ? (
+        {!auth ? (
           <Stack.Screen
             screenOptions={{
               headerShown: false,

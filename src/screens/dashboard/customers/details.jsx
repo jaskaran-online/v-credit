@@ -292,39 +292,20 @@ export default function Index({ navigation, route }) {
       )}
       {filteredList && (
         <FlashList
-          data={isLoading ? Array.from({ length: 6 }, (_, index) => index + 1) : filteredList || []}
-          renderItem={
-            isLoading
-              ? () => (
-                  <View className="flex flex-row items-center justify-between mb-4 pt-[6px] px-3">
-                    <View className="flex-1 flex-row items-center gap-2">
-                      <View>
-                        <SkeletonPlaceholder borderRadius={100} height={25} width={25} />
-                      </View>
-                      <View>
-                        <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
-                        <SkeletonPlaceholder borderRadius={10} height={10} width={160} />
-                      </View>
-                    </View>
-                    <View className="mr-2">
-                      <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
-                      <SkeletonPlaceholder borderRadius={10} height={5} width={90} />
-                    </View>
-                  </View>
-                )
-              : ({ item, index }) =>
-                  renderItem({
-                    item,
-                    index,
-                    userId: auth.user.id,
-                    isAdmin: hasRoleOneOrFour,
-                    showDelete: true,
-                    onDelete: (item = null) => {
-                      setDeleteModalVisibility(item);
-                    },
-                    showPDF: false,
-                    showCustomerName: false,
-                  })
+          data={filteredList || []}
+          renderItem={({ item, index }) =>
+            renderItem({
+              item,
+              index,
+              userId: auth.user.id,
+              isAdmin: hasRoleOneOrFour,
+              showDelete: true,
+              onDelete: (item = null) => {
+                setDeleteModalVisibility(item);
+              },
+              showPDF: false,
+              showCustomerName: false,
+            })
           }
           ListHeaderComponent={() => renderHeader({ headerTitle: '' })}
           estimatedItemSize={100}
