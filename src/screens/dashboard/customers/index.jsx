@@ -1,4 +1,4 @@
-import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, Ionicons, Entypo } from '@expo/vector-icons';
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
@@ -6,7 +6,6 @@ import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
-import { array } from 'zod';
 
 import { useCustomersData } from '../../../apis/use-api';
 import Avatar from '../../../components/avatar';
@@ -21,19 +20,32 @@ const renderBackdropComponent = (props) => (
     {...props}
     disappearsOnIndex={-1}
     appearsOnIndex={0}
-    opacity={0.4}
+    opacity={0.5}
+    enableTouchThrough
     pressBehavior="close"
   />
 );
 
+const BottomSheetBackground = ({ style }) => {
+  return (
+    <View
+      style={[
+        {
+          backgroundColor: 'white',
+          borderRadius: 28,
+        },
+        { ...style },
+      ]}
+    />
+  );
+};
+
 const sendReminder = async (item) => {
-  if (item?.customer.toReceive < item?.customer.toPay && item?.customer.balance !== 0) {
+  if (item?.toReceive < item?.toPay && item?.balance !== 0) {
     const messageDate = formatDateForMessage(item?.last_transaction_date);
     const message = `Hi ${item?.customer?.name},
                       
-  This is a friendly reminder that you have to pay ${
-    item?.customer.balance
-  } ₹ to me as of ${messageDate}.
+  This is a friendly reminder that you have to pay ${item?.balance} ₹ to me as of ${messageDate}.
   
   Thanks,
   ${item?.user?.name}
@@ -42,6 +54,12 @@ const sendReminder = async (item) => {
                   `;
     await Share.share({
       message,
+    });
+  } else {
+    await Share.share({
+      message: `https://www.mycreditbook.com/udhaar-khata/${
+        item?.customer?.id + '-' + item?.user?.id
+      }`,
     });
   }
 };
@@ -91,23 +109,20 @@ export default function Index() {
 
     const formatedDate = formatDateForMessage(item?.last_transaction_date);
     return (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('CustomerTransactionDetails', {
-            id: item.customer?.id,
-            name: item.customer?.name,
-            toPay: item?.toPay,
-            toReceive: item?.toReceive,
-            balance: item?.balance,
-            balanceType: item?.type === 1 ? 'Advance ' : item?.type === 2 ? 'Clear ' : 'Balance',
-          })
-        }
-        delayLongPress={200}
-        onLongPress={() => {
-          handlePresentModalPress(item);
-        }}
+      <View
         className={`flex flex-row items-center justify-between border-b border-slate-100 px-2 py-4 `}>
-        <View className="flex flex-row items-center px-1">
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('CustomerTransactionDetails', {
+              id: item.customer?.id,
+              name: item.customer?.name,
+              toPay: item?.toPay,
+              toReceive: item?.toReceive,
+              balance: item?.balance,
+              balanceType: item?.type === 1 ? 'Advance ' : item?.type === 2 ? 'Clear ' : 'Balance',
+            })
+          }
+          className="flex flex-row items-center px-1">
           <Avatar name={item?.customer?.name} size={40} />
           <View className="ml-2.5">
             <Text class="font-bold text-slate-800">{item?.customer?.name}</Text>
@@ -115,15 +130,18 @@ export default function Index() {
               {formatedDate}
             </Text>
           </View>
-        </View>
-        <View className="mr-2 flex flex-row items-center justify-center">
-          <View className="mr-2">
-            <Text variant="bodySmall" className={`${color}`}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handlePresentModalPress(item)}
+          className="mr-2 flex flex-row items-center justify-center">
+          <View className="mr-2 flex flex-row items-center gap-3">
+            <Text variant="bodyMedium" className={`${color}`}>
               {Math.abs(balance.toFixed(2))} ₹
             </Text>
+            <Entypo name="dots-three-vertical" size={16} color="gray" />
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -245,6 +263,7 @@ export default function Index() {
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
         backdropComponent={renderBackdropComponent}
+        backgroundComponent={(props) => <BottomSheetBackground {...props} />}
         handleIndicatorStyle={{
           backgroundColor: 'lightgray',
         }}>
@@ -312,8 +331,9 @@ export default function Index() {
               <TouchableOpacity
                 className="flex items-center"
                 onPress={() => {
-                  bottomSheetModalRef.current?.close();
-                  sendReminder(selectedItem);
+                  sendReminder(selectedItem).then((message) => {
+                    bottomSheetModalRef.current?.close();
+                  });
                 }}>
                 <Ionicons name="alarm-outline" size={28} color="black" />
               </TouchableOpacity>
@@ -324,8 +344,9 @@ export default function Index() {
             <View>
               <TouchableOpacity
                 onPress={() => {
-                  bottomSheetModalRef.current?.close();
-                  sharePDF(selectedItem);
+                  sharePDF(selectedItem).then(() => {
+                    bottomSheetModalRef.current?.close();
+                  });
                 }}
                 className="flex items-center">
                 <AntDesign name="pdffile1" size={26} color="black" />

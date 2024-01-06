@@ -58,27 +58,38 @@ export default function Transactions() {
 
   useEffect(() => {
     lastPageRef.current = transactionData?.transactions?.last_page;
-    if (transactionData?.transactions) {
-      let orderedArray = [...transactionData?.transactions?.data, ...orderedData]; // Create a copy of the array
+    if (transactionData?.transactions?.data) {
+      let newTransactions = transactionData?.transactions?.data;
+      let mergedArray = [...newTransactions, ...orderedData];
+
+      // Remove duplicates
+      let uniqueTransactions = mergedArray.reduce((acc, current) => {
+        const x = acc.find((item) => item.id === current.id);
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
 
       switch (filterBy) {
         case 'Clear':
         case 'Show All Records':
-          setOrderedData(orderedArray);
+          setOrderedData(uniqueTransactions);
           setShowOptions(false);
           break;
         case 'Payment Received':
         case 'Credit Given':
-          orderedArray.sort((a, b) => {
+          uniqueTransactions.sort((a, b) => {
             const sortOrder = filterBy === 'Payment Received' ? -1 : 1;
             return sortOrder * (a.transaction_type_id - b.transaction_type_id);
           });
-          setOrderedData([...orderedArray]); // Update the state with the sorted array
+          setOrderedData(uniqueTransactions);
           setShowOptions(false);
           break;
         case 'Show My Records':
-          orderedArray = orderedArray.filter((item) => item.user_id === auth?.user?.id);
-          setOrderedData([...orderedArray]); // Update the state with the filtered array
+          uniqueTransactions = uniqueTransactions.filter((item) => item.user_id === auth?.user?.id);
+          setOrderedData(uniqueTransactions);
           setShowOptions(false);
           break;
         default:
@@ -86,7 +97,7 @@ export default function Transactions() {
           break;
       }
     }
-  }, [filterBy, transactionData, isLoading]);
+  }, [filterBy, transactionData, isLoading, orderedData, auth?.user?.id]);
 
   useEffect(() => {
     setFilteredList(orderedData);
@@ -189,22 +200,6 @@ export default function Transactions() {
     }
   }, [cardData, isCardLoading]);
 
-  // if (isLoading) {
-  //   return (
-  //     <View className="flex-1 flex bg-white p-2 ">
-  //       <FlashList
-  //         data={Array.from({ length: 6 }, (_, index) => index + 1)}
-  //         renderItem={() => (
-  //           <View className="mb-2 flex-1 items-center justify-center bg-white pt-[2px]">
-  //             <SkeletonPlaceholder borderRadius={10} height={80} width="100%" />
-  //           </View>
-  //         )}
-  //         estimatedItemSize={200}
-  //       />
-  //     </View>
-  //   );
-  // }
-
   return (
     <View className="flex-1 bg-white">
       <View className="flex w-full flex-row items-center justify-between px-3 py-4">
@@ -286,7 +281,7 @@ export default function Transactions() {
         showOptions={showOptions}
         options={options}
         onOptionSelect={handleOptionSelect}
-        onEndReachedThreshold={0.7}
+        onEndReachedThreshold={0.9}
         ListFooterComponent={() => (
           <View className="mt-4">
             {isLoading ? (

@@ -114,12 +114,24 @@ export default function Index({ navigation, route }) {
 
   useEffect(() => {
     if (data?.data) {
+      const newTransactions = data?.data?.customer?.transactions;
+
       if (filterBy === 'Clear') {
-        setOrderedData([...orderedData, ...data?.data?.customer?.transactions]);
+        // Merge and filter out duplicates when filterBy is 'Clear'
+        const mergedData = [...orderedData, ...newTransactions].reduce((acc, current) => {
+          const x = acc.find((item) => item.id === current.id);
+          if (!x) {
+            return acc.concat([current]);
+          } else {
+            return acc;
+          }
+        }, []);
+        setOrderedData(mergedData);
         lastPageRef.current = data?.data?.paginator?.last_page;
       } else {
+        // Apply ordering when filter is other than 'Clear'
         const orderedArray = _.orderBy(
-          data?.data?.customer?.transactions,
+          newTransactions,
           ['transaction_type_id'],
           [filterBy === 'Payment Received' ? 'desc' : 'asc']
         );

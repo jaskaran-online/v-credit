@@ -3,7 +3,14 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Image, Keyboard, KeyboardAvoidingView, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
@@ -12,6 +19,7 @@ import { convertDateFormat, showToast } from '../../../core/utils';
 import { useAuthStore } from '../../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 import { DropDownFlashList } from '../../components';
+import { COLORS } from '../../../core';
 
 const TRANS_TYPES = [
   { id: 1, name: 'Given' },
@@ -50,37 +58,27 @@ const EditTransaction = ({ navigation, route }) => {
   const [inventoryChecked, setInventoryChecked] = React.useState(false);
   const company = useAuthCompanyStore((state) => state.selectedCompany);
 
-  const loadTransactionData = useCallback(() => {
-    const formData = new FormData();
-    formData.append('cost_center_id', auth.user.cost_center_id);
-    formData.append('company_id', company?.id);
-    formData.append('user_id', auth.user.id);
-    formData.append('id', route?.params?.transaction?.id);
-    editApiRequest(formData);
-  }, [
-    auth.user.cost_center_id,
-    auth.user.id,
-    company?.id,
-    editApiRequest,
-    route?.params?.transaction?.id,
-  ]);
-
-  useEffect(() => {
-    if (!loadingTransactionData) {
-      if (transactionData !== null || transactionData?.data !== undefined) {
+  useEffect(
+    function () {
+      if (transactionData) {
         setInventoryChecked(transactionData?.data?.qty > 0 && transactionData?.data?.price > 0);
-        setPrice(transactionData?.data?.price || 0);
-        setQty(transactionData?.data?.qty || 0);
-        setAmount(parseFloat(transactionData?.data?.amount).toFixed(2) || 0);
+        setPrice(transactionData?.data?.price || 1);
+        setQty(transactionData?.data?.qty || 1);
         setNote(transactionData?.data?.notes || '');
         setTransactionType(transactionData?.data?.transaction_type);
       }
-    }
-  }, [loadingTransactionData, transactionData]);
+    },
+    [transactionData]
+  );
 
-  useEffect(() => {
+  useEffect(function () {
+    function loadTransactionData() {
+      const formData = new FormData();
+      formData.append('id', route?.params?.transaction?.id);
+      editApiRequest(formData);
+    }
     loadTransactionData();
-  }, [loadTransactionData]);
+  }, []);
 
   useEffect(() => {
     const formData = new FormData();
@@ -93,13 +91,6 @@ const EditTransaction = ({ navigation, route }) => {
       showToast(paymentError.message, 'error');
     }
   }, [isError, paymentError]);
-
-  useEffect(
-    function () {
-      setAmount((parseFloat(price || 0) * parseFloat(qty || 1)).toFixed(2));
-    },
-    [price, qty]
-  );
 
   useEffect(() => {
     if (isPaymentSuccess) {
@@ -139,6 +130,7 @@ const EditTransaction = ({ navigation, route }) => {
       hideDialog();
     }
   }, [hideDialog]);
+
   const onFormSubmit = useCallback(() => {
     if (inventoryChecked) {
       if (price === 0 || qty === 0) {
@@ -190,18 +182,30 @@ const EditTransaction = ({ navigation, route }) => {
 
   const handlePriceChange = useCallback((inputPrice) => {
     setPrice(inputPrice);
+    setAmount(inputPrice * qty);
   }, []);
 
   const handleQtyChange = useCallback((inputQty) => {
     setQty(inputQty);
+    setAmount(inputQty * price);
   }, []);
 
   const handleProductSelect = useCallback((product) => {
     setSelectedProduct(product);
-    setPrice(product.price);
+    if (product.price) {
+      setPrice(product.price);
+    }
   }, []);
 
   const handleDateChange = useCallback((d) => setInputDate(d), []);
+
+  if (loadingTransactionData) {
+    return (
+      <View className="flex-1 justify-center  items-center bg-white">
+        <ActivityIndicator color={COLORS.primary} size="large" />
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-white">

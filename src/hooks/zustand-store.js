@@ -25,10 +25,18 @@ export const useCustomersStore = create((set) => ({
   setCustomers: (newCustomers) => set({ customersList: newCustomers }),
 }));
 
-export const useFilterToggleStore = create((set) => ({
-  filterBy: 'none',
-  toggleFilter: (newFilter) => set({ filterBy: newFilter }),
-}));
+export const useFilterToggleStore = create(
+  persist(
+    (set) => ({
+      filterBy: 'none',
+      toggleFilter: (newFilter) => set({ filterBy: newFilter }),
+    }),
+    {
+      name: 'filter-toggle-store',
+      storage: createJSONStorage(() => AsyncStorage),
+    }
+  )
+);
 
 export const useCardAmountStore = create((set) => ({
   cardAmount: {
