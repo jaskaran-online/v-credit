@@ -4,7 +4,6 @@ import _ from 'lodash';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Image, Linking, Platform, Share, TouchableOpacity, View } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
-import Animated, { FadeInDown, FadeInLeft } from 'react-native-reanimated';
 
 import { useCustomerTransactionData, useTransactionsDelete } from '../../../apis/use-api';
 import { renderHeader, renderItem } from '../../../components/list-components';
@@ -211,21 +210,17 @@ export default function Index({ navigation, route }) {
       <View className="h-28 bg-blue-50">
         <View className="mx-2 mt-1 flex h-24 flex-row items-center justify-between rounded-md bg-white px-4 shadow-sm">
           <View className="flex flex-row items-center space-x-4">
-            <Animated.View
-              entering={FadeInLeft.easing(0.5).springify().duration(300).delay(200)}
-              className="ml-2">
+            <View className="ml-2">
               <Text variant="bodyMedium" className="text-slate-600 ">
                 {balanceType.current}
               </Text>
               <Text variant="bodyLarge" className="font-bold text-slate-900">
                 {Math.abs(balanceRef.current).toFixed(2)} ₹
               </Text>
-            </Animated.View>
+            </View>
           </View>
 
-          <Animated.View
-            entering={FadeInDown.easing(0.5).springify().duration(300).delay(100)}
-            className="flex flex-row space-x-3 pl-8 pr-2">
+          <View className="flex flex-row space-x-3 pl-8 pr-2">
             <TouchableOpacity
               className="flex items-center rounded-full  bg-red-50 p-2"
               onPress={() =>
@@ -248,7 +243,7 @@ export default function Index({ navigation, route }) {
               }>
               <MaterialCommunityIcons name="whatsapp" size={26} color="green" />
             </TouchableOpacity>
-          </Animated.View>
+          </View>
         </View>
       </View>
       <View className="flex w-full flex-row items-center justify-between px-3 py-4">

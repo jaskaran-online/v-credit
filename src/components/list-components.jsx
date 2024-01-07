@@ -2,7 +2,6 @@ import { MaterialCommunityIcons, MaterialIcons, Octicons } from '@expo/vector-ic
 import React, { useState } from 'react';
 import { Share, TouchableOpacity, View } from 'react-native';
 import { Chip, Text } from 'react-native-paper';
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
 import { BALANCE, DUE } from '../core/constants';
 import { convertTimeToPM, formatDateForMessage, isToday } from '../core/utils';
@@ -206,7 +205,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${tran
         </View>
       </TouchableOpacity>
       {expanded && (
-        <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+        <View>
           {isAdmin && (
             <>
               {transaction.notes && (
@@ -318,7 +317,7 @@ Click : http://mycreditbook.com/udhaar-khata/${transaction?.customer?.id}-${tran
               </TouchableOpacity>
             )}
           </View>
-        </Animated.View>
+        </View>
       )}
     </>
   );

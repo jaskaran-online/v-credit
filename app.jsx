@@ -17,7 +17,9 @@ import Toast from 'react-native-toast-message';
 
 import { COLORS } from './src/core';
 import { useAuthStore } from './src/hooks/auth-store';
+import { useContactsStore, useAuthCompanyStore } from './src/hooks/zustand-store';
 import { RootNavigator } from './src/navigations/root-navigator';
+import { loadContacts } from './src/service/contactService';
 // Create a client
 const queryClient = new QueryClient();
 
@@ -40,7 +42,7 @@ const darkTheme = {
 };
 
 export default function App() {
-  const { initialize, loading, user, updateUserActivity, checkAutoLogout } = useAuthStore();
+  const { initialize, loading, updateUserActivity, checkAutoLogout } = useAuthStore();
 
   const hideSplash = useCallback(async () => {
     await SplashScreen.hideAsync();
@@ -68,7 +70,6 @@ export default function App() {
       </View>
     );
   }
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>

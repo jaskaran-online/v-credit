@@ -3,7 +3,6 @@ import { styled } from 'nativewind';
 import { useEffect, useState, memo } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { FadeInDown } from 'react-native-reanimated';
 
 import SkeletonPlaceholder from '../../components/skeleton-placeholder ';
 import { useCardAmountStore, useFilterToggleStore } from '../../hooks/zustand-store';
@@ -99,7 +98,6 @@ const DetailCards = ({
               </Text>
 
               <Text
-                entering={FadeInDown.delay(300).duration(300)}
                 variant="titleSmall"
                 className={`${filterByToReceive ? 'text-white' : 'text-slate-700'} font-bold `}>
                 {homePage

@@ -20,7 +20,7 @@ import {
 import { Button, Dialog, Portal, RadioButton, Text } from 'react-native-paper';
 
 import appJSON from '../../app.json';
-import { useVerifyUserAuthApi } from '../apis/use-api';
+import { useVerifyUserAuthApi, useGetCustomersList } from '../apis/use-api';
 import AccordionItem from '../components/accordion-item';
 import Avatar from '../components/avatar';
 import { COLORS } from '../core';
@@ -29,6 +29,8 @@ import { useAuthStore } from '../hooks/auth-store';
 import { useAuthCompanyStore, useContactsStore } from '../hooks/zustand-store';
 import { HomePage, ProfitLoss, Reports } from '../screens';
 import CustomerList from '../screens/customers-list';
+import { loadContacts } from '../service/contactService';
+
 const openPlayStore = () => {
   const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook';
 
@@ -104,38 +106,36 @@ function CustomDrawerContent(props) {
       </DrawerContentScrollView>
 
       <View style={styles.footerButtonContainer}>
-        <AccordionItem title="Settings">
-          <View className="ml-2">
-            <TouchableOpacity
-              onPress={() => {
-                signOut();
-                setContacts([]);
-                props.navigation.closeDrawer();
-              }}
-              className="mt-6 flex-row items-center gap-x-8">
-              <AntDesign name="enter" size={22} color={COLORS.darkTransparent} />
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: 500,
-                }}>
-                Logout
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setDeleteModalVisibility(true)}
-              className="mt-6 flex-row items-center gap-x-8">
-              <AntDesign name="delete" size={22} color={COLORS.darkTransparent} />
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: 500,
-                }}>
-                Delete Account
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </AccordionItem>
+        <View className="ml-5 my-4">
+          <TouchableOpacity
+            onPress={() => {
+              signOut();
+              setContacts([]);
+              props.navigation.closeDrawer();
+            }}
+            className="mt-6 flex-row items-center gap-x-8">
+            <AntDesign name="enter" size={22} color={COLORS.darkTransparent} />
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: 500,
+              }}>
+              Logout
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setDeleteModalVisibility(true)}
+            className="mt-6 flex-row items-center gap-x-8">
+            <AntDesign name="delete" size={22} color={COLORS.darkTransparent} />
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: 500,
+              }}>
+              Delete Account
+            </Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.footerVersionTextContainer} className="mb-2">
           <Text className="text-slate-600 " variant="bodyMedium">
             Version : {appJSON.expo.version}
@@ -259,6 +259,62 @@ export function DrawerNavigator() {
   const { user: auth } = useAuthStore();
   const hasRoleOneOrFour = auth?.user?.roles?.some((role) => role.id === 1 || role.id === 4);
   const company = useAuthCompanyStore((state) => state.selectedCompany);
+
+  const contactsList = useContactsStore((state) => state.contactsList);
+  const setContacts = useContactsStore((state) => state.setContacts);
+
+  const { mutate: getCustomerRequest, data: apiCustomersList } = useGetCustomersList();
+
+  async function getContacts() {
+    console.log('getContacts called');
+    const fetchContacts = async () => {
+      setContacts([]);
+      try {
+        const existingContacts = await loadContacts();
+
+        const contactsOnlyWithPhoneNumbers = existingContacts.filter((obj) =>
+          obj.hasOwnProperty('phoneNumbers')
+        );
+
+        // Handle API customers list update
+        if (apiCustomersList?.data) {
+          const newContacts = apiCustomersList.data.map((obj) => ({
+            id: obj.id,
+            name: obj.name,
+            digits: obj.phone,
+            contactType: 'person',
+            phoneNumbers: obj.phone ? [{ digits: obj.phone }] : [],
+            imageAvailable: false,
+          }));
+          setContacts([...newContacts, ...contactsOnlyWithPhoneNumbers]);
+        } else {
+          setContacts(contactsOnlyWithPhoneNumbers);
+        }
+      } catch (error) {
+        console.error('Failed to load contacts:', error);
+      }
+    };
+
+    if (contactsList.length === 0 || apiCustomersList?.data) {
+      await fetchContacts();
+    }
+  }
+
+  useEffect(() => {
+    setTimeout(() => {
+      getContacts();
+    }, 6000);
+  }, [apiCustomersList]);
+
+  useEffect(() => {
+    if (company?.id && auth.user?.cost_center_id) {
+      getCustomerRequest({
+        company_id: company.id,
+        cost_center_id: auth.user.cost_center_id,
+      });
+    }
+  }, [company?.id]);
+
   const drawerLabelStyleCustom = {
     fontSize: 15,
     fontWeight: 500,
