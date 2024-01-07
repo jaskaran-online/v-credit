@@ -59,8 +59,8 @@ export default function Transactions() {
   useEffect(() => {
     lastPageRef.current = transactionData?.transactions?.last_page;
     if (transactionData?.transactions?.data) {
-      let newTransactions = transactionData?.transactions?.data;
-      let mergedArray = [...newTransactions, ...orderedData];
+      const newTransactions = transactionData?.transactions?.data;
+      const mergedArray = [...newTransactions, ...orderedData];
 
       // Remove duplicates
       let uniqueTransactions = mergedArray.reduce((acc, current) => {
@@ -82,7 +82,7 @@ export default function Transactions() {
         case 'Credit Given':
           uniqueTransactions.sort((a, b) => {
             const sortOrder = filterBy === 'Payment Received' ? -1 : 1;
-            return sortOrder * (a.transaction_type_id - b.transaction_type_id);
+            return sortOrder * (a.transaction_type_id - b.tlogransaction_type_id);
           });
           setOrderedData(uniqueTransactions);
           setShowOptions(false);
@@ -97,7 +97,7 @@ export default function Transactions() {
           break;
       }
     }
-  }, [filterBy, transactionData, isLoading, orderedData, auth?.user?.id]);
+  }, [filterBy, transactionData]);
 
   useEffect(() => {
     setFilteredList(orderedData);

@@ -36,7 +36,7 @@ export const useGetCustomersList = () => {
     mutationKey: 'getCustomersList',
     mutationFn: ({ company_id, cost_center_id }) =>
       get(`/api/v1/get/customer/${company_id}/${cost_center_id}`),
-    cacheTime: 500,
+    cacheTime: 1500,
   });
 };
 

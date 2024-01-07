@@ -26,7 +26,7 @@ import Avatar from '../components/avatar';
 import { COLORS } from '../core';
 import { useAuth } from '../hooks';
 import { useAuthStore } from '../hooks/auth-store';
-import { useAuthCompanyStore } from '../hooks/zustand-store';
+import { useAuthCompanyStore, useContactsStore } from '../hooks/zustand-store';
 import { HomePage, ProfitLoss, Reports } from '../screens';
 import CustomerList from '../screens/customers-list';
 const openPlayStore = () => {
@@ -47,6 +47,7 @@ const openPlayStore = () => {
 
 function CustomDrawerContent(props) {
   const { user: auth, logout: signOut } = useAuthStore();
+  const setContacts = useContactsStore((state) => state.setContacts);
 
   const [deleteModalVisibility, setDeleteModalVisibility] = useState(false);
   const [deleteAccountLoading, setLoadingDeleteAccount] = useState(false);
@@ -55,6 +56,7 @@ function CustomDrawerContent(props) {
     setLoadingDeleteAccount(true);
     setTimeout(function () {
       setLoadingDeleteAccount(false);
+      setContacts([]);
       signOut();
     }, 3000);
   };
@@ -105,7 +107,11 @@ function CustomDrawerContent(props) {
         <AccordionItem title="Settings">
           <View className="ml-2">
             <TouchableOpacity
-              onPress={() => signOut()}
+              onPress={() => {
+                signOut();
+                setContacts([]);
+                props.navigation.closeDrawer();
+              }}
               className="mt-6 flex-row items-center gap-x-8">
               <AntDesign name="enter" size={22} color={COLORS.darkTransparent} />
               <Text
