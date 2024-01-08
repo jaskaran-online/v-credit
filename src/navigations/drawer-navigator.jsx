@@ -123,6 +123,7 @@ function CustomDrawerContent(props) {
               Logout
             </Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             onPress={() => setDeleteModalVisibility(true)}
             className="mt-6 flex-row items-center gap-x-8">
@@ -133,6 +134,23 @@ function CustomDrawerContent(props) {
                 fontWeight: 500,
               }}>
               Delete Account
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL('https://mycreditbook.com/privacy-policy.html').catch((err) =>
+                console.error('Error', err)
+              );
+            }}
+            className="mt-6 flex-row items-center gap-x-8">
+            <AntDesign name="lock" size={22} color={COLORS.darkTransparent} />
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: 500,
+              }}>
+              Privacy Policy
             </Text>
           </TouchableOpacity>
         </View>

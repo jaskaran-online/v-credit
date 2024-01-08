@@ -2,7 +2,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
+import { View } from 'react-native';
 import { Text } from 'react-native-paper';
+import { WebView } from 'react-native-webview';
 
 import { AuthNavigator } from './auth-navigator';
 import { DrawerNavigator } from './drawer-navigator';
@@ -26,6 +28,23 @@ import {
 import TakePayment from '../screens/take-payment';
 
 const Stack = createNativeStackNavigator();
+
+function Privacy() {
+  return (
+    <View style={{ flex: 1 }}>
+      <WebView
+        source={{ uri: 'https://mycreditbook.com/privacy-policy.html' }}
+        originWhitelist={['*']}
+        scalesPageToFit={true} // For iOS
+        allowsFullscreenVideo={true}
+        allowsBackForwardNavigationGestures={true}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        startInLoadingState={true}
+      />
+    </View>
+  );
+}
 
 export const Root = () => {
   const { user: auth } = useAuthStore();
@@ -211,6 +230,15 @@ export const Root = () => {
             />
           </Stack.Group>
         )}
+        <Stack.Screen
+          name="PrivacyPolicy"
+          component={Privacy}
+          options={{
+            headerStyle: headerBackgroundColor,
+            headerShown: true,
+            headerTitle: () => <Text variant="titleMedium">Privacy Policy</Text>,
+          }}
+        />
       </Stack.Group>
     </Stack.Navigator>
   );
