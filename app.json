@@ -1,6 +1,5 @@
 {
   "expo": {
-    "experiments.turboModules": true,
     "name": "My Credit Book",
     "slug": "CASPRO",
     "version": "14.0.0",
@@ -15,9 +14,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "jsEngine": "hermes",
       "bundleIdentifier": "com.webcooks.mycreditbook",
-      "flipper": true
     },
     "android": {
       "jsEngine": "hermes",

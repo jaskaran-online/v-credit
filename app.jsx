@@ -6,7 +6,7 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect, useState } from 'react';
-import { StatusBar, StyleSheet, View, Text, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, StatusBar, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   MD3DarkTheme as DarkTheme,
@@ -17,9 +17,7 @@ import Toast from 'react-native-toast-message';
 
 import { COLORS } from './src/core';
 import { useAuthStore } from './src/hooks/auth-store';
-import { useContactsStore, useAuthCompanyStore } from './src/hooks/zustand-store';
 import { RootNavigator } from './src/navigations/root-navigator';
-import { loadContacts } from './src/service/contactService';
 // Create a client
 const queryClient = new QueryClient();
 

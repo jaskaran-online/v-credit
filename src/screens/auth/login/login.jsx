@@ -1,15 +1,16 @@
+import { AntDesign } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { KeyboardAvoidingView, Platform, View, TouchableOpacity, Linking } from 'react-native';
-import { Button, Text, Checkbox } from 'react-native-paper';
+import { KeyboardAvoidingView, Linking, Platform, TouchableOpacity, View } from 'react-native';
+import { Button, Checkbox, Text } from 'react-native-paper';
 
-import EmailInput from './components/email-input';
-import { Logo } from './components/logo';
-import PasswordInput from './components/password-input';
 import { useAuthLogin } from '../../../apis/use-api';
 import { showToast } from '../../../core/utils';
 import { useAuthStore } from '../../../hooks/auth-store';
+import EmailInput from '../components/email-input';
+import { Logo } from '../components/logo';
+import PasswordInput from '../components/password-input';
 
 export default function Login({ navigation }) {
   const { mutate, data: response, isLoading, error, isError, isSuccess } = useAuthLogin();
@@ -59,13 +60,23 @@ export default function Login({ navigation }) {
       <StatusBar />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="z-50 w-full flex-1 items-center justify-evenly bg-white">
+        className="z-50 w-full flex-1 items-center bg-white justify-center">
+        <TouchableOpacity
+          className="absolute top-24 left-8 bg-slate-100 p-2 px-4 rounded-full flex flex-row items-center justify-between gap-x-2"
+          onPress={() => {
+            navigation.navigate('Welcome');
+          }}>
+          <AntDesign name="back" size={16} color="gray" />
+          <Text className="text-gray-500">Back</Text>
+        </TouchableOpacity>
         <View className="flex h-1/2 w-full px-6">
-          <Logo />
-          <Text variant="titleLarge" className="mb-2 text-3xl text-slate-900">
+          <View className="h-[40%] w-full items-center justify-center pb-16">
+            <Logo />
+          </View>
+          <Text variant="titleMedium" className="mb-2 text-2xl text-slate-800">
             Login
           </Text>
-          <View className="w-full flex-1">
+          <View className="w-full">
             <EmailInput
               control={control}
               errors={errors}
@@ -83,6 +94,7 @@ export default function Login({ navigation }) {
 
             <View className="my-3 flex flex-row items-center justify-between">
               <Checkbox
+                color="green"
                 status={isChecked ? 'checked' : 'unchecked'}
                 onPress={handleCheckBoxToggle}
               />
@@ -93,16 +105,14 @@ export default function Login({ navigation }) {
                     console.error('Error', err)
                   )
                 }>
-                <Text className="text-blue-600 mt-1">I have accepted the privacy policy</Text>
+                <Text className="text-green-600 mt-1">I have accepted the privacy policy</Text>
               </TouchableOpacity>
             </View>
 
             <Button
               mode="contained"
               disabled={!isChecked}
-              className={`mt-2 h-12 justify-center rounded-md ${
-                !isChecked && 'opacity-50'
-              } bg-emerald-900`}
+              className={`mt-2 justify-center p-1 ${!isChecked && 'opacity-50'} bg-emerald-900`}
               onPress={handleSubmit(onSubmit)}
               loading={isLoading}>
               <Text className="text-white">Login</Text>

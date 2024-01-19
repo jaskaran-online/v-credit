@@ -3,53 +3,53 @@ import { useMemo, memo } from 'react';
 import { Controller } from 'react-hook-form';
 import { Text, TextInput } from 'react-native-paper';
 
-import { COLORS } from '../../../../core';
+import { COLORS } from '../../../core';
 
-const EmailInput = ({ control, errors, togglePasswordVisibility }) => {
-  const emailRules = useMemo(
+const PasswordInput = ({ control, errors, isPasswordSecure, setIsPasswordSecure }) => {
+  const passwordRules = useMemo(
     () => ({
-      required: 'Email is required',
-      pattern: {
-        value: /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
-        message: 'Invalid email address',
-      },
+      required: 'Password is required',
     }),
     []
   );
   return (
     <Controller
       control={control}
-      rules={emailRules}
+      rules={passwordRules}
       render={({ field: { onChange, onBlur, value } }) => (
         <>
           <TextInput
             onBlur={onBlur}
             onChangeText={(text) => onChange(text)}
             value={value}
-            label="Email"
-            className="bg-white"
+            label="Password"
+            placeholder="Enter Password"
             mode="outlined"
-            placeholder="Enter Email"
+            className="bg-white"
+            secureTextEntry={isPasswordSecure}
             placeholderTextColor={COLORS.darkGray}
             activeOutlineColor="darkgreen"
-            left={
+            right={
               <TextInput.Icon
-                onPress={togglePasswordVisibility}
-                icon={() => <MaterialCommunityIcons name="email" size={20} />}
+                onPress={() => setIsPasswordSecure(!isPasswordSecure)}
+                icon={() => (
+                  <MaterialCommunityIcons name={isPasswordSecure ? 'eye-off' : 'eye'} size={24} />
+                )}
               />
             }
+            left={<TextInput.Icon icon={() => <MaterialCommunityIcons name="key" size={20} />} />}
           />
-          {errors?.email && (
+          {errors?.password && (
             <Text variant="bodySmall" className="mt-1 font-bold text-amber-700">
-              *{errors?.email?.message}
+              *{errors?.password?.message}
             </Text>
           )}
         </>
       )}
-      name="email"
+      name="password"
       defaultValue=""
     />
   );
 };
 
-export default memo(EmailInput);
+export default memo(PasswordInput);
