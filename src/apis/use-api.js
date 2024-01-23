@@ -21,6 +21,7 @@ export const useCustomerTransactionData = () => {
     mutationFn: ({ formData, page }) =>
       post('api/v1/get/customer/transactions?page=' + page, formData),
     cacheTime: 1000,
+    staleTime: 2000,
   });
 };
 
@@ -29,14 +30,16 @@ export const useCustomersData = () => {
     mutationKey: 'getCustomerData',
     mutationFn: (data) => post('api/v1/get/customer/list', data),
     cacheTime: 500,
+    staleTime: 2000,
   });
 };
 export const useGetCustomersList = () => {
   return useMutation({
-    mutationKey: 'getCustomersList',
+    mutationKey: ['getCustomersList'],
     mutationFn: ({ company_id, cost_center_id }) =>
       get(`/api/v1/get/customer/${company_id}/${cost_center_id}`),
     cacheTime: 1500,
+    staleTime: 2000,
   });
 };
 
