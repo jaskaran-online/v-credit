@@ -31,15 +31,6 @@
     },
     "plugins": [
       [
-        "expo-build-properties",
-        {
-          "ios": {
-            "flipper": true
-          }
-        }
-      ],
-      ["expo-localization"],
-      [
         "expo-contacts",
         {
           "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
@@ -56,8 +47,7 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
         }
-      ],
-      "expo-build-properties"
+      ]
     ],
     "extra": {
       "eas": {
