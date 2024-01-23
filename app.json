@@ -11,10 +11,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.webcooks.mycreditbook",
+      "bundleIdentifier": "com.webcooks.mycreditbook"
     },
     "android": {
       "jsEngine": "hermes",
@@ -23,7 +25,10 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.webcooks.mycreditbook",
-      "permissions": ["READ_CONTACTS", "WRITE_CONTACTS"],
+      "permissions": [
+        "READ_CONTACTS",
+        "WRITE_CONTACTS"
+      ],
       "versionCode": 14
     },
     "web": {
@@ -47,14 +52,15 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "extra": {
       "eas": {
         "projectId": "10c44983-617a-4f18-9227-ce300c770980"
       }
     },
-    "runtimeVersion": "exposdk:49.0.0",
+    "runtimeVersion": "exposdk:50.0.2",
     "updates": {
       "url": "https://u.expo.dev/10c44983-617a-4f18-9227-ce300c770980"
     }
