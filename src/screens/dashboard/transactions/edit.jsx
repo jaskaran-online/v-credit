@@ -15,11 +15,11 @@ import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
 import { useEditPaymentApi, useProductsApi, useUpdatePaymentApi } from '../../../apis/use-api';
+import { COLORS } from '../../../core';
 import { convertDateFormat, showToast } from '../../../core/utils';
 import { useAuthStore } from '../../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 import { DropDownFlashList } from '../../components';
-import { COLORS } from '../../../core';
 
 const TRANS_TYPES = [
   { id: 1, name: 'Given' },
