@@ -4,7 +4,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import {
   Image,
   KeyboardAvoidingView,
@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { Button, Checkbox, Text, TextInput as TextInputNew } from 'react-native-paper';
 
-import { useAuthLogin } from '../../../apis/use-api';
+import { useAuthLogin, useRegisterUser } from '../../../apis/use-api';
 import { showToast } from '../../../core/utils';
 import { useAuthStore } from '../../../hooks/auth-store';
 import EmailInput from '../components/email-input';
@@ -35,6 +35,18 @@ const renderBackdropComponent = (props) => (
   />
 );
 
+const fetchCountries = async () => {
+  try {
+    const response = await fetch('https://restcountries.com/v3.1/all?fields=name,flags,idd');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  } catch (error) {
+    throw new Error('Network response was not ok');
+  }
+};
+
 const BottomSheetBackground = ({ style }) => {
   return (
     <View
@@ -47,18 +59,6 @@ const BottomSheetBackground = ({ style }) => {
       ]}
     />
   );
-};
-
-const fetchCountries = async () => {
-  try {
-    const response = await fetch('https://restcountries.com/v3.1/all?fields=name,flags,idd');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  } catch (error) {
-    throw new Error('Network response was not ok');
-  }
 };
 
 export default function Register({ navigation }) {
@@ -104,6 +104,8 @@ export default function Register({ navigation }) {
     error: countryError,
     isLoading: isCountryLoading,
   } = useQuery(['countries'], fetchCountries);
+
+  const { mutate: registerUser, isLoading: registerLoading } = useRegisterUser();
 
   // ref for bottom sheet modal
   const bottomSheetModalRef = useRef(null);
@@ -173,6 +175,16 @@ export default function Register({ navigation }) {
     }
   }, [searchQuery, countries]);
 
+  function handleFormSubmit() {
+    if (!isChecked) {
+      showToast('Please accept terms and conditions', 'error');
+    } else {
+      navigation.navigate('OtpVerification', {
+        mobileNumber: `${selectedCountry?.idd?.root}${selectedCountry?.idd?.suffixes[0]}${mobileNumber}`,
+      });
+    }
+  }
+
   return (
     <View className="flex-1">
       <StatusBar />
@@ -198,15 +210,11 @@ export default function Register({ navigation }) {
 
             <View className="mb-2 " />
 
-            <UsernameInput
-              control={control}
-              errors={errors}
-              togglePasswordVisibility={togglePasswordVisibility}
-            />
+            <UsernameInput control={control} errors={errors} />
 
             <View className="mb-3 " />
 
-            <View className="h-12 border border-slate-900 bg-white rounded-md flex flex-row items-center px-3 gap-x-1">
+            <View className="h-[50px] border border-slate-500 bg-white rounded-[4px] flex flex-row items-center px-4">
               <TouchableOpacity
                 onPress={handlePresentModalPress}
                 className="flex flex-row items-center">
@@ -216,17 +224,29 @@ export default function Register({ navigation }) {
                 />
                 <Text className="text-slate-900 mr-2">{`${selectedCountry?.idd?.root}${selectedCountry?.idd?.suffixes[0]}`}</Text>
               </TouchableOpacity>
-              <TextInput
-                className="text-slate-900"
-                placeholder="Enter your mobile number"
-                placeholderTextColor="gray"
-                onChange={(e) => {
-                  setMobileNumber(e.nativeEvent.text);
-                }}
-                value={mobileNumber}
-                keyboardType="number-pad"
+
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    className="text-slate-900"
+                    placeholder="Enter your mobile number"
+                    placeholderTextColor="gray"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    keyboardType="number-pad"
+                  />
+                )}
+                name="mobileNumber"
+                rules={{ required: true, pattern: /^[0-9]+$/ }}
               />
             </View>
+            {errors.mobileNumber && (
+              <Text variant="bodySmall" className="mt-1 font-bold text-amber-700">
+                *{errors?.mobileNumber?.message || 'Mobile is required'}
+              </Text>
+            )}
 
             <View className="mb-2 " />
 
@@ -266,12 +286,8 @@ export default function Register({ navigation }) {
               mode="contained"
               disabled={!isChecked}
               className={`mt-2 p-1 justify-center ${!isChecked && 'opacity-50'} bg-emerald-900`}
-              onPress={() => {
-                navigation.navigate('OtpVerification', {
-                  mobileNumber: `${selectedCountry?.idd?.root}${selectedCountry?.idd?.suffixes[0]}${mobileNumber}`,
-                });
-              }}
-              loading={isCountryLoading}>
+              onPress={handleSubmit(handleFormSubmit)}
+              loading={registerLoading}>
               <Text className="text-white">Register</Text>
             </Button>
           </View>

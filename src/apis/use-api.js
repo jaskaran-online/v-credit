@@ -189,6 +189,19 @@ export const useCreateBalanceApi = () => {
     mutationFn: (data) => post('api/v1/balance/create', data),
   });
 };
+export const useRegisterUser = () => {
+  return useMutation({
+    mutationKey: 'registerUser',
+    mutationFn: (data) => post('api/v1/user/register', data),
+  });
+};
+
+export const useOTPVerify = () => {
+  return useMutation({
+    mutationKey: 'otpVerify',
+    mutationFn: (data) => post('api/v1/verify-otp', data),
+  });
+};
 
 export const usePutData = () => {
   return useMutation((data) => put('your-put-url', data));
