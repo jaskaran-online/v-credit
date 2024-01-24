@@ -1,18 +1,31 @@
 import { AntDesign } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TouchableOpacity, View } from 'react-native';
 import OTPTextInput from 'react-native-otp-textinput';
 import { Button, Text } from 'react-native-paper';
 
+import { useOTPVerify } from '../../../apis/use-api';
 import { Logo } from '../components/logo';
 
-export default function OtpVerification({ navigation }) {
+export default function OtpVerification({ navigation, route }) {
   let otpInputRef = useRef(null);
+  const { id } = route.params || 1;
+
+  const { mutate: otpVerify, isSuccess, isLoading } = useOTPVerify();
+  const [code, setCode] = useState('');
+
+  console.log(code);
+  console.log(code.length);
 
   const clearText = () => {
-    otpInputRef?.current?.clear();
+    setCode('');
+    otpInputRef?.current?.clearText();
   };
+
+  if (isSuccess) {
+    navigation.navigate('Login');
+  }
 
   return (
     <View className="flex-1">
@@ -45,15 +58,23 @@ export default function OtpVerification({ navigation }) {
                 borderRadius: 10,
                 borderBottomColor: 'transparent',
               }}
+              handleTextChange={(text) => setCode(text)}
             />
             <View className="mb-6" />
             <View className="w-full flex flex-row justify-between">
               <Button
+                disabled={code.length !== 4}
+                loading={isLoading}
                 mode="contained"
-                className="mt-2 w-[46%] justify-center bg-emerald-900"
-                onPress={() => null}>
+                className={`mt-2 w-[46%] justify-center bg-emerald-900 ${code.length !== 4 ? 'opacity-50' : ''}`}
+                onPress={() => {
+                  otpVerify({
+                    code,
+                    id,
+                  });
+                }}>
                 <Text className="text-white font-bold" variant="titleMedium">
-                  Verify
+                  {isLoading ? 'Verifying...' : 'Verify'}
                 </Text>
               </Button>
               <Button

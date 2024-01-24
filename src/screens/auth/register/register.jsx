@@ -62,13 +62,15 @@ const BottomSheetBackground = ({ style }) => {
 };
 
 export default function Register({ navigation }) {
-  const { mutate, data: response, isLoading, error, isError, isSuccess } = useAuthLogin();
-  const [isChecked, setIsChecked] = useState(false);
-  const [mobileNumber, setMobileNumber] = useState('');
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
+  const [isChecked, setIsChecked] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCountries, setFilteredCountries] = useState(countries || []);
-
   const [selectedCountry, setSelectedCountry] = useState({
     flags: {
       png: 'https://flagcdn.com/w320/in.png',
@@ -98,14 +100,25 @@ export default function Register({ navigation }) {
       suffixes: ['1'],
     },
   });
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
 
   const {
     data: countries,
     error: countryError,
     isLoading: isCountryLoading,
-  } = useQuery(['countries'], fetchCountries);
-
-  const { mutate: registerUser, isLoading: registerLoading } = useRegisterUser();
+    isError: isCountryError,
+  } = useQuery({
+    queryKey: ['countries'],
+    queryFn: fetchCountries,
+    staleTime: Infinity,
+    cacheTime: Infinity,
+  });
+  const {
+    mutate: registerUser,
+    isLoading: registerLoading,
+    isSuccess,
+    data: response,
+  } = useRegisterUser();
 
   // ref for bottom sheet modal
   const bottomSheetModalRef = useRef(null);
@@ -123,45 +136,32 @@ export default function Register({ navigation }) {
 
   useEffect(
     function () {
-      if (isError && countryError && !isCountryLoading) {
+      if (isCountryError && countryError && !isCountryLoading) {
         showToast(countryError.message, 'error');
       }
     },
-    [isError, countryError, isCountryLoading]
+    [isCountryError, countryError, isCountryLoading]
   );
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const togglePasswordVisibility = () => setIsPasswordSecure(!isPasswordSecure);
-
-  const onSubmit = (data) => {
-    const formData = new FormData();
-    formData.append('email', data.email);
-    formData.append('password', data.password);
-    mutate(formData);
-  };
-
-  const { login } = useAuthStore();
-
-  useEffect(() => {
-    if (isSuccess) {
-      login({
-        access: response?.data?.accessToken,
-        refresh: response?.data?.accessToken,
-        user: response?.data?.user,
-      });
-    }
-  }, [isSuccess, response, login]);
 
   function handleSelectCountry(item) {
     setSelectedCountry(item);
     setSearchQuery('');
     bottomSheetModalRef.current?.close();
+  }
+
+  function handleFormSubmit(data) {
+    if (!isChecked) {
+      showToast('Please accept terms and conditions', 'error');
+    } else {
+      registerUser({
+        country_code: `${selectedCountry?.idd?.root}${selectedCountry?.idd?.suffixes[0]}`,
+        name: data.username,
+        mobileNumber: data.mobileNumber,
+        email: data.email,
+        password: data.password,
+      });
+    }
   }
 
   useEffect(() => {
@@ -175,14 +175,12 @@ export default function Register({ navigation }) {
     }
   }, [searchQuery, countries]);
 
-  function handleFormSubmit() {
-    if (!isChecked) {
-      showToast('Please accept terms and conditions', 'error');
-    } else {
-      navigation.navigate('OtpVerification', {
-        mobileNumber: `${selectedCountry?.idd?.root}${selectedCountry?.idd?.suffixes[0]}${mobileNumber}`,
-      });
-    }
+  if (isSuccess && response?.data) {
+    showToast('User registered successfully', 'success');
+    navigation.navigate('OtpVerification', {
+      email: response?.user?.email,
+      id: response?.user?.id,
+    });
   }
 
   return (
@@ -220,7 +218,7 @@ export default function Register({ navigation }) {
                 className="flex flex-row items-center">
                 <Image
                   source={{ uri: selectedCountry?.flags?.png }}
-                  style={{ width: 30, height: 20, marginRight: 10 }}
+                  style={{ width: 20, height: 15, marginRight: 10 }}
                 />
                 <Text className="text-slate-900 mr-2">{`${selectedCountry?.idd?.root}${selectedCountry?.idd?.suffixes[0]}`}</Text>
               </TouchableOpacity>
@@ -288,7 +286,7 @@ export default function Register({ navigation }) {
               className={`mt-2 p-1 justify-center ${!isChecked && 'opacity-50'} bg-emerald-900`}
               onPress={handleSubmit(handleFormSubmit)}
               loading={registerLoading}>
-              <Text className="text-white">Register</Text>
+              <Text className="text-white">{registerLoading ? 'Registering...' : 'Register'}</Text>
             </Button>
           </View>
         </View>

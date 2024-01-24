@@ -21,3 +21,4 @@ web-build/
 android/app/*
 .vscode/
 # env.config.js
+/%ProgramData%/
