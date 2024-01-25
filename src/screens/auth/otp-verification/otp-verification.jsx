@@ -69,7 +69,7 @@ export default function OtpVerification({ navigation, route }) {
                 className={`mt-2 w-[46%] justify-center bg-emerald-900 ${code.length !== 4 ? 'opacity-50' : ''}`}
                 onPress={() => {
                   otpVerify({
-                    code,
+                    otp: code,
                     id,
                   });
                 }}>

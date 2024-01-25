@@ -157,7 +157,7 @@ export default function Register({ navigation }) {
       registerUser({
         country_code: `${selectedCountry?.idd?.root}${selectedCountry?.idd?.suffixes[0]}`,
         name: data.username,
-        mobileNumber: data.mobileNumber,
+        mobile: data.mobileNumber,
         email: data.email,
         password: data.password,
       });
@@ -175,7 +175,9 @@ export default function Register({ navigation }) {
     }
   }, [searchQuery, countries]);
 
-  if (isSuccess && response?.data) {
+  console.log({ response });
+
+  if (isSuccess && response?.user) {
     showToast('User registered successfully', 'success');
     navigation.navigate('OtpVerification', {
       email: response?.user?.email,

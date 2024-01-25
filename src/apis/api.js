@@ -11,9 +11,9 @@ const axiosInstance = axios.create({
 });
 
 // Function to make GET requests
-export const get = async (url) => {
+export const get = async (url, params) => {
   try {
-    const response = await axiosInstance.get(url);
+    const response = await axiosInstance.get(url, { params });
     return response.data;
   } catch (error) {
     console.error({
