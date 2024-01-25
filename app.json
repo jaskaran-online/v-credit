@@ -19,7 +19,7 @@
       "bundleIdentifier": "com.webcooks.mycreditbook",
     },
     "android": {
-      "jsEngine": "hermes",
+      "jsEngine": "jsc",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
