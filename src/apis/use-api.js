@@ -203,6 +203,36 @@ export const useOTPVerify = () => {
   });
 };
 
+// Define the React Query hook
+export const useCustomerTransactions = (customerId, userId) => {
+  if (!customerId && userId) return [];
+  return useQuery(['userTransactions', customerId], () =>
+    get(`api/v1/get/user/transactions?customer_id=${customerId}&user_id=${userId}`)
+  );
+};
+
+export const useUserCustomerList = (userId) => {
+  if (!userId) return [];
+  return useQuery(['userCustomerList', userId], () =>
+    get(`api/v1/get/user/customer/list?user_id=${userId}`)
+  );
+};
+
+export const useUserTodayTransactions = (userId) => {
+  if (!userId) return [];
+
+  return useQuery(['userTodayTransactions', userId], () =>
+    get(`api/v1/get/user/today/transactions?user_id=${userId}`)
+  );
+};
+
+export const useUserTodayTransactionsTotal = (userId) => {
+  if (!userId) return [];
+  return useQuery(['userTodayTransactionsTotal', userId], () =>
+    get(`api/v1/get/user/today/transactions/total?user_id=${userId}`)
+  );
+};
+
 export const usePutData = () => {
   return useMutation((data) => put('your-put-url', data));
 };

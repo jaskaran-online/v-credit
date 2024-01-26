@@ -2,13 +2,14 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Image, Platform, TouchableOpacity, View } from 'react-native';
+import { Image, Platform, TouchableOpacity, View } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
 
 import {
   useTotalTransactionData,
   useTransactionsData,
   useTransactionsDelete,
+  useUserTodayTransactions,
 } from '../../../apis/use-api';
 import { renderHeader, renderItem } from '../../../components/list-components';
 import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
@@ -27,6 +28,15 @@ export default function Transactions() {
   const { user: auth } = useAuthStore();
   const setCardAmount = useCardAmountStore((state) => state.setCardAmount);
   const { mutate: transactionRequest, data: transactionData, isLoading } = useTransactionsData();
+  const {
+    data: userTransactionData,
+    isLoading: userTransactionLoading,
+    fetchNextPage,
+    refetch,
+  } = useUserTodayTransactions(auth?.user?.id);
+
+  console.log(userTransactionLoading, 'userTransactionLoading');
+  console.log(userTransactionData?.transactions?.data, 'userTransactionData');
 
   // Use object destructuring for more concise code
   const {
@@ -97,16 +107,22 @@ export default function Transactions() {
           break;
       }
     }
-  }, [filterBy, transactionData]);
+  }, [filterBy, transactionData, orderedData, auth?.user?.id]);
 
   useEffect(() => {
-    setFilteredList(orderedData);
-  }, [orderedData]);
+    if (company) {
+      setFilteredList(orderedData);
+    } else {
+      setFilteredList(userTransactionData?.transactions?.data);
+    }
+  }, [orderedData, company, userTransactionData]);
 
   useFocusEffect(
     useCallback(() => {
-      loadTransactions();
-    }, [company, transactionDelSuccess])
+      if (company) {
+        loadTransactions();
+      }
+    }, [company, loadTransactions])
   );
 
   const getCardTotals = useCallback(() => {
@@ -117,14 +133,16 @@ export default function Transactions() {
       formData.append('user_id', auth.user.id);
       cardRequest(formData);
     }
-  }, [auth.user, company, cardRequest, transactionDelSuccess]);
+  }, [auth.user, company, cardRequest]);
 
   const toggleFilter = useFilterToggleStore((state) => state.toggleFilter);
 
   useEffect(() => {
-    loadTransactions();
-    getCardTotals();
-  }, [transactionDelSuccess]);
+    if (company) {
+      loadTransactions();
+      getCardTotals();
+    }
+  }, [company, getCardTotals, loadTransactions, transactionDelSuccess]);
 
   function loadTransactions(page = 1) {
     setReload(true);
@@ -175,9 +193,9 @@ export default function Transactions() {
 
   const hasRoleOneOrFour = auth?.user?.roles?.some((role) => role.id === 1 || role.id === 4);
 
-  function handleDeleteRecord(deleteModalVisibility) {
+  function handleDeleteRecord(deleteModel) {
     transactionDelRequest({
-      id: deleteModalVisibility?.id,
+      id: deleteModel?.id,
       user_id: auth?.user?.id,
     });
     showToast('Record Deleted Successfully', 'success');
@@ -198,7 +216,7 @@ export default function Transactions() {
         toPay: cardData?.data?.toPay,
       });
     }
-  }, [cardData, isCardLoading]);
+  }, [cardData, isCardLoading, setCardAmount]);
 
   return (
     <View className="flex-1 bg-white">
@@ -209,7 +227,7 @@ export default function Transactions() {
             value={query.toString()}
             style={{
               width: '100%',
-              backgroundColor: 'transparent',
+              backgroundColor: 'white',
             }}
             inputStyle={{
               fontSize: 12,
@@ -268,15 +286,15 @@ export default function Transactions() {
             userId: auth.user.id,
             isAdmin: hasRoleOneOrFour,
             showDelete: true,
-            onDelete: (item = null) => {
-              setDeleteModalVisibility(item);
+            onDelete: (itemToDelete = null) => {
+              setDeleteModalVisibility(itemToDelete);
             },
           })
         }
         ListHeaderComponent={renderHeader}
         estimatedItemSize={600}
         refreshing={reload}
-        onRefresh={loadTransactions}
+        onRefresh={company !== null ? loadTransactions : refetch}
         onSearch={handleSearch}
         showOptions={showOptions}
         options={options}
@@ -311,7 +329,7 @@ export default function Transactions() {
             )}
           </View>
         )}
-        onEndReached={handleLoadMore}
+        onEndReached={company !== null ? handleLoadMore : fetchNextPage}
         ListEmptyComponent={
           <View className="d-flex h-16 flex-1 items-center justify-center">
             <Text variant="bodyMedium">No Records Available!</Text>
@@ -348,7 +366,7 @@ export default function Transactions() {
               mode="contained"
               className="rounded bg-gray-800 px-4"
               onPress={() => setDeleteModalVisibility(null)}>
-              Cancel
+              <Text>Cancel</Text>
             </Button>
           </Dialog.Actions>
         </Dialog>

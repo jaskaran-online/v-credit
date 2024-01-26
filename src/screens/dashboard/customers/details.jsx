@@ -5,7 +5,11 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { Image, Linking, Platform, Share, TouchableOpacity, View } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
 
-import { useCustomerTransactionData, useTransactionsDelete } from '../../../apis/use-api';
+import {
+  useCustomerTransactionData,
+  useCustomerTransactions,
+  useTransactionsDelete,
+} from '../../../apis/use-api';
 import { renderHeader, renderItem } from '../../../components/list-components';
 import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
 import { formatDateForMessage, showToast } from '../../../core/utils';
@@ -83,6 +87,11 @@ export default function Index({ navigation, route }) {
   const { mutate, data, isLoading } = useCustomerTransactionData();
   const { mutate: transactionDelRequest, isLoading: transactionDelLoading } =
     useTransactionsDelete();
+  const {
+    data: transactions,
+    refetch,
+    fetchNextPage,
+  } = useCustomerTransactions(route.params.id, auth?.user?.id);
 
   const [orderedData, setOrderedData] = useState([]);
   const [filterBy, setFilteredBy] = useState('Clear');
@@ -144,7 +153,11 @@ export default function Index({ navigation, route }) {
   }, [orderedData]);
 
   useEffect(() => {
-    loadCustomerData();
+    if (company) {
+      loadCustomerData();
+    } else {
+      setOrderedData(transactions?.data?.customer?.transactions);
+    }
   }, []);
 
   const options = [
@@ -221,16 +234,18 @@ export default function Index({ navigation, route }) {
           </View>
 
           <View className="flex flex-row space-x-3 pl-8 pr-2">
-            <TouchableOpacity
-              className="flex items-center rounded-full  bg-red-50 p-2"
-              onPress={() =>
-                navigation.navigate('DetailsPdf', {
-                  id: data?.data?.customer?.id,
-                  name: data?.data?.customer?.name,
-                })
-              }>
-              <MaterialIcons name="picture-as-pdf" size={22} color="tomato" />
-            </TouchableOpacity>
+            {company && (
+              <TouchableOpacity
+                className="flex items-center rounded-full  bg-red-50 p-2"
+                onPress={() =>
+                  navigation.navigate('DetailsPdf', {
+                    id: data?.data?.customer?.id,
+                    name: data?.data?.customer?.name,
+                  })
+                }>
+                <MaterialIcons name="picture-as-pdf" size={22} color="tomato" />
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               className="flex items-center rounded-full  bg-blue-50 p-2"
               onPress={() => makePhoneCall(data?.data?.customer?.phone)}>
@@ -319,9 +334,9 @@ export default function Index({ navigation, route }) {
           showOptions={showOptions}
           options={options}
           refreshing={reload}
-          onRefresh={loadCustomerData}
+          onRefresh={company ? loadCustomerData : refetch}
           onOptionSelect={handleOptionSelect}
-          onEndReached={handleLoadMore}
+          onEndReached={company ? handleLoadMore : fetchNextPage}
           alwaysBounceVertical
           showsVerticalScrollIndicator={false}
           onEndReachedThreshold={0.7}

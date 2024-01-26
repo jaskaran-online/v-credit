@@ -405,10 +405,10 @@ export function DrawerNavigator() {
                   fontSize: 15,
                   fontWeight: 500,
                 }}>
-                {company?.name || 'Home'}
+                {company?.name || 'My Credit Book'}
               </Text>
             ),
-            headerRight: () => <CompanySwitch />,
+            headerRight: () => (company ? <CompanySwitch /> : null),
             drawerIcon: ({ focused, size }) => (
               <AntDesign
                 name="home"
@@ -418,33 +418,36 @@ export function DrawerNavigator() {
             ),
           }}
         />
-        <Drawer.Screen
-          name="Profit and Loss"
-          component={ProfitLoss}
-          options={{
-            headerShown: true,
-            headerStyle: { backgroundColor: '#eff6ff' },
-            drawerLabelStyle: drawerLabelStyleCustom,
-            headerTitle: ({ focused }) => (
-              <Text
-                style={{
-                  color: focused ? COLORS.primary : COLORS.darkTransparent,
-                  fontSize: 15,
-                  fontWeight: 500,
-                }}>
-                Profit and Loss
-              </Text>
-            ),
-            drawerActiveBackgroundColor: 'transparent',
-            drawerIcon: ({ focused, size }) => (
-              <AntDesign
-                name="barschart"
-                size={size - 3}
-                color={focused ? COLORS.primary : COLORS.darkTransparent}
-              />
-            ),
-          }}
-        />
+
+        {company && (
+          <Drawer.Screen
+            name="Profit and Loss"
+            component={ProfitLoss}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: '#eff6ff' },
+              drawerLabelStyle: drawerLabelStyleCustom,
+              headerTitle: ({ focused }) => (
+                <Text
+                  style={{
+                    color: focused ? COLORS.primary : COLORS.darkTransparent,
+                    fontSize: 15,
+                    fontWeight: 500,
+                  }}>
+                  Profit and Loss
+                </Text>
+              ),
+              drawerActiveBackgroundColor: 'transparent',
+              drawerIcon: ({ focused, size }) => (
+                <AntDesign
+                  name="barschart"
+                  size={size - 3}
+                  color={focused ? COLORS.primary : COLORS.darkTransparent}
+                />
+              ),
+            }}
+          />
+        )}
         {hasRoleOneOrFour && (
           <Drawer.Screen
             name="Reports"

@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Searchbar, Text } from 'react-native-paper';
 
-import { useCustomersData } from '../../../apis/use-api';
+import { useCustomersData, useUserCustomerList } from '../../../apis/use-api';
 import Avatar from '../../../components/avatar';
 import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
 import { formatDateForMessage } from '../../../core/utils';
@@ -65,7 +65,6 @@ const sendReminder = async (item) => {
 };
 
 export default function Index() {
-  // ref
   const bottomSheetModalRef = useRef(null);
   const sharePDF = async (item) => {
     bottomSheetModalRef.current?.dismiss();
@@ -108,6 +107,10 @@ export default function Index() {
     }
 
     const formatedDate = formatDateForMessage(item?.last_transaction_date);
+
+    console.log('---------------------------------------');
+    console.log(item);
+    console.log('---------------------------------------');
     return (
       <View
         className={`flex flex-row items-center justify-between border-b border-slate-100 px-2 py-4 `}>
@@ -145,15 +148,22 @@ export default function Index() {
     );
   };
 
-  const { mutate: customerDataRequest, data: customerData, isLoading } = useCustomersData();
-  const [reload, setReload] = useState(false);
   const { user: auth } = useAuthStore();
-  const company = useAuthCompanyStore((state) => state.selectedCompany);
 
-  const filterBy = useFilterToggleStore((state) => state.filterBy);
+  const [reload, setReload] = useState(false);
   const [query, setQuery] = useState('');
   const [filteredList, setFilteredList] = useState([]);
   const [orderedData, setOrderedData] = useState([]);
+
+  const { mutate: customerDataRequest, data: customerData, isLoading } = useCustomersData();
+  const {
+    data: customerList,
+    isLoading: customerListLoading,
+    refetch,
+  } = useUserCustomerList(auth?.user?.id);
+
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
+  const filterBy = useFilterToggleStore((state) => state.filterBy);
 
   useEffect(() => {
     if (customerData?.data) {
@@ -170,8 +180,14 @@ export default function Index() {
   }, [filterBy, customerData, isLoading]);
 
   useEffect(() => {
-    setFilteredList(orderedData);
-  }, [orderedData]);
+    if (company) {
+      setFilteredList(orderedData);
+    } else {
+      if (customerList) {
+        setFilteredList(customerList?.data);
+      }
+    }
+  }, [orderedData, company, customerList]);
 
   function getCustomerData() {
     if (company) {
@@ -187,7 +203,9 @@ export default function Index() {
 
   useFocusEffect(
     useCallback(() => {
-      getCustomerData();
+      if (company !== null) {
+        getCustomerData();
+      }
     }, [company])
   );
 
@@ -225,9 +243,13 @@ export default function Index() {
       </View>
 
       <FlashList
-        data={isLoading ? Array.from({ length: 6 }, (_, index) => index + 1) : filteredList || []}
+        data={
+          isLoading || customerListLoading
+            ? Array.from({ length: 6 }, (_, index) => index + 1)
+            : filteredList || []
+        }
         renderItem={
-          isLoading
+          isLoading || customerListLoading
             ? () => (
                 <View className="flex flex-row items-center justify-between mb-4 pt-[2px] px-3">
                   <View className="flex-1 flex-row items-center gap-2">
@@ -248,7 +270,7 @@ export default function Index() {
         }
         estimatedItemSize={200}
         refreshing={reload}
-        onRefresh={getCustomerData}
+        onRefresh={company !== null ? getCustomerData : refetch}
         ListFooterComponent={<View style={{ height: 100 }} />}
         ListEmptyComponent={
           <View className="d-flex h-16 flex-1 items-center justify-center">
