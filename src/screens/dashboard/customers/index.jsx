@@ -221,7 +221,7 @@ export default function Index() {
     <View className="flex-1 bg-white">
       <View
         className={`flex w-full flex-row items-center justify-between px-3  ${
-          Platform.OS === 'android' ? 'py-2' : 'pb-2'
+          Platform.OS === 'android' ? 'py-2' : 'pb-2 mt-5'
         }`}>
         <View className="relative flex flex-row">
           <Searchbar

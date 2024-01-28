@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useContactsStore } from '../hooks/zustand-store';
+import { useContactsStore } from './zustand-store';
 
 const useLoadContacts = (customersListData, isCustomerLoading) => {
   const { contactsList: existingContacts, setContacts } = useContactsStore();

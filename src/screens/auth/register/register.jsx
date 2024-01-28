@@ -4,7 +4,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import {
   Image,
   KeyboardAvoidingView,
@@ -16,15 +16,14 @@ import {
 } from 'react-native';
 import { Button, Checkbox, Text, TextInput as TextInputNew } from 'react-native-paper';
 
-import { useAuthLogin, useRegisterUser } from '../../../apis/use-api';
+import { useRegisterUser } from '../../../apis/use-api';
 import { showToast } from '../../../core/utils';
-import { useAuthStore } from '../../../hooks/auth-store';
 import EmailInput from '../components/email-input';
 import { Logo } from '../components/logo';
 import PasswordInput from '../components/password-input';
 import UsernameInput from '../components/username-input';
 
-const renderBackdropComponent = (props) => (
+export const renderBackdropComponent = (props) => (
   <BottomSheetBackdrop
     {...props}
     disappearsOnIndex={-1}
@@ -47,7 +46,7 @@ const fetchCountries = async () => {
   }
 };
 
-const BottomSheetBackground = ({ style }) => {
+export const BottomSheetBackground = ({ style }) => {
   return (
     <View
       style={[

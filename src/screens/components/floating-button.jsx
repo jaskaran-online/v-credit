@@ -3,7 +3,11 @@ import { memo } from 'react';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
 
+import { useAuthCompanyStore } from '../../hooks/zustand-store';
+
 const FloatingButtons = ({ navigation, customer }) => {
+  const company = useAuthCompanyStore((state) => state.selectedCompany);
+  console.log(company);
   return (
     <BlurView
       intensity={5}
@@ -12,7 +16,9 @@ const FloatingButtons = ({ navigation, customer }) => {
       <View className="flex-1">
         <Button
           mode="contained"
-          onPress={() => navigation.navigate('TakeMoney', { customer })}
+          onPress={() =>
+            navigation.navigate(company ? 'TakeMoney' : 'SingleUserReceiveMoney', { customer })
+          }
           className="bg-sky-500">
           Take Payment
         </Button>
@@ -20,7 +26,9 @@ const FloatingButtons = ({ navigation, customer }) => {
       <View className="flex-1">
         <Button
           mode="contained"
-          onPress={() => navigation.navigate('GiveMoney', { customer })}
+          onPress={() =>
+            navigation.navigate(company ? 'GiveMoney' : 'SingleUserGiveMoney', { customer })
+          }
           className="bg-amber-500">
           Give Credit
         </Button>

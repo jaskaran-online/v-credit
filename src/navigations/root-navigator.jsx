@@ -25,6 +25,8 @@ import {
   DayBook,
   PartyStatements,
 } from '../screens/reports';
+import SingleUserGiveMoney from '../screens/single-user/give-money';
+import SingleUserReceiveMoney from '../screens/single-user/receive-money';
 import TakePayment from '../screens/take-payment';
 
 const Stack = createNativeStackNavigator();
@@ -177,6 +179,26 @@ export const Root = () => {
               }}
               name="GiveMoney"
               component={GiveMoney}
+            />
+
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerShown: true,
+                headerTitle: () => <Text variant="titleMedium">Give Money</Text>,
+              }}
+              name="SingleUserGiveMoney"
+              component={SingleUserGiveMoney}
+            />
+
+            <Stack.Screen
+              options={{
+                headerStyle: headerBackgroundColor,
+                headerShown: true,
+                headerTitle: () => <Text variant="titleMedium">Give Money</Text>,
+              }}
+              name="SingleUserReceiveMoney"
+              component={SingleUserReceiveMoney}
             />
 
             <Stack.Screen
