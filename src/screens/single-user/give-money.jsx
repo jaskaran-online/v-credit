@@ -1,10 +1,18 @@
-import { AntDesign, FontAwesome6 } from '@expo/vector-icons';
+import {
+  AntDesign,
+  Entypo,
+  FontAwesome6,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { FlashList } from '@shopify/flash-list';
+import { Camera } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Keyboard, Platform, TouchableOpacity, View } from 'react-native';
-import { Button, Searchbar, Text } from 'react-native-paper';
+import { Image, Keyboard, Platform, TouchableOpacity, View } from 'react-native';
+import { Button, Searchbar, Text, TextInput } from 'react-native-paper';
 
 import Avatar from '../../components/avatar';
 import { useContactsStore } from '../../hooks/zustand-store';
@@ -25,7 +33,8 @@ function ContactList({ contacts, onSelect, onscroll }) {
   }
 
   return (
-    <View className="flex-1 px-4">
+    <View className="flex-1 px-4 mt-2">
+      <Text className="mb-4 text-xl font-bold text-gray-800 ml-2">Select Customer</Text>
       <Searchbar
         onChangeText={(text) => searchItem(text)}
         value={query.toString()}
@@ -75,7 +84,7 @@ function ContactList({ contacts, onSelect, onscroll }) {
                   {end}
                 </Text>
                 <Text variant="titleSmall" className="text-slate-900">
-                  {item.phoneNumbers.length > 0 && item.phoneNumbers[0].number}
+                  {item.phoneNumbers.length > 0 && item.phoneNumbers[0].digits}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -90,8 +99,9 @@ export default function GiveMoney() {
   const contacts = useContactsStore((state) => state.contactsList) || [];
   const [selectedContact, setSelectedContact] = useState(null);
   const [selectedMobileNumber, setSelectedMobileNumber] = useState(null);
-
-  console.log(selectedContact?.phoneNumbers, selectedMobileNumber);
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [photoSelector, setPhotoSelector] = useState(false);
+  const [imageUri, setImageUri] = useState('');
 
   const {
     handleSubmit,
@@ -104,120 +114,218 @@ export default function GiveMoney() {
   const handleFormSubmit = () => {
     console.log('form submitted');
   };
+
+  const handleCameraCapture = async () => {
+    const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync();
+    if (cameraStatus === 'granted') {
+      const photo = await ImagePicker.launchCameraAsync();
+      if (!photo?.cancelled) {
+        setImageUri(photo.assets[0].uri);
+        bottomSheetModalRef.current?.dismiss();
+      }
+    }
+  };
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+      bottomSheetModalRef.current?.dismiss();
+    }
+  };
   return (
     <View className="flex-1 bg-white">
       <View className="flex-1 p-4">
-        <View className="mb-3 " />
-        <Text className="text-slate-600 mb-1 mt-2">Contact</Text>
-        <TouchableOpacity
-          onPress={() => {
-            handlePresentModalPress();
-            setSelectedContact(null);
-          }}
-          className="h-[50px] border border-slate-500 bg-white rounded-[4px] flex flex-row items-center px-4 justify-between">
-          {selectedContact ? (
-            <Text className="text-gray-900">{selectedContact?.name}</Text>
-          ) : (
-            <Text className="text-slate-600">Select User</Text>
-          )}
-          {selectedContact ? (
-            <AntDesign name="close" size={16} color="gray" />
-          ) : (
-            <AntDesign name="down" size={18} color="gray" />
-          )}
-        </TouchableOpacity>
+        <View className="mb-2" />
+        {selectedContact && <Text className="text-slate-600 mb-1 mt-2">Name</Text>}
+        <View className="flex flex-row items-center justify-between">
+          <TouchableOpacity
+            onPress={() => {
+              handlePresentModalPress();
+              setSelectedContact(null);
+              setPhotoSelector(false);
+            }}
+            className="flex-1 h-[50px] border border-slate-500 bg-white rounded-[4px] flex flex-row items-center px-4 justify-between">
+            {selectedContact ? (
+              <Text className="text-gray-900">{selectedContact?.name}</Text>
+            ) : (
+              <Text className="text-slate-600">Select User</Text>
+            )}
+            {selectedContact ? (
+              <AntDesign name="close" size={16} color="gray" />
+            ) : (
+              <AntDesign name="down" size={18} color="gray" />
+            )}
+          </TouchableOpacity>
 
-        <View className="mb-3 " />
+          <TouchableOpacity
+            onPress={() => {
+              setPhotoSelector(true);
+              handlePresentModalPress();
+            }}
+            className="p-2 ml-5 mt-1 bg-blue-700 rounded-full">
+            <Entypo name="plus" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+
+        <View className="mb-3" />
         {selectedContact && (
           <>
-            <Text className="text-slate-600 mb-1 mt-2">Mobile Number</Text>
-            <TouchableOpacity
-              onPress={
-                (selectedContact && selectedContact?.phoneNumbers)?.length > 1
-                  ? handlePresentModalPress
-                  : () => null
+            <TextInput
+              mode="outlined"
+              label="Mobile Number"
+              keyboardType="number-pad"
+              className="h-[50px] bg-white"
+              placeholder="Enter Mobile Number"
+              value={mobileNumber}
+              onChangeText={(text) => setMobileNumber(text)}
+              right={
+                <TextInput.Icon
+                  icon={() => (
+                    <MaterialCommunityIcons
+                      onPress={
+                        (selectedContact && selectedContact?.phoneNumbers)?.length > 1
+                          ? handlePresentModalPress
+                          : () => null
+                      }
+                      name="chevron-down"
+                      size={20}
+                      color="gray"
+                    />
+                  )}
+                />
               }
-              className="h-[50px] border border-slate-500 bg-white rounded-[4px] flex flex-row items-center px-4 justify-between">
-              {selectedContact ? (
-                <Text className="text-gray-900">{selectedContact?.phoneNumbers[0].number}</Text>
-              ) : (
-                <Text className="text-slate-600">Select Mobile Number</Text>
-              )}
-              {selectedContact?.phoneNumbers.length > 1 && (
-                <AntDesign name="down" size={18} color="gray" />
-              )}
-            </TouchableOpacity>
+            />
           </>
         )}
-        <View className="mb-3 " />
+
+        <View className="mb-2" />
+
+        <View className="flex flex-row items-center justify-between">
+          <TextInput
+            label="Amount"
+            mode="outlined"
+            keyboardType="number-pad"
+            className="h-[50px] bg-white flex-1"
+          />
+          <TouchableOpacity
+            onPress={() => {
+              setPhotoSelector(true);
+              handlePresentModalPress();
+            }}
+            className="p-1 mx-3 mt-1 bg-slate-50 rounded-md">
+            <MaterialIcons name="add-photo-alternate" size={35} color="black" />
+          </TouchableOpacity>
+        </View>
+
+        <View className="mb-2" />
+
+        <TextInput
+          label="Notes"
+          mode="outlined"
+          multiline={true}
+          numberOfLines={4}
+          className="bg-white"
+        />
+        <View className="mb-2" />
+        {imageUri && (
+          <Image
+            source={{ uri: imageUri, width: 150, height: 150 }}
+            resizeMethod="auto"
+            className="mt-4"
+          />
+        )}
+        <View className="mb-2" />
         <Button
           mode="contained"
           className="mt-2 p-1 justify-center bg-emerald-900"
           onPress={handleSubmit(handleFormSubmit)}>
-          <Text className="text-white">Send</Text>
+          <Text variant="titleMedium" className="text-white">
+            Save
+          </Text>
         </Button>
       </View>
 
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={0}
-        snapPoints={snapPoints}
+        snapPoints={photoSelector ? ['30%', '25%'] : snapPoints}
         backdropComponent={renderBackdropComponent}
         backgroundComponent={(props) => <BottomSheetBackground {...props} />}
         handleIndicatorStyle={{
           backgroundColor: 'lightgray',
         }}>
-        <View className="flex flex-row items-center justify-between px-3">
-          <Text variant="titleMedium" className="text-md p-4 my-1">
-            Select {selectedContact?.phoneNumbers?.length > 1 ? 'number' : 'contact'}
-          </Text>
-          <TouchableOpacity
-            className=" px-4 py-2 my-1 bg-gray-200 rounded-full flex flex-row items-center gap-x-2"
-            onPress={() => {
-              setSelectedContact(null);
-              bottomSheetModalRef.current?.dismiss();
-            }}>
-            <Text variant="bodyMedium" className="text-gray-800">
-              Close
-            </Text>
-            <AntDesign name="close" size={16} color="gray" />
-          </TouchableOpacity>
-        </View>
-
-        {selectedContact?.phoneNumbers?.length > 1 ? (
-          <View className="flex-1">
-            <FlashList
-              onscroll={() => Keyboard.dismiss()}
-              estimatedItemSize={1000}
-              renderItem={({ item, index: i }) => (
-                <TouchableOpacity
-                  key={i}
-                  style={{
-                    width: '100%',
-                    height: 80,
-                  }}
-                  onPress={() => setSelectedMobileNumber(item)}
-                  className="p-4 bg-slate-50 mt-2 mx-4 rounded-md flex flex-row items-center w-full h-16">
-                  <FontAwesome6 name="mobile-retro" size={24} color="gray" />
-                  <View className="ml-4 flex flex-row">
-                    <Text variant="titleSmall" className="text-slate-900">
-                      {item.number}
-                    </Text>
-                  </View>
+        {photoSelector ? (
+          <>
+            <View className="flex flex-row items-center justify-evenly pt-12">
+              <View className="items-center gap-2">
+                <TouchableOpacity onPress={handleCameraCapture} className="p-2 rounded-lg">
+                  <MaterialIcons name="enhance-photo-translate" size={30} color="black" />
                 </TouchableOpacity>
-              )}
-              data={selectedContact?.phoneNumbers}
-            />
-          </View>
+                <Text variant="bodyMedium" className="font-bold">
+                  Camera
+                </Text>
+              </View>
+              <View className="items-center gap-2">
+                <TouchableOpacity onPress={pickImage} className="p-2 rounded-lg">
+                  <MaterialIcons name="add-photo-alternate" size={30} color="black" />
+                </TouchableOpacity>
+                <Text variant="bodyMedium" className="font-bold">
+                  Gallery
+                </Text>
+              </View>
+            </View>
+          </>
         ) : (
-          <ContactList
-            contacts={contacts}
-            onSelect={(selectedContactItem) => {
-              bottomSheetModalRef.current?.dismiss();
-              setSelectedContact(selectedContactItem);
-            }}
-            onscroll={() => Keyboard.dismiss()}
-          />
+          <>
+            {selectedContact?.phoneNumbers?.length > 1 ? (
+              <View className="flex-1 mt-2">
+                <Text className="mb-2 text-xl font-bold text-gray-800 ml-4">Select Number</Text>
+                <FlashList
+                  onscroll={() => Keyboard.dismiss()}
+                  estimatedItemSize={1000}
+                  renderItem={({ item, index: i }) => (
+                    <TouchableOpacity
+                      key={i}
+                      style={{
+                        width: '100%',
+                        height: 80,
+                      }}
+                      onPress={() => {
+                        setSelectedMobileNumber(item);
+                        setMobileNumber(item.digits);
+                        bottomSheetModalRef.current?.dismiss();
+                      }}
+                      className="p-4 bg-slate-50 mt-2 mx-4 rounded-md flex flex-row items-center w-full h-16">
+                      <FontAwesome6 name="mobile-retro" size={24} color="gray" />
+                      <View className="ml-4 flex flex-row">
+                        <Text variant="titleSmall" className="text-slate-900">
+                          {item.digits}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  data={selectedContact?.phoneNumbers}
+                />
+              </View>
+            ) : (
+              <ContactList
+                contacts={contacts}
+                onSelect={(selectedContactItem) => {
+                  bottomSheetModalRef.current?.dismiss();
+                  setSelectedContact(selectedContactItem);
+                  setMobileNumber(selectedContactItem?.phoneNumbers[0].digits);
+                }}
+                onscroll={() => Keyboard.dismiss()}
+              />
+            )}
+          </>
         )}
       </BottomSheetModal>
     </View>
