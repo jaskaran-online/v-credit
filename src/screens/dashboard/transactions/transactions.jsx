@@ -1,6 +1,8 @@
+/* eslint-disable react/no-unstable-nested-components */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
+import { useQueryClient } from '@tanstack/react-query';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Image, Platform, TouchableOpacity, View } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
@@ -24,6 +26,8 @@ import {
 export default function Transactions() {
   const currentPageRef = useRef(0);
   const lastPageRef = useRef(1);
+
+  const queryClient = useQueryClient();
 
   const { user: auth } = useAuthStore();
   const setCardAmount = useCardAmountStore((state) => state.setCardAmount);
@@ -141,8 +145,12 @@ export default function Transactions() {
     if (company) {
       loadTransactions();
       getCardTotals();
+    } else {
+      queryClient.invalidateQueries(['userCustomerList', auth.user.id]);
+      queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.id]);
+      queryClient.invalidateQueries(['userTodayTransactions', auth.user.id]);
     }
-  }, [company, getCardTotals, loadTransactions, transactionDelSuccess]);
+  }, [company, getCardTotals, loadTransactions, transactionDelSuccess, auth.user, queryClient]);
 
   function loadTransactions(page = 1) {
     setReload(true);

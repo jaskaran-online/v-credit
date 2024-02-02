@@ -5,22 +5,27 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
 } from '@expo/vector-icons';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { FlashList } from '@shopify/flash-list';
+import { BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Image, Keyboard, Platform, TouchableOpacity, View } from 'react-native';
+import { Image, Keyboard, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Searchbar, Text, TextInput } from 'react-native-paper';
 
+import { useQueryClient } from '@tanstack/react-query';
+import { usePaymentApi } from '../../apis/use-api';
 import Avatar from '../../components/avatar';
+import { showToast } from '../../core/utils';
+import { useAuthStore } from '../../hooks/auth-store';
 import { useContactsStore } from '../../hooks/zustand-store';
+import navigations from '../../navigations';
 import { BottomSheetBackground, renderBackdropComponent } from '../auth/register/register';
 
 function ContactList({ contacts, onSelect, onscroll }) {
   const [query, setQuery] = useState('');
-  const [filteredContacts, setFilteredContacts] = useState(contacts);
+  const [filteredContacts, setFilteredContacts] = useState(contacts || []);
 
   function searchItem(text) {
     const newData = contacts?.filter((item) => {
@@ -51,10 +56,24 @@ function ContactList({ contacts, onSelect, onscroll }) {
         placeholder="Search Customer Name"
         className="h-12 border-2 border-slate-200 bg-white"
       />
-      <FlashList
+
+      <View>
+        <Button
+          mode="contained"
+          className="my-3 bg-green-950"
+          onPress={() => {
+            navigations.navigate('Customers');
+          }}>
+          <Text variant="bodyMedium" className="text-white ">
+            Create New
+          </Text>
+        </Button>
+      </View>
+
+      <BottomSheetFlatList
         onScroll={onscroll}
         estimatedItemSize={1000}
-        data={filteredContacts || []}
+        data={filteredContacts}
         renderItem={({ item, index: i }) => {
           const name = item.name;
           const searchTerm = query?.toUpperCase();
@@ -70,7 +89,7 @@ function ContactList({ contacts, onSelect, onscroll }) {
             <TouchableOpacity
               key={i}
               onPress={() => onSelect(item)}
-              className="p-4 bg-slate-50 mt-2 mx-2 rounded-md flex flex-row items-center w-full">
+              className="p-4 bg-slate-50 mt-1 mx-2 rounded-md flex flex-row items-center w-full">
               <Avatar name={item.name} size={40} />
               <View className="ml-4">
                 <Text>
@@ -84,7 +103,7 @@ function ContactList({ contacts, onSelect, onscroll }) {
                   {end}
                 </Text>
                 <Text variant="titleSmall" className="text-slate-900">
-                  {item.phoneNumbers.length > 0 && item.phoneNumbers[0].digits}
+                  {item.phoneNumbers.length > 0 && item.phoneNumbers[0].number}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -96,24 +115,79 @@ function ContactList({ contacts, onSelect, onscroll }) {
 }
 
 export default function GiveMoney() {
+  const { user: auth } = useAuthStore();
+  const {
+    mutate: request,
+    data: paymentApiResponse,
+    isSuccess: isPaymentSuccess,
+    error: paymentError,
+    isError,
+  } = usePaymentApi();
+
   const contacts = useContactsStore((state) => state.contactsList) || [];
   const [selectedContact, setSelectedContact] = useState(null);
   const [selectedMobileNumber, setSelectedMobileNumber] = useState(null);
   const [mobileNumber, setMobileNumber] = useState('');
   const [photoSelector, setPhotoSelector] = useState(false);
   const [imageUri, setImageUri] = useState('');
+  const [amount, setAmount] = useState('');
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
 
   const {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  // Get QueryClient from the context
+  const queryClient = useQueryClient();
+
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => ['88%', '95%'], []);
-  const handlePresentModalPress = useCallback(() => bottomSheetModalRef.current?.present(), []);
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+    Keyboard.dismiss();
+  }, []);
 
   const handleFormSubmit = () => {
-    console.log('form submitted');
+    const formData = new FormData();
+    formData.append('user_id', auth.user.id);
+    formData.append(
+      'from_date',
+      selectedDate.getFullYear() +
+        '-' +
+        (selectedDate.getMonth() + 1) +
+        '-' +
+        selectedDate.getDate()
+    );
+    formData.append('amount', amount);
+    formData.append('transaction_type_id', 1);
+    formData.append('phone', mobileNumber);
+    if (imageUri) {
+      formData.append('image', {
+        uri: imageUri,
+        type: 'image/jpeg', // Modify the type based on your image type
+        name: 'image.jpg', // Modify the name based on your image name
+      });
+    }
+    formData.append('mobile_number', selectedMobileNumber);
+    formData.append('customer_name', selectedContact?.name);
+    formData.append('transaction_type_id', 1);
+    request(formData);
   };
+
+  if (isPaymentSuccess) {
+    showToast(paymentApiResponse.data.message, 'success');
+
+    queryClient.invalidateQueries(['userCustomerList', auth.user.id]);
+    queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.id]);
+    queryClient.invalidateQueries(['userTodayTransactions', auth.user.id]);
+
+    setTimeout(() => navigations.navigate('HomePage'), 1000);
+  }
 
   const handleCameraCapture = async () => {
     const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync();
@@ -139,42 +213,38 @@ export default function GiveMoney() {
       bottomSheetModalRef.current?.dismiss();
     }
   };
+
+  const handleDateChange = (event, date) => {
+    setDatePickerVisibility(false);
+    if (date) {
+      setSelectedDate(date);
+    }
+  };
+
   return (
     <View className="flex-1 bg-white">
       <View className="flex-1 p-4">
-        <View className="mb-2" />
+        <View className="mb-1" />
         {selectedContact && <Text className="text-slate-600 mb-1 mt-2">Name</Text>}
-        <View className="flex flex-row items-center justify-between">
-          <TouchableOpacity
-            onPress={() => {
-              handlePresentModalPress();
-              setSelectedContact(null);
-              setPhotoSelector(false);
-            }}
-            className="flex-1 h-[50px] border border-slate-500 bg-white rounded-[4px] flex flex-row items-center px-4 justify-between">
-            {selectedContact ? (
-              <Text className="text-gray-900">{selectedContact?.name}</Text>
-            ) : (
-              <Text className="text-slate-600">Select User</Text>
-            )}
-            {selectedContact ? (
-              <AntDesign name="close" size={16} color="gray" />
-            ) : (
-              <AntDesign name="down" size={18} color="gray" />
-            )}
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              setPhotoSelector(true);
-              handlePresentModalPress();
-            }}
-            className="p-2 ml-5 mt-1 bg-blue-700 rounded-full">
-            <Entypo name="plus" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        <View className="mb-3" />
+        <TouchableOpacity
+          onPress={() => {
+            handlePresentModalPress();
+            setSelectedContact(null);
+            setPhotoSelector(false);
+          }}
+          className="h-[50px] border border-slate-500 bg-white rounded-[4px] flex flex-row items-center px-4 justify-between">
+          {selectedContact ? (
+            <Text className="text-gray-900">{selectedContact?.name}</Text>
+          ) : (
+            <Text className="text-slate-600">Select User</Text>
+          )}
+          {selectedContact ? (
+            <AntDesign name="close" size={16} color="gray" />
+          ) : (
+            <AntDesign name="down" size={18} color="gray" />
+          )}
+        </TouchableOpacity>
+        <View className="mb-1" />
         {selectedContact && (
           <>
             <TextInput
@@ -205,7 +275,7 @@ export default function GiveMoney() {
           </>
         )}
 
-        <View className="mb-2" />
+        <View className="mb-1" />
 
         <View className="flex flex-row items-center justify-between">
           <TextInput
@@ -213,18 +283,35 @@ export default function GiveMoney() {
             mode="outlined"
             keyboardType="number-pad"
             className="h-[50px] bg-white flex-1"
+            placeholder="Enter Amount"
+            value={amount.toString()}
+            onChangeText={(text) => setAmount(text)}
           />
           <TouchableOpacity
             onPress={() => {
               setPhotoSelector(true);
               handlePresentModalPress();
             }}
-            className="p-1 mx-3 mt-1 bg-slate-50 rounded-md">
+            className="p-1 mx-3  bg-slate-50 rounded-md">
             <MaterialIcons name="add-photo-alternate" size={35} color="black" />
           </TouchableOpacity>
         </View>
 
-        <View className="mb-2" />
+        {/* Date Selector */}
+        <TouchableOpacity style={styles.itemSelector} onPress={showDatePicker}>
+          <Text style={styles.itemText}>{selectedDate.toDateString()}</Text>
+          <Entypo name="calendar" size={20} color="gray" />
+        </TouchableOpacity>
+
+        {/* Date Picker Component */}
+        {isDatePickerVisible && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display="inline"
+            onChange={handleDateChange}
+          />
+        )}
 
         <TextInput
           label="Notes"
@@ -233,7 +320,7 @@ export default function GiveMoney() {
           numberOfLines={4}
           className="bg-white"
         />
-        <View className="mb-2" />
+        <View className="mb-1" />
         {imageUri && (
           <Image
             source={{ uri: imageUri, width: 150, height: 150 }}
@@ -241,7 +328,7 @@ export default function GiveMoney() {
             className="mt-4"
           />
         )}
-        <View className="mb-2" />
+        <View className="mb-1" />
         <Button
           mode="contained"
           className="mt-2 p-1 justify-center bg-emerald-900"
@@ -287,7 +374,7 @@ export default function GiveMoney() {
             {selectedContact?.phoneNumbers?.length > 1 ? (
               <View className="flex-1 mt-2">
                 <Text className="mb-2 text-xl font-bold text-gray-800 ml-4">Select Number</Text>
-                <FlashList
+                <BottomSheetFlatList
                   onscroll={() => Keyboard.dismiss()}
                   estimatedItemSize={1000}
                   renderItem={({ item, index: i }) => (
@@ -298,15 +385,16 @@ export default function GiveMoney() {
                         height: 80,
                       }}
                       onPress={() => {
+                        console.log(item);
                         setSelectedMobileNumber(item);
-                        setMobileNumber(item.digits);
+                        setMobileNumber(item.number);
                         bottomSheetModalRef.current?.dismiss();
                       }}
                       className="p-4 bg-slate-50 mt-2 mx-4 rounded-md flex flex-row items-center w-full h-16">
                       <FontAwesome6 name="mobile-retro" size={24} color="gray" />
                       <View className="ml-4 flex flex-row">
                         <Text variant="titleSmall" className="text-slate-900">
-                          {item.digits}
+                          {item.number}
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -320,7 +408,8 @@ export default function GiveMoney() {
                 onSelect={(selectedContactItem) => {
                   bottomSheetModalRef.current?.dismiss();
                   setSelectedContact(selectedContactItem);
-                  setMobileNumber(selectedContactItem?.phoneNumbers[0].digits);
+                  console.log(selectedContactItem);
+                  setMobileNumber(selectedContactItem?.phoneNumbers[0].number);
                 }}
                 onscroll={() => Keyboard.dismiss()}
               />
@@ -331,3 +420,26 @@ export default function GiveMoney() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+    paddingHorizontal: 8,
+    paddingTop: 12,
+  },
+  itemSelector: {
+    alignItems: 'center',
+    borderColor: 'slategray',
+    borderRadius: 4,
+    borderWidth: 1,
+    flexDirection: 'row',
+    height: 50,
+    justifyContent: 'space-between',
+    marginTop: 7,
+    paddingHorizontal: 16,
+  },
+  itemText: {
+    fontSize: 16,
+  },
+});

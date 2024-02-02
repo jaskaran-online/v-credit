@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { TabNavigator } from './tab-navigator';
 import { useTotalTransactionData, useUserTodayTransactionsTotal } from '../../apis/use-api';
@@ -68,9 +68,9 @@ const Header = React.memo(() => {
 
 const Index = ({ navigation }) => {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Header />
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         <TabNavigator />
       </View>
       <FloatingButtons navigation={navigation} />
@@ -79,3 +79,9 @@ const Index = ({ navigation }) => {
 };
 
 export default Index;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

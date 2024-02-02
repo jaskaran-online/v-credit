@@ -135,6 +135,7 @@ export default function Index({ navigation }) {
 
   useEffect(() => {
     getCustomerRequest({
+      user_id: auth.user.id,
       company_id: company?.id,
       cost_center_id: auth.user.cost_center_id,
     });
@@ -284,14 +285,21 @@ export default function Index({ navigation }) {
                   //   showToast('Please enter mobile number', 'error');
                   //   return false;
                   // }
-
-                  createCustomer({
-                    title: selectedCustomer.title,
-                    description: selectedCustomer.description,
-                    company_id: company.id,
-                    cost_center_id: auth.user.cost_center_id,
-                    user_id: auth.user.id,
-                  });
+                  if (company) {
+                    createCustomer({
+                      title: selectedCustomer.title,
+                      description: selectedCustomer.description,
+                      company_id: company.id,
+                      cost_center_id: auth.user.cost_center_id,
+                      user_id: auth.user.id,
+                    });
+                  } else {
+                    createCustomer({
+                      title: selectedCustomer.title,
+                      description: selectedCustomer.description,
+                      user_id: auth.user.id,
+                    });
+                  }
                 }
               }}>
               {selectedCustomer.id ? 'Update' : 'Create'}
