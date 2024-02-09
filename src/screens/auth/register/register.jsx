@@ -1,5 +1,5 @@
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetBackdrop, BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
@@ -303,7 +303,7 @@ export default function Register({ navigation }) {
           backgroundColor: 'lightgray',
         }}>
         {countries && (
-          <FlashList
+          <BottomSheetFlatList
             ListHeaderComponent={
               <View style={{ paddingHorizontal: 20 }}>
                 <TextInputNew

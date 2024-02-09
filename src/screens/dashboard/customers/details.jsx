@@ -93,12 +93,6 @@ export default function Index({ navigation, route }) {
     fetchNextPage,
   } = useCustomerTransactions(route.params.id, auth?.user?.id);
 
-  // console.log({
-  //   fetchNextPage,
-  //   transactions,
-  //   refetch
-  // });
-
   const [orderedData, setOrderedData] = useState([]);
   const [filterBy, setFilteredBy] = useState('Clear');
   const [deleteModalVisibility, setDeleteModalVisibility] = useState(null);
@@ -158,9 +152,10 @@ export default function Index({ navigation, route }) {
     if (company) {
       setFilteredList(_.sortBy(orderedData, ['date']).reverse());
     } else {
-      setOrderedData(transactions?.data?.customer?.transactions);
+      console.log(transactions?.data?.customer?.transactions);
+      setFilteredList(_.sortBy(transactions?.data?.customer?.transactions, ['date']).reverse());
     }
-  }, [company, orderedData, transactions?.data?.customer?.transactions]);
+  }, [company, orderedData, transactions]);
 
   useEffect(() => {
     if (company) {
