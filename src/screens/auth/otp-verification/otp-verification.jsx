@@ -1,18 +1,42 @@
 import { AntDesign } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import { useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform, TouchableOpacity, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { KeyboardAvoidingView, Platform, TouchableOpacity, View, ToastAndroid } from 'react-native';
 import OTPTextInput from 'react-native-otp-textinput';
 import { Button, Text } from 'react-native-paper';
 
-import { useOTPVerify } from '../../../apis/use-api';
+import { useAuthLogin, useOTPVerify } from '../../../apis/use-api';
+import { useAuthStore } from '../../../hooks/auth-store';
 import { Logo } from '../components/logo';
 
 export default function OtpVerification({ navigation, route }) {
-  let otpInputRef = useRef(null);
-  const { id } = route.params || 1;
+  const {
+    mutate,
+    data: response,
+    isLoading: isLoginLoading,
+    error: loginError,
+    isError: loginIsError,
+    isSuccess: loginIsSuccess,
+  } = useAuthLogin();
 
-  const { mutate: otpVerify, isSuccess, isLoading } = useOTPVerify();
+  const { login } = useAuthStore();
+
+  useEffect(() => {
+    if (loginIsSuccess) {
+      login({
+        access: response?.data?.accessToken,
+        refresh: response?.data?.accessToken,
+        user: response?.data?.user,
+      });
+    }
+  }, [loginIsSuccess, response, login]);
+
+  let otpInputRef = useRef(null);
+  const { id, email, password } = route.params;
+
+  console.log({ id, email, password });
+
+  const { mutate: otpVerify, isSuccess, isLoading, data, error, isError } = useOTPVerify();
   const [code, setCode] = useState('');
 
   console.log(code);
@@ -23,9 +47,27 @@ export default function OtpVerification({ navigation, route }) {
     otpInputRef?.current?.clearText();
   };
 
-  if (isSuccess) {
-    navigation.navigate('Login');
-  }
+  useEffect(
+    function () {
+      if (isError) {
+        ToastAndroid.show('OTP is not valid, please try again!', ToastAndroid.SHORT);
+      }
+    },
+    [isError]
+  );
+
+  useEffect(
+    function () {
+      if (isSuccess) {
+        ToastAndroid.show('Email verified!', ToastAndroid.SHORT);
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+        mutate(formData);
+      }
+    },
+    [email, isSuccess, mutate, password]
+  );
 
   return (
     <View className="flex-1">

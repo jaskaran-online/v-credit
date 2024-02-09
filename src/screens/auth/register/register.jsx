@@ -11,6 +11,7 @@ import {
   Linking,
   Platform,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -142,6 +143,7 @@ export default function Register({ navigation }) {
     [isCountryError, countryError, isCountryLoading]
   );
   const togglePasswordVisibility = () => setIsPasswordSecure(!isPasswordSecure);
+  const [password, setPassword] = useState('');
 
   function handleSelectCountry(item) {
     setSelectedCountry(item);
@@ -153,6 +155,7 @@ export default function Register({ navigation }) {
     if (!isChecked) {
       showToast('Please accept terms and conditions', 'error');
     } else {
+      setPassword(data.password);
       registerUser({
         country_code: `${selectedCountry?.idd?.root}${selectedCountry?.idd?.suffixes[0]}`,
         name: data.username,
@@ -174,12 +177,11 @@ export default function Register({ navigation }) {
     }
   }, [searchQuery, countries]);
 
-  console.log({ response });
-
   if (isSuccess && response?.user) {
-    showToast('User registered successfully', 'success');
+    ToastAndroid.show('Please verify your email!', ToastAndroid.SHORT);
     navigation.navigate('OtpVerification', {
       email: response?.user?.email,
+      password: password,
       id: response?.user?.id,
     });
   }
@@ -304,6 +306,7 @@ export default function Register({ navigation }) {
         }}>
         {countries && (
           <BottomSheetFlatList
+            stickyHeaderIndices={[0]}
             ListHeaderComponent={
               <View style={{ paddingHorizontal: 20 }}>
                 <TextInputNew
