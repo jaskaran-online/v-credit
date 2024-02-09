@@ -385,7 +385,6 @@ export default function GiveMoney() {
                         height: 80,
                       }}
                       onPress={() => {
-                        console.log(item);
                         setSelectedMobileNumber(item);
                         setMobileNumber(item.number);
                         bottomSheetModalRef.current?.dismiss();

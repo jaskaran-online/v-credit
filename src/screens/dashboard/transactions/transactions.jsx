@@ -39,9 +39,6 @@ export default function Transactions() {
     refetch,
   } = useUserTodayTransactions(auth?.user?.id);
 
-  console.log(userTransactionLoading, 'userTransactionLoading');
-  console.log(userTransactionData?.transactions?.data, 'userTransactionData');
-
   // Use object destructuring for more concise code
   const {
     mutate: cardRequest,

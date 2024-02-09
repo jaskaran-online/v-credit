@@ -284,7 +284,6 @@ export function DrawerNavigator() {
   const { mutate: getCustomerRequest, data: apiCustomersList } = useGetCustomersList();
 
   async function getContacts() {
-    console.log('getContacts called');
     const fetchContacts = async () => {
       setContacts([]);
       try {

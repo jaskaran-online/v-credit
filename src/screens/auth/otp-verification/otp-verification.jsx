@@ -34,14 +34,8 @@ export default function OtpVerification({ navigation, route }) {
   let otpInputRef = useRef(null);
   const { id, email, password } = route.params;
 
-  console.log({ id, email, password });
-
   const { mutate: otpVerify, isSuccess, isLoading, data, error, isError } = useOTPVerify();
   const [code, setCode] = useState('');
-
-  console.log(code);
-  console.log(code.length);
-
   const clearText = () => {
     setCode('');
     otpInputRef?.current?.clearText();

@@ -385,7 +385,6 @@ export default function ReceiveMoney() {
                         height: 80,
                       }}
                       onPress={() => {
-                        console.log(item);
                         setSelectedMobileNumber(item);
                         setMobileNumber(item.number);
                         bottomSheetModalRef.current?.dismiss();
@@ -408,7 +407,6 @@ export default function ReceiveMoney() {
                 onSelect={(selectedContactItem) => {
                   bottomSheetModalRef.current?.dismiss();
                   setSelectedContact(selectedContactItem);
-                  console.log(selectedContactItem);
                   setMobileNumber(selectedContactItem?.phoneNumbers[0].number);
                 }}
                 onscroll={() => Keyboard.dismiss()}

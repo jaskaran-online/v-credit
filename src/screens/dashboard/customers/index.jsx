@@ -108,9 +108,6 @@ export default function Index() {
 
     const formatedDate = formatDateForMessage(item?.last_transaction_date);
 
-    console.log('---------------------------------------');
-    console.log(item);
-    console.log('---------------------------------------');
     return (
       <View
         className={`flex flex-row items-center justify-between border-b border-slate-100 px-2 py-4 `}>
@@ -363,20 +360,22 @@ export default function Index() {
                 Reminder
               </Text>
             </View>
-            <View>
-              <TouchableOpacity
-                onPress={() => {
-                  sharePDF(selectedItem).then(() => {
-                    bottomSheetModalRef.current?.close();
-                  });
-                }}
-                className="flex items-center">
-                <AntDesign name="pdffile1" size={26} color="black" />
-              </TouchableOpacity>
-              <Text variant="bodyMedium" className="mt-2 text-slate-900">
-                Share PDF
-              </Text>
-            </View>
+            {company !== null && (
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    sharePDF(selectedItem).then(() => {
+                      bottomSheetModalRef.current?.close();
+                    });
+                  }}
+                  className="flex items-center">
+                  <AntDesign name="pdffile1" size={26} color="black" />
+                </TouchableOpacity>
+                <Text variant="bodyMedium" className="mt-2 text-slate-900">
+                  Share PDF
+                </Text>
+              </View>
+            )}
           </View>
         </View>
       </BottomSheetModal>

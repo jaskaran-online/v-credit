@@ -7,7 +7,7 @@ import { useAuthCompanyStore } from '../../hooks/zustand-store';
 
 const FloatingButtons = ({ navigation, customer }) => {
   const company = useAuthCompanyStore((state) => state.selectedCompany);
-  console.log(company);
+
   return (
     <BlurView
       intensity={5}

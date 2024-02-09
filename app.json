@@ -11,12 +11,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.webcooks.mycreditbook",
+      "bundleIdentifier": "com.webcooks.mycreditbook"
     },
     "jsEngine": "hermes",
     "android": {
@@ -26,10 +24,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.webcooks.mycreditbook",
-      "permissions": [
-        "READ_CONTACTS",
-        "WRITE_CONTACTS"
-      ],
+      "permissions": ["READ_CONTACTS", "WRITE_CONTACTS"],
       "versionCode": 14
     },
     "web": {
