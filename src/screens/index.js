@@ -1,6 +1,6 @@
 import Login from './auth/login/login';
 import HomePage from './dashboard';
-import Customers from './dashboard/customers';
+import DashboardCustomers from './dashboard/customers/dashboardCustomers';
 import EditTransaction from './dashboard/transactions/edit';
 import Transactions from './dashboard/transactions/transactions';
 import Balance from './profit-loss/balance';
@@ -10,7 +10,7 @@ import Reports from './reports/reports';
 
 export {
   Balance,
-  Customers,
+  DashboardCustomers,
   EditTransaction,
   HomePage,
   Login,

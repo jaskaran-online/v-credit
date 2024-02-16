@@ -1,6 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-import Customers from './customers';
+import DashboardCustomers from './customers/dashboardCustomers';
 import Transactions from './transactions/transactions';
 import { COLORS } from '../../core';
 
@@ -29,7 +29,7 @@ export function TabNavigator() {
 
   return (
     <Tab.Navigator screenOptions={screenOptions}>
-      <Tab.Screen name="Customers" component={Customers} />
+      <Tab.Screen name="Customers" component={DashboardCustomers} />
       <Tab.Screen
         name="Transactions"
         options={{

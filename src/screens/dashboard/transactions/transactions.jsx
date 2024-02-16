@@ -108,7 +108,7 @@ export default function Transactions() {
           break;
       }
     }
-  }, [filterBy, transactionData, orderedData, auth?.user?.id]);
+  }, [filterBy, transactionData, auth?.user?.id]);
 
   useEffect(() => {
     if (company) {
@@ -123,7 +123,7 @@ export default function Transactions() {
       if (company) {
         loadTransactions();
       }
-    }, [company, loadTransactions])
+    }, [company])
   );
 
   const getCardTotals = useCallback(() => {
@@ -147,7 +147,7 @@ export default function Transactions() {
       queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.id]);
       queryClient.invalidateQueries(['userTodayTransactions', auth.user.id]);
     }
-  }, [company, getCardTotals, loadTransactions, transactionDelSuccess, auth.user, queryClient]);
+  }, [company, getCardTotals, transactionDelSuccess, auth.user, queryClient]);
 
   function loadTransactions(page = 1) {
     setReload(true);

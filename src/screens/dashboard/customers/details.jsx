@@ -1,7 +1,7 @@
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import _ from 'lodash';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Image, Linking, Platform, Share, TouchableOpacity, View } from 'react-native';
 import { Button, Dialog, Portal, Searchbar, Text } from 'react-native-paper';
 
@@ -75,13 +75,7 @@ Click : http://mycreditbook.com/udhaar-khata/${id}`;
   });
 };
 
-export default function Index({ navigation, route }) {
-  const pageRef = useRef(1);
-  const lastPageRef = useRef(0);
-  const toPayRef = useRef(route.params?.toPay);
-  const toReceiveRef = useRef(route.params?.toReceive);
-  const balanceRef = useRef(route.params?.balance);
-  const balanceType = useRef(route.params?.balanceType);
+export default function CustomerDetails({ navigation, route }) {
 
   const { user: auth } = useAuthStore();
   const { mutate, data, isLoading } = useCustomerTransactionData();
@@ -92,6 +86,13 @@ export default function Index({ navigation, route }) {
     refetch,
     fetchNextPage,
   } = useCustomerTransactions(route.params.id, auth?.user?.id);
+
+  const pageRef = useRef(1);
+  const lastPageRef = useRef(0);
+  const toPayRef = useRef(route.params?.toPay);
+  const toReceiveRef = useRef(route.params?.toReceive);
+  const balanceRef = useRef(route.params?.balance);
+  const balanceType = useRef(route.params?.balanceType);
 
   const [orderedData, setOrderedData] = useState([]);
   const [filterBy, setFilteredBy] = useState('Clear');
@@ -123,7 +124,6 @@ export default function Index({ navigation, route }) {
   useEffect(() => {
     if (data?.data) {
       const newTransactions = data?.data?.customer?.transactions;
-
       if (filterBy === 'Clear') {
         // Merge and filter out duplicates when filterBy is 'Clear'
         const mergedData = [...orderedData, ...newTransactions].reduce((acc, current) => {
@@ -146,14 +146,17 @@ export default function Index({ navigation, route }) {
         setOrderedData(orderedArray);
       }
     }
-  }, [filterBy, data, isLoading, orderedData]);
+  }, [filterBy, data]);
 
   useEffect(() => {
     if (company) {
-      setFilteredList(_.sortBy(orderedData, ['date']).reverse());
+      if (orderedData) {
+        setFilteredList(_.sortBy(orderedData, ['date']).reverse());
+      }
     } else {
-      console.log(transactions?.data?.customer?.transactions);
-      setFilteredList(_.sortBy(transactions?.data?.customer?.transactions, ['date']).reverse());
+      if (transactions) {
+        setFilteredList(_.sortBy(transactions?.data?.customer?.transactions, ['date']).reverse());
+      }
     }
   }, [company, orderedData, transactions]);
 

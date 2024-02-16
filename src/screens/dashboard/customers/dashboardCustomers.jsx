@@ -64,7 +64,7 @@ const sendReminder = async (item) => {
   }
 };
 
-export default function Index() {
+export default function DashboardCustomers() {
   const bottomSheetModalRef = useRef(null);
   const sharePDF = async (item) => {
     bottomSheetModalRef.current?.dismiss();
