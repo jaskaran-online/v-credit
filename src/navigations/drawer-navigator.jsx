@@ -1,4 +1,9 @@
-import { AntDesign, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
+import {
+  AntDesign,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  SimpleLineIcons,
+} from '@expo/vector-icons';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -28,6 +33,7 @@ import { useAuth } from '../hooks';
 import { useAuthStore } from '../hooks/auth-store';
 import { useAuthCompanyStore, useContactsStore } from '../hooks/zustand-store';
 import { HomePage, ProfitLoss, Reports } from '../screens';
+import Backup from '../screens/backups/backup';
 import CustomerList from '../screens/customers-list';
 import { loadContacts } from '../service/contactService';
 
@@ -490,6 +496,24 @@ export function DrawerNavigator() {
               <SimpleLineIcons
                 name="people"
                 size={size - 3}
+                color={focused ? COLORS.primary : COLORS.darkTransparent}
+              />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="Backup"
+          component={Backup}
+          options={{
+            headerShown: true,
+            drawerActiveBackgroundColor: 'Backup',
+            drawerLabelStyle: drawerLabelStyleCustom,
+            drawerActiveTintColor: COLORS.primary,
+            headerStyle: { backgroundColor: '#eff6ff' },
+            drawerIcon: ({ focused, size }) => (
+              <MaterialIcons
+                name="settings-backup-restore"
+                size={size}
                 color={focused ? COLORS.primary : COLORS.darkTransparent}
               />
             ),

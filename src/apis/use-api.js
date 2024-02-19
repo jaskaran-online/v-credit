@@ -222,6 +222,22 @@ export const useUserTodayTransactions = (userId) => {
   );
 };
 
+export const useBackupList = (companyID) => {
+  return useQuery(
+    ['useBackupList', companyID],
+    () => get(`api/v1/get/backups/?company_id=${companyID}`),
+    {
+      staleTime: 5000,
+    }
+  );
+};
+
+export const useBackupGenerate = () => {
+  return useMutation(['useBackupListGenerate'], (postData) =>
+    post(`api/v1/download/excel`, postData)
+  );
+};
+
 export const useUserTodayTransactionsTotal = (userId) => {
   return useQuery(['userTodayTransactionsTotal', userId], () =>
     get(`api/v1/get/user/today/transactions/total?user_id=${userId}`)
