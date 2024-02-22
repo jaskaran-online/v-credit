@@ -7,6 +7,7 @@ import {
 } from '@expo/vector-icons';
 import { BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useQueryClient } from '@tanstack/react-query';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
@@ -14,7 +15,6 @@ import { useForm } from 'react-hook-form';
 import { Image, Keyboard, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Searchbar, Text, TextInput } from 'react-native-paper';
 
-import { useQueryClient } from '@tanstack/react-query';
 import { usePaymentApi } from '../../apis/use-api';
 import Avatar from '../../components/avatar';
 import { showToast } from '../../core/utils';
@@ -103,7 +103,7 @@ function ContactList({ contacts, onSelect, onscroll }) {
                   {end}
                 </Text>
                 <Text variant="titleSmall" className="text-slate-900">
-                  {item.phoneNumbers.length > 0 && item.phoneNumbers[0].number}
+                  {item.phoneNumbers.length > 0 && item.phoneNumbers[0].number.replaceAll('-', '')}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -173,9 +173,15 @@ export default function ReceiveMoney() {
         name: 'image.jpg', // Modify the name based on your image name
       });
     }
-    formData.append('mobile_number', selectedMobileNumber);
+    formData.append('mobile_number', mobileNumber);
     formData.append('customer_name', selectedContact?.name);
     formData.append('transaction_type_id', 2);
+
+    if (auth?.user?.mobile) {
+      formData.append('from_mobile', auth.user.mobile);
+    }
+    formData.append('to_mobile', mobileNumber);
+
     request(formData);
   };
 
@@ -386,7 +392,13 @@ export default function ReceiveMoney() {
                       }}
                       onPress={() => {
                         setSelectedMobileNumber(item);
-                        setMobileNumber(item.number);
+
+                        if (item.number.includes('-')) {
+                          setMobileNumber(item.number.replaceAll('-', ''));
+                        } else {
+                          setMobileNumber(item.number);
+                        }
+
                         bottomSheetModalRef.current?.dismiss();
                       }}
                       className="p-4 bg-slate-50 mt-2 mx-4 rounded-md flex flex-row items-center w-full h-16">
@@ -407,7 +419,13 @@ export default function ReceiveMoney() {
                 onSelect={(selectedContactItem) => {
                   bottomSheetModalRef.current?.dismiss();
                   setSelectedContact(selectedContactItem);
-                  setMobileNumber(selectedContactItem?.phoneNumbers[0].number);
+                  if ((selectedContactItem?.phoneNumbers[0].number).includes('-')) {
+                    setMobileNumber(
+                      (selectedContactItem?.phoneNumbers[0].number).replaceAll('-', '')
+                    );
+                  } else {
+                    setMobileNumber(selectedContactItem?.phoneNumbers[0].number);
+                  }
                 }}
                 onscroll={() => Keyboard.dismiss()}
               />

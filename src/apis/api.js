@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ENV } from '../../env.config';
 
 const axiosInstance = axios.create({
-  baseURL: ENV.DEV.BASE_URL,
+  baseURL: ENV.PRO.BASE_URL,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'multipart/form-data',
@@ -28,15 +28,18 @@ export const get = async (url, params) => {
 // Function to make POST requests
 export const post = async (url, data) => {
   try {
+    console.log(url, data);
     const response = await axiosInstance.post(url, data);
     return response.data;
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
+      console.log('===============================================');
       console.error({
         method: 'POST',
         error: error.response.data,
         url,
       });
+      console.log('===============================================');
       throw new Error(error.response.data.message);
     } else {
       throw new Error('An error occurred during the request.');

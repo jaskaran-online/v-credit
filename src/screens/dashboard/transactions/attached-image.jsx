@@ -1,8 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import React, { useRef } from 'react';
-import { Image, View, Dimensions, StyleSheet } from 'react-native';
-import { PanGestureHandler, PinchGestureHandler, State } from 'react-native-gesture-handler';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import { PanGestureHandler, PinchGestureHandler } from 'react-native-gesture-handler';
 import { Button, Text } from 'react-native-paper';
 import Animated, {
   useAnimatedGestureHandler,
@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: 'center',
-    backgroundColor: 'white',
     flex: 1,
     justifyContent: 'center',
   },

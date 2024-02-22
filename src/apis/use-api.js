@@ -211,6 +211,7 @@ export const useCustomerTransactions = (customerId, userId) => {
 };
 
 export const useUserCustomerList = (userId) => {
+  console.log({ userId });
   return useQuery(['userCustomerList', userId], () =>
     get(`api/v1/get/user/customer/list?user_id=${userId}`)
   );

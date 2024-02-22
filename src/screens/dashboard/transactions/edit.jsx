@@ -1,5 +1,6 @@
 // noinspection JSValidateTypes
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { useQueryClient } from '@tanstack/react-query';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -57,6 +58,7 @@ const EditTransaction = ({ navigation, route }) => {
   const [transactionType, setTransactionType] = useState(null);
   const [inventoryChecked, setInventoryChecked] = React.useState(false);
   const company = useAuthCompanyStore((state) => state.selectedCompany);
+  const queryClient = useQueryClient();
 
   useEffect(
     function () {
@@ -94,10 +96,14 @@ const EditTransaction = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isPaymentSuccess) {
+      queryClient.invalidateQueries(['userCustomerList', auth.user.id]);
+      queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.id]);
+      queryClient.invalidateQueries(['userTodayTransactions', auth.user.id]);
+
       showToast(paymentApiResponse.data.message, 'success');
       setTimeout(() => navigation.navigate('HomePage'), 1000);
     }
-  }, [isPaymentSuccess, navigation, paymentApiResponse]);
+  }, [isPaymentSuccess, auth, queryClient, navigation, paymentApiResponse]);
 
   const showDialog = useCallback(() => {
     setVisible(true);
@@ -140,8 +146,13 @@ const EditTransaction = ({ navigation, route }) => {
     }
 
     const formData = new FormData();
-    formData.append('company_id', company?.id);
-    formData.append('cost_center_id', auth.user?.cost_center_id);
+    if (company?.id) {
+      formData.append('company_id', company?.id);
+    }
+
+    if (auth.user?.cost_center_id) {
+      formData.append('cost_center_id', auth.user?.cost_center_id);
+    }
 
     formData.append('from_date', convertDateFormat(inputDate.toString()));
     if (imageUri) {

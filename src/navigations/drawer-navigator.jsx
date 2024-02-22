@@ -501,24 +501,26 @@ export function DrawerNavigator() {
             ),
           }}
         />
-        <Drawer.Screen
-          name="Backup"
-          component={Backup}
-          options={{
-            headerShown: true,
-            drawerActiveBackgroundColor: 'Backup',
-            drawerLabelStyle: drawerLabelStyleCustom,
-            drawerActiveTintColor: COLORS.primary,
-            headerStyle: { backgroundColor: '#eff6ff' },
-            drawerIcon: ({ focused, size }) => (
-              <MaterialIcons
-                name="settings-backup-restore"
-                size={size}
-                color={focused ? COLORS.primary : COLORS.darkTransparent}
-              />
-            ),
-          }}
-        />
+        {company && (
+          <Drawer.Screen
+            name="Backup"
+            component={Backup}
+            options={{
+              headerShown: true,
+              drawerActiveBackgroundColor: 'Backup',
+              drawerLabelStyle: drawerLabelStyleCustom,
+              drawerActiveTintColor: COLORS.primary,
+              headerStyle: { backgroundColor: '#eff6ff' },
+              drawerIcon: ({ focused, size }) => (
+                <MaterialIcons
+                  name="settings-backup-restore"
+                  size={size}
+                  color={focused ? COLORS.primary : COLORS.darkTransparent}
+                />
+              ),
+            }}
+          />
+        )}
       </Drawer.Navigator>
     </>
   );

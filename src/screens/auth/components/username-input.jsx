@@ -8,18 +8,14 @@ import { COLORS } from '../../../core';
 const UsernameInput = ({ control, errors }) => {
   const usernameRules = useMemo(
     () => ({
-      required: 'Username is required',
+      required: 'Name is required',
       minLength: {
         value: 3,
-        message: 'Username must be at least 3 characters long',
+        message: 'Name must be at least 3 characters long',
       },
       maxLength: {
         value: 20,
-        message: 'Username must not exceed 20 characters',
-      },
-      pattern: {
-        value: /^[a-zA-Z0-9_]+$/,
-        message: 'Invalid username (only letters, numbers, and underscores allowed)',
+        message: 'Name must not exceed 20 characters',
       },
     }),
     []
