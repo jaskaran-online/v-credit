@@ -64,7 +64,7 @@ export default function Backup() {
       <View className="px-5">
         <Text className="text-xl font-bold text-black mb-4">Generate Backups</Text>
 
-        <Text>To Date*</Text>
+        <Text>From Date*</Text>
         {/* Date Selector */}
         <TouchableOpacity style={styles.itemSelector} onPress={showDatePicker}>
           <Text style={styles.itemText}>{selectedDate.toDateString()}</Text>
