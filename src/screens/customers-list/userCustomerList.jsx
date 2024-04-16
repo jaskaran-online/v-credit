@@ -297,9 +297,8 @@ export default function UserCustomerList({ navigation }) {
             <View className="mt-3 flex flex-row items-center justify-between">
               <Text>Shared Account</Text>
               <Switch
-                ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}
-                value={selectedCustomer.isAccountShared}
+                value={selectedCustomer.isAccountShared == 1 ? true : false}
               />
             </View>
           </Dialog.Content>
