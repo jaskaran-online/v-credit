@@ -13,7 +13,7 @@ import { NavigationContainer } from './navigation-container';
 import { useAuthStore } from '../hooks/auth-store';
 import { useAuthCompanyStore } from '../hooks/zustand-store';
 import { Balance, EditTransaction, Purchase } from '../screens';
-import CustomerList from '../screens/customers-list';
+import CustomerList from '../screens/customers-list/customerList';
 import CustomerTransactionDetails from '../screens/dashboard/customers/details';
 import ShareScreen from '../screens/dashboard/customers/pdf';
 import AttachedImage from '../screens/dashboard/transactions/attached-image';

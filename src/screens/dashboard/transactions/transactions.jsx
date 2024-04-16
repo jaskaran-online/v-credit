@@ -37,7 +37,7 @@ export default function Transactions() {
     isLoading: userTransactionLoading,
     fetchNextPage,
     refetch,
-  } = useUserTodayTransactions(auth?.user?.id);
+  } = useUserTodayTransactions(auth?.user?.mobile);
 
   // Use object destructuring for more concise code
   const {
@@ -143,9 +143,9 @@ export default function Transactions() {
       loadTransactions();
       getCardTotals();
     } else {
-      queryClient.invalidateQueries(['userCustomerList', auth.user.id]);
-      queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.id]);
-      queryClient.invalidateQueries(['userTodayTransactions', auth.user.id]);
+      queryClient.invalidateQueries(['userCustomerList', auth.user.mobile]);
+      queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.mobile]);
+      queryClient.invalidateQueries(['userTodayTransactions', auth.user.mobile]);
     }
   }, [company, getCardTotals, transactionDelSuccess, auth.user, queryClient]);
 
@@ -203,6 +203,11 @@ export default function Transactions() {
       id: deleteModel?.id,
       user_id: auth?.user?.id,
     });
+
+    queryClient.invalidateQueries(['userCustomerList', auth.user.mobile]);
+    queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.mobile]);
+    queryClient.invalidateQueries(['userTodayTransactions', auth.user.mobile]);
+
     showToast('Record Deleted Successfully', 'success');
     toggleFilter('none');
   }

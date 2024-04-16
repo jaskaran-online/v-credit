@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { Image, Keyboard, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Searchbar, Text, TextInput } from 'react-native-paper';
 
-import { usePaymentApi } from '../../apis/use-api';
+import {useCreateUserTransaction, usePaymentApi} from '../../apis/use-api';
 import Avatar from '../../components/avatar';
 import { showToast } from '../../core/utils';
 import { useAuthStore } from '../../hooks/auth-store';
@@ -122,7 +122,7 @@ export default function GiveMoney() {
     isSuccess: isPaymentSuccess,
     error: paymentError,
     isError,
-  } = usePaymentApi();
+  } = useCreateUserTransaction();
 
   const contacts = useContactsStore((state) => state.contactsList) || [];
   const [selectedContact, setSelectedContact] = useState(null);
@@ -142,6 +142,7 @@ export default function GiveMoney() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   // Get QueryClient from the context
   const queryClient = useQueryClient();
 
@@ -155,9 +156,10 @@ export default function GiveMoney() {
   const handleFormSubmit = () => {
     const formData = new FormData();
     formData.append('user_id', auth.user.id);
+    formData.append('from_mobile', auth.user.mobile);
     formData.append(
-      'from_date',
-      selectedDate.getFullYear() +
+        'from_date',
+        selectedDate.getFullYear() +
         '-' +
         (selectedDate.getMonth() + 1) +
         '-' +
@@ -165,7 +167,7 @@ export default function GiveMoney() {
     );
     formData.append('amount', amount);
     formData.append('transaction_type_id', 1);
-    formData.append('phone', mobileNumber);
+    formData.append('to_mobile', mobileNumber);
     if (imageUri) {
       formData.append('image', {
         uri: imageUri,
@@ -173,13 +175,15 @@ export default function GiveMoney() {
         name: 'image.jpg', // Modify the name based on your image name
       });
     }
-    formData.append('mobile_number', selectedMobileNumber);
-    formData.append('customer_name', selectedContact?.name);
+    formData.append('to_mobile', mobileNumber);
+    formData.append('to_name', selectedContact?.name);
     formData.append('transaction_type_id', 1);
+
     if (auth?.user?.mobile) {
       formData.append('from_mobile', auth.user.mobile);
     }
-    formData.append('to_mobile', selectedMobileNumber);
+    formData.append('to_mobile', mobileNumber);
+
     request(formData);
   };
 
@@ -187,9 +191,9 @@ export default function GiveMoney() {
     if (isPaymentSuccess) {
       showToast(paymentApiResponse.data.message, 'success');
 
-      queryClient.invalidateQueries(['userCustomerList', auth.user.id]);
-      queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.id]);
-      queryClient.invalidateQueries(['userTodayTransactions', auth.user.id]);
+      queryClient.invalidateQueries(['userCustomerList', auth.user.mobile]);
+      queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.mobile]);
+      queryClient.invalidateQueries(['userTodayTransactions', auth.user.mobile]);
 
       setTimeout(() => navigations.navigate('HomePage'), 1000);
     }

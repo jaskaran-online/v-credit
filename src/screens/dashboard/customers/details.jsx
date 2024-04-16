@@ -16,6 +16,7 @@ import { formatDateForMessage, showToast } from '../../../core/utils';
 import { useAuthStore } from '../../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 import FloatingButtons from '../../components/floating-button';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function processString(input = null) {
   if (input === null || input === '' || input === 'null') {
@@ -99,6 +100,9 @@ export default function CustomerDetails({ navigation, route }) {
   const [deleteModalVisibility, setDeleteModalVisibility] = useState(null);
   const hasRoleOneOrFour = auth?.user?.roles?.some((role) => role.id === 1 || role.id === 4);
 
+  // Get QueryClient from the context
+  const queryClient = useQueryClient();
+
   function handleLoadMore() {
     pageRef.current += 1;
     if (lastPageRef.current >= pageRef.current) {
@@ -111,6 +115,11 @@ export default function CustomerDetails({ navigation, route }) {
       id: deleteModalVisibility?.id,
       user_id: auth?.user?.id,
     });
+
+    queryClient.invalidateQueries(['userCustomerList', auth.user.mobile]);
+    queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.mobile]);
+    queryClient.invalidateQueries(['userTodayTransactions', auth.user.mobile]);
+
     showToast('Record Deleted Successfully', 'success');
     navigation.navigate('HomePage');
   }

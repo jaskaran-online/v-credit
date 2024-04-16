@@ -122,7 +122,7 @@ const ShareScreen = ({ route }) => {
   const lastKey = keys[keys.length - 1];
 
   const html = `
-  <body style="position: relative;font-family: Arial, sans-serif; margin: 0;overflow: hidden; padding: 20px;">
+  <body style="position: relative;font-family: Arial, sans-serif; margin: 0;overflow: scroll; padding: 20px;">
       <br/>
     <header style="background-color: darkslateblue; padding: 20px;">
       <div style="text-align: center;display:flex; align-items: center;justify-content:space-between;">

@@ -12,7 +12,7 @@ const Header = React.memo(() => {
   const { user: auth } = useAuthStore();
   const { selectedCompany: company } = useAuthCompanyStore();
   const { setCardAmount, cardAmount } = useCardAmountStore();
-  const { data: cardTotal } = useUserTodayTransactionsTotal(auth?.user?.id);
+  const { data: cardTotal } = useUserTodayTransactionsTotal(auth?.user?.mobile);
   const {
     mutate: cardRequest,
     data: cardData,

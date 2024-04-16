@@ -26,7 +26,6 @@ import { Button, Dialog, Portal, RadioButton, Text } from 'react-native-paper';
 
 import appJSON from '../../app.json';
 import { useVerifyUserAuthApi, useGetCustomersList } from '../apis/use-api';
-import AccordionItem from '../components/accordion-item';
 import Avatar from '../components/avatar';
 import { COLORS } from '../core';
 import { useAuth } from '../hooks';
@@ -34,8 +33,9 @@ import { useAuthStore } from '../hooks/auth-store';
 import { useAuthCompanyStore, useContactsStore } from '../hooks/zustand-store';
 import { HomePage, ProfitLoss, Reports } from '../screens';
 import Backup from '../screens/backups/backup';
-import CustomerList from '../screens/customers-list';
+import CustomerList from '../screens/customers-list/customerList';
 import { loadContacts } from '../service/contactService';
+import UserCustomerList from "../screens/customers-list/userCustomerList";
 
 const openPlayStore = () => {
   const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook';
@@ -485,7 +485,7 @@ export function DrawerNavigator() {
         )}
         <Drawer.Screen
           name="Customers"
-          component={CustomerList}
+          component={company ? CustomerList : UserCustomerList}
           options={{
             headerShown: true,
             drawerActiveBackgroundColor: 'transparent',

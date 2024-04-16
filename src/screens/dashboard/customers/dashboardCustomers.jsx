@@ -1,3 +1,5 @@
+// eslint-disable-next-line unicorn/filename-case
+// eslint-disable-next-line unicorn/filename-case
 import { AntDesign, FontAwesome, Ionicons, Entypo } from '@expo/vector-icons';
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from '@react-navigation/native';
@@ -157,7 +159,9 @@ export default function DashboardCustomers() {
     data: customerList,
     isLoading: customerListLoading,
     refetch,
-  } = useUserCustomerList(auth?.user?.id);
+  } = useUserCustomerList(auth?.user?.mobile);
+
+  console.log(customerListLoading)
 
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const filterBy = useFilterToggleStore((state) => state.filterBy);

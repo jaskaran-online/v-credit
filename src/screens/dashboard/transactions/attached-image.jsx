@@ -67,7 +67,9 @@ export default function AttachedImage(props) {
           <PinchGestureHandler onGestureEvent={onPinchEvent}>
             <Animated.View style={animatedStyle}>
               <Image
-                source={{ uri: `${ENV.PRO.IMAGE_URL}${props.route.params.image}` }}
+                source={{
+                  uri: `${ENV.LOCAL}${props.route.params.image}`,
+                }}
                 resizeMode="contain"
                 style={{
                   width: Dimensions.get('window').width,

@@ -104,7 +104,7 @@ function CardComponent({
   );
 }
 
-export default function Index({ navigation }) {
+export default function CustomerList({ navigation }) {
   const customerList = useCustomersStore((state) => state.customersList);
   const setCustomerList = useCustomersStore((state) => state.setCustomers);
   const company = useAuthCompanyStore((state) => state.selectedCompany);
