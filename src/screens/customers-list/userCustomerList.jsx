@@ -1,5 +1,6 @@
 import { FontAwesome6, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
+import { useQueryClient } from '@tanstack/react-query';
 import { isUndefined } from 'lodash';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Linking, TouchableOpacity, View } from 'react-native';
@@ -51,6 +52,7 @@ export const makePhoneCall = (phoneNumber) => {
 };
 
 function CardComponent({
+  data,
   id,
   title,
   description,
@@ -85,17 +87,11 @@ function CardComponent({
           <TouchableOpacity
             className="p-2 mx-2"
             onPress={() => {
-              // console.warn({
-              //   id,
-              //   title,
-              //   description,
-              //   is_account_shared: isAccountShared,
-              // });
               editContact({
                 id,
                 title,
                 description,
-                isAccountShared,
+                isAccountShared: data.is_account_shared,
               });
             }}>
             <MaterialCommunityIcons name="pencil" size={18} color="gray" />
@@ -132,6 +128,8 @@ function CardComponent({
 }
 
 export default function UserCustomerList({ navigation }) {
+  const queryClient = useQueryClient();
+
   const customerList = useCustomersStore((state) => state.customersList);
   const setCustomerList = useCustomersStore((state) => state.setCustomers);
   const company = useAuthCompanyStore((state) => state.selectedCompany);
@@ -173,10 +171,12 @@ export default function UserCustomerList({ navigation }) {
           description: '',
         });
         showToast(customerUpdateData?.message, 'success');
+        queryClient.invalidateQueries(['getUserCustomersList', auth.user.id]);
       }
     } else {
       if (customerUpdateData) {
         showToast(customerUpdateData?.message, 'error');
+        queryClient.invalidateQueries(['getUserCustomersList', auth.user.id]);
       }
     }
   }, [isCustomerLoading, customerUpdateData]);
@@ -184,8 +184,10 @@ export default function UserCustomerList({ navigation }) {
   useEffect(() => {
     if (!isCustomerCreateLoading && customerCreateData) {
       if (customerCreateData.status) {
+        queryClient.invalidateQueries(['getUserCustomersList', auth.user.id]);
         showToast(customerCreateData?.message, 'success');
       } else {
+        queryClient.invalidateQueries(['getUserCustomersList', auth.user.id]);
         showToast(customerCreateData?.message, 'error');
       }
       setSelectedCustomer({
@@ -229,6 +231,7 @@ export default function UserCustomerList({ navigation }) {
             renderItem={({ item, index }) => {
               return (
                 <CardComponent
+                  data={item}
                   key={index}
                   title={item.name}
                   id={item.id}
