@@ -54,7 +54,7 @@ function CardComponent({
   id,
   title,
   description,
-  isAccountShared,
+  isAccountShared = false,
   iconName,
   makeCall = () => null,
   whatsapp = () => null,
@@ -84,14 +84,20 @@ function CardComponent({
           {/*Edit Button*/}
           <TouchableOpacity
             className="p-2 mx-2"
-            onPress={() =>
+            onPress={() => {
+              // console.warn({
+              //   id,
+              //   title,
+              //   description,
+              //   is_account_shared: isAccountShared,
+              // });
               editContact({
                 id,
                 title,
                 description,
                 isAccountShared,
-              })
-            }>
+              });
+            }}>
             <MaterialCommunityIcons name="pencil" size={18} color="gray" />
           </TouchableOpacity>
 
@@ -192,7 +198,10 @@ export default function UserCustomerList({ navigation }) {
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = (value) => setIsEnabled(value);
+  const toggleSwitch = (value) => {
+    setIsEnabled(value);
+    setSelectedCustomer({ ...selectedCustomer, isAccountShared: value });
+  };
 
   return (
     <View className="flex-1 justify-start bg-blue-50">
@@ -217,28 +226,29 @@ export default function UserCustomerList({ navigation }) {
           </View>
           <FlashList
             data={customersList?.data}
-            renderItem={({ item, index }) => (
-              <CardComponent
-                key={index}
-                title={item.name}
-                id={item.id}
-                isAccountShared={item.is_account_shared}
-                iconName="person"
-                description={item.phone}
-                makeCall={() => {
-                  makePhoneCall(item.phone);
-                }}
-                whatsapp={() => {
-                  sendWhatsAppMessage(`https://wa.me/91${item.phone}?text=Hello`);
-                }}
-                editContact={(item) => {
-                  console.log(item);
-                  showDialog();
-                  toggleSwitch(item.isAccountShared === 1);
-                  setSelectedCustomer(item);
-                }}
-              />
-            )}
+            renderItem={({ item, index }) => {
+              return (
+                <CardComponent
+                  key={index}
+                  title={item.name}
+                  id={item.id}
+                  isAccountShared={selectedCustomer.isAccountShared}
+                  iconName="person"
+                  description={item.phone}
+                  makeCall={() => {
+                    makePhoneCall(item.phone);
+                  }}
+                  whatsapp={() => {
+                    sendWhatsAppMessage(`https://wa.me/91${item.phone}?text=Hello`);
+                  }}
+                  editContact={(editItem) => {
+                    showDialog();
+                    toggleSwitch(editItem.isAccountShared);
+                    setSelectedCustomer(editItem);
+                  }}
+                />
+              );
+            }}
             estimatedItemSize={100}
             ListEmptyComponent={
               <View className="d-flex h-16 flex-1 items-center justify-center">
@@ -286,7 +296,7 @@ export default function UserCustomerList({ navigation }) {
               <Switch
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}
-                value={isEnabled}
+                value={selectedCustomer.isAccountShared}
               />
             </View>
           </Dialog.Content>
@@ -298,7 +308,10 @@ export default function UserCustomerList({ navigation }) {
               onPress={() => {
                 hideDialog();
                 if (selectedCustomer && selectedCustomer.title !== '' && selectedCustomer.id) {
-                  updateCustomer(selectedCustomer);
+                  updateCustomer({
+                    ...selectedCustomer,
+                    isAccountShared: isEnabled ? 1 : 0,
+                  });
                 } else {
                   if (selectedCustomer.title === '') {
                     showToast('Please enter customer name', 'error');
@@ -309,6 +322,7 @@ export default function UserCustomerList({ navigation }) {
                   //   showToast('Please enter mobile number', 'error');
                   //   return false;
                   // }
+
                   if (company) {
                     createCustomer({
                       title: selectedCustomer.title,
@@ -316,12 +330,14 @@ export default function UserCustomerList({ navigation }) {
                       company_id: company.id,
                       cost_center_id: auth.user.cost_center_id,
                       user_id: auth.user.id,
+                      isAccountShared: isEnabled ? 1 : 0,
                     });
                   } else {
                     createCustomer({
                       title: selectedCustomer.title,
                       description: selectedCustomer.description,
                       user_id: auth.user.id,
+                      isAccountShared: isEnabled ? 1 : 0,
                     });
                   }
                 }

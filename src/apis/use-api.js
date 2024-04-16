@@ -67,13 +67,14 @@ export const useUpdateCustomer = () => {
 export const useCreateCustomer = () => {
   return useMutation({
     mutationKey: 'createCustomer',
-    mutationFn: ({ title, description, company_id, cost_center_id, user_id }) => {
+    mutationFn: ({ title, description, company_id, cost_center_id, user_id, isAccountShared }) => {
       return post(`create/customer`, {
         title,
         description,
         company_id,
         cost_center_id,
         user_id,
+        isAccountShared
       });
     },
     cacheTime: 500,
