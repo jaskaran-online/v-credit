@@ -485,7 +485,7 @@ export function DrawerNavigator() {
         )}
         <Drawer.Screen
           name="Customers"
-          component={company ? CustomerList : UserCustomerList}
+          component={UserCustomerList}
           options={{
             headerShown: true,
             drawerActiveBackgroundColor: 'transparent',
