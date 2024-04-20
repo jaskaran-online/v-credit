@@ -6,16 +6,17 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, StatusBar, StyleSheet, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet } from 'react-native';
+import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   MD3DarkTheme as DarkTheme,
   MD3LightTheme as LightTheme,
   Provider as PaperProvider,
 } from 'react-native-paper';
-import Toast from 'react-native-toast-message';
 
-import { COLORS } from './src/core';
+import Loading from './src/components/loading';
+import { showToast } from './src/core/utils';
 import { useAuthStore } from './src/hooks/auth-store';
 import { RootNavigator } from './src/navigations/root-navigator';
 // Create a client
@@ -62,12 +63,9 @@ export default function App() {
   const theme = isDarkTheme ? darkTheme : lightTheme;
 
   if (loading) {
-    return (
-      <View style={styles.activityIndicator}>
-        <ActivityIndicator size={24} color={COLORS.primary} />
-      </View>
-    );
+    return <Loading />;
   }
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
@@ -75,7 +73,7 @@ export default function App() {
           <PaperProvider theme={theme}>
             <StatusBar translucent animated />
             <RootNavigator theme={theme} />
-            <Toast />
+            <FlashMessage position="top" statusBarHeight={Platform.OS === 'ios' ? 45 : 35} />
           </PaperProvider>
         </QueryClientProvider>
       </BottomSheetModalProvider>

@@ -1,8 +1,9 @@
 // noinspection JSValidateTypes
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, FontAwesome6, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import { Image, Keyboard, KeyboardAvoidingView, TouchableOpacity, View } from 'react-native';
 import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
@@ -12,9 +13,11 @@ import Loading from '../../components/loading';
 import { convertDateFormat, processString, showToast } from '../../core/utils';
 import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore, useContactsStore } from '../../hooks/zustand-store';
+import { BottomSheetBackground, renderBackdropComponent } from '../auth/register/register';
 import { DropDownFlashList } from '../components';
+import { ContactList } from '../single-user/give-money';
 
-const GiveMoney = ({ navigation, route }) => {
+const TakePayment = ({ navigation, route }) => {
   const { user: auth } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -24,17 +27,18 @@ const GiveMoney = ({ navigation, route }) => {
     error: paymentError,
     isError,
   } = usePaymentApi();
-
   const { mutate: productRequest, data: products } = useProductsApi();
 
   const company = useAuthCompanyStore((state) => state.selectedCompany);
+  const [selectedContact, setSelectedContact] = useState(route.params?.customer || null);
+  const [selectedMobileNumber, setSelectedMobileNumber] = useState(null);
+  const [mobileNumber, setMobileNumber] = useState('');
   const [amount, setAmount] = useState(0);
   const [imageUri, setImageUri] = useState(null);
   const [inputDate, setInputDate] = useState(new Date());
   const [note, setNote] = useState('');
   const [price, setPrice] = useState(1);
   const [qty, setQty] = useState(1);
-  const [selectedCustomer, setSelectedCustomer] = useState(route.params?.customer || null);
   const contacts = useContactsStore((state) => state.contactsList);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [visible, setVisible] = useState(false);
@@ -56,13 +60,13 @@ const GiveMoney = ({ navigation, route }) => {
     const formData = new FormData();
     formData.append('company_id', company?.id);
     productRequest(formData);
-  }, [company?.id]);
+  }, [company?.id, productRequest]);
 
   useEffect(() => {
-    if (selectedCustomer) {
-      if (selectedCustomer?.phoneNumbers) {
-        setContactSelectedMobileNumber(processString(selectedCustomer?.phoneNumbers[0]?.numbers));
-        const updatedData = (selectedCustomer?.phoneNumbers).map((obj) => {
+    if (selectedContact) {
+      if (selectedContact?.phoneNumbers) {
+        setContactSelectedMobileNumber(processString(selectedContact?.phoneNumbers[0]?.numbers));
+        const updatedData = (selectedContact?.phoneNumbers).map((obj) => {
           return {
             ...obj,
             name: obj.digits ? processString(obj.digits) : processString(obj.number),
@@ -71,7 +75,7 @@ const GiveMoney = ({ navigation, route }) => {
         setContactMobileNumbers(updatedData);
       }
     }
-  }, [selectedCustomer]);
+  }, [selectedContact]);
 
   useEffect(() => {
     if (contactMobileNumbers.length === 1) {
@@ -84,8 +88,8 @@ const GiveMoney = ({ navigation, route }) => {
   }, [contactMobileNumbers]);
 
   useEffect(() => {
-    if (isError && paymentError) {
-      showToast(paymentError.message, 'error');
+    if (isError && paymentError?.message) {
+      showToast(paymentError.message, 'danger');
       setIsLoading(false);
     }
   }, [isError, paymentError]);
@@ -97,9 +101,12 @@ const GiveMoney = ({ navigation, route }) => {
   useEffect(() => {
     if (isPaymentSuccess) {
       showToast(paymentApiResponse.message, 'success');
-      navigation.navigate('HomePage');
       setIsLoading(false);
+      setTimeout(() => navigation.navigate('HomePage'), 1000);
     }
+    return () => {
+      setIsLoading(false);
+    };
   }, [isPaymentSuccess, paymentApiResponse?.message]);
 
   const showDialog = () => {
@@ -136,30 +143,17 @@ const GiveMoney = ({ navigation, route }) => {
   const onFormSubmit = () => {
     let phoneNumber = route?.params?.customer?.phone || null;
 
-    if (selectedCustomer === null) {
-      showToast('Please Select Customer', 'error');
+    if (selectedContact === null) {
+      showToast('Please Select Customer', 'danger');
       return false;
     }
 
-    // if (!selectedCustomer?.phoneNumbers && phoneNumber === null) {
-    //   showToast(
-    //     "The contact you selected doesn't have a mobile number!",
-    //     'error',
-    //   );
-    //   return false;
-    // }
-    //
-    // if (contactSelectedMobileNumber === undefined) {
-    //   showToast('Please enter customer mobile number!', 'error');
-    //   return false;
-    // }
-    //
     if (phoneNumber === null) {
       phoneNumber = contactSelectedMobileNumber;
     }
 
     if (price === 0 || qty === 0) {
-      showToast('Please check price and qty', 'error');
+      showToast('Please check price and qty', 'danger');
       return false;
     }
 
@@ -168,7 +162,7 @@ const GiveMoney = ({ navigation, route }) => {
     const formData = new FormData();
     formData.append('company_id', company?.id);
     formData.append('cost_center_id', auth.user?.cost_center_id);
-    formData.append('customer_name', selectedCustomer?.name);
+    formData.append('customer_name', selectedContact?.name);
     formData.append('from_date', convertDateFormat(inputDate.toString()));
     if (imageUri) {
       formData.append('image', {
@@ -179,7 +173,7 @@ const GiveMoney = ({ navigation, route }) => {
     }
     formData.append('notes', note);
     formData.append('phone', phoneNumber);
-    formData.append('phone_id', selectedCustomer?.id);
+    formData.append('phone_id', selectedContact?.id);
     if (selectedProduct) {
       formData.append('product_id', selectedProduct?.id);
     }
@@ -188,13 +182,17 @@ const GiveMoney = ({ navigation, route }) => {
       formData.append('qty', qty);
     }
     formData.append('amount', amount);
-    formData.append('transaction_type_id', 1);
+    formData.append('transaction_type_id', 2);
     formData.append('user_id', auth?.user?.id);
+
     if (auth?.user?.mobile) {
       formData.append('from_mobile', auth.user.mobile);
     }
-    formData.append('to_name', selectedCustomer?.name);
+
+    formData.append('to_name', selectedContact?.name);
+
     formData.append('to_mobile', phoneNumber);
+
     request(formData);
   };
 
@@ -206,10 +204,6 @@ const GiveMoney = ({ navigation, route }) => {
     setPrice((prevPrice) => inputPrice);
   };
 
-  const handleContactSelect = (contactObj) => {
-    setSelectedCustomer(contactObj);
-  };
-
   const handleDateChange = (d) => setInputDate(d);
 
   const [inventoryChecked, setInventoryChecked] = React.useState(false);
@@ -217,6 +211,13 @@ const GiveMoney = ({ navigation, route }) => {
   useEffect(() => {
     setAmount('');
   }, [inventoryChecked]);
+
+  const bottomSheetModalRef = useRef(null);
+  const snapPoints = useMemo(() => ['88%', '95%'], []);
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+    Keyboard.dismiss();
+  }, []);
 
   return (
     <>
@@ -239,64 +240,53 @@ const GiveMoney = ({ navigation, route }) => {
                 <Text>Inventory</Text>
               </TouchableOpacity>
             </View>
-            <DropDownFlashList
-              data={contacts}
-              inputLabel="Select Customer"
-              headerTitle="Showing contact from Phone book"
-              onSelect={handleContactSelect}
-              selectedItemName={selectedCustomer?.name}
-              filterEnabled
-            />
-            {selectedCustomer && (
+            <View className="mb-1" />
+            {selectedContact && <Text className="text-slate-600 mb-1 mt-2">Name</Text>}
+            <TouchableOpacity
+              onPress={() => {
+                handlePresentModalPress();
+                setSelectedContact(null);
+              }}
+              className="h-[50px] border border-slate-500 bg-white rounded-[4px] flex flex-row items-center px-4 justify-between">
+              {selectedContact ? (
+                <Text className="text-gray-900 text-[14px]">{selectedContact?.name}</Text>
+              ) : (
+                <Text className="text-slate-600 text-[14px]">Select Customer</Text>
+              )}
+              {selectedContact ? (
+                <AntDesign name="close" size={16} color="gray" />
+              ) : (
+                <AntDesign name="down" size={18} color="gray" />
+              )}
+            </TouchableOpacity>
+            <View className="mb-1" />
+            {selectedContact && (
               <>
-                {contactMobileNumbers.length === 1 ||
-                contactSelectedMobileNumber === null ||
-                route?.params?.customer?.phone === null ||
-                contactSelectedMobileNumber === undefined ? (
-                  <TextInput
-                    className="-z-30 mt-2 bg-white"
-                    onChangeText={(mobile) => setContactSelectedMobileNumber(mobile)}
-                    value={
-                      contactSelectedMobileNumber === 'null' ? '' : contactSelectedMobileNumber
-                    }
-                    mode="outlined"
-                    label="Mobile Number"
-                    keyboardType="phone-pad"
-                  />
-                ) : (
-                  <>
-                    {route?.params?.customer?.phone ||
-                      (contactMobileNumbers && (
-                        <View className="-z-10 mt-2">
-                          <DropDownFlashList
-                            data={contactMobileNumbers}
-                            inputLabel={
-                              contactSelectedMobileNumber
-                                ? 'Selected Mobile Number'
-                                : 'Select Mobile Number'
-                            }
-                            selectedItemName={processString(
-                              selectedCustomer?.phoneNumbers[0]?.number
-                            )}
-                            selectedItemDigits={processString(
-                              selectedCustomer?.phoneNumbers[0]?.digits
-                            )}
-                            enableSearch={false}
-                            headerTitle={`List of mobile numbers for ${selectedCustomer?.name}`}
-                            onSelect={(contact) => {
-                              setContactSelectedMobileNumber(
-                                contact?.digits
-                                  ? processString(contact?.digits)
-                                  : contact?.number
-                                    ? processString(contact?.number)
-                                    : null
-                              );
-                            }}
-                          />
-                        </View>
-                      ))}
-                  </>
-                )}
+                <TextInput
+                  mode="outlined"
+                  label="Mobile Number"
+                  keyboardType="number-pad"
+                  className="h-[50px] bg-white"
+                  placeholder="Enter Mobile Number"
+                  value={mobileNumber}
+                  onChangeText={(text) => setMobileNumber(text)}
+                  right={
+                    <TextInput.Icon
+                      icon={() => (
+                        <MaterialCommunityIcons
+                          onPress={
+                            (selectedContact && selectedContact?.phoneNumbers)?.length > 1
+                              ? handlePresentModalPress
+                              : () => null
+                          }
+                          name="chevron-down"
+                          size={20}
+                          color="gray"
+                        />
+                      )}
+                    />
+                  }
+                />
               </>
             )}
             <View className="-z-10 mt-2">
@@ -374,8 +364,12 @@ const GiveMoney = ({ navigation, route }) => {
                 />
               )}
             </>
-            <Button mode="contained" className="-z-50 mt-4 py-1" onPress={() => onFormSubmit()}>
-              <Text className="text-white font-semibold">Submit</Text>
+            <Button
+              disabled={isLoading}
+              mode="contained"
+              className="-z-50 mt-4 py-1"
+              onPress={() => onFormSubmit()}>
+              Submit
             </Button>
           </KeyboardAvoidingView>
 
@@ -411,10 +405,79 @@ const GiveMoney = ({ navigation, route }) => {
               </View>
             </Dialog.Content>
           </Dialog>
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints}
+            backdropComponent={renderBackdropComponent}
+            backgroundComponent={(props) => <BottomSheetBackground {...props} />}
+            handleIndicatorStyle={{
+              backgroundColor: 'lightgray',
+            }}>
+            {selectedContact?.phoneNumbers?.length > 1 ? (
+              <View className="flex-1 mt-2">
+                <Text className="mb-2 text-xl font-bold text-gray-800 ml-4">Select Number</Text>
+                <BottomSheetFlatList
+                  onscroll={() => Keyboard.dismiss()}
+                  estimatedItemSize={1000}
+                  keyExtractor={(value, index) => `${index}`}
+                  renderItem={({ item, index: i }) => (
+                    <TouchableOpacity
+                      key={i}
+                      style={{
+                        width: '100%',
+                        height: 80,
+                      }}
+                      onPress={() => {
+                        setSelectedMobileNumber(item);
+                        if (item.number.includes('-') || item.number.includes(' ')) {
+                          setMobileNumber(item.number?.replaceAll('-', '').replaceAll(' ', ''));
+                        } else {
+                          setMobileNumber(item.number);
+                        }
+                        bottomSheetModalRef.current?.dismiss();
+                      }}
+                      className="p-4 bg-slate-50 mt-2 mx-4 rounded-md flex flex-row items-center w-full h-16">
+                      <FontAwesome6 name="mobile-retro" size={24} color="gray" />
+                      <View className="ml-4 flex flex-row">
+                        <Text variant="titleSmall" className="text-slate-900">
+                          {item.number}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  data={selectedContact?.phoneNumbers}
+                />
+              </View>
+            ) : (
+              <ContactList
+                contacts={contacts}
+                onSelect={(selectedContactItem) => {
+                  bottomSheetModalRef.current?.dismiss();
+                  setSelectedContact(selectedContactItem);
+                  if (selectedContactItem) {
+                    if (
+                      selectedContactItem?.phoneNumbers[0].number?.includes('-') ||
+                      selectedContactItem?.phoneNumbers[0].number?.includes(' ')
+                    ) {
+                      setMobileNumber(
+                        selectedContactItem?.phoneNumbers[0].number
+                          ?.replaceAll('-', '')
+                          ?.replaceAll(' ', '')
+                      );
+                    } else {
+                      setMobileNumber(selectedContactItem?.phoneNumbers[0].number);
+                    }
+                  }
+                }}
+                onscroll={() => Keyboard.dismiss()}
+              />
+            )}
+          </BottomSheetModal>
         </View>
       )}
     </>
   );
 };
 
-export default React.memo(GiveMoney);
+export default React.memo(TakePayment);

@@ -135,9 +135,6 @@ const DropDownFlashList = ({
           <FlashList
             data={filteredContacts}
             estimatedItemSize={200}
-            contentContainerStyle={{
-              height: '100%',
-            }}
             renderItem={renderItem}
             keyExtractor={(itemValue, index) => index}
             ItemSeparatorComponent={renderSeparator}

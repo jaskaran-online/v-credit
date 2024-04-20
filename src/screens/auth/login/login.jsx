@@ -13,6 +13,7 @@ import { Logo } from '../components/logo';
 import PasswordInput from '../components/password-input';
 
 export default function Login({ navigation }) {
+  const [loading, setLoading] = useState(false);
   const { mutate, data: response, isLoading, error, isError, isSuccess } = useAuthLogin();
   const [isChecked, setIsChecked] = useState(false);
 
@@ -23,7 +24,8 @@ export default function Login({ navigation }) {
   useEffect(
     function () {
       if (isError && error && !isLoading) {
-        showToast(error.message, 'error');
+        setLoading(false);
+        showToast(error.message, 'danger', 'top');
       }
     },
     [isError, error, isLoading]
@@ -38,20 +40,24 @@ export default function Login({ navigation }) {
   const togglePasswordVisibility = () => setIsPasswordSecure(!isPasswordSecure);
 
   const onSubmit = (data) => {
+    setLoading(true);
     const formData = new FormData();
     formData.append('email', data.email);
     formData.append('password', data.password);
     mutate(formData);
   };
   const { login } = useAuthStore();
-
+  
   useEffect(() => {
     if (isSuccess) {
       login({
         access: response?.data?.accessToken,
         refresh: response?.data?.accessToken,
         user: response?.data?.user,
+      }).then(() => {
+        showToast('Logged in Successfully!', 'success', 'top');
       });
+      setLoading(false);
     }
   }, [isSuccess, response, login]);
 

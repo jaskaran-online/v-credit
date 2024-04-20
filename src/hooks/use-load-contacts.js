@@ -17,7 +17,7 @@ const useLoadContacts = (customersListData, isCustomerLoading) => {
           name: obj.name,
           digits: obj.phone,
           contactType: 'person',
-          phoneNumbers: obj.phone ? [{ digits: obj.phone }] : [],
+          phoneNumbers: obj.phone ? [{ digits: obj.phone, number: obj.phone }] : [],
           imageAvailable: false,
         }));
 

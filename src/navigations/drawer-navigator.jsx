@@ -306,7 +306,7 @@ export function DrawerNavigator() {
             name: obj.name,
             digits: obj.phone,
             contactType: 'person',
-            phoneNumbers: obj.phone ? [{ digits: obj.phone }] : [],
+            phoneNumbers: obj.phone ? [{ digits: obj.phone, number: obj.phone }] : [],
             imageAvailable: false,
           }));
           setContacts([...newContacts, ...contactsOnlyWithPhoneNumbers]);
@@ -325,7 +325,7 @@ export function DrawerNavigator() {
 
   useEffect(() => {
     setTimeout(() => {
-      getContacts();
+      getContacts().then();
     }, 6000);
   }, [apiCustomersList]);
 

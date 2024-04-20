@@ -1,7 +1,8 @@
 // import * as SecureStore from 'expo-secure-store';
 import createSecureStore from '@neverdull-agency/expo-unlimited-secure-store';
 import { Linking } from 'react-native';
-import Toast from 'react-native-toast-message';
+import {showMessage} from "react-native-flash-message";
+
 
 const SecureStore = createSecureStore();
 
@@ -162,15 +163,13 @@ export function formatDateForMessage(inputDate) {
  * @param {string} type - The type of toast to display ('success' or 'error').
  * @return {void}
  */
-export const showToast = (message = '', type = 'success') => {
-  const toastType = type === 'success' ? 'Success' : 'Error';
-  const position = 'bottom';
-
-  Toast.show({
-    type,
-    text1: toastType,
-    text2: message,
-    position,
+export const showToast = (message = '', type = 'success', position = 'bottom') => {
+  showMessage({
+    message: message,
+    type: type,
+    icon: type,
+    position: position,
+    animated: true
   });
 };
 

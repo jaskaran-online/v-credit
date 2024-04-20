@@ -27,7 +27,7 @@ import {
 } from '../screens/reports';
 import SingleUserGiveMoney from '../screens/single-user/give-money';
 import SingleUserReceiveMoney from '../screens/single-user/receive-money';
-import TakePayment from '../screens/take-payment';
+import TakePayment from '../screens/take-payment/take-payment';
 
 const Stack = createNativeStackNavigator();
 

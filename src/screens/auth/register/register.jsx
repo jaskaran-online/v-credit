@@ -1,6 +1,5 @@
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { BottomSheetBackdrop, BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
-import { FlashList } from '@shopify/flash-list';
 import { useQuery } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -11,8 +10,8 @@ import {
   Linking,
   Platform,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
+  ToastAndroid,
   View,
 } from 'react-native';
 import { Button, Checkbox, Text, TextInput as TextInputNew } from 'react-native-paper';
@@ -23,6 +22,36 @@ import EmailInput from '../components/email-input';
 import { Logo } from '../components/logo';
 import PasswordInput from '../components/password-input';
 import UsernameInput from '../components/username-input';
+
+const initialSelectedCountry = {
+  flags: {
+    png: 'https://flagcdn.com/w320/in.png',
+    svg: 'https://flagcdn.com/in.svg',
+    alt: 'The flag of India is composed of three equal horizontal bands of saffron, white and green. A navy blue wheel with twenty-four spokes — the Ashoka Chakra — is centered in the white band.',
+  },
+  name: {
+    common: 'India',
+    official: 'Republic of India',
+    nativeName: {
+      eng: {
+        official: 'Republic of India',
+        common: 'India',
+      },
+      hin: {
+        official: 'भारत गणराज्य',
+        common: 'भारत',
+      },
+      tam: {
+        official: 'இந்தியக் குடியரசு',
+        common: 'இந்தியா',
+      },
+    },
+  },
+  idd: {
+    root: '+9',
+    suffixes: ['1'],
+  },
+};
 
 export const renderBackdropComponent = (props) => (
   <BottomSheetBackdrop
@@ -71,35 +100,7 @@ export default function Register({ navigation }) {
   const [isChecked, setIsChecked] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCountries, setFilteredCountries] = useState(countries || []);
-  const [selectedCountry, setSelectedCountry] = useState({
-    flags: {
-      png: 'https://flagcdn.com/w320/in.png',
-      svg: 'https://flagcdn.com/in.svg',
-      alt: 'The flag of India is composed of three equal horizontal bands of saffron, white and green. A navy blue wheel with twenty-four spokes — the Ashoka Chakra — is centered in the white band.',
-    },
-    name: {
-      common: 'India',
-      official: 'Republic of India',
-      nativeName: {
-        eng: {
-          official: 'Republic of India',
-          common: 'India',
-        },
-        hin: {
-          official: 'भारत गणराज्य',
-          common: 'भारत',
-        },
-        tam: {
-          official: 'இந்தியக் குடியரசு',
-          common: 'இந்தியா',
-        },
-      },
-    },
-    idd: {
-      root: '+9',
-      suffixes: ['1'],
-    },
-  });
+  const [selectedCountry, setSelectedCountry] = useState(initialSelectedCountry);
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
 
   const {
@@ -181,7 +182,7 @@ export default function Register({ navigation }) {
     ToastAndroid.show('Please verify your email!', ToastAndroid.SHORT);
     navigation.navigate('OtpVerification', {
       email: response?.user?.email,
-      password: password,
+      password,
       id: response?.user?.id,
     });
   }

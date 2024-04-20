@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { Image, Keyboard, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Searchbar, Text, TextInput } from 'react-native-paper';
 
-import {useCreateUserTransaction, usePaymentApi} from '../../apis/use-api';
+import { useCreateUserTransaction, usePaymentApi } from '../../apis/use-api';
 import Avatar from '../../components/avatar';
 import { showToast } from '../../core/utils';
 import { useAuthStore } from '../../hooks/auth-store';
@@ -23,15 +23,16 @@ import { useContactsStore } from '../../hooks/zustand-store';
 import navigations from '../../navigations';
 import { BottomSheetBackground, renderBackdropComponent } from '../auth/register/register';
 
-function ContactList({ contacts, onSelect, onscroll }) {
+export function ContactList({ contacts, onSelect, onscroll }) {
   const [query, setQuery] = useState('');
   const [filteredContacts, setFilteredContacts] = useState(contacts || []);
 
   function searchItem(text) {
     const newData = contacts?.filter((item) => {
-      const itemData = `${item?.name?.toUpperCase()}`;
+      const nameData = `${item?.name?.toUpperCase()}`;
+      const phoneData = `${item?.phoneNumbers[0]?.number?.replaceAll('-', '').replaceAll(' ', '')}`;
       const textData = text.toUpperCase();
-      return itemData.indexOf(textData) > -1;
+      return nameData.indexOf(textData) > -1 || phoneData.indexOf(textData) > -1;
     });
     setFilteredContacts(newData);
     setQuery(text);
@@ -53,7 +54,7 @@ function ContactList({ contacts, onSelect, onscroll }) {
           lineHeight: Platform.OS === 'android' ? 16 : 0,
           paddingBottom: 10,
         }}
-        placeholder="Search Customer Name"
+        placeholder="Search Customer Name or Phone"
         className="h-12 border-2 border-slate-200 bg-white"
       />
 
@@ -74,16 +75,32 @@ function ContactList({ contacts, onSelect, onscroll }) {
         onScroll={onscroll}
         estimatedItemSize={1000}
         data={filteredContacts}
+        keyExtractor={(item, index) => `${index}`}
         renderItem={({ item, index: i }) => {
           const name = item.name;
+          const phone =
+            item.phoneNumbers.length > 0
+              ? item.phoneNumbers[0].number.replaceAll('-', '').replaceAll(' ', '')
+              : '';
           const searchTerm = query?.toUpperCase();
-          const index = name?.toUpperCase().indexOf(searchTerm);
-          if (index === -1) {
+          const nameIndex = name?.toUpperCase().indexOf(searchTerm);
+          const phoneIndex = phone?.indexOf(searchTerm);
+
+          if (nameIndex === -1 && phoneIndex === -1) {
             return null;
           }
-          const start = name?.slice(0, index);
-          const highlight = name?.slice(index, index + searchTerm.length);
-          const end = name?.slice(index + searchTerm.length);
+
+          const indexToUse = nameIndex !== -1 ? nameIndex : phoneIndex;
+          const start =
+            indexToUse !== -1 ? (nameIndex !== -1 ? name : phone).slice(0, indexToUse) : '';
+          const highlight =
+            indexToUse !== -1
+              ? (nameIndex !== -1 ? name : phone).slice(indexToUse, indexToUse + searchTerm.length)
+              : '';
+          const end =
+            indexToUse !== -1
+              ? (nameIndex !== -1 ? name : phone).slice(indexToUse + searchTerm.length)
+              : '';
 
           return (
             <TouchableOpacity
@@ -103,7 +120,10 @@ function ContactList({ contacts, onSelect, onscroll }) {
                   {end}
                 </Text>
                 <Text variant="titleSmall" className="text-slate-900">
-                  {item.phoneNumbers.length > 0 && item.phoneNumbers[0].number.replaceAll('-', '')}
+                  {(item.phoneNumbers.length > 0 &&
+                    item.phoneNumbers[0].number?.replaceAll('-', '')?.replaceAll(' ', '')) || (
+                    <Text className="text-[12px] text-slate-500">Not Available</Text>
+                  )}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -158,8 +178,8 @@ export default function GiveMoney() {
     formData.append('user_id', auth.user.id);
     formData.append('from_mobile', auth.user.mobile);
     formData.append(
-        'from_date',
-        selectedDate.getFullYear() +
+      'from_date',
+      selectedDate.getFullYear() +
         '-' +
         (selectedDate.getMonth() + 1) +
         '-' +
