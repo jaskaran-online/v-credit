@@ -9,13 +9,13 @@ import { Button, Checkbox, Dialog, Text, TextInput } from 'react-native-paper';
 import { DatePickerInput } from 'react-native-paper-dates';
 
 import { usePaymentApi, useProductsApi } from '../../apis/use-api';
+import ContactList from '../../components/contact-list-model';
 import Loading from '../../components/loading';
 import { convertDateFormat, processString, showToast } from '../../core/utils';
 import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore, useContactsStore } from '../../hooks/zustand-store';
 import { BottomSheetBackground, renderBackdropComponent } from '../auth/register/register';
 import { DropDownFlashList } from '../components';
-import { ContactList } from '../single-user/give-money';
 
 const TakePayment = ({ navigation, route }) => {
   const { user: auth } = useAuthStore();
@@ -249,9 +249,9 @@ const TakePayment = ({ navigation, route }) => {
               }}
               className="h-[50px] border border-slate-500 bg-white rounded-[4px] flex flex-row items-center px-4 justify-between">
               {selectedContact ? (
-                <Text className="text-gray-900 text-[14px]">{selectedContact?.name}</Text>
+                <Text className="text-gray-900 text-[16px]">{selectedContact?.name}</Text>
               ) : (
-                <Text className="text-slate-600 text-[14px]">Select Customer</Text>
+                <Text className="text-slate-600 text-[16px]">Select Customer</Text>
               )}
               {selectedContact ? (
                 <AntDesign name="close" size={16} color="gray" />
@@ -430,10 +430,12 @@ const TakePayment = ({ navigation, route }) => {
                       }}
                       onPress={() => {
                         setSelectedMobileNumber(item);
-                        if (item.number.includes('-') || item.number.includes(' ')) {
-                          setMobileNumber(item.number?.replaceAll('-', '').replaceAll(' ', ''));
-                        } else {
-                          setMobileNumber(item.number);
+                        if (item?.number) {
+                          if (item?.number.includes('-') || item?.number.includes(' ')) {
+                            setMobileNumber(item?.number?.replaceAll('-', '').replaceAll(' ', ''));
+                          } else {
+                            setMobileNumber(item?.number);
+                          }
                         }
                         bottomSheetModalRef.current?.dismiss();
                       }}
@@ -441,7 +443,7 @@ const TakePayment = ({ navigation, route }) => {
                       <FontAwesome6 name="mobile-retro" size={24} color="gray" />
                       <View className="ml-4 flex flex-row">
                         <Text variant="titleSmall" className="text-slate-900">
-                          {item.number}
+                          {item?.number}
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -457,16 +459,16 @@ const TakePayment = ({ navigation, route }) => {
                   setSelectedContact(selectedContactItem);
                   if (selectedContactItem) {
                     if (
-                      selectedContactItem?.phoneNumbers[0].number?.includes('-') ||
-                      selectedContactItem?.phoneNumbers[0].number?.includes(' ')
+                      selectedContactItem?.phoneNumbers[0]?.number?.includes('-') ||
+                      selectedContactItem?.phoneNumbers[0]?.number?.includes(' ')
                     ) {
                       setMobileNumber(
-                        selectedContactItem?.phoneNumbers[0].number
+                        selectedContactItem?.phoneNumbers[0]?.number
                           ?.replaceAll('-', '')
                           ?.replaceAll(' ', '')
                       );
                     } else {
-                      setMobileNumber(selectedContactItem?.phoneNumbers[0].number);
+                      setMobileNumber(selectedContactItem?.phoneNumbers[0]?.number);
                     }
                   }
                 }}

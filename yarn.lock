@@ -7505,6 +7505,11 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
+lottie-react-native@6.5.1:
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/lottie-react-native/-/lottie-react-native-6.5.1.tgz#7986078648d1ff274a704ae3bd979a4c3aa235c6"
+  integrity sha512-pjih71P6qX6Ax5ucUBA+YJO7+fnveI581Bd8LmYeARm3spq3AnoGzEkrWaieM8odnK6WI4d5dwEJsxge/QjFPw==
+
 lowercase-keys@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/lowercase-keys/-/lowercase-keys-1.0.1.tgz#6f9e30b47084d971a7c820ff15a6c5167b74c26f"
@@ -9024,6 +9029,14 @@ react-native-datepicker@^1.7.2:
   dependencies:
     moment "^2.22.0"
 
+react-native-flash-message@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-flash-message/-/react-native-flash-message-0.4.2.tgz#ed8ffe60c532bc1274c3b49a60dd0bd2fca59c50"
+  integrity sha512-YvdXRW9AGMTI99S3DJZhLO0mbk/ehKv/UQf4/Df+3dtGi8DlkidRbyqCQZk1WMtZ7rN85PMTGr/xEI9CF9z0YA==
+  dependencies:
+    prop-types "^15.8.1"
+    react-native-iphone-screen-helper "^2.0.2"
+
 react-native-gesture-handler@~2.14.0:
   version "2.14.1"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.14.1.tgz#930640231024b7921435ab476aa501dd4a6b2e01"
@@ -9034,6 +9047,11 @@ react-native-gesture-handler@~2.14.0:
     invariant "^2.2.4"
     lodash "^4.17.21"
     prop-types "^15.7.2"
+
+react-native-iphone-screen-helper@^2.0.2:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-iphone-screen-helper/-/react-native-iphone-screen-helper-2.1.1.tgz#80e82a9badf97934f41739c58f518914b8ae1e91"
+  integrity sha512-geuw/bli83+tOg8UpoioLk1H1aEy0wnMDusWkCazsyH6fSk6qzmgaZ2cRyyJRU8s2tG87HctZFKGTkyYzcUcfA==
 
 react-native-otp-textinput@^1.1.5:
   version "1.1.5"

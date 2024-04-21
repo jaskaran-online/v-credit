@@ -17,102 +17,12 @@ import { Button, Searchbar, Text, TextInput } from 'react-native-paper';
 
 import { useCreateUserTransaction, usePaymentApi } from '../../apis/use-api';
 import Avatar from '../../components/avatar';
+import ContactList from '../../components/contact-list-model';
 import { showToast } from '../../core/utils';
 import { useAuthStore } from '../../hooks/auth-store';
 import { useContactsStore } from '../../hooks/zustand-store';
 import navigations from '../../navigations';
 import { BottomSheetBackground, renderBackdropComponent } from '../auth/register/register';
-
-function ContactList({ contacts, onSelect, onscroll }) {
-  const [query, setQuery] = useState('');
-  const [filteredContacts, setFilteredContacts] = useState(contacts || []);
-
-  function searchItem(text) {
-    const newData = contacts?.filter((item) => {
-      const itemData = `${item?.name?.toUpperCase()}`;
-      const textData = text.toUpperCase();
-      return itemData.indexOf(textData) > -1;
-    });
-    setFilteredContacts(newData);
-    setQuery(text);
-  }
-
-  return (
-    <View className="flex-1 px-4 mt-2">
-      <Text className="mb-4 text-xl font-bold text-gray-800 ml-2">Select Customer</Text>
-      <Searchbar
-        onChangeText={(text) => searchItem(text)}
-        value={query.toString()}
-        style={{
-          width: '100%',
-          backgroundColor: 'transparent',
-          marginBottom: 10,
-        }}
-        inputStyle={{
-          fontSize: 14,
-          lineHeight: Platform.OS === 'android' ? 16 : 0,
-          paddingBottom: 10,
-        }}
-        placeholder="Search Customer Name"
-        className="h-12 border-2 border-slate-200 bg-white"
-      />
-
-      <View>
-        <Button
-          mode="contained"
-          className="my-3 bg-green-950"
-          onPress={() => {
-            navigations.navigate('Customers');
-          }}>
-          <Text variant="bodyMedium" className="text-white ">
-            Create New
-          </Text>
-        </Button>
-      </View>
-
-      <BottomSheetFlatList
-        onScroll={onscroll}
-        estimatedItemSize={1000}
-        data={filteredContacts}
-        renderItem={({ item, index: i }) => {
-          const name = item.name;
-          const searchTerm = query?.toUpperCase();
-          const index = name?.toUpperCase().indexOf(searchTerm);
-          if (index === -1) {
-            return null;
-          }
-          const start = name?.slice(0, index);
-          const highlight = name?.slice(index, index + searchTerm.length);
-          const end = name?.slice(index + searchTerm.length);
-
-          return (
-            <TouchableOpacity
-              key={i}
-              onPress={() => onSelect(item)}
-              className="p-4 bg-slate-50 mt-1 mx-2 rounded-md flex flex-row items-center w-full">
-              <Avatar name={item.name} size={40} />
-              <View className="ml-4">
-                <Text>
-                  {start}
-                  <Text
-                    style={{
-                      color: 'dodgerblue',
-                    }}>
-                    {highlight}
-                  </Text>
-                  {end}
-                </Text>
-                <Text variant="titleSmall" className="text-slate-900">
-                  {item.phoneNumbers.length > 0 && item.phoneNumbers[0].number.replaceAll('-', '')}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-      />
-    </View>
-  );
-}
 
 export default function ReceiveMoney() {
   const { user: auth } = useAuthStore();

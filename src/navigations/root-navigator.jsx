@@ -17,7 +17,7 @@ import CustomerList from '../screens/customers-list/customerList';
 import CustomerTransactionDetails from '../screens/dashboard/customers/details';
 import ShareScreen from '../screens/dashboard/customers/pdf';
 import AttachedImage from '../screens/dashboard/transactions/attached-image';
-import GiveMoney from '../screens/give-payment';
+import GiveMoney from '../screens/give-payment/give-payment';
 import {
   AllParties,
   AllTransactions,

@@ -1,6 +1,7 @@
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { BottomSheetBackdrop, BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useQuery } from '@tanstack/react-query';
+import { BlurView } from 'expo-blur';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';

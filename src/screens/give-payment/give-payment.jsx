@@ -1,4 +1,3 @@
-// noinspection JSValidateTypes
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
@@ -14,7 +13,7 @@ import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore, useContactsStore } from '../../hooks/zustand-store';
 import { DropDownFlashList } from '../components';
 
-const GiveMoney = ({ navigation, route }) => {
+const GivePayment = ({ navigation, route }) => {
   const { user: auth } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -417,4 +416,4 @@ const GiveMoney = ({ navigation, route }) => {
   );
 };
 
-export default React.memo(GiveMoney);
+export default React.memo(GivePayment);
