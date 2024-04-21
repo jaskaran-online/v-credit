@@ -348,9 +348,11 @@ const EditTransaction = ({ navigation, route }) => {
         visible={visible}
         onDismiss={hideDialog}
         dismissable
-        style={{ backgroundColor: 'white' }}
+        style={{ backgroundColor: COLORS.white }}
         dismissableBackButton>
-        <Dialog.Title style={{ fontSize: 18 }}>Select</Dialog.Title>
+        <Dialog.Title>
+          <Text style={{ fontSize: 18 }}>Select</Text>
+        </Dialog.Title>
         <Dialog.Content>
           <View className="mb-10 mt-5 flex flex-row justify-evenly">
             <View className="flex items-center gap-2">

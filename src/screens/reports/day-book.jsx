@@ -8,6 +8,7 @@ import { DatePickerInput } from 'react-native-paper-dates';
 
 import { useDailyBook } from '../../apis/use-api';
 import { renderHeader, renderItem } from '../../components/list-components';
+import { COLORS } from '../../core';
 import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../hooks/zustand-store';
 import { FlashListFooter, EmptyList, DetailCards } from '../components';
@@ -147,7 +148,7 @@ export default function DayBook() {
             flex: 1,
             position: 'absolute',
             zIndex: 9999999,
-            backgroundColor: 'white',
+            backgroundColor: COLORS.white,
           }}
           className="right-10 top-14 border-2 border-slate-100 shadow-lg shadow-black">
           {options.map((value, index) => {

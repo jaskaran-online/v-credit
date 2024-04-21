@@ -16,6 +16,7 @@ module.exports = {
   ],
   plugins: ['unicorn', 'react', 'react-native', 'react-hooks'],
   rules: {
+    'react-native/no-inline-styles': 'off',
     'prettier/prettier': [
       'error',
       {

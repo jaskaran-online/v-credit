@@ -11,6 +11,7 @@ import { DatePickerInput } from 'react-native-paper-dates';
 import { usePaymentApi, useProductsApi } from '../../apis/use-api';
 import ContactList from '../../components/contact-list-model';
 import Loading from '../../components/loading';
+import { COLORS } from '../../core';
 import { convertDateFormat, processString, showToast } from '../../core/utils';
 import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore, useContactsStore } from '../../hooks/zustand-store';
@@ -377,9 +378,11 @@ const TakePayment = ({ navigation, route }) => {
             visible={visible}
             onDismiss={hideDialog}
             dismissable
-            style={{ backgroundColor: 'white' }}
+            style={{ backgroundColor: COLORS.white }}
             dismissableBackButton>
-            <Dialog.Title style={{ fontSize: 18 }}>Select</Dialog.Title>
+            <Dialog.Title>
+              <Text className="text-[18px]">Select</Text>
+            </Dialog.Title>
             <Dialog.Content>
               <View className="mb-10 mt-5 flex flex-row justify-evenly">
                 <View className="flex items-center gap-2">

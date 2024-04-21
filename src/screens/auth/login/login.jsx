@@ -47,7 +47,7 @@ export default function Login({ navigation }) {
     mutate(formData);
   };
   const { login } = useAuthStore();
-  
+
   useEffect(() => {
     if (isSuccess) {
       login({

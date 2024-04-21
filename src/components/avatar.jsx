@@ -15,7 +15,13 @@ const randomDarkColor = () => {
   return `#${red}${green}${blue}`;
 };
 
-const Avatar = ({ name = 'User', color = randomDarkColor(), size, fontStyle = {}, containerStyle = {} }) => {
+const Avatar = ({
+  name = 'User',
+  color = randomDarkColor(),
+  size,
+  fontStyle = {},
+  containerStyle = {},
+}) => {
   const initials = name
     .split(' ')
     .map((n) => n[0])

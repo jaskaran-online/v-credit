@@ -31,6 +31,7 @@ export const COLORS = {
   secondary: '#ed3237', // dark green
   darkTransparent: '#000000d6',
   primaryFont: '#ffff',
+  slategray: 'slategray',
 
   primaryFontLight: '#ffebabc7',
 

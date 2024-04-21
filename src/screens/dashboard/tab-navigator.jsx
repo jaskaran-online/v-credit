@@ -13,7 +13,7 @@ export function TabNavigator() {
       fontWeight: '400',
     },
     tabBarStyle: {
-      backgroundColor: 'white',
+      backgroundColor: COLORS.white,
       shadowRadius: 5.0,
       elevation: 5,
       shadowColor: 'black',

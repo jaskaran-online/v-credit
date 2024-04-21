@@ -18,6 +18,7 @@ import {
 import { Button, Checkbox, Text, TextInput as TextInputNew } from 'react-native-paper';
 
 import { useRegisterUser } from '../../../apis/use-api';
+import { COLORS } from '../../../core';
 import { showToast } from '../../../core/utils';
 import EmailInput from '../components/email-input';
 import { Logo } from '../components/logo';
@@ -82,7 +83,7 @@ export const BottomSheetBackground = ({ style }) => {
     <View
       style={[
         {
-          backgroundColor: 'white',
+          backgroundColor: COLORS.white,
           borderRadius: 28,
         },
         { ...style },
@@ -329,7 +330,7 @@ export default function Register({ navigation }) {
             data={filteredCountries}
             keyExtractor={(item) => item.name.common}
             contentContainerStyle={{
-              backgroundColor: 'white',
+              backgroundColor: COLORS.white,
               paddingVertical: 5,
             }}
             renderItem={({ item }) => (

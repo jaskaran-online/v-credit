@@ -1,5 +1,6 @@
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
+import { useQueryClient } from '@tanstack/react-query';
 import _ from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Image, Linking, Platform, Share, TouchableOpacity, View } from 'react-native';
@@ -12,11 +13,11 @@ import {
 } from '../../../apis/use-api';
 import { renderHeader, renderItem } from '../../../components/list-components';
 import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
+import { COLORS } from '../../../core';
 import { formatDateForMessage, showToast } from '../../../core/utils';
 import { useAuthStore } from '../../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../../hooks/zustand-store';
 import FloatingButtons from '../../components/floating-button';
-import { useQueryClient } from '@tanstack/react-query';
 
 export function processString(input = null) {
   if (input === null || input === '' || input === 'null') {
@@ -77,7 +78,6 @@ Click : http://mycreditbook.com/udhaar-khata/${id}`;
 };
 
 export default function CustomerDetails({ navigation, route }) {
-
   const { user: auth } = useAuthStore();
   const { mutate, data, isLoading } = useCustomerTransactionData();
   const { mutate: transactionDelRequest, isLoading: transactionDelLoading } =
@@ -312,7 +312,7 @@ export default function CustomerDetails({ navigation, route }) {
             flex: 1,
             position: 'absolute',
             zIndex: 9999999,
-            backgroundColor: 'white',
+            backgroundColor: COLORS.white,
           }}
           className="right-10 top-14 border-2 border-slate-100 shadow-lg shadow-black">
           {options.map((value, index) => {

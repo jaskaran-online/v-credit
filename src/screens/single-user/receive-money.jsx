@@ -12,12 +12,12 @@ import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Image, Keyboard, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Button, Searchbar, Text, TextInput } from 'react-native-paper';
+import { Image, Keyboard, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Button, Text, TextInput } from 'react-native-paper';
 
-import { useCreateUserTransaction, usePaymentApi } from '../../apis/use-api';
-import Avatar from '../../components/avatar';
+import { useCreateUserTransaction } from '../../apis/use-api';
 import ContactList from '../../components/contact-list-model';
+import { COLORS } from '../../core';
 import { showToast } from '../../core/utils';
 import { useAuthStore } from '../../hooks/auth-store';
 import { useContactsStore } from '../../hooks/zustand-store';
@@ -30,8 +30,6 @@ export default function ReceiveMoney() {
     mutate: request,
     data: paymentApiResponse,
     isSuccess: isPaymentSuccess,
-    error: paymentError,
-    isError,
   } = useCreateUserTransaction();
 
   const contacts = useContactsStore((state) => state.contactsList) || [];
@@ -351,15 +349,9 @@ export default function ReceiveMoney() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    flex: 1,
-    paddingHorizontal: 8,
-    paddingTop: 12,
-  },
   itemSelector: {
     alignItems: 'center',
-    borderColor: 'slategray',
+    borderColor: COLORS.slategray,
     borderRadius: 4,
     borderWidth: 1,
     flexDirection: 'row',

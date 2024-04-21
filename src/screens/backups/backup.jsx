@@ -7,6 +7,7 @@ import { View, Text, TouchableOpacity, Linking, StyleSheet, ActivityIndicator } 
 import { Button, TextInput } from 'react-native-paper';
 
 import { useBackupGenerate, useBackupList } from '../../apis/use-api';
+import { COLORS } from '../../core';
 import { showToast } from '../../core/utils';
 import { useAuthStore } from '../../hooks/auth-store';
 import { useAuthCompanyStore } from '../../hooks/zustand-store';
@@ -145,15 +146,9 @@ export default function Backup() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    flex: 1,
-    paddingHorizontal: 8,
-    paddingTop: 12,
-  },
   itemSelector: {
     alignItems: 'center',
-    borderColor: 'slategray',
+    borderColor: COLORS.slategray,
     borderRadius: 4,
     borderWidth: 1,
     flexDirection: 'row',

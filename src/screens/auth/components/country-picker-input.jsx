@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Image } from 'react-native';
 
+import { COLORS } from '../../../core';
+
 const fetchCountries = async () => {
   const response = await fetch('https://restcountries.com/v3.1/all?fields=name,flags');
   if (!response.ok) {
@@ -30,7 +32,7 @@ function CountryPickerInput() {
   return (
     <BottomSheetModalProvider
       className="flex-1 z-50"
-      style={{ backgroundColor: 'white', zIndex: 1000 }}>
+      style={{ backgroundColor: COLORS.white, zIndex: 1000 }}>
       <View>
         <TouchableOpacity onPress={handlePresentModalPress}>
           <Text>Select Country</Text>

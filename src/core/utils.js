@@ -1,8 +1,7 @@
 // import * as SecureStore from 'expo-secure-store';
 import createSecureStore from '@neverdull-agency/expo-unlimited-secure-store';
 import { Linking } from 'react-native';
-import {showMessage} from "react-native-flash-message";
-
+import { showMessage } from 'react-native-flash-message';
 
 const SecureStore = createSecureStore();
 
@@ -165,11 +164,11 @@ export function formatDateForMessage(inputDate) {
  */
 export const showToast = (message = '', type = 'success', position = 'bottom') => {
   showMessage({
-    message: message,
-    type: type,
+    message,
+    type,
     icon: type,
-    position: position,
-    animated: true
+    position,
+    animated: true,
   });
 };
 

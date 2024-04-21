@@ -15,6 +15,7 @@ import {
 } from '../../../apis/use-api';
 import { renderHeader, renderItem } from '../../../components/list-components';
 import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
+import { COLORS } from '../../../core';
 import { showToast } from '../../../core/utils';
 import { useAuthStore } from '../../../hooks/auth-store';
 import {
@@ -237,7 +238,7 @@ export default function Transactions() {
             value={query.toString()}
             style={{
               width: '100%',
-              backgroundColor: 'white',
+              backgroundColor: COLORS.white,
             }}
             inputStyle={{
               fontSize: 12,
@@ -258,7 +259,7 @@ export default function Transactions() {
               <MaterialCommunityIcons
                 name="account-filter"
                 size={22}
-                color={filterBy === 'Clear' ? 'black' : 'white'}
+                color={filterBy === 'Clear' ? COLORS.black : COLORS.white}
               />
             </Button>
           )}
@@ -270,7 +271,7 @@ export default function Transactions() {
             flex: 1,
             position: 'absolute',
             zIndex: 9999999,
-            backgroundColor: 'white',
+            backgroundColor: COLORS.white,
           }}
           className="right-10 top-14 border-2 border-slate-100 shadow-lg shadow-black">
           {options.map((value, key) => {

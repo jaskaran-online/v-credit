@@ -1,5 +1,3 @@
-// eslint-disable-next-line unicorn/filename-case
-// eslint-disable-next-line unicorn/filename-case
 import { AntDesign, FontAwesome, Ionicons, Entypo } from '@expo/vector-icons';
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useFocusEffect } from '@react-navigation/native';
@@ -12,6 +10,7 @@ import { Searchbar, Text } from 'react-native-paper';
 import { useCustomersData, useUserCustomerList } from '../../../apis/use-api';
 import Avatar from '../../../components/avatar';
 import SkeletonPlaceholder from '../../../components/skeleton-placeholder ';
+import { COLORS } from '../../../core';
 import { formatDateForMessage } from '../../../core/utils';
 import { useAuthStore } from '../../../hooks/auth-store';
 import { useAuthCompanyStore, useFilterToggleStore } from '../../../hooks/zustand-store';
@@ -33,7 +32,7 @@ const BottomSheetBackground = ({ style }) => {
     <View
       style={[
         {
-          backgroundColor: 'white',
+          backgroundColor: COLORS.white,
           borderRadius: 28,
         },
         { ...style },
@@ -160,8 +159,6 @@ export default function DashboardCustomers() {
     isLoading: customerListLoading,
     refetch,
   } = useUserCustomerList(auth?.user?.mobile);
-
-  console.log(customerListLoading)
 
   const company = useAuthCompanyStore((state) => state.selectedCompany);
   const filterBy = useFilterToggleStore((state) => state.filterBy);

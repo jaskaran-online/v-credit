@@ -296,10 +296,7 @@ export default function UserCustomerList({ navigation }) {
             />
             <View className="mt-3 flex flex-row items-center justify-between">
               <Text>Shared Account</Text>
-              <Switch
-                onValueChange={toggleSwitch}
-                value={selectedCustomer.isAccountShared == 1 ? true : false}
-              />
+              <Switch onValueChange={toggleSwitch} value={selectedCustomer.isAccountShared == 1} />
             </View>
           </Dialog.Content>
           <Dialog.Actions>

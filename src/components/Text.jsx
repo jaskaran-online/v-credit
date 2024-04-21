@@ -7,7 +7,6 @@ const TextMedium = ({ variant, className, children, fontSize }) => {
       <Text
         variant={variant}
         className={className}
-        // eslint-disable-next-line react-native/no-inline-styles
         style={{
           fontFamily: 'sans-serif-medium',
         }}>

@@ -34,8 +34,8 @@ import { useAuthCompanyStore, useContactsStore } from '../hooks/zustand-store';
 import { HomePage, ProfitLoss, Reports } from '../screens';
 import Backup from '../screens/backups/backup';
 import CustomerList from '../screens/customers-list/customerList';
-import { loadContacts } from '../service/contactService';
-import UserCustomerList from "../screens/customers-list/userCustomerList";
+import UserCustomerList from '../screens/customers-list/userCustomerList';
+import { loadContacts } from '../service/contact-service';
 
 const openPlayStore = () => {
   const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.webcooks.mycreditbook';

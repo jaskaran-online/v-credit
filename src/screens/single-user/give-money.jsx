@@ -17,6 +17,7 @@ import { Button, Text, TextInput } from 'react-native-paper';
 
 import { useCreateUserTransaction } from '../../apis/use-api';
 import ContactList from '../../components/contact-list-model';
+import { COLORS } from '../../core';
 import { showToast } from '../../core/utils';
 import { useAuthStore } from '../../hooks/auth-store';
 import { useContactsStore } from '../../hooks/zustand-store';
@@ -29,13 +30,11 @@ export default function GiveMoney() {
     mutate: request,
     data: paymentApiResponse,
     isSuccess: isPaymentSuccess,
-    error: paymentError,
-    isError,
   } = useCreateUserTransaction();
 
   const contacts = useContactsStore((state) => state.contactsList) || [];
   const [selectedContact, setSelectedContact] = useState(null);
-  const [selectedMobileNumber, setSelectedMobileNumber] = useState(null);
+  const [setSelectedMobileNumber] = useState(null);
   const [mobileNumber, setMobileNumber] = useState('');
   const [photoSelector, setPhotoSelector] = useState(false);
   const [imageUri, setImageUri] = useState('');
@@ -265,7 +264,7 @@ export default function GiveMoney() {
         backdropComponent={renderBackdropComponent}
         backgroundComponent={(props) => <BottomSheetBackground {...props} />}
         handleIndicatorStyle={{
-          backgroundColor: 'lightgray',
+          backgroundColor: COLORS.lightGray,
         }}>
         {photoSelector ? (
           <>

@@ -74,7 +74,7 @@ export const useCreateCustomer = () => {
         company_id,
         cost_center_id,
         user_id,
-        isAccountShared
+        isAccountShared,
       });
     },
     cacheTime: 500,
