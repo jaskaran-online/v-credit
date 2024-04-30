@@ -99,9 +99,9 @@ export default function GiveMoney() {
     if (isPaymentSuccess) {
       showToast(paymentApiResponse.data.message, 'success');
 
-      queryClient.invalidateQueries(['userCustomerList', auth.user.mobile]).then();
-      queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.mobile]).then();
-      queryClient.invalidateQueries(['userTodayTransactions', auth.user.mobile]).then();
+      queryClient.invalidateQueries(['userCustomerList', auth.user.mobile]);
+      queryClient.invalidateQueries(['userTodayTransactionsTotal', auth.user.mobile]);
+      queryClient.invalidateQueries(['userTodayTransactions', auth.user.mobile]);
 
       setTimeout(() => navigations.navigate('HomePage'), 1000);
     }

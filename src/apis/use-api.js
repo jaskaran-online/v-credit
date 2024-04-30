@@ -239,18 +239,8 @@ export const useOTPVerify = () => {
 
 // Define the React Query hook
 export const useCustomerTransactions = (customerId, userId) => {
-  return useQuery(
-    ['userTransactions', customerId],
-    () => get(`get/user/transactions?customer_id=${customerId}&user_id=${userId}`),
-    {
-      enabled:
-        customerId !== undefined &&
-        customerId !== '' &&
-        customerId !== null &&
-        userId !== undefined &&
-        userId !== '' &&
-        userId !== null,
-    }
+  return useQuery(['userTransactions', customerId], () =>
+    get(`get/user/transactions?from=${customerId}&to=${userId}`)
   );
 };
 

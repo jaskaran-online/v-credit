@@ -52,7 +52,7 @@ const GivePayment = ({ navigation, route }) => {
       : []
   );
   const [contactSelectedMobileNumber, setContactSelectedMobileNumber] = useState(
-    route?.params?.customer?.phone || undefined
+    route?.params?.customer?.phone || mobileNumber
   );
 
   useEffect(() => {
@@ -140,7 +140,7 @@ const GivePayment = ({ navigation, route }) => {
     }
   };
   const onFormSubmit = () => {
-    let phoneNumber = route?.params?.customer?.phone || null;
+    let phoneNumber = route?.params?.customer?.phone || mobileNumber;
 
     if (selectedContact === null) {
       showToast('Please Select Customer', 'danger');
@@ -148,7 +148,7 @@ const GivePayment = ({ navigation, route }) => {
     }
 
     if (phoneNumber === null) {
-      phoneNumber = contactSelectedMobileNumber;
+      phoneNumber = mobileNumber;
     }
 
     if (price === 0 || qty === 0) {
@@ -217,6 +217,8 @@ const GivePayment = ({ navigation, route }) => {
     bottomSheetModalRef.current?.present();
     Keyboard.dismiss();
   }, []);
+
+  console.log({ mobileNumber });
 
   return (
     <>

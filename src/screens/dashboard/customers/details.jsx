@@ -86,7 +86,7 @@ export default function CustomerDetails({ navigation, route }) {
     data: transactions,
     refetch,
     fetchNextPage,
-  } = useCustomerTransactions(route.params.id, auth?.user?.id);
+  } = useCustomerTransactions(route.params.mobile, auth?.user?.mobile);
 
   const pageRef = useRef(1);
   const lastPageRef = useRef(0);

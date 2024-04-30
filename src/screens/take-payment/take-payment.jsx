@@ -150,7 +150,7 @@ const TakePayment = ({ navigation, route }) => {
     }
 
     if (phoneNumber === null) {
-      phoneNumber = contactSelectedMobileNumber;
+      phoneNumber = mobileNumber;
     }
 
     if (price === 0 || qty === 0) {
@@ -193,7 +193,7 @@ const TakePayment = ({ navigation, route }) => {
     formData.append('to_name', selectedContact?.name);
 
     formData.append('to_mobile', phoneNumber);
-
+    console.log(JSON.stringify(formData));
     request(formData);
   };
 

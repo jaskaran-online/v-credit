@@ -117,6 +117,7 @@ export default function DashboardCustomers() {
             navigation.navigate('CustomerTransactionDetails', {
               id: item.customer?.id,
               name: item.customer?.name,
+              mobile: item.customer?.mobile,
               toPay: item?.toPay,
               toReceive: item?.toReceive,
               balance: item?.balance,
