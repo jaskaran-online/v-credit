@@ -68,7 +68,7 @@ export default function AttachedImage(props) {
             <Animated.View style={animatedStyle}>
               <Image
                 source={{
-                  uri: `${ENV.DEV}${props.route.params.image}`,
+                  uri: `${ENV.PRO}${props.route.params.image}`,
                 }}
                 resizeMode="contain"
                 style={{

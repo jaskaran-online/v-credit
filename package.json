@@ -1,6 +1,6 @@
 {
   "name": "MyCreditBook",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "scripts": {
     "start": "npx expo start",
     "android": "npx expo run:android",
@@ -10,6 +10,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@babel/runtime": "^7.24.7",
     "@expo/metro-runtime": "~3.2.1",
     "@gorhom/bottom-sheet": "^4",
     "@neverdull-agency/expo-unlimited-secure-store": "^1.0.10",
@@ -24,14 +25,17 @@
     "@tanstack/react-query": "^4.29.7",
     "axios": "^1.4.0",
     "eas-cli": "^5.9.1",
-    "expo": "^51.0.11",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "expo": "~51.0.13",
     "expo-blur": "~13.0.2",
     "expo-camera": "~15.0.10",
-    "expo-contacts": "~13.0.3",
-    "expo-dev-client": "~4.0.15",
+    "expo-contacts": "~13.0.4",
+    "expo-dev-client": "~4.0.17",
     "expo-doctor": "^1.0.6",
+    "expo-file-system": "~17.0.1",
     "expo-image-picker": "~15.0.5",
     "expo-linear-gradient": "~13.0.2",
+    "expo-modules-autolinking": "^1.11.1",
     "expo-print": "~13.0.1",
     "expo-secure-store": "~13.0.1",
     "expo-sharing": "~12.0.1",
@@ -41,6 +45,7 @@
     "lodash": "^4.17.21",
     "lottie-react-native": "6.7.0",
     "nativewind": "^2.0.11",
+    "postcss": "8.4.31",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
@@ -58,6 +63,7 @@
     "react-native-screens": "3.31.1",
     "react-native-tab-view": "^3.5.1",
     "react-native-toast-message": "^2.1.6",
+    "react-native-vector-icons": "^10.1.0",
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.8.6",
     "react-navigation": "^4.4.4",
@@ -67,8 +73,12 @@
   },
   "devDependencies": {
     "@babel/core": "^7.21.8",
+    "@babel/preset-env": "^7.24.7",
     "@expo/vector-icons": "^14.0.0",
     "@react-native-community/eslint-config": "^3.2.0",
+    "@types/node": "^20.14.2",
+    "@types/react": "~18.2.79",
+    "@types/react-native": "^0.73.0",
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^9.0.0",
@@ -83,8 +93,10 @@
     "eslint-plugin-unicorn": "^50.0.1",
     "eslint-plugin-unused-imports": "^3.0.0",
     "prettier": "^3.1.1",
+    "prop-types": "^15.8.1",
     "react-devtools": "^4.27.8",
-    "tailwindcss": "3.3.2"
+    "tailwindcss": "3.3.2",
+    "typescript": "~5.3.3"
   },
   "resolutions": {
     "react-native-reanimated": "~3.10.1"

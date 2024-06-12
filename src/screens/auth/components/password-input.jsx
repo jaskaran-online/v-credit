@@ -12,6 +12,11 @@ const PasswordInput = ({ control, errors, isPasswordSecure, setIsPasswordSecure 
     }),
     []
   );
+
+  const renderIcon = () => (
+    <MaterialCommunityIcons name={isPasswordSecure ? 'eye-off' : 'eye'} size={24} />
+  );
+
   return (
     <Controller
       control={control}
@@ -32,9 +37,7 @@ const PasswordInput = ({ control, errors, isPasswordSecure, setIsPasswordSecure 
             right={
               <TextInput.Icon
                 onPress={() => setIsPasswordSecure(!isPasswordSecure)}
-                icon={() => (
-                  <MaterialCommunityIcons name={isPasswordSecure ? 'eye-off' : 'eye'} size={24} />
-                )}
+                icon={renderIcon}
               />
             }
             left={<TextInput.Icon icon={() => <MaterialCommunityIcons name="key" size={20} />} />}

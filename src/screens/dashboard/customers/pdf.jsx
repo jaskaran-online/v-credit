@@ -5,7 +5,6 @@ import _ from 'lodash';
 import React, { useEffect, useRef } from 'react';
 import { ActivityIndicator, Platform, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import HtmlCodeView from './html-code-view';
 import { useCustomerTransactionData } from '../../../apis/use-api';
@@ -213,9 +212,7 @@ const ShareScreen = ({ route }) => {
               {selectedPrinter ? <Text>{`Selected printer: ${selectedPrinter.name}`}</Text> : null}
             </View>
           )}
-          <Animated.View
-            animated
-            entering={FadeInDown.easing(0.5).springify().duration(300)}
+          <View
             className=" flex flex-row items-center justify-evenly bg-white pb-10 pt-4">
             <TouchableOpacity
               className="d-flex items-center justify-center gap-2"
@@ -235,7 +232,7 @@ const ShareScreen = ({ route }) => {
                 <Text>Select</Text>
               </TouchableOpacity>
             )}
-          </Animated.View>
+          </View>
         </>
       )}
     </View>

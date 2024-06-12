@@ -239,9 +239,16 @@ export const useOTPVerify = () => {
 
 // Define the React Query hook
 export const useCustomerTransactions = (customerId, userId) => {
-  return useQuery(['userTransactions', customerId], () =>
-    get(`get/user/transactions?from=${customerId}&to=${userId}`)
-  );
+  if(customerId && userId) {
+    return useQuery(['userTransactions', customerId], () =>
+      get(`get/user/transactions?from=${customerId}&to=${userId}`)
+    );
+  }else{
+    return {
+      isLoading: false,
+      data: null,
+    };
+  }
 };
 
 export const useUserCustomerList = (mobile) => {

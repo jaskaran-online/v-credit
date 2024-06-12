@@ -16,6 +16,11 @@ const EmailInput = ({ control, errors, togglePasswordVisibility }) => {
     }),
     []
   );
+
+  const renderIcon = ({ icon = 'email', size = 20 }) => (
+    <MaterialCommunityIcons name={icon} size={size} />
+  );
+
   return (
     <Controller
       control={control}
@@ -32,12 +37,7 @@ const EmailInput = ({ control, errors, togglePasswordVisibility }) => {
             placeholder="Enter Email"
             placeholderTextColor={COLORS.darkGray}
             activeOutlineColor="darkgreen"
-            left={
-              <TextInput.Icon
-                onPress={togglePasswordVisibility}
-                icon={() => <MaterialCommunityIcons name="email" size={20} />}
-              />
-            }
+            left={<TextInput.Icon onPress={togglePasswordVisibility} icon={renderIcon} />}
           />
           {errors?.email && (
             <Text variant="bodySmall" className="mt-1 font-bold text-amber-700">
