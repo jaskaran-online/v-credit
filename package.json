@@ -1,6 +1,6 @@
 {
   "name": "MyCreditBook",
-  "version": "2.0.0",
+  "version": "16.0.0",
   "scripts": {
     "start": "npx expo start",
     "android": "npx expo run:android",
