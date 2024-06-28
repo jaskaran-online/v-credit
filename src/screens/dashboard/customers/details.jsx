@@ -50,7 +50,7 @@ const sendWhatsApp = async (
 
   if (to_receive_balance < to_pay_balance && balance !== 0) {
     message = `Hi ${name},
-          
+
 This is a friendly reminder that you have to pay ${Math.abs(balance).toFixed(
       2
     )} ₹ to me as of ${messageDate}.
@@ -76,7 +76,6 @@ Click : http://mycreditbook.com/udhaar-khata/${id}`;
 };
 
 export default function CustomerDetails({ navigation, route }) {
-
   const { user: auth } = useAuthStore();
   const { mutate, data, isLoading } = useCustomerTransactionData();
   const { mutate: transactionDelRequest, isLoading: transactionDelLoading } =
